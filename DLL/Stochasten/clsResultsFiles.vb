@@ -1,0 +1,19 @@
+﻿Imports STOCHLIB.General
+
+Public Class clsResultsFiles
+
+  Public Files As New Dictionary(Of String, clsResultsFile)
+  Private Setup As clsSetup
+  Private Model As clsSimulationModel
+
+  Public Sub New(ByRef mySetup As clsSetup, ByRef myModel As clsSimulationModel)
+    Setup = mySetup
+    Model = myModel
+  End Sub
+
+  Public Function GetAdd(ByVal myFile As String) As clsResultsFile
+    If Not Files.ContainsKey(myFile.Trim.ToUpper) Then Files.Add(myFile.Trim.ToUpper, New clsResultsFile(Me.Setup, Model, myFile))
+    Return Files(myFile.Trim.ToUpper)
+  End Function
+
+End Class

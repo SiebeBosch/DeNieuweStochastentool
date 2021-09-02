@@ -1,0 +1,380 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+HYDROC01
+</name>
+</assembly>
+<members>
+<member name="T:HYDROC01.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:HYDROC01.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:HYDROC01.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="M:HYDROC01.clsEncryption.EncryptStringAES(System.String,System.String)">
+ <summary>
+ Encrypt the given string using AES.  The string can be decrypted using 
+ DecryptStringAES().  The sharedSecret parameters must match.
+ </summary>
+ <param name="plainText">The text to encrypt.</param>
+ <param name="sharedSecret">A password used to generate a key for encryption.</param>
+</member>
+<member name="M:HYDROC01.clsEncryption.DecryptStringAES(System.String,System.String)">
+ <summary>
+ Decrypt the given string.  Assumes the string was encrypted using 
+ EncryptStringAES(), using an identical sharedSecret.
+ </summary>
+ <param name="cipherText">The text to decrypt.</param>
+ <param name="sharedSecret">A password used to generate a key for decryption.</param>
+</member>
+<member name="T:HYDROC01.clsLog">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsLog.AddDebugMessage(System.String)">
+ <summary>
+ Raises the message event with the debug message
+ </summary>
+ <param name="msg">The message</param>
+ <remarks>Paul Meems, 8 Jube 2012</remarks>
+</member>
+<member name="T:HYDROC01.clsWWTPDischargePointsShapefile">
+ <summary>
+ Author: Siebe Bosch
+ Date: 31-03-2013
+ Description: this class contains all data concerning Waste Water Treatment Plants in our study area
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.General.clsSetup.#ctor">
+ <summary>
+ Constructor
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.General.MessageEventArgs">
+ <summary>
+ Class waarmee je gegevens door kunt geven in je events (van vb.net naar c#)
+ </summary>
+ <remarks>Toegevoegd door Paul Meems, met hulp van Jeen de Vegt.</remarks>
+</member>
+<member name="M:HYDROC01.GeneralFunctions.ValidateGT(System.String,System.Double,System.Double)">
+ <summary>
+ This function validates the groundwater table provided
+ </summary>
+ <param name="myGT"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSubcatchment.buildLanduseTable">
+ <summary>
+ Auteur: Siebe Bosch
+ Datum: 1-4-2013
+ Omschrijving: Deze functie maakt een collectie van rioleringsgebieden binnen deze area
+ </summary>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsCSOShapeFile">
+ <summary>
+ Description: this class holds all data for Combined Sewer Overflow locations
+ Author: Siebe Bosch
+ Date: 31-03-2013
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSubcatchmentShapeFile.MergeAllShapes">
+ <summary>
+ Deze subroutine voegt shapes samen in één nieuwe shape
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSubcatchmentShapeFile.MergeShapesByCatchment(HYDROC01.clsCatchments@)">
+ <summary>
+ Deze subroutine voegt shapes behorende bij hetzelfde catchment samen tot één nieuwe shape per Catchment
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsKunstwerk">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFInitialData.Export(System.Boolean)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsEvpFile">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFNodesData.Export(System.Boolean)">
+ <summary>
+ TODO: siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsWWTPShapeFile">
+ <summary>
+ Author: Siebe Bosch
+ Date: 31-03-2013
+ Description: this class contains all data concerning Waste Water Treatment Plants in our study area
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsModHMSModel.Initialize">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+</member>
+<member name="M:HYDROC01.clsCFFrictionData.Export(System.Boolean)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsHisFileBinaryReader">
+ <summary>
+ His file (Sobek) reader
+ Reads binary and therefore bypasses ODSSVR20.DLL that does not work inside Visual Studio 2008 for selections of locations and/or locations/timesteps
+ Hence this is an alternative for clsHisFile
+ </summary>
+</member>
+<member name="M:HYDROC01.clsHisFileBinaryReader.Dispose">
+ <summary>
+ See <see cref="M:System.IDisposable.Dispose"/> for more information.
+ </summary>
+</member>
+<member name="M:HYDROC01.clsHisFileBinaryReader.Dispose(System.Boolean)">
+ <summary>
+ Called when the object is being disposed or finalized.
+ </summary>
+ <param name="disposing">True when the object is being disposed (and therefore can
+ access managed members); false when the object is being finalized without first
+ having been disposed (and therefore can only touch unmanaged members).</param>
+</member>
+<member name="T:HYDROC01.clsBuiFile">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFBoundaryData.Export(System.Boolean)">
+ <summary>
+ TODO: siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFData.CleanUp(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+ <summary>
+ This routine cleans up model objects and data for the flow module.
+ It will remove any unused data records
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFData.CalculateBedLevel(HYDROC01.clsSbkReach,System.Double,System.Double@)">
+ <summary>
+ Berekent de bodemhoogte gegeven een tak en afstand op de tak
+ </summary>
+ <param name="myReach"></param>
+ <param name="lc"></param>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFLateraldata.Export(System.Boolean)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFProfileData.Export(System.Boolean)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFStructureData.Export(System.Boolean)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFTopology.Export(System.Boolean)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFTopology.FindNearestVectorPoint(HYDROC01.clsXYZ,System.Boolean,System.Double,MapWinGIS.Shape@,MapWinGIS.Shape@,MapWinGIS.Shape@,System.Collections.Generic.List{System.String})">
+ <summary>
+ TODO: Siebe invullen
+ Deze functie zoekt het dichtstbijzijnde curving point van alle sobektakken voor een gegeven polygoon
+ </summary>
+ <param name="SkipBeginAndEndNode"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFTopology.MakeUniqueNodeID(System.String)">
+ <summary>
+ This function creates a unique ID for a new node or reach object
+ In order to do so it searches until it has found an ID that does not
+ yet occur in the sobek schematization
+ </summary>
+ <param name="IDBase"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFTopology.OptimizeAllReachObjectLocations(System.Int32)">
+ <summary>
+ Deze routine optimaliseert de ligging van ALLE takobjecten in de gekozen SOBEK-modelschematisatie
+ </summary>
+ <param name="MinDistFromReachObjects"></param>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsCFTopology.ReachObjectExists(System.String)">
+ <summary>
+ Deze functie zoekt uit of een takobject bestaat en geeft een boolean terug 
+ </summary>
+ <param name="ID"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsDummyReach">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsKunstwerken">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsMeteoStations">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsRRData.CleanUp(System.Boolean,System.Boolean)">
+ <summary>
+ This routine cleans up model objects and data for the flow module.
+ It will remove any unused data records
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsRRSettings">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsRRSettings.Initialize">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+</member>
+<member name="M:HYDROC01.clsRRTopology.InitializeExport">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+</member>
+<member name="T:HYDROC01.clsSbkLinkageNodes">
+ <summary>
+ Geen contructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSbkReach.findAddRRCFConnection(HYDROC01.clsSbkReachObject,System.String,System.Double,System.Double,System.Double)">
+ <summary>
+ Zoekt, gegeven de tak, het dichtstbijzijnde RRCF-connection, binnen een opgegeven zoekstraal.
+ Als er geen connection wordt gevonden, wordt er een aangemaakt
+ </summary>
+ <param name="mySnapLocation"></param>
+ <param name="minDistFromReachStart"></param>
+ <param name="SearchRadiusUp"></param>
+ <param name="SearchRadiusDown"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSbkReach.AddCrossSectionFromNeighbors">
+ <summary>
+ Deze routine voegt een dwarsprofiel toe aan de onderhavige sobektak als die er geen heeft.
+ hij kiest uit de aanpalende takken de langste die er is (is een arbitraire keuze)
+ en pakt vervolgens het dichtstbijzijnde profiel
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSbkReaches.CreateID(System.String)">
+ <summary>
+ Creëer een ID voor een nieuw te maken sobektak
+ </summary>
+ <param name="NameBase"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSbkReaches.AddCrossSectionsIfNotPresent">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsSettings">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:HYDROC01.clsSbkVectorPoint">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.ClsSobekCase.Read(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.String,System.Int32)">
+ <summary>
+ De masterfunctie voor het inlezen van SOBEKmodellen
+ </summary>
+ <param name="ReadRRNetwork"></param>
+ <param name="ReadCFNetwork"></param>
+ <param name="ReadRRData"></param>
+ <param name="ReadCFData"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.ClsSobekCase.MergeOpenDummyReaches(System.String)">
+ <summary>
+ Deze routine voegt dummytakken samen die aan twee voorwaarden voldoen:
+ 1. Ze komen alle op hetzelfde punt op de hoofdwatergangen uit
+ 2. Ze hebben een open verbinding met het hoofdwater, dus geen kunstwerk
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:HYDROC01.clsSobekProject.SetActiveCase(System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <param name="casename"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+</members>
+</doc>
