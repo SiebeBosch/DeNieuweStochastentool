@@ -1,0 +1,1183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9DCE2960-835C-4462-849A-58FB0900920B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>HYDROC01</RootNamespace>
+    <AssemblyName>HYDROC01</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>Off</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>HYDROC01.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>HYDROC01.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42353,42354,42355</NoWarn>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DocumentationFile>HYDROC01.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\bin\x86\</OutputPath>
+    <DocumentationFile>HYDROC01.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42353,42354,42355</NoWarn>
+    <DebugType>None</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\bin\x64\</OutputPath>
+    <DocumentationFile>HYDROC01.xml</DocumentationFile>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\bin\x64\</OutputPath>
+    <DocumentationFile>HYDROC01.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036,42353,42354,42355</NoWarn>
+    <DebugType>None</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <WarningsAsErrors>
+    </WarningsAsErrors>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="alglibnet2">
+      <HintPath>..\..\..\references\Alglib\alglibnet2.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML, Version=0.95.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\ChannelBuilder\ChannelBuilder\packages\ClosedXML.0.95.3\lib\net46\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\..\ChannelBuilder\ChannelBuilder\packages\DocumentFormat.OpenXml.2.7.2\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.0.10.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\..\ChannelBuilder\ChannelBuilder\packages\ExcelNumberFormat.1.0.10\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="GemBox.Spreadsheet, Version=37.3.30.1069, Culture=neutral, PublicKeyToken=b1b72c69714d4847, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\references\GemBox.Spreadsheet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.11.21.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\CatchmentBuilder\CatchmentBuilder\packages\HtmlAgilityPack.1.11.21\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.SPA_SDK">
+      <HintPath>..\..\..\references\Interop.SPA_SDK.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\references\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\TijdreeksTool\TijdreeksTool\packages\MathNet.Numerics.3.13.0\lib\net40\MathNet.Numerics.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MathParser.org-mXparser, Version=4.4.2.0, Culture=neutral, PublicKeyToken=0fbab7add73ed6e2, processorArchitecture=MSIL">
+      <HintPath>..\..\ChannelBuilder\ChannelBuilder\packages\MathParser.org-mXparser.4.4.2\lib\net46\MathParser.org-mXparser.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\webtools\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\..\..\references\NpgSQL\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.113.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\StochastenTool\StochastenTool\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\lib\net46\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\ChannelBuilder\ChannelBuilder\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Packaging, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\ChannelBuilder\ChannelBuilder\packages\System.IO.Packaging.4.0.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Autokal\clsAutokalRun.vb" />
+    <Compile Include="Autokal\clsMonteCarloSampling.vb" />
+    <Compile Include="Autokal\clsSensitivityAnalysis.vb" />
+    <Compile Include="Autokal\clsTemplateFile.vb" />
+    <Compile Include="Autokal\clsTemplateFiles.vb" />
+    <Compile Include="CatchmentBuilder\clsBODSubcatchmentsShapefile.vb" />
+    <Compile Include="CatchmentBuilder\clsBuisdrainageProfiel.vb" />
+    <Compile Include="CatchmentBuilder\clsCatchmentBuilder.vb" />
+    <Compile Include="CatchmentBuilder\clsCustomLateralNode.vb" />
+    <Compile Include="CatchmentBuilder\clsLanduseClass.vb" />
+    <Compile Include="CatchmentBuilder\clsLanduseClasses.vb" />
+    <Compile Include="CatchmentBuilder\clsLanduseType.vb" />
+    <Compile Include="CatchmentBuilder\clsLGNRIOSubcatchmentsShapefile.vb" />
+    <Compile Include="CatchmentBuilder\clsMCEmergencyStop.vb" />
+    <Compile Include="CatchmentBuilder\clsMCFlushPart.vb" />
+    <Compile Include="CatchmentBuilder\clsMCInletPart.vb" />
+    <Compile Include="CatchmentBuilder\clsMCOpenComponent.vb" />
+    <Compile Include="CatchmentBuilder\clsMCPumpComponent.vb" />
+    <Compile Include="CatchmentBuilder\clsMCPumpComponentPart.vb" />
+    <Compile Include="CatchmentBuilder\clsMCStorageComponent.vb" />
+    <Compile Include="CatchmentBuilder\clsMCWeirComponent.vb" />
+    <Compile Include="CatchmentBuilder\clsMCWeirComponentPart.vb" />
+    <Compile Include="CatchmentBuilder\clsModelArea.vb" />
+    <Compile Include="CatchmentBuilder\clsSoilClass.vb" />
+    <Compile Include="CatchmentBuilder\clsSoilClasses.vb" />
+    <Compile Include="CatchmentBuilder\clsSoilLanduseCombination.vb" />
+    <Compile Include="CatchmentBuilder\clsSoilType.vb" />
+    <Compile Include="CatchmentBuilder\clsSubcatchmentSubdivision.vb" />
+    <Compile Include="ChannelBuilder\clsCategorySelection.vb" />
+    <Compile Include="ChannelBuilder\clsChannelBuilder.vb" />
+    <Compile Include="ChannelBuilder\clsChannelBuilderGeneralSettings.vb" />
+    <Compile Include="ChannelBuilder\clsControllerCategory.vb" />
+    <Compile Include="ChannelBuilder\clsStructureCluster.vb" />
+    <Compile Include="ChannelBuilder\clsTargetLevelFields.vb" />
+    <Compile Include="ChannelBuilder\clsTopologicalRelationFields.vb" />
+    <Compile Include="ChannelBuilder\clsXYZProfile.vb" />
+    <Compile Include="ChannelBuilder\clsXYZProfileData.vb" />
+    <Compile Include="CM\clsCMBoundaryCondition.vb" />
+    <Compile Include="CM\clsCMInitialClass.vb" />
+    <Compile Include="CM\clsCMInputFileMember.vb" />
+    <Compile Include="CM\clsCMInputMember.vb" />
+    <Compile Include="CM\clsCMInputSeries.vb" />
+    <Compile Include="CM\clsCMMember.vb" />
+    <Compile Include="CM\clsCMBoundaryClass.vb" />
+    <Compile Include="CM\clsCMInputFile.vb" />
+    <Compile Include="CM\clsCMPatternClass.vb" />
+    <Compile Include="CM\clsCMPattern.vb" />
+    <Compile Include="CM\clsCMRun.vb" />
+    <Compile Include="CM\clsCMStochastenAnalyse.vb" />
+    <Compile Include="CM\clsCMInflowClass.vb" />
+    <Compile Include="CM\clsCMVolume.vb" />
+    <Compile Include="CM\clsCMVolumesClass.vb" />
+    <Compile Include="CM\clsCMOutputFile.vb" />
+    <Compile Include="Communication\clsEmail.vb" />
+    <Compile Include="Databases\clsDataGridViewDatabaseConnection.vb" />
+    <Compile Include="DIJKDATA\clsBendingPoint.vb" />
+    <Compile Include="DIJKDATA\clsDijkData.vb" />
+    <Compile Include="DIJKDATA\clsDikePoint.vb" />
+    <Compile Include="DIJKDATA\clsDikeProfile.vb" />
+    <Compile Include="DIJKDATA\clsFliMapProfile.vb" />
+    <Compile Include="DIJKDATA\clsFliMapProfiles.vb" />
+    <Compile Include="Encryption\clsEncryption.vb" />
+    <Compile Include="Encryption\clsLicense.vb" />
+    <Compile Include="Encryption\frmLicense.Designer.vb">
+      <DependentUpon>frmLicense.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Encryption\frmLicense.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Files\clsCSVFile.vb" />
+    <Compile Include="Files\clsDataField.vb" />
+    <Compile Include="Files\clsTimeseriesTextFile.vb" />
+    <Compile Include="FORMS\clsResizer.vb" />
+    <Compile Include="FORMS\frmAccess2SQLite.Designer.vb">
+      <DependentUpon>frmAccess2SQLite.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmAccess2SQLite.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmAddRowsToDatagrid.Designer.vb">
+      <DependentUpon>frmAddRowsToDatagrid.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmAddRowsToDatagrid.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmAppendTextFiles.Designer.vb">
+      <DependentUpon>frmAppendTextFiles.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmAppendTextFiles.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmBuiFromMeteobase.Designer.vb">
+      <DependentUpon>frmBuiFromMeteobase.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmBuiFromMeteobase.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmBurnTrapeziumChannelsByShapefile.Designer.vb">
+      <DependentUpon>frmBurnTrapeziumChannelsByShapefile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmBurnTrapeziumChannelsByShapefile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmCustomQuery.Designer.vb">
+      <DependentUpon>frmCustomQuery.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmCustomQuery.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmDataTableFromTextFile.Designer.vb">
+      <DependentUpon>frmDataTableFromTextFile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmDataTableFromTextFile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmExcelToTextfile.Designer.vb">
+      <DependentUpon>frmExcelToTextfile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmExcelToTextfile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmGenerateModelFromAreaTopology.Designer.vb">
+      <DependentUpon>frmGenerateModelFromAreaTopology.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmGenerateModelFromAreaTopology.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmGenerateReport.Designer.vb">
+      <DependentUpon>frmGenerateReport.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmGenerateReport.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmIDMapping.Designer.vb">
+      <DependentUpon>frmIDMapping.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmIDMapping.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmLocationsFromShapefile.Designer.vb">
+      <DependentUpon>frmLocationsFromShapefile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmLocationsFromShapefile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmPickDelimiter.Designer.vb">
+      <DependentUpon>frmPickDelimiter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmPickDelimiter.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmReadTextFileGeneric.Designer.vb">
+      <DependentUpon>frmReadTextFileGeneric.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmReadTextFileGeneric.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmSTOWA2019.Designer.vb">
+      <DependentUpon>frmSTOWA2019.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmSTOWA2019.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmTextFileToSQLite.Designer.vb">
+      <DependentUpon>frmTextFileToSQLite.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmTextFileToSQLite.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmTimeSeriesFromCSV.Designer.vb">
+      <DependentUpon>frmTimeSeriesFromCSV.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmTimeSeriesFromCSV.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmTimeseriesFromCSVGeneric.Designer.vb">
+      <DependentUpon>frmTimeseriesFromCSVGeneric.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmTimeseriesFromCSVGeneric.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FORMS\frmTimeseriesValuesFromTextFile.Designer.vb">
+      <DependentUpon>frmTimeseriesValuesFromTextFile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmTimeseriesValuesFromTextFile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmChooseSobekCase.Designer.vb">
+      <DependentUpon>frmChooseSobekCase.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmChooseSobekCase.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GAPHIC\Bresenham.vb" />
+    <Compile Include="GDAL\clsGDALInfo.vb" />
+    <Compile Include="General\clsCatchmentBuilderSettings.vb" />
+    <Compile Include="General\clsClimatologicalSettings.vb" />
+    <Compile Include="General\clsClipBoardValue.vb" />
+    <Compile Include="General\clsDatabaseColumn.vb" />
+    <Compile Include="General\clsEquationSolver.vb" />
+    <Compile Include="General\clsExcelBook.vb" />
+    <Compile Include="General\clsGeneric2DTable.vb" />
+    <Compile Include="General\clsGeneric2DTableRow.vb" />
+    <Compile Include="General\clsGeneric2DTableRecord.vb" />
+    <Compile Include="General\clsGeneric3DTable.vb" />
+    <Compile Include="General\clsLanduseMap.vb" />
+    <Compile Include="General\clsLineDefinition.vb" />
+    <Compile Include="General\clsLineSegment.vb" />
+    <Compile Include="General\clsLog.vb" />
+    <Compile Include="General\clsNetworkTopology.vb" />
+    <Compile Include="General\clsParameterValue.vb" />
+    <Compile Include="General\clsPumpOperationItem.vb" />
+    <Compile Include="General\clsFrictionTable.vb" />
+    <Compile Include="General\clsFrictionRange.vb" />
+    <Compile Include="General\clsSeasonTransitions.vb" />
+    <Compile Include="General\clsParallelReach.vb" />
+    <Compile Include="General\clsTargetLevels.vb" />
+    <Compile Include="General\clsTiles.vb" />
+    <Compile Include="General\clsTopologicalConnection.vb" />
+    <Compile Include="General\clsTopologyStructurelocation.vb" />
+    <Compile Include="General\clsUnit.vb" />
+    <Compile Include="General\clsUnits.vb" />
+    <Compile Include="GIS\clsBoundaries.vb" />
+    <Compile Include="GIS\clsBoundary.vb" />
+    <Compile Include="GIS\clsBoundaryShapefile.vb" />
+    <Compile Include="GIS\clsBridgeShapeFile.vb" />
+    <Compile Include="GIS\clsCatchmentBuilderShapefile.vb" />
+    <Compile Include="GIS\clsCSO.vb" />
+    <Compile Include="GIS\clsCSOs.vb" />
+    <Compile Include="GIS\clsCulverts.vb" />
+    <Compile Include="GIS\clsCulvertShapeFile.vb" />
+    <Compile Include="GIS\clsFishPassShapeFile.vb" />
+    <Compile Include="GIS\clsGeoExcelFile.vb" />
+    <Compile Include="GIS\clsGeoField.vb" />
+    <Compile Include="GIS\clsGeoObject.vb" />
+    <Compile Include="GIS\clsIDCheck.vb" />
+    <Compile Include="GIS\clsInlaatGemalen.vb" />
+    <Compile Include="GIS\clsMeasurementStationsShapefile.vb" />
+    <Compile Include="GIS\clsOrifices.vb" />
+    <Compile Include="GIS\clsOrificeShapeFile.vb" />
+    <Compile Include="GIS\clsGeoDatasource.vb" />
+    <Compile Include="GIS\clsProfilesVerdictShapefile.vb" />
+    <Compile Include="GIS\clsReachObjectsVertictShapeFile.vb" />
+    <Compile Include="GIS\clsReachVerdictShapefile.vb" />
+    <Compile Include="GIS\clsSewageArea.vb" />
+    <Compile Include="GIS\clsSewageAreas.vb" />
+    <Compile Include="GIS\clsShapeFieldIndexPair.vb" />
+    <Compile Include="GIS\clsSiphons.vb" />
+    <Compile Include="GIS\clsSiphonShapeFile.vb" />
+    <Compile Include="GIS\clsSluiceShapefile.vb" />
+    <Compile Include="GIS\clsSpatialExtent.vb" />
+    <Compile Include="GIS\clsReachObjectsShapefile.vb" />
+    <Compile Include="GIS\clsStructuresVerdictJSON.vb" />
+    <Compile Include="GIS\clsStructureVerdictJSON.vb" />
+    <Compile Include="GIS\clsTrapeziumProfileShapeFile.vb" />
+    <Compile Include="GIS\clsWaterBalanceGridCellCollection.vb" />
+    <Compile Include="GIS\clsWWTPDischargePoint.vb" />
+    <Compile Include="GIS\clsWWTPDischargePoints.vb" />
+    <Compile Include="GIS\clsWWTPDischargePointsShapefile.vb" />
+    <Compile Include="GIS\clsXYZProfileShapeFile.vb" />
+    <Compile Include="FORMS\frmAdjustShapefieldValues.Designer.vb">
+      <DependentUpon>frmAdjustShapefieldValues.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FORMS\frmAdjustShapefieldValues.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GMAP\clsGMapMarkersExtra.vb" />
+    <Compile Include="METEOBASE\clsIDF.vb" />
+    <Compile Include="METEOBASE\clsIDFs.vb" />
+    <Compile Include="Reports\clsReport.vb" />
+    <Compile Include="Reports\clsReportComponent.vb" />
+    <Compile Include="Reports\clsReportComponents.vb" />
+    <Compile Include="SOBEK\clsErnstDrainageDefinition.vb" />
+    <Compile Include="SOBEK\clsFreeboardClass.vb" />
+    <Compile Include="SOBEK\clsFrictionPair.vb" />
+    <Compile Include="SOBEK\clsHisfileBinaryWriter.vb" />
+    <Compile Include="SOBEK\clsLongLocation.vb" />
+    <Compile Include="SOBEK\clsPIDSetting.vb" />
+    <Compile Include="SOBEK\clsRksFile.vb" />
+    <Compile Include="SOBEK\clsRRUnitGreenhouseObject.vb" />
+    <Compile Include="SOBEK\clsRRUnitPavedObject.vb" />
+    <Compile Include="SOBEK\clsRRUnitSacramentoObject.vb" />
+    <Compile Include="SOBEK\clsRRUnitUnpavedObject.vb" />
+    <Compile Include="SOBEK\clsSbkCompareSettings.vb" />
+    <Compile Include="SOBEK\clsSbkPolygonIntersection.vb" />
+    <Compile Include="SOBEK\clsSbkReachSegment.vb" />
+    <Compile Include="SOBEK\clsSFAttributeData.vb" />
+    <Compile Include="SOBEK\clsSFData.vb" />
+    <Compile Include="SOBEK\clsStorageTable.vb" />
+    <Compile Include="SOBEK\clsStorageTables.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDat2DFRRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatD2FRRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsValveTabVLVERecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsValveTabVLVERecords.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWAsciiGrid.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWNode.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWNodeType.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWReach.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWReaches.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWReachSegment.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWReachType.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTWRRCluster.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSacramentoCAPS.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSacramentoOPAR.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSacramentoUNIH.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSACRMNTO3BCAPSRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSACRMNTO3BOPARRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSACRMNTO3BSACRRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSacramentoSACR.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsSACRMNTO3BUNIHRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedTBL.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedTBLIG_TRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedTBLSC_TRecord.vb" />
+    <Compile Include="SOBEK\Simulations\clsSobekRun.vb" />
+    <Compile Include="SOBEK\Simulations\clsSobekSimulation.vb" />
+    <Compile Include="SOBEK\Simulations\clsSobekSimulations.vb" />
+    <Compile Include="Stochasten\clsMileageCounter.vb" />
+    <Compile Include="General\clsSavitzkyGolaySmoothing.vb" />
+    <Compile Include="General\clsSetup.vb" />
+    <Compile Include="General\clsExcelSheet.vb" />
+    <Compile Include="General\clsTimeSpan.vb" />
+    <Compile Include="General\clsUnitConversion.vb" />
+    <Compile Include="General\clsValueIndexPair.vb" />
+    <Compile Include="General\GeneralFunctions.vb" />
+    <Compile Include="General\MessageEventArgs.vb" />
+    <Compile Include="Getij\clsTidalClassification.vb" />
+    <Compile Include="Getij\clsTidalHighLow.vb" />
+    <Compile Include="GIS\clsSubcatchment.vb" />
+    <Compile Include="GIS\clsSubcatchmentCluster.vb" />
+    <Compile Include="GIS\clsAreaStats.vb" />
+    <Compile Include="GIS\clsASCIIGrid.vb" />
+    <Compile Include="GIS\clsASCIIGridParser.vb" />
+    <Compile Include="GIS\clsBodemShapeFile.vb" />
+    <Compile Include="GIS\clsBoundingBox.vb" />
+    <Compile Include="GIS\clsCatchment.vb" />
+    <Compile Include="GIS\clsCatchments.vb" />
+    <Compile Include="GIS\clsChannelCategory.vb" />
+    <Compile Include="GIS\clsChannels.vb" />
+    <Compile Include="GIS\clsChannelShapeFile.vb" />
+    <Compile Include="GIS\clsCoordinaat.vb" />
+    <Compile Include="GIS\clsCSOShapeFile.vb" />
+    <Compile Include="GIS\clsEmbankmentShapeFile.vb" />
+    <Compile Include="GIS\clsPointShapeFile.vb" />
+    <Compile Include="GIS\clsSubcatchmentShapeFile.vb" />
+    <Compile Include="GIS\clsGemalen.vb" />
+    <Compile Include="GIS\clsGemalenShapeFile.vb" />
+    <Compile Include="GIS\clsGISData.vb" />
+    <Compile Include="GIS\clsGISSettings.vb" />
+    <Compile Include="GIS\clsGridCollection.vb" />
+    <Compile Include="GIS\clsGridEditor.vb" />
+    <Compile Include="GIS\clsGridStats.vb" />
+    <Compile Include="GIS\clsModelAreas.vb" />
+    <Compile Include="GIS\clsPerpendicularShapeFile.vb" />
+    <Compile Include="GIS\clsRC.vb" />
+    <Compile Include="GIS\clsRRInflowLocation.vb" />
+    <Compile Include="GIS\clsRRInflowLocations.vb" />
+    <Compile Include="GIS\clsPolyLineShapeFile.vb" />
+    <Compile Include="GIS\clsPolyShapeFile.vb" />
+    <Compile Include="GIS\clsRaster.vb" />
+    <Compile Include="GIS\clsKunstwerk.vb" />
+    <Compile Include="GIS\clsLandgebruik.vb" />
+    <Compile Include="GIS\clsLGNShapeFile.vb" />
+    <Compile Include="GIS\clsShapeFile.vb" />
+    <Compile Include="GIS\xalglib.vb" />
+    <Compile Include="HYDRODSS\frmBaseFlowFilter.Designer.vb">
+      <DependentUpon>frmBaseFlowFilter.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmBaseFlowFilter.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HYDRODSS\frmEXECUTABLE.Designer.vb">
+      <DependentUpon>frmEXECUTABLE.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmEXECUTABLE.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HYDRODSS\frmScriptTXTTIMESERIESWrite.Designer.vb">
+      <DependentUpon>frmScriptTXTTIMESERIESWrite.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmScriptTXTTIMESERIESWrite.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HYDRODSS\frmScriptTXTTIMESERIESRead.Designer.vb">
+      <DependentUpon>frmScriptTXTTIMESERIESRead.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmScriptTXTTIMESERIESRead.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HYDRODSS\frmDateReplace.Designer.vb">
+      <DependentUpon>frmDateReplace.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmDateReplace.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LinearReservoirs\clsDelimitedTextFile.vb" />
+    <Compile Include="LinearReservoirs\clsLinearReservoir.vb" />
+    <Compile Include="LinearReservoirs\clsLinearReservoirs.vb" />
+    <Compile Include="METEOBASE\clsMBBasisData.vb" />
+    <Compile Include="METEOBASE\clsMBRasterData.vb" />
+    <Compile Include="METEOBASE\clsMBStochData.vb" />
+    <Compile Include="METEOBASE\clsMBToetsData.vb" />
+    <Compile Include="METEOBASE\clsMeteoValue.vb" />
+    <Compile Include="ModelSense\clsAutoKal.vb" />
+    <Compile Include="ModelSense\clsAutokalModel.vb" />
+    <Compile Include="ModelSense\clsAutoKalModels.vb" />
+    <Compile Include="ModelSense\clsModelSenseOutputParameters.vb" />
+    <Compile Include="ModelSense\clsModelSenseOutputParameter.vb" />
+    <Compile Include="ModelSense\clsCalibrationParameter.vb" />
+    <Compile Include="ModelSense\clsCalibrationParameters.vb" />
+    <Compile Include="ModelSense\frmPickDate.Designer.vb">
+      <DependentUpon>frmPickDate.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ModelSense\frmPickDate.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModelSense\frmReadTextFile.Designer.vb">
+      <DependentUpon>frmReadTextFile.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ModelSense\frmReadTextFile.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SOBEK\clsCFInitialData.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNTW.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNVL.vb" />
+    <Compile Include="SOBEK\clsMeasurementStation.vb" />
+    <Compile Include="SOBEK\clsSobekBranchTypes.vb" />
+    <Compile Include="SOBEK\clsSobekStructures.vb" />
+    <Compile Include="SOBEK\clsSobekBranchType.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatXRSTRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatXRSTRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsInitialDatFLINRecords.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkNVLRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkOBIBRIDRecords.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkOBIBRIDRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNTWHeader.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsGreenHseRF.vb" />
+    <Compile Include="Stochasten\clsMileageCounterPercentages.vb" />
+    <Compile Include="Stochasten\clsPercentageClass.vb" />
+    <Compile Include="Stochasten\clsResultByVolume.vb" />
+    <Compile Include="Stochasten\clsResultsByVolume.vb" />
+    <Compile Include="Stochasten\clsSequentialElevatedClass.vb" />
+    <Compile Include="Stochasten\clsSequentialElevatedClasses.vb" />
+    <Compile Include="Stochasten\clsStochasticSeasonClass.vb" />
+    <Compile Include="Tijdreeksen\clsTijdreeksAnalyse.vb" />
+    <Compile Include="TijdreeksStatistiek\clsDailyPrecipitationSum.vb" />
+    <Compile Include="TijdreeksStatistiek\clsDuration.vb" />
+    <Compile Include="TijdreeksStatistiek\clsExtremeValue.vb" />
+    <Compile Include="TijdreeksStatistiek\clsExtremeValuesStatParameterLocation.vb" />
+    <Compile Include="TijdreeksStatistiek\clsExtremeValuesStatParameterLocations.vb" />
+    <Compile Include="TijdreeksStatistiek\clsExtremeValuesStatistics.vb" />
+    <Compile Include="TijdreeksStatistiek\clsFitParameters.vb" />
+    <Compile Include="TijdreeksStatistiek\clsFitResult.vb" />
+    <Compile Include="TijdreeksStatistiek\clsGenPareto.vb" />
+    <Compile Include="TijdreeksStatistiek\clsHydroEvent.vb" />
+    <Compile Include="TijdreeksStatistiek\clsHydroEvents.vb" />
+    <Compile Include="TijdreeksStatistiek\clsKNMI14Scenarios.vb" />
+    <Compile Include="TijdreeksStatistiek\clsLocationParameterCombination.vb" />
+    <Compile Include="TijdreeksStatistiek\clsLocationParameterCombinations.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPatternClass.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPatternClasses.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPatternPoint.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPatternSegment.vb" />
+    <Compile Include="TijdreeksStatistiek\clsProbabilityDistribution.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTemporalPattern.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTemporalPatternBlock.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTemporalPatternBranches.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTemporalPatterns.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalAmplitudeClass.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalElevatedClass.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalElevatedClasses.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPOTResult.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPOTResults.vb" />
+    <Compile Include="TijdreeksStatistiek\clsPOTSeries.vb" />
+    <Compile Include="TijdreeksStatistiek\clsRainfallSeries.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalHighsLowsEvent.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalAmplitudeClasses.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalSequentialOccurrancesClass.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalSequentialOccurrancesClasses.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTidalTimeSeries.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTijdreeksStatistiek.vb" />
+    <Compile Include="TijdreeksStatistiek\clsRainfallEvent.vb" />
+    <Compile Include="TijdreeksStatistiek\clsRainfallEvents.vb" />
+    <Compile Include="TijdreeksStatistiek\clsSeason.vb" />
+    <Compile Include="TijdreeksStatistiek\clsSeasons.vb" />
+    <Compile Include="SOBEK\clsCFReachSegment.vb" />
+    <Compile Include="SOBEK\clsEmbankment.vb" />
+    <Compile Include="SOBEK\clsEvpFile.vb" />
+    <Compile Include="CatchmentBuilder\clsModelCatchmentRead.vb" />
+    <Compile Include="CatchmentBuilder\clsModelCatchmentReachPrefix.vb" />
+    <Compile Include="CatchmentBuilder\clsModelCatchmentPrefixes.vb" />
+    <Compile Include="CatchmentBuilder\clsModelCatchmentsRead.vb" />
+    <Compile Include="SOBEK\clsRRBoundaryNode.vb" />
+    <Compile Include="SOBEK\clsSbkLandUse.vb" />
+    <Compile Include="SOBEK\clsSbkLandUseList.vb" />
+    <Compile Include="SOBEK\clsSobekNodeType.vb" />
+    <Compile Include="SOBEK\clsSobekNodeTypes.vb" />
+    <Compile Include="SOBEK\clsSobekResult.vb" />
+    <Compile Include="SOBEK\clsTide.vb" />
+    <Compile Include="SOBEK\clsTimeSeries.vb" />
+    <Compile Include="SOBEK\clsTimeSeriesRecord.vb" />
+    <Compile Include="SOBEK\clsTimeTable.vb" />
+    <Compile Include="SOBEK\clsTimeTableRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatCRFRRecord.vb" />
+    <Compile Include="SOBEK\clsHisFileStat.vb" />
+    <Compile Include="SOBEK\clsHisFileStats.vb" />
+    <Compile Include="SOBEK\clsCFNodesData.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatCRFRRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatSTFRRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatSTFRRecords.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsCFReachElement.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkOBIOBIDRecords.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsGreenhse3B.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsGreenhse3BRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsGreenHseRFRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsOpenwate3BRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsWWTP3B.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsWWTP3BRecord.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRGreenhouseNode.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRLink.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRROpenwaterNode.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRPavedNode.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRPavedNodes.vb" />
+    <Compile Include="GIS\clsSewageAreaShapeFile.vb" />
+    <Compile Include="GIS\clsStuwen.vb" />
+    <Compile Include="GIS\clsStuwenShapeFile.vb" />
+    <Compile Include="GIS\clsWWTP.vb" />
+    <Compile Include="GIS\clsWWTPs.vb" />
+    <Compile Include="GIS\clsWWTPShapeFile.vb" />
+    <Compile Include="GIS\clsXY.vb" />
+    <Compile Include="GIS\clsXYZ.vb" />
+    <Compile Include="KNMI\clsKNMIData.vb" />
+    <Compile Include="KNMI\clsKNMIRecord.vb" />
+    <Compile Include="KNMI\clsKNMIStationHourly.vb" />
+    <Compile Include="KNMI\clsKNMITextFile.vb" />
+    <Compile Include="ModHMS\clsModHMSModel.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="SOBEK\clsCFFrictionData.vb" />
+    <Compile Include="SOBEK\clsCFResults.vb" />
+    <Compile Include="SOBEK\clsCFStats.vb" />
+    <Compile Include="SOBEK\clsDischargeSum.vb" />
+    <Compile Include="SOBEK\clsDrainDefs.vb" />
+    <Compile Include="SOBEK\clsHiaFile.vb" />
+    <Compile Include="SOBEK\clsHisFileBinaryReader.vb" />
+    <Compile Include="CatchmentBuilder\clsModelCatchments2.vb" />
+    <Compile Include="SOBEK\clsHisFile.vb" />
+    <Compile Include="SOBEK\clsRRResults.vb" />
+    <Compile Include="SOBEK\clsSobekTableVariant.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsBoundaryDatFLBORecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsBoundaryDatRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsBoundlatDatBTBLRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsBoundlatDatBTBLRecords.vb" />
+    <Compile Include="SOBEK\clsBuiFile.vb" />
+    <Compile Include="SOBEK\clsCFAttributeData.vb" />
+    <Compile Include="SOBEK\clsCFBoundaryData.vb" />
+    <Compile Include="SOBEK\clsCFData.vb" />
+    <Compile Include="SOBEK\clsCFLateraldata.vb" />
+    <Compile Include="SOBEK\clsCFProfileData.vb" />
+    <Compile Include="SOBEK\clsCFReach.vb" />
+    <Compile Include="SOBEK\clsCFReaches.vb" />
+    <Compile Include="SOBEK\clsCFReachNode.vb" />
+    <Compile Include="SOBEK\clsCFSettings.vb" />
+    <Compile Include="SOBEK\clsCFStructureData.vb" />
+    <Compile Include="SOBEK\clsCFTimeTables.vb" />
+    <Compile Include="SOBEK\clsCFTopology.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsControlDefRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsControlDefRecords.vb" />
+    <Compile Include="SOBEK\clsDrainageProfiel.vb" />
+    <Compile Include="CatchmentBuilder\clsModelCatchment.vb" />
+    <Compile Include="CatchmentBuilder\clsSubCatchments.vb" />
+    <Compile Include="SOBEK\clsDummyReach.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatBDFRRecord.vb" />
+    <Compile Include="SOBEK\clsInitialDatRecord.vb" />
+    <Compile Include="SOBEK\clsKunstwerken.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsFrictionDatBDFRRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsInitialDatFLINRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsLateralDatFLBRRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsLateralDatFLBRRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsLateralDatFLNORecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsLateralDatFLNORecords.vb" />
+    <Compile Include="METEOBASE\clsMeteoStation.vb" />
+    <Compile Include="METEOBASE\clsMeteoStations.vb" />
+    <Compile Include="SOBEK\clsNetwork.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkCNFLBRRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkCNFLBXRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkCPRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkCRRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkGRRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkMErecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkOBIOBIDRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkSTRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkTPBrchRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkTPNdlkRecord.vb" />
+    <Compile Include="SOBEK\Flow Network Files\clsNetworkTPNodeRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsNodesDatNODERecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsNodesDatNODERecords.vb" />
+    <Compile Include="SOBEK\clsObjectSettings.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsBound3B3B.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsBound3B3BRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsbound3BTBL.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsBound3BTBLRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsPaved3B.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsPaved3BRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsProfileDatRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsProfileDatRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsProfileDefRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsProfileDefRecords.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRBrchTPRecord.vb" />
+    <Compile Include="SOBEK\clsRRCFConstruction.vb" />
+    <Compile Include="SOBEK\clsRRData.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRNodeTPRecord.vb" />
+    <Compile Include="SOBEK\clsRRSettings.vb" />
+    <Compile Include="SOBEK\clsRRTopology.vb" />
+    <Compile Include="SOBEK\clsSbkLinkageNodes.vb" />
+    <Compile Include="SOBEK\clsSBKPrefixes.vb" />
+    <Compile Include="SOBEK\clsSbkReach.vb" />
+    <Compile Include="SOBEK\clsSbkReaches.vb" />
+    <Compile Include="SOBEK\clsSbkReachNode.vb" />
+    <Compile Include="SOBEK\clsSbkReachNodes.vb" />
+    <Compile Include="SOBEK\clsSbkReachObject.vb" />
+    <Compile Include="SOBEK\clsSbkReachObjects.vb" />
+    <Compile Include="SOBEK\clsSettings.vb" />
+    <Compile Include="SOBEK\clsSOBEK.vb" />
+    <Compile Include="SOBEK\clsSobekCaseList.vb" />
+    <Compile Include="SOBEK\clsSobekCaseListItem.vb" />
+    <Compile Include="SOBEK\clsSobekCP.vb" />
+    <Compile Include="SOBEK\clsSobekCPTable.vb" />
+    <Compile Include="SOBEK\clsSobekDataFile.vb" />
+    <Compile Include="SOBEK\clsSobekCase.vb" />
+    <Compile Include="SOBEK\clsSobekProject.vb" />
+    <Compile Include="SOBEK\clsSobekStructure.vb" />
+    <Compile Include="SOBEK\clsSobekTable.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsStructDatRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsStructDatRecords.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsStructDefRecord.vb" />
+    <Compile Include="SOBEK\Flow Data Files\clsStructDefRecords.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsPavedDWA.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsPavedDWARecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsPavedSTO.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsPavedSTORecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpaved3B.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpaved3BRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsRRStats.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedAlf.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedALFERNSRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedInf.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedINFRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedSep.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedSEPRecord.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedSto.vb" />
+    <Compile Include="SOBEK\RR Data Files\clsUnpavedSTORecord.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRUnpavedNode.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRUnpavedNodes.vb" />
+    <Compile Include="SOBEK\RR Network Files\clsRRWWTPNode.vb" />
+    <Compile Include="SOBEK\WQResults.vb" />
+    <Compile Include="Stochasten\clsResultsFile.vb" />
+    <Compile Include="Stochasten\clsResultsFileLocation.vb" />
+    <Compile Include="Stochasten\clsResultsFileParameter.vb" />
+    <Compile Include="Stochasten\clsResultsFiles.vb" />
+    <Compile Include="Stochasten\clsResultsLocation.vb" />
+    <Compile Include="Stochasten\clsSimulationModel.vb" />
+    <Compile Include="Stochasten\clsStochastBoundaryNode.vb" />
+    <Compile Include="Stochasten\clsClimateScenario.vb" />
+    <Compile Include="Stochasten\clsStochastenAnalyse.vb" />
+    <Compile Include="Stochasten\clsStochastenBoundary.vb" />
+    <Compile Include="Stochasten\clsStochastenBoundaryNode.vb" />
+    <Compile Include="Stochasten\clsStochastenResultaat.vb" />
+    <Compile Include="Stochasten\clsStochastenResultaten.vb" />
+    <Compile Include="Stochasten\clsStochastenRun.vb" />
+    <Compile Include="Stochasten\clsStochastenRuns.vb" />
+    <Compile Include="Stochasten\clsStochasticExtraClass.vb" />
+    <Compile Include="Stochasten\clsStochasticGroundwaterClass.vb" />
+    <Compile Include="Stochasten\clsStochasticPatternClass.vb" />
+    <Compile Include="Stochasten\clsStochasticVolumeClass.vb" />
+    <Compile Include="Stochasten\clsStochasticWaterLevelClass.vb" />
+    <Compile Include="Stochasten\clsStochasticWindClass.vb" />
+    <Compile Include="Stochasten\frmAddBoundaryClass.Designer.vb">
+      <DependentUpon>frmAddBoundaryClass.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmAddBoundaryClass.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stochasten\frmAddRows.Designer.vb">
+      <DependentUpon>frmAddRows.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmAddRows.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stochasten\frmAddStation.Designer.vb">
+      <DependentUpon>frmAddStation.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmAddStation.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stochasten\frmAddStochast.Designer.vb">
+      <DependentUpon>frmAddStochast.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmAddStochast.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stochasten\frmAddStochastenNode.Designer.vb">
+      <DependentUpon>frmAddStochastenNode.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmAddStochastenNode.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stochasten\frmClassifyGroundWater.Designer.vb">
+      <DependentUpon>frmClassifyGroundWater.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmClassifyGroundWater.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Stochasten\frmClassifyTidesByStatistics.Designer.vb">
+      <DependentUpon>frmClassifyTidesByStatistics.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmClassifyTidesByStatistics.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TijdreeksStatistiek\clsTreeMileageCounter.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTwoPointsPattern.vb" />
+    <Compile Include="TijdreeksStatistiek\clsTwoPointsPatterns.vb" />
+    <Compile Include="TijdreeksStatistiek\clsVolumeClass.vb" />
+    <Compile Include="TijdreeksStatistiek\clsVolumeClasses.vb" />
+    <Compile Include="TijdreeksStatistiek\clsVolumePatternCombination.vb" />
+    <Compile Include="TijdreeksStatistiek\clsVolumePatternCombinations.vb" />
+    <Compile Include="Validation\clsCustomParameter.vb" />
+    <Compile Include="Validation\clsCustomParameterTemplate.vb" />
+    <Compile Include="Validation\clsLogicalValidationRule.vb" />
+    <Compile Include="Validation\clsParameterEquation.vb" />
+    <Compile Include="Validation\clsStructureParameter.vb" />
+    <Compile Include="Validation\clsValidationSet.vb" />
+    <Compile Include="Validation\clsWeirParameter.vb" />
+    <Compile Include="WAGMOD\clsWageningenModel.vb" />
+    <Compile Include="WAGMOD\clsWAGMOD.vb" />
+    <Compile Include="WAGMOD\clsWagMod00PRecord.vb" />
+    <Compile Include="WAGMOD\clsWagModDatRecord.vb" />
+    <Compile Include="WAGMOD\clsWagmodSTARecord.vb" />
+    <Compile Include="HYDRODSS\clsWALRUSAdapter.vb" />
+    <Compile Include="HYDRODSS\clsHYDRODSS.vb" />
+    <Compile Include="HYDRODSS\frmAddBatch.Designer.vb">
+      <DependentUpon>frmAddBatch.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmAddBatch.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HYDRODSS\frmHIRLAM.Designer.vb">
+      <DependentUpon>frmHIRLAM.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmHIRLAM.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HYDRODSS\frmRemoveExisting.Designer.vb">
+      <DependentUpon>frmRemoveExisting.vb</DependentUpon>
+    </Compile>
+    <Compile Include="HYDRODSS\frmRemoveExisting.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WAGMOD\clsWagModTimeSeries.vb" />
+    <Compile Include="WaterBalance\clsWaterBalance0D.vb" />
+    <Compile Include="WaterBalance\clsWaterBalance1D.vb" />
+    <Compile Include="WaterBalance\clsWaterBalances.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Encryption\frmLicense.resx">
+      <DependentUpon>frmLicense.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmAccess2SQLite.resx">
+      <DependentUpon>frmAccess2SQLite.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmAddRowsToDatagrid.resx">
+      <DependentUpon>frmAddRowsToDatagrid.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmAppendTextFiles.resx">
+      <DependentUpon>frmAppendTextFiles.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmBuiFromMeteobase.resx">
+      <DependentUpon>frmBuiFromMeteobase.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmBurnTrapeziumChannelsByShapefile.resx">
+      <DependentUpon>frmBurnTrapeziumChannelsByShapefile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmCustomQuery.resx">
+      <DependentUpon>frmCustomQuery.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmDataTableFromTextFile.resx">
+      <DependentUpon>frmDataTableFromTextFile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmExcelToTextfile.resx">
+      <DependentUpon>frmExcelToTextfile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmGenerateModelFromAreaTopology.resx">
+      <DependentUpon>frmGenerateModelFromAreaTopology.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmGenerateReport.resx">
+      <DependentUpon>frmGenerateReport.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmIDMapping.resx">
+      <DependentUpon>frmIDMapping.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmLocationsFromShapefile.resx">
+      <DependentUpon>frmLocationsFromShapefile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmPickDelimiter.resx">
+      <DependentUpon>frmPickDelimiter.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmReadTextFileGeneric.resx">
+      <DependentUpon>frmReadTextFileGeneric.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmSTOWA2019.resx">
+      <DependentUpon>frmSTOWA2019.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmTextFileToSQLite.resx">
+      <DependentUpon>frmTextFileToSQLite.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmTimeSeriesFromCSV.resx">
+      <DependentUpon>frmTimeSeriesFromCSV.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmTimeseriesFromCSVGeneric.resx">
+      <DependentUpon>frmTimeseriesFromCSVGeneric.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmTimeseriesValuesFromTextFile.resx">
+      <DependentUpon>frmTimeseriesValuesFromTextFile.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmChooseSobekCase.resx">
+      <DependentUpon>frmChooseSobekCase.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FORMS\frmAdjustShapefieldValues.resx">
+      <DependentUpon>frmAdjustShapefieldValues.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmBaseFlowFilter.resx">
+      <DependentUpon>frmBaseFlowFilter.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmEXECUTABLE.resx">
+      <DependentUpon>frmEXECUTABLE.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmScriptTXTTIMESERIESWrite.resx">
+      <DependentUpon>frmScriptTXTTIMESERIESWrite.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmScriptTXTTIMESERIESRead.resx">
+      <DependentUpon>frmScriptTXTTIMESERIESRead.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmDateReplace.resx">
+      <DependentUpon>frmDateReplace.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModelSense\frmPickDate.resx">
+      <DependentUpon>frmPickDate.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModelSense\frmReadTextFile.resx">
+      <DependentUpon>frmReadTextFile.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmAddBoundaryClass.resx">
+      <DependentUpon>frmAddBoundaryClass.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmAddRows.resx">
+      <DependentUpon>frmAddRows.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmAddStation.resx">
+      <DependentUpon>frmAddStation.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmAddStochast.resx">
+      <DependentUpon>frmAddStochast.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmAddStochastenNode.resx">
+      <DependentUpon>frmAddStochastenNode.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmClassifyGroundWater.resx">
+      <DependentUpon>frmClassifyGroundWater.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmClassifyTidesByStatistics.resx">
+      <DependentUpon>frmClassifyTidesByStatistics.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmAddBatch.resx">
+      <DependentUpon>frmAddBatch.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmHIRLAM.resx">
+      <DependentUpon>frmHIRLAM.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HYDRODSS\frmRemoveExisting.resx">
+      <DependentUpon>frmRemoveExisting.vb</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="ADODB">
+      <Guid>{2A75196C-D9EB-4129-B803-931327F72D5C}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="ADOX">
+      <Guid>{00000600-0000-0010-8000-00AA006D2EA4}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="DAO">
+      <Guid>{00025E01-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="MapWinGIS">
+      <Guid>{C368D713-CC5F-40ED-9F53-F84FE197B96A}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>2</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Geometry\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\ChannelBuilder\ChannelBuilder\packages\System.Data.SQLite.Core.1.0.113.7\build\net40\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\ChannelBuilder\ChannelBuilder\packages\System.Data.SQLite.Core.1.0.113.7\build\net40\System.Data.SQLite.Core.targets'))" />
+    <Error Condition="!Exists('..\..\NBWToets\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\NBWToets\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
+    <Error Condition="!Exists('..\..\LicenseManager\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\LicenseManager\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
+    <Error Condition="!Exists('..\..\StochastenTool\StochastenTool\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\StochastenTool\StochastenTool\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
+  </Target>
+  <Import Project="..\..\ChannelBuilder\ChannelBuilder\packages\System.Data.SQLite.Core.1.0.113.7\build\net40\System.Data.SQLite.Core.targets" Condition="Exists('..\..\ChannelBuilder\ChannelBuilder\packages\System.Data.SQLite.Core.1.0.113.7\build\net40\System.Data.SQLite.Core.targets')" />
+  <Import Project="..\..\NBWToets\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\..\NBWToets\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <Import Project="..\..\LicenseManager\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\..\LicenseManager\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <Import Project="..\..\StochastenTool\StochastenTool\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\..\StochastenTool\StochastenTool\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.113.3\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

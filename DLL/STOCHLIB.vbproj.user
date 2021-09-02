@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartAction>Project</StartAction>
+    <StartProgram>C:\Dotnet\SbkDummyNetworks\SbkDummyNetworks\publish\SbkDummyNetworks.application</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartAction>Project</StartAction>
+    <StartProgram>C:\Dotnet\SbkDummyNetworks\SbkDummyNetworks\publish\SbkDummyNetworks.application</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <StartProgram>C:\Users\Administrator\AppData\Local\Apps\2.0\53LGP4GK.QWM\KN2Z0P4W.986\sbkd..tion_205e9b4a7bd8e8a1_0001.0000_6dd08536e18ba0b6\SbkDummyNetworks.exe</StartProgram>
+    <StartAction>Project</StartAction>
+    <StartArguments>
+    </StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <StartProgram>C:\Users\Administrator\AppData\Local\Apps\2.0\53LGP4GK.QWM\KN2Z0P4W.986\sbkd..tion_205e9b4a7bd8e8a1_0001.0000_6dd08536e18ba0b6\SbkDummyNetworks.exe</StartProgram>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ProjectView>ProjectFiles</ProjectView>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <StartProgram>C:\Users\Administrator\AppData\Local\Apps\2.0\53LGP4GK.QWM\KN2Z0P4W.986\sbkd..tion_205e9b4a7bd8e8a1_0001.0000_6dd08536e18ba0b6\SbkDummyNetworks.exe</StartProgram>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <StartProgram>C:\Users\Administrator\AppData\Local\Apps\2.0\53LGP4GK.QWM\KN2Z0P4W.986\sbkd..tion_205e9b4a7bd8e8a1_0001.0000_6dd08536e18ba0b6\SbkDummyNetworks.exe</StartProgram>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+</Project>
