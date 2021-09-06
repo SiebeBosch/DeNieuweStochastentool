@@ -4,17 +4,17 @@
   <description asmv2:publisher="StochastenTool" asmv2:product="StochastenTool" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" mapFileExtensions="true" />
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
-    <framework targetVersion="4.6" profile="Full" supportedRuntime="4.0.30319" />
+    <framework targetVersion="4.6.1" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="StochastenTool.exe.manifest" size="17670">
+    <dependentAssembly dependencyType="install" codebase="StochastenTool.exe.manifest" size="11517">
       <assemblyIdentity name="StochastenTool.exe" version="2.0.5.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>tFoJcfR7oF0re53Bc/ymKnWu3VToPysR6mQFSRV0dI0=</dsig:DigestValue>
+        <dsig:DigestValue>mi08PwKzKgiPxxowfmcI+n8OKXlMeRh28HwwZLRwL1o=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

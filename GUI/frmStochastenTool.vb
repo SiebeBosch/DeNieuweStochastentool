@@ -4170,7 +4170,7 @@ Public Class frmStochasten
 
             If Debugger.IsAttached Then
                 'in debug mode we will retrieve the zip file from our GITHUB directory
-                ZipPath = "c:\DotnetSVN\sobektools\StochastenTool\InnoSetup\Stochastenviewer.zip"
+                ZipPath = "d:\GITHUB\DeNieuweStochastentool\InnoSetup\Stochastenviewer.zip"
             Else
                 'in release mode we will retrieve the zip file from within our application directory
                 ZipPath = My.Application.Info.DirectoryPath & "\viewer\Stochastenviewer.zip"

@@ -4,6 +4,7 @@ DLL/bin/*
 packages/*
 References/*
 licenses/*
+InnoSetup/*
 
 !.gitignore
 hydamo_shp/*
