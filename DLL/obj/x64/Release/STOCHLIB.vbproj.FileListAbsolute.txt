@@ -38,4 +38,3 @@ D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.xml
 D:\GITHUB\DeNieuweStochastentool\bin\x64\STOCHLIB.dll.config
 D:\GITHUB\DeNieuweStochastentool\bin\x64\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\bin\x64\STOCHLIB.xml
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbprojAssemblyReference.cache
