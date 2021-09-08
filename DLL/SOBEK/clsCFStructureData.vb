@@ -1649,12 +1649,12 @@ Public Class clsCFStructureData
         Dim myProfUp As clsSbkReachObject
         Dim myProfDatUp As clsProfileDatRecord = Nothing
         Dim myProfDefUp As clsProfileDefRecord = Nothing
-        Dim myProfDown As clsSbkReachObject
-        Dim myProfDatDown As clsProfileDatRecord
-        Dim myProfDefDown As clsProfileDefRecord
-        Dim myStructDat As clsStructDatRecord
-        Dim myStructDef As clsStructDefRecord
-        Dim myStructProfDef As clsProfileDefRecord
+        Dim myProfDown As clsSbkReachObject = Nothing
+        Dim myProfDatDown As clsProfileDatRecord = Nothing
+        Dim myProfDefDown As clsProfileDefRecord = Nothing
+        Dim myStructDat As clsStructDatRecord = Nothing
+        Dim myStructDef As clsStructDefRecord = Nothing
+        Dim myStructProfDef As clsProfileDefRecord = Nothing
 
         For Each myReach In SbkCase.CFTopo.Reaches.Reaches.Values
             For Each myObj In myReach.ReachObjects.ReachObjects.Values
@@ -1718,7 +1718,7 @@ Public Class clsCFStructureData
                                     myProfDatDown.CalculateLowestBedLevel(myProfDefDown)
                                 End If
                             End If
-                            If Not myProfUp Is Nothing AndAlso Not myProfDatUp Is Nothing AndAlso Not myProfDown Is Nothing AndAlso Not myProfDatDown Is Nothing AndAlso Not myProfDefDown Is Nothing AndAlso Not myProfDefUp Is Nothing Then
+                            If myProfUp IsNot Nothing AndAlso myProfDatUp IsNot Nothing AndAlso myProfDown IsNot Nothing AndAlso Not myProfDatDown Is Nothing AndAlso myProfDefDown IsNot Nothing AndAlso myProfDefUp IsNot Nothing Then
                                 MinBedLevel = setup.GeneralFunctions.Interpolate(myProfUp.lc, myProfDatUp.CalculateLowestBedLevel(myProfDefUp), myProfDown.lc, myProfDatDown.CalculateLowestBedLevel(myProfDefDown), myObj.lc)
                             End If
                         End If

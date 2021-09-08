@@ -38,9 +38,9 @@ Public Class clsIDFs
             Area.Add(17 ^ 2 * 5.73)
 
             'now create an array for each of the GEV parameters
-            Dim loc As Double(,)
-            Dim disp As Double(,)
-            Dim kappa As Double(,)
+            Dim loc As Double(,) = {}
+            Dim disp As Double(,) = {}
+            Dim kappa As Double(,) = {}
             PopulateGEVParsFromSTOWA2019(loc, disp, kappa)
 
             Return True

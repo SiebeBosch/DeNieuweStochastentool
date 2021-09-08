@@ -9659,7 +9659,7 @@ Public Class GeneralFunctions
         If Not My.Computer.FileSystem.FileExists(Path) Then
             ' Create the SQLite database
             SQLiteConnection = New System.Data.SQLite.SQLiteConnection("Data Source=" & Path & ";Version=3;")
-            SQLiteConnection.CreateFile(Path)
+            System.Data.SQLite.SQLiteConnection.CreateFile(Path)
             SQLiteConnection.Open()
             SQLiteConnection.Close()
         Else
