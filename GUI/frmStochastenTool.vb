@@ -226,8 +226,6 @@ Public Class frmStochasten
     Private Sub FrmStochasten_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
         Try
 
-
-
             'set the license
             ToonPolygonenToolStripMenuItem.Checked = My.Settings.ShowPolygons
 
@@ -240,8 +238,6 @@ Public Class frmStochasten
 
 
             Me.Setup.GeneralFunctions.PopulateComboboxWithKlimaatScenarios(cmbClimate)
-
-
 
             'add a handler to the Models datagridview to support selecting a model executable
             'for the executable we will stick to an absolute path!
@@ -265,22 +261,9 @@ Public Class frmStochasten
                     End If
                 End Sub
 
-            ''initialize the map and show the opentopo backgroundmap
-            'SetDutchProjection()
-
-            'Dim customProviderId As Integer = GetProviderByName("OpenTopo")
-            'If (customProviderId = -1) Then
-            '    customProviderId = AddCustomProvider("OpenTopo", "https://geodata.nationaalgeoregister.nl/tiles/service/tms/1.0.0/opentopoachtergrondkaart/EPSG:28992/{zoom}/{x}/{y}.png", 14)
-            'End If
-
-            ''OpenTileLog();
-            ''AxMap1.Tiles.ProviderId = customProviderId
-            ''AxMap1.Redraw()
-
-
-
         Catch ex As Exception
             MsgBox("Kon De Nieuwe Stochastentool niet opstarten. Neem aub me.Setup.contact op met de maker.")
+            Debug.Print("Critical error launching stochastentool: " & ex.Message)
         End Try
 
     End Sub

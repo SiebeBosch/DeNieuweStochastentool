@@ -12157,21 +12157,6 @@ Public Class GeneralFunctions
         Return myStr
     End Function
 
-    Public Function CreateAccessDatabase(ByVal DatabaseFullPath As String) As Boolean
-        Dim bAns As Boolean
-        Dim cat As New ADOX.Catalog()
-        Try
-            Dim sCreateString As String = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & DatabaseFullPath
-            cat.Create(sCreateString)
-            bAns = True
-        Catch Excep As System.Runtime.InteropServices.COMException
-            bAns = False
-        Finally
-            cat = Nothing
-        End Try
-        Return bAns
-    End Function
-
     Public Sub UpdateProgressBar(ByVal lblText As String, ByVal i As Long, ByVal n As Long, Optional ByVal ForceUpdate As Boolean = False, Optional ByVal ProgressBarNumber As Integer = 1)
 
         If ProgressBarNumber = 1 Then
