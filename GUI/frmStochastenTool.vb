@@ -4,11 +4,7 @@ Imports System.IO
 Imports System.Xml
 Imports MapWinGIS
 Imports Ionic.Zip
-Imports Newtonsoft.Json
-
 Imports Microsoft.VisualBasic.FileIO
-Imports System.Net
-
 
 '========================================================================================================================
 '   GUI GENERAL
@@ -89,7 +85,7 @@ Public Class frmStochasten
         End If
 
         'tijdens de berekeningen willen we ook op andere machines kunnen draaien, dus verbreek de verbinding met de database
-        If Not Me.Setup.SqliteCon Is Nothing Then Me.Setup.SqliteCon.Close()
+        If Me.Setup.SqliteCon IsNot Nothing Then Me.Setup.SqliteCon.Close()
 
         'lees eerst de basiscase in van de modelschematisatie(s)
         For Each myModel As STOCHLIB.clsSimulationModel In Me.Setup.StochastenAnalyse.Models.Values
@@ -260,9 +256,11 @@ Public Class frmStochasten
                         grModels.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = dlgFolder.SelectedPath
                     End If
                 End Sub
-
+            Console.WriteLine("Stochastentool launched successfully.")
+            Debug.Print("Stochastentool launched successfully.")
         Catch ex As Exception
             Console.WriteLine("Critical error launching stochastentool: " & ex.Message)
+            Debug.Print("Critical error launching stochastentool: " & ex.Message)
         End Try
 
     End Sub
