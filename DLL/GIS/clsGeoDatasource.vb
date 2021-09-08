@@ -553,8 +553,9 @@ Public Class clsGeoDatasource
                         Return Nothing
                     End If
             End Select
+            Return String.Empty
         Catch ex As Exception
-            Return Nothing
+            Return String.Empty
         Finally
         End Try
     End Function
@@ -648,6 +649,7 @@ Public Class clsGeoDatasource
             Return Shapefile.sf
         Else
             Me.Setup.Log.AddError("Error in function GetCreateShapefile of class clsGeoDatasource. Data types other than shapefile are not yet supported.")
+            Return Nothing
         End If
     End Function
 
@@ -667,6 +669,7 @@ Public Class clsGeoDatasource
             Return Shapefile
         Else
             Me.Setup.Log.AddError("Error in function GetCreateShapefileClassInstance of class clsGeoDatasource. Data types other than shapefile are not yet supported.")
+            Return Nothing
         End If
     End Function
     Public Function getTargetLevels(ByVal shapeIdx As Long, ByRef TL As clsTargetLevels) As Boolean

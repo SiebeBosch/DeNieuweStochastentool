@@ -6,7 +6,6 @@ Imports System.Security.Permissions
 Imports GemBox.Spreadsheet
 Imports System.Data.OleDb
 Imports Microsoft.VisualBasic.DateAndTime
-Imports MathNet.Numerics
 Imports System.Text.RegularExpressions
 Imports System.Windows.Forms.DataVisualization
 Imports HtmlAgilityPack
@@ -1774,21 +1773,9 @@ Public Class GeneralFunctions
             Return JsonConvert.SerializeObject(dt)
         Catch ex As Exception
             Debug.Print("Error in DataTableToJSON: " & ex.Message)
+            Return String.Empty
         End Try
 
-        'Dim i As Integer, j As Integer
-        'Dim JSONStr As String = "{"
-        'JSONStr &= Chr(34) & "datatable" & Chr(34) & ":"
-        'JSONStr &= "["
-        'For i = 0 To dt.Rows.Count - 1
-        '    JSONStr &= "{"
-        '    For j = 0 To ColumnTitles.Count - 1
-        '        JSONStr &= Chr(34) & ColumnTitles(j) & Chr(34) & ":" & Chr(34) & dt.Rows(i)(j) & Chr(34) & ","
-        '    Next
-        '    JSONStr &= "}" & ","
-        'Next
-        'JSONStr = Mid(JSONStr, 1, JSONStr.Length - 1) & "]}"
-        'Return JSONStr
     End Function
 
     Public Function SqliteDataTypeFromOleDB(OleDbDataType As OleDb.OleDbType) As enmSQLiteDataType
@@ -2017,16 +2004,21 @@ Public Class GeneralFunctions
         End Try
     End Function
 
-    Public Function SQLiteDropAllIndexesFromTable(ByRef myConnection As SQLite.SQLiteConnection, TableName As String)
+    Public Function SQLiteDropAllIndexesFromTable(ByRef myConnection As SQLite.SQLiteConnection, TableName As String) As Boolean
+        Try
+            If Not myConnection.State = ConnectionState.Open Then myConnection.Open()
 
-        If Not myConnection.State = ConnectionState.Open Then myConnection.Open()
-
-        Dim dt As New DataTable
-        Dim query = "SELECT name FROM sqlite_master WHERE type == 'index' AND tbl_name == '" & TableName & "';"
-        SQLiteQuery(myConnection, query, dt)
-        For i = 0 To dt.Rows.Count - 1
-            SQLiteNoQuery(myConnection, "DROP INDEX " & dt.Rows(i)(0) & ";")
-        Next
+            Dim dt As New DataTable
+            Dim query = "SELECT name FROM sqlite_master WHERE type == 'index' AND tbl_name == '" & TableName & "';"
+            SQLiteQuery(myConnection, query, dt)
+            For i = 0 To dt.Rows.Count - 1
+                SQLiteNoQuery(myConnection, "DROP INDEX " & dt.Rows(i)(0) & ";")
+            Next
+            Return True
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error Dropping all indexes from SQLite table: " & ex.Message)
+            Return False
+        End Try
 
     End Function
 
@@ -2194,196 +2186,6 @@ Public Class GeneralFunctions
 
     End Function
 
-    Public Function UpdateCMStochastDatabase(myConnection As SQLite.SQLiteConnection)
-
-        If Not myConnection.State = ConnectionState.Open Then myConnection.Open()
-
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        ' I/O
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        'OUTPUTLOCATIONS table
-        UpdateProgressBar("Updating OUTPUTLOCATIONS table...", 0, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "OUTPUTLOCATIONS") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "OUTPUTLOCATIONS")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "OUTPUTLOCATIONS", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "OUTPUTLOCATIONS", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "OUTPUTLOCIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "OUTPUTLOCATIONS", "X") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "OUTPUTLOCATIONS", "X", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "OUTPUTLOCATIONS", "Y") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "OUTPUTLOCATIONS", "Y", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "OUTPUTLOCATIONS", "LAT") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "OUTPUTLOCATIONS", "LAT", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "OUTPUTLOCATIONS", "LON") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "OUTPUTLOCATIONS", "LON", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'INPUTFILES table
-        UpdateProgressBar("Updating INPUTFILES table...", 0, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "INPUTFILES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "INPUTFILES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTFILES", "FILENAME") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTFILES", "FILENAME", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INPUTFILENAMEIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTFILES", "INPUTSERIESID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTFILES", "INPUTSERIESID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INPUTFILESERIESIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTFILES", "COLNUM") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTFILES", "COLNUM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT)
-
-        'OUTPUTFILES table
-        UpdateProgressBar("Updating OUTPUTFILES table...", 0, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "OUTPUTFILES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "OUTPUTFILES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "OUTPUTFILES", "FILENAME") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "OUTPUTFILES", "FILENAME", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "OUTPUFEILENAMEIDX")
-
-        'INPUTSERIES table
-        UpdateProgressBar("Updating INPUTSERIES table...", 1, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "INPUTSERIES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "INPUTSERIES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "SERIESID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTSERIES", "SERIESID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INPUTSERIESIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "COLNUM") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTSERIES", "COLNUM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT, "INPUTSERIESCOLNUMIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "CATEGORY") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTSERIES", "CATEGORY", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTSERIES", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "PARAMETER") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTSERIES", "PARAMETER", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "BOUNDARYID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INPUTSERIES", "BOUNDARYID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "BOUNDARY") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "INPUTSERIES", "BOUNDARY")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INPUTSERIES", "COLNUM") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "INPUTSERIES", "COLNUM")
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        ' VOLUMES
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        'VOLUMECLASSES table
-        UpdateProgressBar("Updating VOLUMECLASSES table...", 8, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "VOLUMECLASSES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "VOLUMECLASSES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMECLASSES", "CLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "VOLUMECLASSES", "CLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "VOLCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMECLASSES", "FREQ") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "VOLUMECLASSES", "FREQ", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMECLASSES", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "VOLUMECLASSES", "DURATION")
-
-        'VOLUMEPATTERNCOMBINATIONS table (depricated)
-        UpdateProgressBar("Updating VOLUMEPATTERNCOMBINATIONS table...", 8, 12, True)
-        If setup.GeneralFunctions.SQLiteTableExists(myConnection, "VOLUMEPATTERNCOMBINATIONS") Then setup.GeneralFunctions.SQLiteDropTable(myConnection, "VOLUMEPATTERNCOMBINATIONS")
-
-        'VOLUMES table
-        UpdateProgressBar("Updating VOLUMES table...", 10, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "VOLUMES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "VOLUMES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "VOLUMECLASS") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "VOLUMES", "VOLUMECLASS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "VOLVOLCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "VOLUMES", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "VOLLOCIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "PARAMETER") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "VOLUMES", "PARAMETER", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "VOLPARIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "VOLUME") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "VOLUMES", "VOLUME", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        setup.GeneralFunctions.SQLiteCreateIndex(myConnection, "VOLUMES", "VOLUMESIDX", "VOLUMECLASS,LOCATIONID,PARAMETER", False)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "VOLUMES", "DURATION")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "REPRESENTATIVE") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "VOLUMES", "REPRESENTATIVE")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "LBOUND") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "VOLUMES", "LBOUND")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "VOLUMES", "UBOUND") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "VOLUMES", "UBOUND")
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        ' PATTERNS
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        'PATTERNCLASSES table
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "PATTERNCLASSES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "PATTERNCLASSES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNCLASSES", "CLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNCLASSES", "CLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "PATCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNCLASSES", "VOLUMECLASS") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNCLASSES", "VOLUMECLASS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "PATCLASSVOLIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNCLASSES", "P") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNCLASSES", "P", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNCLASSES", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "PATTERNCLASSES", "DURATION")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNCLASSES", "PATTERNID") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "PATTERNCLASSES", "PATTERNID")
-
-        'PATTERNS table
-        UpdateProgressBar("Updating INPUTSERIES table...", 11, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "PATTERNS") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "PATTERNS")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "CLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNS", "CLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "PATIDIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNS", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "PATLOCIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "PARAMETER") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNS", "PARAMETER", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "PATPARIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "TIMESTEP") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNS", "TIMESTEP", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "FRACTION") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "PATTERNS", "FRACTION", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        Me.setup.GeneralFunctions.SQLiteCreateIndex(myConnection, "PATTERNS", "PATTERNIDX", "CLASSID, LOCATIONID, PARAMETER", False)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "PATTERNID") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "PATTERNS", "PATTERNID")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "PATTERNS", "DURATION")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "PATTERNS", "VOLUMECLASS") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "PATTERNS", "VOLUMECLASS")
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        ' INITIALS
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        'INITIALCLASSES table
-        UpdateProgressBar("Updating INITIALCLASSES table...", 2, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "INITIALCLASSES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "INITIALCLASSES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCLASSES", "CLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INITIALCLASSES", "CLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INITCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCLASSES", "VOLUMECLASS") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INITIALCLASSES", "VOLUMECLASS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INITVOLCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCLASSES", "P") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INITIALCLASSES", "P", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITALCLASSES", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "INITIALCLASSES", "DURATION")
-
-        'INITCONDITIONS table
-        UpdateProgressBar("Updating INPUTSERIES table...", 3, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "INITIALCONDITIONS") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "INITIALCONDITIONS")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCONDITIONS", "CLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INITIALCONDITIONS", "CLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INITCONDCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCONDITIONS", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INITIALCONDITIONS", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INITCONDLOCIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCONDITIONS", "INITIALVALUE") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INITIALCONDITIONS", "INITIALVALUE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCONDITIONS", "INITVAL") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "INITIALCONDITIONS", "INITVAL") ', STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INITCONDIDX")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCONDITIONS", "INPUTSERIESID") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "INITIALCONDITIONS", "INPUTSERIESID") ', STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INITCONDIDX")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INITIALCONDITIONS", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "INITIALCONDITIONS", "DURATION")
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        ' BOUNDARIES
-        '------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        'BOUNDARYCLASSES table
-        UpdateProgressBar("Updating BOUNDARYCLASSES table...", 4, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "BOUNDARYCLASSES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "BOUNDARYCLASSES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYCLASSES", "CLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYCLASSES", "CLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "BOUNDCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYCLASSES", "VOLUMECLASS") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYCLASSES", "VOLUMECLASS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "BOUNDVOLCLASSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYCLASSES", "P") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYCLASSES", "P", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYCLASSES", "DURATION") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "BOUNDARYCLASSES", "DURATION")
-
-        'BOUNDARYSERIES table
-        UpdateProgressBar("Updating BOUNDARYSERIES table...", 6, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "BOUNDARYSERIES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "BOUNDARYSERIES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYSERIES", "BOUNDARYID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYSERIES", "BOUNDARYID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYSERIES", "BOUNDARYCLASS") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYSERIES", "BOUNDARYCLASS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYSERIES", "TIMESTEP") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYSERIES", "TIMESTEP", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "BOUNDARYSERIES", "DATAVALUE") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "BOUNDARYSERIES", "DATAVALUE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        Me.setup.GeneralFunctions.SQLiteCreateIndex(myConnection, "BOUNDARYSERIES", "BOUNDARYIDX", "BOUNDARYID, BOUNDARYCLASS", False)
-
-        'TIMESERIES table
-        UpdateProgressBar("Updating TIMESERIES table...", 6, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "TIMESERIES") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "TIMESERIES")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "TIMESERIES", "SERIESID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "TIMESERIES", "SERIESID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "TSIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "TIMESERIES", "TIMESTEP") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "TIMESERIES", "TIMESTEP", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "TIMESERIES", "VALUE") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "TIMESERIES", "VALUE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-
-        'remove depricated fields
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "TIMESERIES", "UUR") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "TIMESERIES", "UUR")
-        If setup.GeneralFunctions.SQLiteColumnExists(myConnection, "TIMESERIES", "WAARDE") Then setup.GeneralFunctions.SQLiteDropColumn(myConnection, "TIMESERIES", "WAARDE")
-
-
-
-        'INFLOWCONDITIONS table
-        UpdateProgressBar("Updating INPUTSERIES table...", 9, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "INFLOWCONDITIONS") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "INFLOWCONDITIONS")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INFLOWCONDITIONS", "INPUTSERIESID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INFLOWCONDITIONS", "INPUTSERIESID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "INFLOWCONDSERIESIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INFLOWCONDITIONS", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INFLOWCONDITIONS", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "INFLOWCONDITIONS", "PARAMETER") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "INFLOWCONDITIONS", "PARAMETER", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-
-        'RESULTS table
-        UpdateProgressBar("Updating INPUTSERIES table...", 12, 12, True)
-        If Not setup.GeneralFunctions.SQLiteTableExists(myConnection, "RESULTS") Then setup.GeneralFunctions.SQLiteCreateTable(myConnection, "RESULTS")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "LOCATIONID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "LOCATIONID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "RESLOCIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "PARAMETER") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "PARAMETER", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "RESPARIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "RUNID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "RUNID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT, "RESRUNIDX")
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "VOLUMECLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "VOLUMECLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "PATTERNCLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "PATTERNCLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "BOUNDARYCLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "BOUNDARYCLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "INITIALCLASSID") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "INITIALCLASSID", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "DATAVALUE") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "DATAVALUE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "FREQ") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "FREQ", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL)
-        If Not setup.GeneralFunctions.SQLiteColumnExists(myConnection, "RESULTS", "TSMAX") Then setup.GeneralFunctions.SQLiteCreateColumn(myConnection, "RESULTS", "TSMAX", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT)
-
-        UpdateProgressBar("Database upgrade complete.", 0, 10, True)
-
-    End Function
-
     Public Function ShapefileIsLineType(ByRef sf As MapWinGIS.Shapefile) As Boolean
         Try
             Select Case sf.ShapefileType
@@ -2496,7 +2298,7 @@ Public Class GeneralFunctions
 
             Return TEXStr
         Catch ex As Exception
-            Stop
+            Return String.Empty
         End Try
 
     End Function
@@ -2540,8 +2342,13 @@ Public Class GeneralFunctions
         Return myList
     End Function
 
-    Public Function OpenWebaddress(myAddress As String)
-        System.Diagnostics.Process.Start(myAddress)
+    Public Function OpenWebaddress(myAddress As String) As Boolean
+        Try
+            System.Diagnostics.Process.Start(myAddress)
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
     End Function
 
     Public Function ShapefileContainsMultipartPolygons(ByRef mySF As MapWinGIS.Shapefile) As Boolean
@@ -5341,8 +5148,14 @@ Public Class GeneralFunctions
         Return NameBase
     End Function
 
-    Public Function PopulateComboboxWithKlimaatScenarios(ByRef myCmb As Windows.Forms.ComboBox, Optional ByVal InitialSelectionFirstItem As Boolean = True)
-        Call PopulateComboBoxWithEnumNames(myCmb, GetType(enmKlimaatScenario), InitialSelectionFirstItem)
+    Public Function PopulateComboboxWithKlimaatScenarios(ByRef myCmb As Windows.Forms.ComboBox, Optional ByVal InitialSelectionFirstItem As Boolean = True) As Boolean
+        Try
+            Call PopulateComboBoxWithEnumNames(myCmb, GetType(enmKlimaatScenario), InitialSelectionFirstItem)
+            Return True
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error populating combobox with climate scenario's: " & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function AddToDate(ByVal RefDate As Date, ByVal AddNumber As Integer, ByVal AddUnits As String) As DateTime
@@ -6121,105 +5934,6 @@ Public Class GeneralFunctions
         Return Interpolate(lower / nSteps, Values(lower), upper / nSteps, Values(upper), myPercentileDecimal, False)
     End Function
 
-
-    Public Function FindTrendDeviationInDataTable(ByRef myTable As DataTable, LogAxis As Boolean) As Double
-
-        Dim R2Full As Double  'the regression value for the entire dataset
-        Dim R2Left As Double  'the regression value for the left part
-        Dim R2Right As Double 'the regression value for the right part
-        Dim aBestLeft As Double, bBestLeft As Double, aBestRight As Double, bBestRight As Double
-        Dim BestIdx As Double = 0 'the item index number where the best fit was achieved by splitting the dataset
-        Dim j As Long
-        Dim p As Tuple(Of Double, Double), p_left As Tuple(Of Double, Double), p_right As Tuple(Of Double, Double)
-
-        'look for two regression lines where both R2 values exceed the one for the entire dataset
-        'first determine the r2 for the entire dataset
-        Dim xdata(myTable.Rows.Count - 1) As Double
-        Dim ydata(myTable.Rows.Count - 1) As Double
-        Dim yfit(myTable.Rows.Count - 1) As Double
-        Dim yleftfitbest() As Double
-        Dim yrightfitbest() As Double
-        Dim LeftRightMinDiff As Double = 2  'we aim to minimize the difference between r squared for the left and right sides
-
-        myTable.Columns.Add(New DataColumn("Trendline1", Type.GetType("System.Double")))
-        myTable.Columns.Add(New DataColumn("Trendline2", Type.GetType("System.Double")))
-
-        Dim i As Long
-        If LogAxis Then
-            For i = 0 To myTable.Rows.Count - 1
-                xdata(i) = Math.Log10(myTable.Rows(i)(0))
-                ydata(i) = myTable.Rows(i)(1)
-            Next
-        Else
-            For i = 0 To myTable.Rows.Count - 1
-                xdata(i) = myTable.Rows(i)(0)
-                ydata(i) = myTable.Rows(i)(1)
-            Next
-        End If
-
-        p = Fit.Line(xdata, ydata)
-        Dim a As Double = p.Item1        ' == 10; intercept
-        Dim b As Double = p.Item2        ' == 0.5; slope
-
-        For i = 0 To myTable.Rows.Count - 1
-            yfit(i) = a + b * xdata(i)
-        Next
-        R2Full = GoodnessOfFit.RSquared(yfit, ydata)
-
-        'now walk through all datapoints except the outer ones as a potential split between two trendlines and see which combination yields the best fit
-        'ALWAYS start with at least 3 datapoints since two yield an r_squared of 1
-        For i = 2 To myTable.Rows.Count - 3
-            Dim xleft(i) As Double, yleft(i) As Double, yleftfit(i) As Double
-            Dim xright(myTable.Rows.Count - 1 - i) As Double, yright(myTable.Rows.Count - 1 - i) As Double, yrightfit(myTable.Rows.Count - 1 - i) As Double
-
-            'populate the left side of the dataset and fit it
-            For j = 0 To i
-                xleft(j) = xdata(j)
-                yleft(j) = ydata(j)
-            Next
-            p_left = Fit.Line(xleft, yleft)
-            For j = 0 To i
-                yleftfit(j) = p_left.Item1 + p_left.Item2 * xleft(j)
-            Next
-            R2Left = GoodnessOfFit.RSquared(yleftfit, yleft)
-
-            'populate the right side of the dataset and fit it
-            For j = i To myTable.Rows.Count - 1
-                xright(j - i) = xdata(j)
-                yright(j - i) = ydata(j)
-            Next
-            p_right = Fit.Line(xright, yright)
-            For j = i To myTable.Rows.Count - 1
-                yrightfit(j - i) = p_right.Item1 + p_right.Item2 * xright(j - i)
-            Next
-            R2Right = GoodnessOfFit.RSquared(yrightfit, yright)
-
-            If R2Left >= R2Full AndAlso R2Right >= R2Full AndAlso Math.Abs(R2Left - R2Right) < LeftRightMinDiff Then
-
-                'we have found a better fit!
-                LeftRightMinDiff = Math.Abs(R2Left - R2Right)
-                BestIdx = i
-                yleftfitbest = yleftfit
-                yrightfitbest = yrightfit
-
-                aBestLeft = p_left.Item1
-                bBestLeft = p_left.Item2
-                aBestRight = p_right.Item1
-                bBestRight = p_right.Item2
-
-            End If
-        Next
-
-        'add the left and right fits to the datatable; columns 2 and 3
-        For i = 0 To myTable.Rows.Count - 1
-            myTable.Rows(i)(2) = aBestLeft + bBestLeft * xdata(i)
-            myTable.Rows(i)(3) = aBestRight + bBestRight * xdata(i)
-        Next
-
-        Return myTable.Rows(BestIdx)(0)
-
-
-    End Function
 
     Public Sub MultiRenameSubDirs(StartDir As String, OldName As String, NewName As String)
         '=================================================================================
@@ -7154,13 +6868,13 @@ Public Class GeneralFunctions
 
     End Sub
 
-    Public Function WriteSTLHeader(ByRef writer As StreamWriter, ModelName As String)
+    Public Sub WriteSTLHeader(ByRef writer As StreamWriter, ModelName As String)
         writer.WriteLine("solid " & ModelName)
-    End Function
+    End Sub
 
-    Public Function WriteSTLFooter(ByRef writer As StreamWriter, ModelName As String)
+    Public Sub WriteSTLFooter(ByRef writer As StreamWriter, ModelName As String)
         writer.WriteLine("endsolid " & ModelName)
-    End Function
+    End Sub
 
     Public Function WriteSTLTriangle(ByRef writer As StreamWriter, p1 As clsXYZ, p2 As clsXYZ, p3 As clsXYZ) As Boolean
         Try
@@ -12160,7 +11874,7 @@ Public Class GeneralFunctions
     Public Sub UpdateProgressBar(ByVal lblText As String, ByVal i As Long, ByVal n As Long, Optional ByVal ForceUpdate As Boolean = False, Optional ByVal ProgressBarNumber As Integer = 1)
 
         If ProgressBarNumber = 1 Then
-            If Not Me.setup.progressBar Is Nothing AndAlso Not Me.setup.progressLabel Is Nothing Then
+            If Me.setup.progressBar IsNot Nothing AndAlso Me.setup.progressLabel IsNot Nothing Then
                 If n = 0 Then n = 1 'veiligheidsmaatregel om exception te voorkomen
                 If i > n Then i = n 'veiligheidsmaatregel om exception te voorkomen
                 If i < 0 Then i = 0 'veiligheidsmaatregel om exception te voorkomen

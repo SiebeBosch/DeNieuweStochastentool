@@ -1318,17 +1318,6 @@ Public Class clsExtremeValuesStatistics
 
     End Function
 
-    Public Function CalcParetoExceedances() As Boolean
-        Dim myPareto As MathNet.Numerics.Distributions.Pareto
-
-        Try
-            For Each myLoc As clsExtremeValuesStatParameterLocation In ExtremeValuesStatLocations.ExtremeValuesStatLocations.Values
-                myPareto = New MathNet.Numerics.Distributions.Pareto(1, 0.1)
-            Next
-        Catch ex As Exception
-
-        End Try
-    End Function
 
     Public Function FitConfidenceInterval() As Boolean
         Try

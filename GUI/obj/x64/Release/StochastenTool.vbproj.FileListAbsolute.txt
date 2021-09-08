@@ -33,6 +33,13 @@ D:\GITHUB\DeNieuweStochastentool\bin\StochastenTool.application
 D:\GITHUB\DeNieuweStochastentool\bin\StochastenTool.exe
 D:\GITHUB\DeNieuweStochastentool\bin\StochastenTool.pdb
 D:\GITHUB\DeNieuweStochastentool\bin\StochastenTool.xml
+D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.exe.config
+D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.exe.manifest
+D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.application
+D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.exe
+D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.pdb
+D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.xml
+D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbprojAssemblyReference.cache
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\Interop.MapWinGIS.dll
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.ResolveComReference.cache
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmAbout.resources
@@ -48,13 +55,6 @@ D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmStochaste
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.Resources.resources
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.GenerateResource.cache
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.CoreCompileInputs.cache
-D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.exe.config
-D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.exe.manifest
-D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.application
-D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.exe
-D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.pdb
-D:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.xml
-D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbprojAssemblyReference.cache
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.TrustInfo.xml
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.exe.manifest
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.application

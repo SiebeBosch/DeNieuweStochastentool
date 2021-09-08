@@ -301,6 +301,7 @@ Namespace General
                 Case GeneralFunctions.enmSimulationModel.DHYDRO
                     Return Me.Settings.ExportDirHydroFlow
             End Select
+            Return String.Empty
         End Function
 
         Public Function GetExportDirRRData(TargetModel As GeneralFunctions.enmSimulationModel) As String
@@ -310,6 +311,7 @@ Namespace General
                 Case GeneralFunctions.enmSimulationModel.DHYDRO
                     Return Me.Settings.ExportDirDHydroRR
             End Select
+            Return String.Empty
         End Function
 
         Public Function GetExportDirTopo(TargetModel As GeneralFunctions.enmSimulationModel) As String
@@ -319,6 +321,7 @@ Namespace General
                 Case GeneralFunctions.enmSimulationModel.DHYDRO
                     Return Me.Settings.ExportDirHydroFlow
             End Select
+            Return String.Empty
         End Function
 
         Public Function GetExportDirRoot(TargetModel As GeneralFunctions.enmSimulationModel) As String
@@ -328,6 +331,7 @@ Namespace General
                 Case GeneralFunctions.enmSimulationModel.DHYDRO
                     Return Me.Settings.ExportDirDHydro
             End Select
+            Return String.Empty
         End Function
 
         Public Function GetExportDirGIS() As String

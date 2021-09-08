@@ -254,7 +254,7 @@ Public Class clsTimeseriesTextFile
         End Using
         Return dt
     End Function
-    Public Function WriteToDatabase()
+    Public Sub WriteToDatabase()
         'this function writes each timeseries as extracted from the textfile to a database.
         Me.Setup.GeneralFunctions.UpdateProgressBar("Writing text file contents to the database...", 0, 10, True)
         Dim i As Integer
@@ -264,7 +264,7 @@ Public Class clsTimeseriesTextFile
             mySeries.WriteToDatabase(TableName, SeriesIDField, LocationIDFIeld, ParameterField, DateField, ValuesField)
         Next
         Me.Setup.GeneralFunctions.UpdateProgressBar("Operation complete.", 0, 10, True)
-    End Function
+    End Sub
 
     Public Function WriteToDatabaseCustom(ByRef con As SQLite.SQLiteConnection, cols As Dictionary(Of String, clsDatabaseColumn), Multiplier As Double, ByVal TableName As String, ByVal Parameter As String, ByRef prProgress As Windows.Forms.ProgressBar, Optional ByVal Periodicity As GeneralFunctions.enmPeriodicity = GeneralFunctions.enmPeriodicity.NONE) As Boolean
         'this function writes the entire content of a csv file to the database

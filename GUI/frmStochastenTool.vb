@@ -271,44 +271,8 @@ Public Class frmStochasten
     Public Sub SetDutchProjection()
         Dim projection = New GeoProjection()
         projection.ImportFromEPSG(28992)
-        'AxMap1.GeoProjection = projection
-        'AxMap1.KnownExtents = tkKnownExtents.keNetherlands
     End Sub
 
-    'Public Function GetProviderByName(providerName As String) As Integer
-    '    Dim providers As MapWinGIS.TileProviders ' = AxMap1.Tiles.Providers
-    '    Dim customProviderId As Integer = -1
-
-    '    For i = 0 To providers.Count - 1
-    '        Dim providerId = providers.Id(i)
-    '        If (providers.Name(i) = providerName) Then
-    '            customProviderId = providerId
-    '            Exit For
-    '        End If
-    '    Next
-    '    Return customProviderId
-    'End Function
-
-    Private Function AddCustomProvider(name As String, urlPattern As String, maxZoom As Integer) As Integer
-        Dim maxProviderId As Integer = GetMaxProviderId()
-        Dim newProviderId = Math.Max(maxProviderId, tkTileProvider.ProviderCustom + 1) '; // (1024 + 1) should be unique across application runs In Case disk caching Is used
-
-        Dim providers As MapWinGIS.TileProviders '' =AxMap1.Tiles.Providers
-        providers.Add(newProviderId, name, urlPattern, tkTileProjection.Amersfoort, 0, maxZoom)
-        Return newProviderId
-    End Function
-
-
-    Private Function GetMaxProviderId() As Integer
-        Dim maxProviderId As Integer = -1
-
-        Dim providers As MapWinGIS.TileProviders ' = AxMap1.Tiles.Providers
-        For i = 0 To providers.Count - 1
-            Dim providerId As Integer = providers.Id(i)
-            If (maxProviderId < providerId) Then maxProviderId = providerId
-        Next
-        Return maxProviderId
-    End Function
 
     Private Sub PasteToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PasteToolStripMenuItem.Click
 
@@ -444,7 +408,6 @@ Public Class frmStochasten
             Dim m_node As XmlNode
             Dim n_node As XmlNode
             Dim o_node As XmlNode
-            Dim p_node As XmlNode
             Dim Catchments As New Dictionary(Of String, String)
             Dim BoundaryNodes As New Dictionary(Of Integer, STOCHLIB.clsStochastBoundaryNode)
             Dim Pars() As Object, Output() As Object
@@ -883,13 +846,13 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 'with this option we will copy the settings from another climate scenario to our current one
                                 Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
-                                myFields.Add("DUUR", New STOCHLIB.clsDataField("DUUR", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
-                                myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
-                                myFields.Add("KANSCORR", New STOCHLIB.clsDataField("KANSCORR", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
-                                myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("PATROON", New STOCHLIB.clsDataField("PATROON", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("USE", New STOCHLIB.clsDataField("USE", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+                                myFields.Add("DUUR", New STOCHLIB.clsDataField("DUUR", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+                                myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
+                                myFields.Add("KANSCORR", New STOCHLIB.clsDataField("KANSCORR", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
+                                myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("PATROON", New STOCHLIB.clsDataField("PATROON", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("USE", New STOCHLIB.clsDataField("USE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
                                 Dim myForm As New frmCopySettingsFromClimateScenario(Me.Setup, "PATRONEN", myFields, cmbClimate.Text)
                                 myForm.ShowDialog()
                                 If myForm.DialogResult = DialogResult.OK Then
@@ -1237,12 +1200,12 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 'with this option we will copy the settings from another climate scenario to our current one
                                 Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
-                                myFields.Add("BESTAND", New STOCHLIB.clsDataField("BESTAND", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
-                                myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("USE", New STOCHLIB.clsDataField("USE", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+                                myFields.Add("BESTAND", New STOCHLIB.clsDataField("BESTAND", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
+                                myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("USE", New STOCHLIB.clsDataField("USE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
                                 Dim myForm As New frmCopySettingsFromClimateScenario(Me.Setup, "GRONDWATER", myFields, cmbClimate.Text)
                                 myForm.ShowDialog()
                                 If myForm.DialogResult = DialogResult.OK Then
@@ -2117,12 +2080,12 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 'with this option we will copy the settings from another climate scenario to our current one
                                 Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
-                                myFields.Add("BESTAND", New STOCHLIB.clsDataField("BESTAND", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
-                                myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-                                myFields.Add("USE", New STOCHLIB.clsDataField("USE", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+                                myFields.Add("BESTAND", New STOCHLIB.clsDataField("BESTAND", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
+                                myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("USE", New STOCHLIB.clsDataField("USE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
                                 Dim myForm As New frmCopySettingsFromClimateScenario(Me.Setup, "EXTRA" & ExtraNum, myFields, cmbClimate.Text)
                                 myForm.ShowDialog()
                                 If myForm.DialogResult = DialogResult.OK Then
@@ -4101,11 +4064,11 @@ Public Class frmStochasten
 
         'with this option we will copy the settings from another climate scenario to our current one
         Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
-        myFields.Add("DUUR", New STOCHLIB.clsDataField("DUUR", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
-        myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
-        myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-        myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-        myFields.Add("USE", New STOCHLIB.clsDataField("USE", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+        myFields.Add("DUUR", New STOCHLIB.clsDataField("DUUR", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+        myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
+        myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+        myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+        myFields.Add("USE", New STOCHLIB.clsDataField("USE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
         Dim myForm As New frmCopySettingsFromClimateScenario(Me.Setup, "RANDVOORWAARDEN", myFields, cmbClimate.Text)
         myForm.ShowDialog()
         If myForm.DialogResult = DialogResult.OK Then
@@ -4119,11 +4082,11 @@ Public Class frmStochasten
 
         'with this option we will copy the settings from another climate scenario to our current one
         Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
-        myFields.Add("DUUR", New STOCHLIB.clsDataField("DUUR", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
-        myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-        myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
-        myFields.Add("USE", New STOCHLIB.clsDataField("USE", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
-        myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", Me.Setup.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
+        myFields.Add("DUUR", New STOCHLIB.clsDataField("DUUR", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+        myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+        myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+        myFields.Add("USE", New STOCHLIB.clsDataField("USE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+        myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
         Dim myForm As New frmCopySettingsFromClimateScenario(Me.Setup, "WIND", myFields, cmbClimate.Text)
         myForm.ShowDialog()
         If myForm.DialogResult = DialogResult.OK Then

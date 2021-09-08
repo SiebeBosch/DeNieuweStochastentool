@@ -4067,13 +4067,6 @@ Public Class clsCFTopology
         Next
     End Sub
 
-
-    ''' <summary>
-    ''' Deze routine optimaliseert de ligging van ALLE takobjecten in de gekozen SOBEK-modelschematisatie
-    ''' </summary>
-    ''' <param name="MinDistFromReachObjects"></param>
-    ''' <remarks></remarks>
-
     'v2.203 model of strabeekse vloedgraaf failed due to  MinDistFromReachObjects =2. Made this argument compulsory
     Public Function OptimizeAllReachObjectLocations(MinDistBetweenReachObjects As Double) As Boolean
         Try

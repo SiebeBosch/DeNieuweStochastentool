@@ -2,7 +2,6 @@
 Option Strict Off
 
 Imports STOCHLIB.General
-Imports SPA_SDK
 
 Public Class clsExtremeValuesStatParameterLocation
     'this class describes all Extreme Values-related issues regarding ONE parameter and ONE location

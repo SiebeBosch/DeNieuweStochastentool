@@ -43,11 +43,6 @@ Public Class clsIDFs
             Dim kappa As Double(,)
             PopulateGEVParsFromSTOWA2019(loc, disp, kappa)
 
-
-
-
-
-
             Return True
         Catch ex As Exception
             Return False

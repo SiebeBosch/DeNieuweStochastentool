@@ -4223,8 +4223,8 @@ Public Class clsSbkReach
 
             End If
         Catch ex As Exception
+            Return Nothing
         End Try
-
 
     End Function
 

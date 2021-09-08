@@ -47,7 +47,7 @@ Public Class clsCFAttributeData
             'this function returns the attribute length of a given structure
             'note: this only happens for bridges, culverts and siphons. Other structure types do not have  a structure length
             'get the struct.dat record
-            Dim StrucDat As clsStructDatRecord, StrucDef As clsStructDefRecord, ContrDef As clsControlDefRecord
+            Dim StrucDat As clsStructDatRecord = Nothing, StrucDef As clsStructDefRecord = Nothing, ContrDef As clsControlDefRecord = Nothing
             StructureData.GetStructureRecords(ID, StrucDat, StrucDef, ContrDef)
             If Not StrucDef Is Nothing Then
                 Select Case StrucDef.ty
