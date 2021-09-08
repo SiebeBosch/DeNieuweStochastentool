@@ -4,7 +4,6 @@ D:\GITHUB\DeNieuweStochastentool\bin\STOCHLIB.xml
 D:\GITHUB\DeNieuweStochastentool\bin\x64\STOCHLIB.dll.config
 D:\GITHUB\DeNieuweStochastentool\bin\x64\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\bin\x64\STOCHLIB.xml
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbprojAssemblyReference.cache
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\Interop.MapWinGIS.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.ResolveComReference.cache
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmAccess2SQLite.resources
@@ -37,3 +36,4 @@ D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CoreCompile
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CopyComplete
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.xml
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbprojAssemblyReference.cache

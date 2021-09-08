@@ -262,8 +262,7 @@ Public Class frmStochasten
                 End Sub
 
         Catch ex As Exception
-            MsgBox("Kon De Nieuwe Stochastentool niet opstarten. Neem aub me.Setup.contact op met de maker.")
-            Debug.Print("Critical error launching stochastentool: " & ex.Message)
+            Console.WriteLine("Critical error launching stochastentool: " & ex.Message)
         End Try
 
     End Sub

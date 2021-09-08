@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="StochastenTool.exe" version="2.1.0.8" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
+  <asmv1:assemblyIdentity name="StochastenTool.exe" version="2.1.1.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
   <description asmv2:iconFile="HYDRO_ICO_DEF.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="StochastenTool" version="2.1.0.8" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="StochastenTool" version="2.1.1.0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="StochastenTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -103,25 +103,25 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="615936">
-      <assemblyIdentity name="StochastenTool" version="2.1.0.8" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="StochastenTool" version="2.1.1.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ZG6vbb37TeiwSJD9u90s0HkO7mH0SxI53ZhtugGd/lg=</dsig:DigestValue>
+        <dsig:DigestValue>z0xt6OrEUsvEwBBPUmRgyvvNS+PJIO/6DUMENZdgIxU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="2785792">
-      <assemblyIdentity name="STOCHLIB" version="2.1.0.8" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="STOCHLIB" version="2.1.1.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>vUNah4jd6trtwerxrizJnwXxvR3kq3PbWXjaV/Q0ZsY=</dsig:DigestValue>
+        <dsig:DigestValue>NPsdG4A12hhqJS5mXxjsJyNSliQuGuX13yDcnYZxHEg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
