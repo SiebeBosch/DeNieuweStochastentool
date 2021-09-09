@@ -3,13 +3,11 @@ Imports System.Windows
 Imports STOCHLIB.General
 Imports System.Runtime.InteropServices
 Imports System.Security.Permissions
-Imports GemBox.Spreadsheet
 Imports System.Data.OleDb
 Imports Microsoft.VisualBasic.DateAndTime
 Imports System.Text.RegularExpressions
 Imports System.Windows.Forms.DataVisualization
 Imports HtmlAgilityPack
-Imports ClosedXML
 Imports Newtonsoft.Json
 Imports MapWinGIS
 Imports Microsoft.VisualBasic.CompilerServices

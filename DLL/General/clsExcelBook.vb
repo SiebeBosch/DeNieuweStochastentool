@@ -14,20 +14,28 @@ Public Class clsExcelBook
         ' TODO: If using GemBox.Spreadsheet Professional, put your serial key below.
         ' Otherwise, if you are using GemBox.Spreadsheet Free, comment out the 
         ' following line (Free version doesn't have SetLicense method). 
-        Dim LicensePath As String = System.Windows.Forms.Application.StartupPath + "\licenses\gembox.txt"
+        'Dim LicensePath As String = System.Windows.Forms.Application.StartupPath + "\licenses\gembox.txt"
+        Dim LicensePath As String
+
+        If Debugger.IsAttached Then
+            'in debug mode we will retrieve the zip file from our GITHUB directory
+            LicensePath = "d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"
+            Console.WriteLine("Path to external licenses set to: " & LicensePath)
+        Else
+            'in release mode we will retrieve the zip file from within our application directory
+            LicensePath = My.Application.Info.DirectoryPath & "\licenses\gembox.txt"
+            Console.WriteLine("Path to external licenses set to: " & LicensePath)
+        End If
 
         If System.IO.File.Exists(LicensePath) Then
             Using licenseReader As New System.IO.StreamReader(LicensePath)
                 Dim myLicense As String = licenseReader.ReadToEnd
                 SpreadsheetInfo.SetLicense(myLicense)
             End Using
-        ElseIf System.IO.File.Exists("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt") Then
-            Using licenseReader As New System.IO.StreamReader("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt")
-                Dim myLicense As String = licenseReader.ReadToEnd
-                SpreadsheetInfo.SetLicense(myLicense)
-            End Using
         Else
+            MsgBox("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
             Me.Setup.Log.AddError("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
+            Console.WriteLine("No license detected for Gembox Spreadsheet: please write your key in a text file here: " & LicensePath)
         End If
 
         oExcel = New ExcelFile

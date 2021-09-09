@@ -1,5 +1,3 @@
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\Interop.ADODB.dll
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\Interop.ADOX.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\Interop.MapWinGIS.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.ResolveComReference.cache
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.frmAccess2SQLite.resources
@@ -39,10 +37,7 @@ D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DocumentFormat.OpenXml.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ExcelNumberFormat.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\GemBox.Spreadsheet.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\HtmlAgilityPack.dll
-D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Interop.SPA_SDK.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Ionic.Zip.dll
-D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MathNet.Numerics.dll
-D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MathParser.org-mXparser.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Newtonsoft.Json.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Npgsql.dll
@@ -57,7 +52,6 @@ D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ExcelNumberFormat.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\GemBox.Spreadsheet.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\HtmlAgilityPack.pdb
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\HtmlAgilityPack.xml
-D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MathNet.Numerics.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Newtonsoft.Json.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Npgsql.pdb
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Npgsql.xml
@@ -68,8 +62,6 @@ D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\fi\Npgsql.resources.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\fr\Npgsql.resources.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ja\Npgsql.resources.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\zh-CN\Npgsql.resources.dll
-D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Interop.ADODB.dll
-D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Interop.ADOX.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.CopyComplete
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.xml

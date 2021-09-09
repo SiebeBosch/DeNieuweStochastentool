@@ -4,7 +4,7 @@
   <description asmv2:iconFile="HYDRO_ICO_DEF.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="StochastenTool" version="2.1.1.1" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="StochastenTool" version="2.1.1.2" language="neutral" processorArchitecture="amd64" />
     <commandLine file="StochastenTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -103,25 +103,25 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="615936">
-      <assemblyIdentity name="StochastenTool" version="2.1.1.1" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="StochastenTool" version="2.1.1.2" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Dmz2kkyrO8XT9Sp6njFIck6sZ06ecnzUp+J40oj4fng=</dsig:DigestValue>
+        <dsig:DigestValue>yKCX3Rn0Pjdl+2+QlIaTZtJca6h+fnEepbK1WzUYt/4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="2785792">
-      <assemblyIdentity name="STOCHLIB" version="2.1.1.1" language="neutral" processorArchitecture="amd64" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="2786304">
+      <assemblyIdentity name="STOCHLIB" version="2.1.1.2" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>TbmB0douJkfiCFYWWxXSVHAl2oZIvZyjtUJCs/IV0NQ=</dsig:DigestValue>
+        <dsig:DigestValue>oC/pZU/1ryxhuybIlleKDD55XsBtIOeGvguRa2JKGVs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
