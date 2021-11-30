@@ -34,9 +34,7 @@ Public Class clsExcelBook
             End Using
         Else
             SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
-            MsgBox("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
             Me.Setup.Log.AddError("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
-            Console.WriteLine("No license detected for Gembox Spreadsheet: please write your key in a text file here: " & LicensePath)
         End If
 
         oExcel = New ExcelFile

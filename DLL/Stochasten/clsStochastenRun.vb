@@ -120,14 +120,39 @@ Public Class clsStochastenRun
             'now copy the model to its temporary working location
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
 
-                If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
+                '--------------------------------------------------------------------------------------------
+                '    wait until the database is free to use. Then lock it for the current simulation
+                '--------------------------------------------------------------------------------------------
+                Me.Setup.GeneralFunctions.DatabaseWaitForUnlock(Me.Setup.StochastenAnalyse.StochastsConfigFile, 60)
+                Me.Setup.GeneralFunctions.DatabaseWriteLockFile(Me.Setup.StochastenAnalyse.StochastsConfigFile, ID)
+
+                If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DHYDRO Then
+
+                    'create the paths to the meteo files, both absolute and relative
+                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
+                    'Dim myMeteoDir As String = myModel.TempWorkDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
+                    'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
+                    'BuiFile = myMeteoDir & "meteo.bui"
+                    'EvpFile = myMeteoDir & "meteo.evp"
+                    'QscFile = myMeteoDir & "meteo.qsc"
+                    'WdcFile = myMeteoDir & "meteo.wdc"
+                    'QwcFile = myMeteoDir & "meteo.qwc"
+                    'TmpFile = myMeteoDir & "meteo.tmp"
+                    'RnfFile = myMeteoDir & "meteo.rnf"
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", BuiFile, BuiFileRelative)
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", EvpFile, EvpFileRelative)
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", QscFile, QscFileRelative)
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", WdcFile, WdcFileRelative)
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", QwcFile, QwcFileRelative)
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", TmpFile, TmpFileRelative)
+                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", RnfFile, RnfFileRelative)
+
+                    'copy the original project to the temporary work dir and then read it from the new location
+                    Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+                    Dim myProject = New ClsDHydroDIMRProject(Me.Setup, myModel.ModelDir & "\DIMR_config.bat")
 
 
-                    '--------------------------------------------------------------------------------------------
-                    '    wait until the database is free to use. Then lock it for the current simulation
-                    '--------------------------------------------------------------------------------------------
-                    Me.Setup.GeneralFunctions.DatabaseWaitForUnlock(Me.Setup.StochastenAnalyse.StochastsConfigFile, 60)
-                    Me.Setup.GeneralFunctions.DatabaseWriteLockFile(Me.Setup.StochastenAnalyse.StochastsConfigFile, ID)
+                ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
 
                     'create the paths to the meteo files, both absolute and relative
                     Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)

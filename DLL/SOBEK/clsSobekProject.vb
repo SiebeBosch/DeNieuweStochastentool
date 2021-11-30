@@ -11,7 +11,7 @@ Public Class clsSobekProject
     Public ActiveCase As clsSobekCase
     Friend IsActiveModel As Boolean
 
-    Private setup As clsSetup
+    Private Setup As clsSetup
 
     Public Sub New(ByRef mySetup As clsSetup, ByVal myProjectDir As String, ByVal ProgramsDir As String, Optional ByVal readCases As Boolean = True)
         Me.setup = mySetup

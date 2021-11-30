@@ -177,6 +177,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Databases\clsDataGridViewDatabaseConnection.vb" />
+    <Compile Include="DHYDRO\clsDHydroDIMRProject.vb" />
+    <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
     <Compile Include="Files\clsCSVFile.vb" />
     <Compile Include="Files\clsDataField.vb" />
     <Compile Include="Files\clsTimeseriesTextFile.vb" />

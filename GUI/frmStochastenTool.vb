@@ -69,8 +69,6 @@ Public Class frmStochasten
 
     Private Sub BtnRun_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStartStop.Click
 
-
-
         'make sure to accept crashed results if specified
         Me.Setup.StochastenAnalyse.AllowCrashedResults = chkUseCrashedResults.Checked
 
@@ -95,6 +93,8 @@ Public Class frmStochasten
                 Setup.SetActiveCase(myModel.CaseName)
                 Setup.InitSobekModel(True, True)
                 Setup.ReadSobekDataDetail(False, False, False, False, False, True, False, False, False, False, False)
+            ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DHYDRO Then
+                'do nothing since D-Hydro does not yet have a case manager
             End If
         Next
 
