@@ -326,8 +326,8 @@ Partial Class frmStochasten
         Me.mnuMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.ModelsToolStripMenuItem, Me.MappenBeherenToolStripMenuItem, Me.KaartToolStripMenuItem, Me.GrafiekenToolStripMenuItem, Me.DatabaseToolStripMenuItem1, Me.AboutToolStripMenuItem})
         Me.mnuMenu.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenu.Name = "mnuMenu"
-        Me.mnuMenu.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.mnuMenu.Size = New System.Drawing.Size(1305, 24)
+        Me.mnuMenu.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
+        Me.mnuMenu.Size = New System.Drawing.Size(1740, 28)
         Me.mnuMenu.TabIndex = 4
         Me.mnuMenu.Text = "MenuStrip1"
         '
@@ -335,78 +335,78 @@ Partial Class frmStochasten
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenXMLToolStripMenuItem, Me.SaveXMLToolStripMenuItem1, Me.SaveXMLToolStripMenuItem})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(61, 20)
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(76, 24)
         Me.FileToolStripMenuItem.Text = "Bestand"
         '
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(142, 22)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(142, 22)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(142, 22)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
         '
         Me.EditToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasteToolStripMenuItem})
         Me.EditToolStripMenuItem.Name = "EditToolStripMenuItem"
-        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(70, 20)
+        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 24)
         Me.EditToolStripMenuItem.Text = "Bewerken"
         '
         'PasteToolStripMenuItem
         '
         Me.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
         Me.PasteToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.V), System.Windows.Forms.Keys)
-        Me.PasteToolStripMenuItem.Size = New System.Drawing.Size(156, 22)
+        Me.PasteToolStripMenuItem.Size = New System.Drawing.Size(193, 26)
         Me.PasteToolStripMenuItem.Text = "Plakken"
         '
         'ToolsToolStripMenuItem
         '
         Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GrondwatersClassificerenToolStripMenuItem, Me.GetijdenClassificerenToolStripMenuItem, Me.DirectoriesHernoemenToolStripMenuItem})
         Me.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
-        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(46, 20)
+        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.ToolsToolStripMenuItem.Text = "Tools"
         '
         'GrondwatersClassificerenToolStripMenuItem
         '
         Me.GrondwatersClassificerenToolStripMenuItem.Name = "GrondwatersClassificerenToolStripMenuItem"
-        Me.GrondwatersClassificerenToolStripMenuItem.Size = New System.Drawing.Size(240, 22)
+        Me.GrondwatersClassificerenToolStripMenuItem.Size = New System.Drawing.Size(300, 26)
         Me.GrondwatersClassificerenToolStripMenuItem.Text = "Grondwater classificeren"
         '
         'GetijdenClassificerenToolStripMenuItem
         '
         Me.GetijdenClassificerenToolStripMenuItem.Name = "GetijdenClassificerenToolStripMenuItem"
-        Me.GetijdenClassificerenToolStripMenuItem.Size = New System.Drawing.Size(240, 22)
+        Me.GetijdenClassificerenToolStripMenuItem.Size = New System.Drawing.Size(300, 26)
         Me.GetijdenClassificerenToolStripMenuItem.Text = "Getijden statistisch classificeren"
         '
         'DirectoriesHernoemenToolStripMenuItem
         '
         Me.DirectoriesHernoemenToolStripMenuItem.Enabled = False
         Me.DirectoriesHernoemenToolStripMenuItem.Name = "DirectoriesHernoemenToolStripMenuItem"
-        Me.DirectoriesHernoemenToolStripMenuItem.Size = New System.Drawing.Size(240, 22)
+        Me.DirectoriesHernoemenToolStripMenuItem.Size = New System.Drawing.Size(300, 26)
         Me.DirectoriesHernoemenToolStripMenuItem.Text = "Directories hernoemen"
         '
         'ModelsToolStripMenuItem
         '
         Me.ModelsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UitvoerlocatiesImporterenToolStripMenuItem})
         Me.ModelsToolStripMenuItem.Name = "ModelsToolStripMenuItem"
-        Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(69, 20)
+        Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.ModelsToolStripMenuItem.Text = "Modellen"
         '
         'UitvoerlocatiesImporterenToolStripMenuItem
         '
         Me.UitvoerlocatiesImporterenToolStripMenuItem.Name = "UitvoerlocatiesImporterenToolStripMenuItem"
-        Me.UitvoerlocatiesImporterenToolStripMenuItem.Size = New System.Drawing.Size(214, 22)
+        Me.UitvoerlocatiesImporterenToolStripMenuItem.Size = New System.Drawing.Size(269, 26)
         Me.UitvoerlocatiesImporterenToolStripMenuItem.Text = "Uitvoerlocaties importeren"
         '
         'MappenBeherenToolStripMenuItem
@@ -414,19 +414,19 @@ Partial Class frmStochasten
         Me.MappenBeherenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StochastendirectoriesHernoemenToolStripMenuItem, Me.MappenVerwijderenToolStripMenuItem})
         Me.MappenBeherenToolStripMenuItem.Enabled = False
         Me.MappenBeherenToolStripMenuItem.Name = "MappenBeherenToolStripMenuItem"
-        Me.MappenBeherenToolStripMenuItem.Size = New System.Drawing.Size(75, 20)
+        Me.MappenBeherenToolStripMenuItem.Size = New System.Drawing.Size(95, 24)
         Me.MappenBeherenToolStripMenuItem.Text = "Directories"
         '
         'StochastendirectoriesHernoemenToolStripMenuItem
         '
         Me.StochastendirectoriesHernoemenToolStripMenuItem.Name = "StochastendirectoriesHernoemenToolStripMenuItem"
-        Me.StochastendirectoriesHernoemenToolStripMenuItem.Size = New System.Drawing.Size(260, 22)
+        Me.StochastendirectoriesHernoemenToolStripMenuItem.Size = New System.Drawing.Size(325, 26)
         Me.StochastendirectoriesHernoemenToolStripMenuItem.Text = "In stochastendirectory hernoemen"
         '
         'MappenVerwijderenToolStripMenuItem
         '
         Me.MappenVerwijderenToolStripMenuItem.Name = "MappenVerwijderenToolStripMenuItem"
-        Me.MappenVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(260, 22)
+        Me.MappenVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(325, 26)
         Me.MappenVerwijderenToolStripMenuItem.Text = "Uit stochastendirectory verwijderen"
         '
         'KaartToolStripMenuItem
@@ -434,7 +434,7 @@ Partial Class frmStochasten
         Me.KaartToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VerschilkaartToolStripMenuItem, Me.ToonPolygonenToolStripMenuItem, Me.AchtergrondkaartToolStripMenuItem})
         Me.KaartToolStripMenuItem.Enabled = False
         Me.KaartToolStripMenuItem.Name = "KaartToolStripMenuItem"
-        Me.KaartToolStripMenuItem.Size = New System.Drawing.Size(46, 20)
+        Me.KaartToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.KaartToolStripMenuItem.Text = "Kaart"
         '
         'VerschilkaartToolStripMenuItem
@@ -443,21 +443,21 @@ Partial Class frmStochasten
         Me.VerschilkaartToolStripMenuItem.CheckOnClick = True
         Me.VerschilkaartToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked
         Me.VerschilkaartToolStripMenuItem.Name = "VerschilkaartToolStripMenuItem"
-        Me.VerschilkaartToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.VerschilkaartToolStripMenuItem.Size = New System.Drawing.Size(305, 26)
         Me.VerschilkaartToolStripMenuItem.Text = "Toon verschil met referentiecase"
         '
         'ToonPolygonenToolStripMenuItem
         '
         Me.ToonPolygonenToolStripMenuItem.CheckOnClick = True
         Me.ToonPolygonenToolStripMenuItem.Name = "ToonPolygonenToolStripMenuItem"
-        Me.ToonPolygonenToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.ToonPolygonenToolStripMenuItem.Size = New System.Drawing.Size(305, 26)
         Me.ToonPolygonenToolStripMenuItem.Text = "Toon polygonen als overlay"
         '
         'AchtergrondkaartToolStripMenuItem
         '
         Me.AchtergrondkaartToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuGoogleMaps, Me.mnuOSM, Me.mnuBingMaps, Me.mnuHybrid, Me.mnuNoMap})
         Me.AchtergrondkaartToolStripMenuItem.Name = "AchtergrondkaartToolStripMenuItem"
-        Me.AchtergrondkaartToolStripMenuItem.Size = New System.Drawing.Size(243, 22)
+        Me.AchtergrondkaartToolStripMenuItem.Size = New System.Drawing.Size(305, 26)
         Me.AchtergrondkaartToolStripMenuItem.Text = "Achtergrondkaart"
         '
         'mnuGoogleMaps
@@ -466,33 +466,33 @@ Partial Class frmStochasten
         Me.mnuGoogleMaps.CheckOnClick = True
         Me.mnuGoogleMaps.CheckState = System.Windows.Forms.CheckState.Checked
         Me.mnuGoogleMaps.Name = "mnuGoogleMaps"
-        Me.mnuGoogleMaps.Size = New System.Drawing.Size(162, 22)
+        Me.mnuGoogleMaps.Size = New System.Drawing.Size(203, 26)
         Me.mnuGoogleMaps.Text = "Google Maps"
         '
         'mnuOSM
         '
         Me.mnuOSM.Name = "mnuOSM"
-        Me.mnuOSM.Size = New System.Drawing.Size(162, 22)
+        Me.mnuOSM.Size = New System.Drawing.Size(203, 26)
         Me.mnuOSM.Text = "OpenStreetMaps"
         '
         'mnuBingMaps
         '
         Me.mnuBingMaps.CheckOnClick = True
         Me.mnuBingMaps.Name = "mnuBingMaps"
-        Me.mnuBingMaps.Size = New System.Drawing.Size(162, 22)
+        Me.mnuBingMaps.Size = New System.Drawing.Size(203, 26)
         Me.mnuBingMaps.Text = "Bing Maps"
         '
         'mnuHybrid
         '
         Me.mnuHybrid.CheckOnClick = True
         Me.mnuHybrid.Name = "mnuHybrid"
-        Me.mnuHybrid.Size = New System.Drawing.Size(162, 22)
+        Me.mnuHybrid.Size = New System.Drawing.Size(203, 26)
         Me.mnuHybrid.Text = "Bing Hybrid"
         '
         'mnuNoMap
         '
         Me.mnuNoMap.Name = "mnuNoMap"
-        Me.mnuNoMap.Size = New System.Drawing.Size(162, 22)
+        Me.mnuNoMap.Size = New System.Drawing.Size(203, 26)
         Me.mnuNoMap.Text = "Geen"
         '
         'GrafiekenToolStripMenuItem
@@ -500,82 +500,82 @@ Partial Class frmStochasten
         Me.GrafiekenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem})
         Me.GrafiekenToolStripMenuItem.Enabled = False
         Me.GrafiekenToolStripMenuItem.Name = "GrafiekenToolStripMenuItem"
-        Me.GrafiekenToolStripMenuItem.Size = New System.Drawing.Size(69, 20)
+        Me.GrafiekenToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.GrafiekenToolStripMenuItem.Text = "Grafieken"
         '
         'ReferentiepeilenUitShapefileToevoegenToolStripMenuItem
         '
         Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem.Name = "ReferentiepeilenUitShapefileToevoegenToolStripMenuItem"
-        Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem.Size = New System.Drawing.Size(285, 22)
+        Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem.Size = New System.Drawing.Size(361, 26)
         Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem.Text = "Referentiepeilen uit shapefile toevoegen"
         '
         'DatabaseToolStripMenuItem1
         '
         Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UpgradeNaarToolStripMenuItem, Me.PolygonenUitShapefileToevoegenToolStripMenuItem1, Me.ImporterenToolStripMenuItem, Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem, Me.LegeDatabaseCreërenToolStripMenuItem, Me.VerwijderenToolStripMenuItem})
         Me.DatabaseToolStripMenuItem1.Name = "DatabaseToolStripMenuItem1"
-        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(67, 20)
+        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(86, 24)
         Me.DatabaseToolStripMenuItem1.Text = "Database"
         '
         'UpgradeNaarToolStripMenuItem
         '
         Me.UpgradeNaarToolStripMenuItem.Name = "UpgradeNaarToolStripMenuItem"
-        Me.UpgradeNaarToolStripMenuItem.Size = New System.Drawing.Size(263, 22)
+        Me.UpgradeNaarToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
         Me.UpgradeNaarToolStripMenuItem.Text = "Upgrade naar v5.0"
         '
         'PolygonenUitShapefileToevoegenToolStripMenuItem1
         '
         Me.PolygonenUitShapefileToevoegenToolStripMenuItem1.Name = "PolygonenUitShapefileToevoegenToolStripMenuItem1"
-        Me.PolygonenUitShapefileToevoegenToolStripMenuItem1.Size = New System.Drawing.Size(263, 22)
+        Me.PolygonenUitShapefileToevoegenToolStripMenuItem1.Size = New System.Drawing.Size(327, 26)
         Me.PolygonenUitShapefileToevoegenToolStripMenuItem1.Text = "Polygonen uit shapefile toevoegen"
         '
         'ImporterenToolStripMenuItem
         '
         Me.ImporterenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesUitCSVToolStripMenuItem})
         Me.ImporterenToolStripMenuItem.Name = "ImporterenToolStripMenuItem"
-        Me.ImporterenToolStripMenuItem.Size = New System.Drawing.Size(263, 22)
+        Me.ImporterenToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
         Me.ImporterenToolStripMenuItem.Text = "Importeren"
         '
         'VolumesUitCSVToolStripMenuItem
         '
         Me.VolumesUitCSVToolStripMenuItem.Name = "VolumesUitCSVToolStripMenuItem"
-        Me.VolumesUitCSVToolStripMenuItem.Size = New System.Drawing.Size(160, 22)
+        Me.VolumesUitCSVToolStripMenuItem.Size = New System.Drawing.Size(199, 26)
         Me.VolumesUitCSVToolStripMenuItem.Text = "Volumes uit CSV"
         '
         'ConverterenVanAccessNaarSQLiteToolStripMenuItem
         '
         Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem.Name = "ConverterenVanAccessNaarSQLiteToolStripMenuItem"
-        Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem.Size = New System.Drawing.Size(263, 22)
+        Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
         Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem.Text = "Converteren van Access naar SQLite"
         '
         'LegeDatabaseCreërenToolStripMenuItem
         '
         Me.LegeDatabaseCreërenToolStripMenuItem.Name = "LegeDatabaseCreërenToolStripMenuItem"
-        Me.LegeDatabaseCreërenToolStripMenuItem.Size = New System.Drawing.Size(263, 22)
+        Me.LegeDatabaseCreërenToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
         Me.LegeDatabaseCreërenToolStripMenuItem.Text = "Nieuwe database creëren"
         '
         'VerwijderenToolStripMenuItem
         '
         Me.VerwijderenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesSTOWA2014ToolStripMenuItem, Me.VolumesSTOWA2019ToolStripMenuItem})
         Me.VerwijderenToolStripMenuItem.Name = "VerwijderenToolStripMenuItem"
-        Me.VerwijderenToolStripMenuItem.Size = New System.Drawing.Size(263, 22)
+        Me.VerwijderenToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
         Me.VerwijderenToolStripMenuItem.Text = "Verwijderen"
         '
         'VolumesSTOWA2014ToolStripMenuItem
         '
         Me.VolumesSTOWA2014ToolStripMenuItem.Name = "VolumesSTOWA2014ToolStripMenuItem"
-        Me.VolumesSTOWA2014ToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.VolumesSTOWA2014ToolStripMenuItem.Size = New System.Drawing.Size(237, 26)
         Me.VolumesSTOWA2014ToolStripMenuItem.Text = "Volumes STOWA 2014"
         '
         'VolumesSTOWA2019ToolStripMenuItem
         '
         Me.VolumesSTOWA2019ToolStripMenuItem.Name = "VolumesSTOWA2019ToolStripMenuItem"
-        Me.VolumesSTOWA2019ToolStripMenuItem.Size = New System.Drawing.Size(188, 22)
+        Me.VolumesSTOWA2019ToolStripMenuItem.Size = New System.Drawing.Size(237, 26)
         Me.VolumesSTOWA2019ToolStripMenuItem.Text = "Volumes STOWA 2019"
         '
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(54, 24)
         Me.AboutToolStripMenuItem.Text = "Over"
         '
         'tabStochastentool
@@ -595,10 +595,11 @@ Partial Class frmStochasten
         Me.tabStochastentool.Controls.Add(Me.tabExtra)
         Me.tabStochastentool.Controls.Add(Me.tabPostprocessing)
         Me.tabStochastentool.Controls.Add(Me.TabRuns)
-        Me.tabStochastentool.Location = New System.Drawing.Point(10, 27)
+        Me.tabStochastentool.Location = New System.Drawing.Point(13, 33)
+        Me.tabStochastentool.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabStochastentool.Name = "tabStochastentool"
         Me.tabStochastentool.SelectedIndex = 0
-        Me.tabStochastentool.Size = New System.Drawing.Size(1283, 503)
+        Me.tabStochastentool.Size = New System.Drawing.Size(1711, 619)
         Me.tabStochastentool.TabIndex = 22
         '
         'tabSettings
@@ -607,10 +608,11 @@ Partial Class frmStochasten
         Me.tabSettings.Controls.Add(Me.grNabewerking)
         Me.tabSettings.Controls.Add(Me.grBerekeningen)
         Me.tabSettings.Controls.Add(Me.grBestanden)
-        Me.tabSettings.Location = New System.Drawing.Point(4, 22)
+        Me.tabSettings.Location = New System.Drawing.Point(4, 25)
+        Me.tabSettings.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabSettings.Name = "tabSettings"
-        Me.tabSettings.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabSettings.Size = New System.Drawing.Size(1275, 477)
+        Me.tabSettings.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tabSettings.Size = New System.Drawing.Size(1703, 590)
         Me.tabSettings.TabIndex = 1
         Me.tabSettings.Text = "Algemeen"
         Me.tabSettings.UseVisualStyleBackColor = True
@@ -623,9 +625,11 @@ Partial Class frmStochasten
         Me.grMeteo.Controls.Add(Me.btnRemoveMeteoStation)
         Me.grMeteo.Controls.Add(Me.grMeteoStations)
         Me.grMeteo.Controls.Add(Me.btnAddMeteoStation)
-        Me.grMeteo.Location = New System.Drawing.Point(6, 255)
+        Me.grMeteo.Location = New System.Drawing.Point(8, 314)
+        Me.grMeteo.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grMeteo.Name = "grMeteo"
-        Me.grMeteo.Size = New System.Drawing.Size(321, 216)
+        Me.grMeteo.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grMeteo.Size = New System.Drawing.Size(428, 266)
         Me.grMeteo.TabIndex = 40
         Me.grMeteo.TabStop = False
         Me.grMeteo.Text = "Meteo"
@@ -634,9 +638,10 @@ Partial Class frmStochasten
         '
         Me.btnRemoveMeteoStation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRemoveMeteoStation.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveMeteoStation.Location = New System.Drawing.Point(290, 51)
+        Me.btnRemoveMeteoStation.Location = New System.Drawing.Point(387, 63)
+        Me.btnRemoveMeteoStation.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnRemoveMeteoStation.Name = "btnRemoveMeteoStation"
-        Me.btnRemoveMeteoStation.Size = New System.Drawing.Size(25, 25)
+        Me.btnRemoveMeteoStation.Size = New System.Drawing.Size(33, 31)
         Me.btnRemoveMeteoStation.TabIndex = 42
         Me.btnRemoveMeteoStation.Text = "-"
         Me.btnRemoveMeteoStation.UseVisualStyleBackColor = False
@@ -645,19 +650,21 @@ Partial Class frmStochasten
         '
         Me.grMeteoStations.AllowUserToAddRows = False
         Me.grMeteoStations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grMeteoStations.Location = New System.Drawing.Point(12, 19)
+        Me.grMeteoStations.Location = New System.Drawing.Point(16, 23)
+        Me.grMeteoStations.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grMeteoStations.Name = "grMeteoStations"
         Me.grMeteoStations.RowHeadersWidth = 51
-        Me.grMeteoStations.Size = New System.Drawing.Size(268, 112)
+        Me.grMeteoStations.Size = New System.Drawing.Size(357, 138)
         Me.grMeteoStations.TabIndex = 0
         '
         'btnAddMeteoStation
         '
         Me.btnAddMeteoStation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnAddMeteoStation.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddMeteoStation.Location = New System.Drawing.Point(290, 20)
+        Me.btnAddMeteoStation.Location = New System.Drawing.Point(387, 25)
+        Me.btnAddMeteoStation.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnAddMeteoStation.Name = "btnAddMeteoStation"
-        Me.btnAddMeteoStation.Size = New System.Drawing.Size(25, 25)
+        Me.btnAddMeteoStation.Size = New System.Drawing.Size(33, 31)
         Me.btnAddMeteoStation.TabIndex = 41
         Me.btnAddMeteoStation.Text = "+"
         Me.btnAddMeteoStation.UseVisualStyleBackColor = False
@@ -673,9 +680,11 @@ Partial Class frmStochasten
         Me.grNabewerking.Controls.Add(Me.txtResultsStartPercentage)
         Me.grNabewerking.Controls.Add(Me.cmbClimate)
         Me.grNabewerking.Controls.Add(Me.Label8)
-        Me.grNabewerking.Location = New System.Drawing.Point(585, 255)
+        Me.grNabewerking.Location = New System.Drawing.Point(780, 314)
+        Me.grNabewerking.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grNabewerking.Name = "grNabewerking"
-        Me.grNabewerking.Size = New System.Drawing.Size(684, 216)
+        Me.grNabewerking.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grNabewerking.Size = New System.Drawing.Size(912, 266)
         Me.grNabewerking.TabIndex = 39
         Me.grNabewerking.TabStop = False
         Me.grNabewerking.Text = "Nabewerking"
@@ -683,9 +692,10 @@ Partial Class frmStochasten
         'chkUseCrashedResults
         '
         Me.chkUseCrashedResults.AutoSize = True
-        Me.chkUseCrashedResults.Location = New System.Drawing.Point(9, 82)
+        Me.chkUseCrashedResults.Location = New System.Drawing.Point(12, 101)
+        Me.chkUseCrashedResults.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chkUseCrashedResults.Name = "chkUseCrashedResults"
-        Me.chkUseCrashedResults.Size = New System.Drawing.Size(231, 17)
+        Me.chkUseCrashedResults.Size = New System.Drawing.Size(306, 21)
         Me.chkUseCrashedResults.TabIndex = 33
         Me.chkUseCrashedResults.Text = "Ook resultaten gecrashte sommen toestaan"
         Me.chkUseCrashedResults.UseVisualStyleBackColor = True
@@ -693,33 +703,37 @@ Partial Class frmStochasten
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(6, 55)
+        Me.Label9.Location = New System.Drawing.Point(8, 68)
+        Me.Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(166, 13)
+        Me.Label9.Size = New System.Drawing.Size(221, 17)
         Me.Label9.TabIndex = 33
         Me.Label9.Text = "Lees resultaten vanaf percentage"
         '
         'txtResultsStartPercentage
         '
-        Me.txtResultsStartPercentage.Location = New System.Drawing.Point(195, 52)
+        Me.txtResultsStartPercentage.Location = New System.Drawing.Point(260, 64)
+        Me.txtResultsStartPercentage.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtResultsStartPercentage.Name = "txtResultsStartPercentage"
-        Me.txtResultsStartPercentage.Size = New System.Drawing.Size(45, 20)
+        Me.txtResultsStartPercentage.Size = New System.Drawing.Size(59, 22)
         Me.txtResultsStartPercentage.TabIndex = 37
         '
         'cmbClimate
         '
         Me.cmbClimate.FormattingEnabled = True
-        Me.cmbClimate.Location = New System.Drawing.Point(153, 24)
+        Me.cmbClimate.Location = New System.Drawing.Point(204, 30)
+        Me.cmbClimate.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbClimate.Name = "cmbClimate"
-        Me.cmbClimate.Size = New System.Drawing.Size(207, 21)
+        Me.cmbClimate.Size = New System.Drawing.Size(275, 24)
         Me.cmbClimate.TabIndex = 35
         '
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(6, 26)
+        Me.Label8.Location = New System.Drawing.Point(8, 32)
+        Me.Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(81, 13)
+        Me.Label8.Size = New System.Drawing.Size(108, 17)
         Me.Label8.TabIndex = 36
         Me.Label8.Text = "Klimaatscenario"
         '
@@ -734,9 +748,11 @@ Partial Class frmStochasten
         Me.grBerekeningen.Controls.Add(Me.cmbDuration)
         Me.grBerekeningen.Controls.Add(Me.Label4)
         Me.grBerekeningen.Controls.Add(Me.txtMaxParallel)
-        Me.grBerekeningen.Location = New System.Drawing.Point(333, 255)
+        Me.grBerekeningen.Location = New System.Drawing.Point(444, 314)
+        Me.grBerekeningen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grBerekeningen.Name = "grBerekeningen"
-        Me.grBerekeningen.Size = New System.Drawing.Size(246, 216)
+        Me.grBerekeningen.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grBerekeningen.Size = New System.Drawing.Size(328, 266)
         Me.grBerekeningen.TabIndex = 38
         Me.grBerekeningen.TabStop = False
         Me.grBerekeningen.Text = "Berekeningen"
@@ -744,53 +760,59 @@ Partial Class frmStochasten
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(9, 54)
+        Me.Label2.Location = New System.Drawing.Point(12, 66)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(113, 13)
+        Me.Label2.Size = New System.Drawing.Size(154, 17)
         Me.Label2.TabIndex = 32
         Me.Label2.Text = "Uitloop neerslag (uren)"
         '
         'txtUitloop
         '
         Me.txtUitloop.Enabled = False
-        Me.txtUitloop.Location = New System.Drawing.Point(168, 50)
+        Me.txtUitloop.Location = New System.Drawing.Point(224, 62)
+        Me.txtUitloop.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtUitloop.Name = "txtUitloop"
-        Me.txtUitloop.Size = New System.Drawing.Size(56, 20)
+        Me.txtUitloop.Size = New System.Drawing.Size(73, 22)
         Me.txtUitloop.TabIndex = 9
         Me.txtUitloop.Text = "48"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(9, 27)
+        Me.Label1.Location = New System.Drawing.Point(12, 33)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(100, 13)
+        Me.Label1.Size = New System.Drawing.Size(137, 17)
         Me.Label1.TabIndex = 6
         Me.Label1.Text = "Neerslagduur (uren)"
         '
         'cmbDuration
         '
         Me.cmbDuration.FormattingEnabled = True
-        Me.cmbDuration.Location = New System.Drawing.Point(168, 26)
+        Me.cmbDuration.Location = New System.Drawing.Point(224, 32)
+        Me.cmbDuration.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbDuration.Name = "cmbDuration"
-        Me.cmbDuration.Size = New System.Drawing.Size(56, 21)
+        Me.cmbDuration.Size = New System.Drawing.Size(73, 24)
         Me.cmbDuration.TabIndex = 0
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(9, 80)
+        Me.Label4.Location = New System.Drawing.Point(12, 98)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(117, 13)
+        Me.Label4.Size = New System.Drawing.Size(157, 17)
         Me.Label4.TabIndex = 31
         Me.Label4.Text = "Parallelle berekeningen"
         '
         'txtMaxParallel
         '
         Me.txtMaxParallel.Enabled = False
-        Me.txtMaxParallel.Location = New System.Drawing.Point(168, 76)
+        Me.txtMaxParallel.Location = New System.Drawing.Point(224, 94)
+        Me.txtMaxParallel.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtMaxParallel.Name = "txtMaxParallel"
-        Me.txtMaxParallel.Size = New System.Drawing.Size(56, 20)
+        Me.txtMaxParallel.Size = New System.Drawing.Size(73, 22)
         Me.txtMaxParallel.TabIndex = 28
         Me.txtMaxParallel.Text = "1"
         '
@@ -814,9 +836,11 @@ Partial Class frmStochasten
         Me.grBestanden.Controls.Add(Me.txtStochastenDir)
         Me.grBestanden.Controls.Add(Me.txtDatabase)
         Me.grBestanden.Controls.Add(Me.Label7)
-        Me.grBestanden.Location = New System.Drawing.Point(6, 8)
+        Me.grBestanden.Location = New System.Drawing.Point(8, 10)
+        Me.grBestanden.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grBestanden.Name = "grBestanden"
-        Me.grBestanden.Size = New System.Drawing.Size(1263, 237)
+        Me.grBestanden.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grBestanden.Size = New System.Drawing.Size(1684, 292)
         Me.grBestanden.TabIndex = 37
         Me.grBestanden.TabStop = False
         Me.grBestanden.Text = "Bestanden en Mappen"
@@ -824,10 +848,10 @@ Partial Class frmStochasten
         'btnStochastenDir
         '
         Me.btnStochastenDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnStochastenDir.Location = New System.Drawing.Point(1237, 28)
-        Me.btnStochastenDir.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnStochastenDir.Location = New System.Drawing.Point(1649, 34)
+        Me.btnStochastenDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnStochastenDir.Name = "btnStochastenDir"
-        Me.btnStochastenDir.Size = New System.Drawing.Size(21, 19)
+        Me.btnStochastenDir.Size = New System.Drawing.Size(28, 23)
         Me.btnStochastenDir.TabIndex = 48
         Me.btnStochastenDir.Text = ".."
         Me.btnStochastenDir.UseVisualStyleBackColor = True
@@ -835,10 +859,10 @@ Partial Class frmStochasten
         'btnResultsDir
         '
         Me.btnResultsDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnResultsDir.Location = New System.Drawing.Point(1237, 53)
-        Me.btnResultsDir.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnResultsDir.Location = New System.Drawing.Point(1649, 65)
+        Me.btnResultsDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnResultsDir.Name = "btnResultsDir"
-        Me.btnResultsDir.Size = New System.Drawing.Size(21, 19)
+        Me.btnResultsDir.Size = New System.Drawing.Size(28, 23)
         Me.btnResultsDir.TabIndex = 47
         Me.btnResultsDir.Text = ".."
         Me.btnResultsDir.UseVisualStyleBackColor = True
@@ -846,10 +870,10 @@ Partial Class frmStochasten
         'btnDatabase
         '
         Me.btnDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnDatabase.Location = New System.Drawing.Point(1237, 78)
-        Me.btnDatabase.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnDatabase.Location = New System.Drawing.Point(1649, 96)
+        Me.btnDatabase.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnDatabase.Name = "btnDatabase"
-        Me.btnDatabase.Size = New System.Drawing.Size(21, 19)
+        Me.btnDatabase.Size = New System.Drawing.Size(28, 23)
         Me.btnDatabase.TabIndex = 46
         Me.btnDatabase.Text = ".."
         Me.btnDatabase.UseVisualStyleBackColor = True
@@ -857,10 +881,10 @@ Partial Class frmStochasten
         'btnShapefile
         '
         Me.btnShapefile.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnShapefile.Location = New System.Drawing.Point(1237, 104)
-        Me.btnShapefile.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnShapefile.Location = New System.Drawing.Point(1649, 128)
+        Me.btnShapefile.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnShapefile.Name = "btnShapefile"
-        Me.btnShapefile.Size = New System.Drawing.Size(21, 19)
+        Me.btnShapefile.Size = New System.Drawing.Size(28, 23)
         Me.btnShapefile.TabIndex = 45
         Me.btnShapefile.Text = ".."
         Me.btnShapefile.UseVisualStyleBackColor = True
@@ -868,52 +892,58 @@ Partial Class frmStochasten
         'Label37
         '
         Me.Label37.AutoSize = True
-        Me.Label37.Location = New System.Drawing.Point(10, 156)
+        Me.Label37.Location = New System.Drawing.Point(13, 192)
+        Me.Label37.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label37.Name = "Label37"
-        Me.Label37.Size = New System.Drawing.Size(75, 13)
+        Me.Label37.Size = New System.Drawing.Size(101, 17)
         Me.Label37.TabIndex = 44
         Me.Label37.Text = "Veld zomerpeil"
         '
         'Label36
         '
         Me.Label36.AutoSize = True
-        Me.Label36.Location = New System.Drawing.Point(10, 131)
+        Me.Label36.Location = New System.Drawing.Point(13, 161)
+        Me.Label36.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label36.Name = "Label36"
-        Me.Label36.Size = New System.Drawing.Size(75, 13)
+        Me.Label36.Size = New System.Drawing.Size(99, 17)
         Me.Label36.TabIndex = 43
         Me.Label36.Text = "Veld winterpeil"
         '
         'cmbZomerpeil
         '
         Me.cmbZomerpeil.FormattingEnabled = True
-        Me.cmbZomerpeil.Location = New System.Drawing.Point(177, 155)
+        Me.cmbZomerpeil.Location = New System.Drawing.Point(236, 191)
+        Me.cmbZomerpeil.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbZomerpeil.Name = "cmbZomerpeil"
-        Me.cmbZomerpeil.Size = New System.Drawing.Size(163, 21)
+        Me.cmbZomerpeil.Size = New System.Drawing.Size(216, 24)
         Me.cmbZomerpeil.TabIndex = 42
         '
         'cmbWinterpeil
         '
         Me.cmbWinterpeil.FormattingEnabled = True
-        Me.cmbWinterpeil.Location = New System.Drawing.Point(177, 128)
+        Me.cmbWinterpeil.Location = New System.Drawing.Point(236, 158)
+        Me.cmbWinterpeil.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbWinterpeil.Name = "cmbWinterpeil"
-        Me.cmbWinterpeil.Size = New System.Drawing.Size(163, 21)
+        Me.cmbWinterpeil.Size = New System.Drawing.Size(216, 24)
         Me.cmbWinterpeil.TabIndex = 33
         '
         'txtPeilgebieden
         '
         Me.txtPeilgebieden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPeilgebieden.Location = New System.Drawing.Point(177, 103)
+        Me.txtPeilgebieden.Location = New System.Drawing.Point(236, 127)
+        Me.txtPeilgebieden.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtPeilgebieden.Name = "txtPeilgebieden"
-        Me.txtPeilgebieden.Size = New System.Drawing.Size(1055, 20)
+        Me.txtPeilgebieden.Size = New System.Drawing.Size(1405, 22)
         Me.txtPeilgebieden.TabIndex = 41
         '
         'Label35
         '
         Me.Label35.AutoSize = True
-        Me.Label35.Location = New System.Drawing.Point(10, 106)
+        Me.Label35.Location = New System.Drawing.Point(13, 130)
+        Me.Label35.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label35.Name = "Label35"
-        Me.Label35.Size = New System.Drawing.Size(114, 13)
+        Me.Label35.Size = New System.Drawing.Size(152, 17)
         Me.Label35.TabIndex = 40
         Me.Label35.Text = "Shapefile peilgebieden"
         '
@@ -921,26 +951,29 @@ Partial Class frmStochasten
         '
         Me.txtResultatenDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtResultatenDir.Location = New System.Drawing.Point(177, 53)
+        Me.txtResultatenDir.Location = New System.Drawing.Point(236, 65)
+        Me.txtResultatenDir.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtResultatenDir.Name = "txtResultatenDir"
-        Me.txtResultatenDir.Size = New System.Drawing.Size(1055, 20)
+        Me.txtResultatenDir.Size = New System.Drawing.Size(1405, 22)
         Me.txtResultatenDir.TabIndex = 39
         '
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(10, 55)
+        Me.Label11.Location = New System.Drawing.Point(13, 68)
+        Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(78, 13)
+        Me.Label11.Size = New System.Drawing.Size(103, 17)
         Me.Label11.TabIndex = 38
         Me.Label11.Text = "Resultatenmap"
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(10, 30)
+        Me.Label5.Location = New System.Drawing.Point(13, 37)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(81, 13)
+        Me.Label5.Size = New System.Drawing.Size(106, 17)
         Me.Label5.TabIndex = 26
         Me.Label5.Text = "Stochastenmap"
         '
@@ -948,35 +981,39 @@ Partial Class frmStochasten
         '
         Me.txtStochastenDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtStochastenDir.Location = New System.Drawing.Point(177, 28)
+        Me.txtStochastenDir.Location = New System.Drawing.Point(236, 34)
+        Me.txtStochastenDir.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtStochastenDir.Name = "txtStochastenDir"
-        Me.txtStochastenDir.Size = New System.Drawing.Size(1055, 20)
+        Me.txtStochastenDir.Size = New System.Drawing.Size(1405, 22)
         Me.txtStochastenDir.TabIndex = 25
         '
         'txtDatabase
         '
         Me.txtDatabase.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDatabase.Location = New System.Drawing.Point(177, 78)
+        Me.txtDatabase.Location = New System.Drawing.Point(236, 96)
+        Me.txtDatabase.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtDatabase.Name = "txtDatabase"
-        Me.txtDatabase.Size = New System.Drawing.Size(1055, 20)
+        Me.txtDatabase.Size = New System.Drawing.Size(1405, 22)
         Me.txtDatabase.TabIndex = 34
         '
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(10, 80)
+        Me.Label7.Location = New System.Drawing.Point(13, 98)
+        Me.Label7.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(53, 13)
+        Me.Label7.Size = New System.Drawing.Size(69, 17)
         Me.Label7.TabIndex = 32
         Me.Label7.Text = "Database"
         '
         'tabSobek
         '
         Me.tabSobek.Controls.Add(Me.grModels)
-        Me.tabSobek.Location = New System.Drawing.Point(4, 22)
+        Me.tabSobek.Location = New System.Drawing.Point(4, 25)
+        Me.tabSobek.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabSobek.Name = "tabSobek"
-        Me.tabSobek.Size = New System.Drawing.Size(1275, 477)
+        Me.tabSobek.Size = New System.Drawing.Size(1703, 590)
         Me.tabSobek.TabIndex = 2
         Me.tabSobek.Text = "Modellen"
         Me.tabSobek.UseVisualStyleBackColor = True
@@ -989,10 +1026,11 @@ Partial Class frmStochasten
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grModels.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grModels.Location = New System.Drawing.Point(3, 3)
+        Me.grModels.Location = New System.Drawing.Point(4, 4)
+        Me.grModels.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grModels.Name = "grModels"
         Me.grModels.RowHeadersWidth = 51
-        Me.grModels.Size = New System.Drawing.Size(1269, 471)
+        Me.grModels.Size = New System.Drawing.Size(1692, 580)
         Me.grModels.TabIndex = 19
         '
         'tabSeizoenen
@@ -1001,9 +1039,10 @@ Partial Class frmStochasten
         Me.tabSeizoenen.Controls.Add(Me.btnAddSeason)
         Me.tabSeizoenen.Controls.Add(Me.lblCheckSumSeizoenen)
         Me.tabSeizoenen.Controls.Add(Me.grSeizoenen)
-        Me.tabSeizoenen.Location = New System.Drawing.Point(4, 22)
+        Me.tabSeizoenen.Location = New System.Drawing.Point(4, 25)
+        Me.tabSeizoenen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabSeizoenen.Name = "tabSeizoenen"
-        Me.tabSeizoenen.Size = New System.Drawing.Size(1275, 477)
+        Me.tabSeizoenen.Size = New System.Drawing.Size(1703, 590)
         Me.tabSeizoenen.TabIndex = 15
         Me.tabSeizoenen.Text = "Seizoenen"
         Me.tabSeizoenen.UseVisualStyleBackColor = True
@@ -1012,9 +1051,10 @@ Partial Class frmStochasten
         '
         Me.btnRemoveSeason.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRemoveSeason.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveSeason.Location = New System.Drawing.Point(1247, 37)
+        Me.btnRemoveSeason.Location = New System.Drawing.Point(1663, 46)
+        Me.btnRemoveSeason.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnRemoveSeason.Name = "btnRemoveSeason"
-        Me.btnRemoveSeason.Size = New System.Drawing.Size(25, 25)
+        Me.btnRemoveSeason.Size = New System.Drawing.Size(33, 31)
         Me.btnRemoveSeason.TabIndex = 10
         Me.btnRemoveSeason.Text = "-"
         Me.btnRemoveSeason.UseVisualStyleBackColor = False
@@ -1023,9 +1063,10 @@ Partial Class frmStochasten
         '
         Me.btnAddSeason.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnAddSeason.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddSeason.Location = New System.Drawing.Point(1247, 7)
+        Me.btnAddSeason.Location = New System.Drawing.Point(1663, 9)
+        Me.btnAddSeason.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnAddSeason.Name = "btnAddSeason"
-        Me.btnAddSeason.Size = New System.Drawing.Size(25, 25)
+        Me.btnAddSeason.Size = New System.Drawing.Size(33, 31)
         Me.btnAddSeason.TabIndex = 9
         Me.btnAddSeason.Text = "+"
         Me.btnAddSeason.UseVisualStyleBackColor = False
@@ -1034,9 +1075,10 @@ Partial Class frmStochasten
         '
         Me.lblCheckSumSeizoenen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblCheckSumSeizoenen.AutoSize = True
-        Me.lblCheckSumSeizoenen.Location = New System.Drawing.Point(3, 449)
+        Me.lblCheckSumSeizoenen.Location = New System.Drawing.Point(4, 553)
+        Me.lblCheckSumSeizoenen.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblCheckSumSeizoenen.Name = "lblCheckSumSeizoenen"
-        Me.lblCheckSumSeizoenen.Size = New System.Drawing.Size(63, 13)
+        Me.lblCheckSumSeizoenen.Size = New System.Drawing.Size(81, 17)
         Me.lblCheckSumSeizoenen.TabIndex = 8
         Me.lblCheckSumSeizoenen.Text = "Checksum="
         '
@@ -1046,35 +1088,39 @@ Partial Class frmStochasten
         Me.grSeizoenen.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grSeizoenen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grSeizoenen.Location = New System.Drawing.Point(6, 7)
+        Me.grSeizoenen.Location = New System.Drawing.Point(8, 9)
+        Me.grSeizoenen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grSeizoenen.Name = "grSeizoenen"
         Me.grSeizoenen.RowHeadersWidth = 51
-        Me.grSeizoenen.Size = New System.Drawing.Size(1235, 449)
+        Me.grSeizoenen.Size = New System.Drawing.Size(1647, 553)
         Me.grSeizoenen.TabIndex = 0
         '
         'tabVolumes
         '
-        Me.tabVolumes.Location = New System.Drawing.Point(4, 22)
+        Me.tabVolumes.Location = New System.Drawing.Point(4, 25)
+        Me.tabVolumes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabVolumes.Name = "tabVolumes"
-        Me.tabVolumes.Size = New System.Drawing.Size(1275, 477)
+        Me.tabVolumes.Size = New System.Drawing.Size(1703, 590)
         Me.tabVolumes.TabIndex = 6
         Me.tabVolumes.Text = "Volumes"
         Me.tabVolumes.UseVisualStyleBackColor = True
         '
         'tabPatronen
         '
-        Me.tabPatronen.Location = New System.Drawing.Point(4, 22)
+        Me.tabPatronen.Location = New System.Drawing.Point(4, 25)
+        Me.tabPatronen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabPatronen.Name = "tabPatronen"
-        Me.tabPatronen.Size = New System.Drawing.Size(1275, 477)
+        Me.tabPatronen.Size = New System.Drawing.Size(1703, 590)
         Me.tabPatronen.TabIndex = 7
         Me.tabPatronen.Text = "Patronen"
         Me.tabPatronen.UseVisualStyleBackColor = True
         '
         'tabGrondwater
         '
-        Me.tabGrondwater.Location = New System.Drawing.Point(4, 22)
+        Me.tabGrondwater.Location = New System.Drawing.Point(4, 25)
+        Me.tabGrondwater.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabGrondwater.Name = "tabGrondwater"
-        Me.tabGrondwater.Size = New System.Drawing.Size(1275, 477)
+        Me.tabGrondwater.Size = New System.Drawing.Size(1703, 590)
         Me.tabGrondwater.TabIndex = 8
         Me.tabGrondwater.Text = "Grondwater"
         Me.tabGrondwater.UseVisualStyleBackColor = True
@@ -1082,9 +1128,10 @@ Partial Class frmStochasten
         'tabBoundaryNodes
         '
         Me.tabBoundaryNodes.Controls.Add(Me.GroupBox23)
-        Me.tabBoundaryNodes.Location = New System.Drawing.Point(4, 22)
+        Me.tabBoundaryNodes.Location = New System.Drawing.Point(4, 25)
+        Me.tabBoundaryNodes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabBoundaryNodes.Name = "tabBoundaryNodes"
-        Me.tabBoundaryNodes.Size = New System.Drawing.Size(1275, 477)
+        Me.tabBoundaryNodes.Size = New System.Drawing.Size(1703, 590)
         Me.tabBoundaryNodes.TabIndex = 11
         Me.tabBoundaryNodes.Text = "Randknopen"
         Me.tabBoundaryNodes.UseVisualStyleBackColor = True
@@ -1094,9 +1141,11 @@ Partial Class frmStochasten
         Me.GroupBox23.Controls.Add(Me.btnDeleteBoundaryNode)
         Me.GroupBox23.Controls.Add(Me.btnAddBoundaryNode)
         Me.GroupBox23.Controls.Add(Me.grBoundaryNodes)
-        Me.GroupBox23.Location = New System.Drawing.Point(8, 5)
+        Me.GroupBox23.Location = New System.Drawing.Point(11, 6)
+        Me.GroupBox23.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox23.Name = "GroupBox23"
-        Me.GroupBox23.Size = New System.Drawing.Size(396, 458)
+        Me.GroupBox23.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox23.Size = New System.Drawing.Size(528, 564)
         Me.GroupBox23.TabIndex = 13
         Me.GroupBox23.TabStop = False
         Me.GroupBox23.Text = "Randknopen"
@@ -1104,9 +1153,10 @@ Partial Class frmStochasten
         'btnDeleteBoundaryNode
         '
         Me.btnDeleteBoundaryNode.BackColor = System.Drawing.Color.IndianRed
-        Me.btnDeleteBoundaryNode.Location = New System.Drawing.Point(359, 47)
+        Me.btnDeleteBoundaryNode.Location = New System.Drawing.Point(479, 58)
+        Me.btnDeleteBoundaryNode.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnDeleteBoundaryNode.Name = "btnDeleteBoundaryNode"
-        Me.btnDeleteBoundaryNode.Size = New System.Drawing.Size(25, 25)
+        Me.btnDeleteBoundaryNode.Size = New System.Drawing.Size(33, 31)
         Me.btnDeleteBoundaryNode.TabIndex = 11
         Me.btnDeleteBoundaryNode.Text = "-"
         Me.btnDeleteBoundaryNode.UseVisualStyleBackColor = False
@@ -1114,9 +1164,10 @@ Partial Class frmStochasten
         'btnAddBoundaryNode
         '
         Me.btnAddBoundaryNode.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddBoundaryNode.Location = New System.Drawing.Point(359, 16)
+        Me.btnAddBoundaryNode.Location = New System.Drawing.Point(479, 20)
+        Me.btnAddBoundaryNode.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnAddBoundaryNode.Name = "btnAddBoundaryNode"
-        Me.btnAddBoundaryNode.Size = New System.Drawing.Size(25, 25)
+        Me.btnAddBoundaryNode.Size = New System.Drawing.Size(33, 31)
         Me.btnAddBoundaryNode.TabIndex = 10
         Me.btnAddBoundaryNode.Text = "+"
         Me.btnAddBoundaryNode.UseVisualStyleBackColor = False
@@ -1126,10 +1177,11 @@ Partial Class frmStochasten
         Me.grBoundaryNodes.AllowUserToAddRows = False
         Me.grBoundaryNodes.AllowUserToDeleteRows = False
         Me.grBoundaryNodes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grBoundaryNodes.Location = New System.Drawing.Point(6, 16)
+        Me.grBoundaryNodes.Location = New System.Drawing.Point(8, 20)
+        Me.grBoundaryNodes.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grBoundaryNodes.Name = "grBoundaryNodes"
         Me.grBoundaryNodes.RowHeadersWidth = 51
-        Me.grBoundaryNodes.Size = New System.Drawing.Size(347, 436)
+        Me.grBoundaryNodes.Size = New System.Drawing.Size(463, 537)
         Me.grBoundaryNodes.TabIndex = 1
         Me.grBoundaryNodes.Tag = "Zomer"
         '
@@ -1137,9 +1189,10 @@ Partial Class frmStochasten
         '
         Me.tabWaterlevels.Controls.Add(Me.grWLChart)
         Me.tabWaterlevels.Controls.Add(Me.grWLClasses)
-        Me.tabWaterlevels.Location = New System.Drawing.Point(4, 22)
+        Me.tabWaterlevels.Location = New System.Drawing.Point(4, 25)
+        Me.tabWaterlevels.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabWaterlevels.Name = "tabWaterlevels"
-        Me.tabWaterlevels.Size = New System.Drawing.Size(1275, 477)
+        Me.tabWaterlevels.Size = New System.Drawing.Size(1703, 590)
         Me.tabWaterlevels.TabIndex = 10
         Me.tabWaterlevels.Text = "Waterhoogtes"
         Me.tabWaterlevels.UseVisualStyleBackColor = True
@@ -1148,9 +1201,11 @@ Partial Class frmStochasten
         '
         Me.grWLChart.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grWLChart.Controls.Add(Me.chartBoundaries)
-        Me.grWLChart.Location = New System.Drawing.Point(247, 8)
+        Me.grWLChart.Location = New System.Drawing.Point(329, 10)
+        Me.grWLChart.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grWLChart.Name = "grWLChart"
-        Me.grWLChart.Size = New System.Drawing.Size(486, 467)
+        Me.grWLChart.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grWLChart.Size = New System.Drawing.Size(648, 575)
         Me.grWLChart.TabIndex = 9
         Me.grWLChart.TabStop = False
         Me.grWLChart.Text = "Grafiek"
@@ -1161,13 +1216,14 @@ Partial Class frmStochasten
         Me.chartBoundaries.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
         Me.chartBoundaries.Legends.Add(Legend1)
-        Me.chartBoundaries.Location = New System.Drawing.Point(6, 16)
+        Me.chartBoundaries.Location = New System.Drawing.Point(8, 20)
+        Me.chartBoundaries.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.chartBoundaries.Name = "chartBoundaries"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
         Series1.Name = "Series1"
         Me.chartBoundaries.Series.Add(Series1)
-        Me.chartBoundaries.Size = New System.Drawing.Size(474, 444)
+        Me.chartBoundaries.Size = New System.Drawing.Size(632, 546)
         Me.chartBoundaries.TabIndex = 0
         Me.chartBoundaries.Text = "Grafiek"
         '
@@ -1179,9 +1235,11 @@ Partial Class frmStochasten
         Me.grWLClasses.Controls.Add(Me.btnDeleteBoundaryClass)
         Me.grWLClasses.Controls.Add(Me.btnAddBoundaryClass)
         Me.grWLClasses.Controls.Add(Me.grWaterLevelClasses)
-        Me.grWLClasses.Location = New System.Drawing.Point(4, 8)
+        Me.grWLClasses.Location = New System.Drawing.Point(5, 10)
+        Me.grWLClasses.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grWLClasses.Name = "grWLClasses"
-        Me.grWLClasses.Size = New System.Drawing.Size(453, 467)
+        Me.grWLClasses.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.grWLClasses.Size = New System.Drawing.Size(604, 575)
         Me.grWLClasses.TabIndex = 3
         Me.grWLClasses.TabStop = False
         Me.grWLClasses.Text = "Klasse-indeling"
@@ -1189,9 +1247,10 @@ Partial Class frmStochasten
         'btnCopy
         '
         Me.btnCopy.BackColor = System.Drawing.Color.Gold
-        Me.btnCopy.Location = New System.Drawing.Point(421, 80)
+        Me.btnCopy.Location = New System.Drawing.Point(561, 98)
+        Me.btnCopy.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnCopy.Name = "btnCopy"
-        Me.btnCopy.Size = New System.Drawing.Size(25, 25)
+        Me.btnCopy.Size = New System.Drawing.Size(33, 31)
         Me.btnCopy.TabIndex = 13
         Me.btnCopy.Text = "c"
         Me.btnCopy.UseVisualStyleBackColor = False
@@ -1202,28 +1261,31 @@ Partial Class frmStochasten
         Me.grWaterLevelSeries.AllowUserToDeleteRows = False
         Me.grWaterLevelSeries.AllowUserToResizeRows = False
         Me.grWaterLevelSeries.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grWaterLevelSeries.Location = New System.Drawing.Point(6, 217)
+        Me.grWaterLevelSeries.Location = New System.Drawing.Point(8, 267)
+        Me.grWaterLevelSeries.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grWaterLevelSeries.Name = "grWaterLevelSeries"
         Me.grWaterLevelSeries.RowHeadersWidth = 51
-        Me.grWaterLevelSeries.Size = New System.Drawing.Size(410, 219)
+        Me.grWaterLevelSeries.Size = New System.Drawing.Size(547, 270)
         Me.grWaterLevelSeries.TabIndex = 2
         Me.grWaterLevelSeries.Tag = ""
         '
         'lblBoundaryChecksum
         '
         Me.lblBoundaryChecksum.AutoSize = True
-        Me.lblBoundaryChecksum.Location = New System.Drawing.Point(3, 447)
+        Me.lblBoundaryChecksum.Location = New System.Drawing.Point(4, 550)
+        Me.lblBoundaryChecksum.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblBoundaryChecksum.Name = "lblBoundaryChecksum"
-        Me.lblBoundaryChecksum.Size = New System.Drawing.Size(63, 13)
+        Me.lblBoundaryChecksum.Size = New System.Drawing.Size(81, 17)
         Me.lblBoundaryChecksum.TabIndex = 12
         Me.lblBoundaryChecksum.Text = "Checksum="
         '
         'btnDeleteBoundaryClass
         '
         Me.btnDeleteBoundaryClass.BackColor = System.Drawing.Color.IndianRed
-        Me.btnDeleteBoundaryClass.Location = New System.Drawing.Point(421, 48)
+        Me.btnDeleteBoundaryClass.Location = New System.Drawing.Point(561, 59)
+        Me.btnDeleteBoundaryClass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnDeleteBoundaryClass.Name = "btnDeleteBoundaryClass"
-        Me.btnDeleteBoundaryClass.Size = New System.Drawing.Size(25, 25)
+        Me.btnDeleteBoundaryClass.Size = New System.Drawing.Size(33, 31)
         Me.btnDeleteBoundaryClass.TabIndex = 11
         Me.btnDeleteBoundaryClass.Text = "-"
         Me.btnDeleteBoundaryClass.UseVisualStyleBackColor = False
@@ -1231,9 +1293,10 @@ Partial Class frmStochasten
         'btnAddBoundaryClass
         '
         Me.btnAddBoundaryClass.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddBoundaryClass.Location = New System.Drawing.Point(421, 16)
+        Me.btnAddBoundaryClass.Location = New System.Drawing.Point(561, 20)
+        Me.btnAddBoundaryClass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnAddBoundaryClass.Name = "btnAddBoundaryClass"
-        Me.btnAddBoundaryClass.Size = New System.Drawing.Size(25, 25)
+        Me.btnAddBoundaryClass.Size = New System.Drawing.Size(33, 31)
         Me.btnAddBoundaryClass.TabIndex = 10
         Me.btnAddBoundaryClass.Text = "+"
         Me.btnAddBoundaryClass.UseVisualStyleBackColor = False
@@ -1243,10 +1306,11 @@ Partial Class frmStochasten
         Me.grWaterLevelClasses.AllowUserToAddRows = False
         Me.grWaterLevelClasses.AllowUserToDeleteRows = False
         Me.grWaterLevelClasses.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grWaterLevelClasses.Location = New System.Drawing.Point(6, 16)
+        Me.grWaterLevelClasses.Location = New System.Drawing.Point(8, 20)
+        Me.grWaterLevelClasses.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grWaterLevelClasses.Name = "grWaterLevelClasses"
         Me.grWaterLevelClasses.RowHeadersWidth = 51
-        Me.grWaterLevelClasses.Size = New System.Drawing.Size(410, 195)
+        Me.grWaterLevelClasses.Size = New System.Drawing.Size(547, 240)
         Me.grWaterLevelClasses.TabIndex = 1
         Me.grWaterLevelClasses.Tag = "Zomer"
         '
@@ -1254,9 +1318,10 @@ Partial Class frmStochasten
         '
         Me.tabWind.Controls.Add(Me.GroupBox22)
         Me.tabWind.Controls.Add(Me.GroupBox24)
-        Me.tabWind.Location = New System.Drawing.Point(4, 22)
+        Me.tabWind.Location = New System.Drawing.Point(4, 25)
+        Me.tabWind.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabWind.Name = "tabWind"
-        Me.tabWind.Size = New System.Drawing.Size(1275, 477)
+        Me.tabWind.Size = New System.Drawing.Size(1703, 590)
         Me.tabWind.TabIndex = 12
         Me.tabWind.Text = "Wind"
         Me.tabWind.UseVisualStyleBackColor = True
@@ -1264,9 +1329,11 @@ Partial Class frmStochasten
         'GroupBox22
         '
         Me.GroupBox22.Controls.Add(Me.grWindSeries)
-        Me.GroupBox22.Location = New System.Drawing.Point(408, 11)
+        Me.GroupBox22.Location = New System.Drawing.Point(544, 14)
+        Me.GroupBox22.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox22.Name = "GroupBox22"
-        Me.GroupBox22.Size = New System.Drawing.Size(371, 449)
+        Me.GroupBox22.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox22.Size = New System.Drawing.Size(495, 553)
         Me.GroupBox22.TabIndex = 10
         Me.GroupBox22.TabStop = False
         Me.GroupBox22.Text = "Tijdreeks"
@@ -1277,10 +1344,11 @@ Partial Class frmStochasten
         Me.grWindSeries.AllowUserToDeleteRows = False
         Me.grWindSeries.AllowUserToResizeRows = False
         Me.grWindSeries.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grWindSeries.Location = New System.Drawing.Point(6, 16)
+        Me.grWindSeries.Location = New System.Drawing.Point(8, 20)
+        Me.grWindSeries.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grWindSeries.Name = "grWindSeries"
         Me.grWindSeries.RowHeadersWidth = 51
-        Me.grWindSeries.Size = New System.Drawing.Size(362, 405)
+        Me.grWindSeries.Size = New System.Drawing.Size(483, 498)
         Me.grWindSeries.TabIndex = 2
         Me.grWindSeries.Tag = ""
         '
@@ -1291,9 +1359,11 @@ Partial Class frmStochasten
         Me.GroupBox24.Controls.Add(Me.btnDeleteWindClass)
         Me.GroupBox24.Controls.Add(Me.btnAddWindClass)
         Me.GroupBox24.Controls.Add(Me.grWindKlassen)
-        Me.GroupBox24.Location = New System.Drawing.Point(8, 10)
+        Me.GroupBox24.Location = New System.Drawing.Point(11, 12)
+        Me.GroupBox24.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox24.Name = "GroupBox24"
-        Me.GroupBox24.Size = New System.Drawing.Size(391, 453)
+        Me.GroupBox24.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox24.Size = New System.Drawing.Size(521, 558)
         Me.GroupBox24.TabIndex = 8
         Me.GroupBox24.TabStop = False
         Me.GroupBox24.Text = "Wind"
@@ -1301,9 +1371,10 @@ Partial Class frmStochasten
         'btnWindCopy
         '
         Me.btnWindCopy.BackColor = System.Drawing.Color.Gold
-        Me.btnWindCopy.Location = New System.Drawing.Point(360, 82)
+        Me.btnWindCopy.Location = New System.Drawing.Point(480, 101)
+        Me.btnWindCopy.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnWindCopy.Name = "btnWindCopy"
-        Me.btnWindCopy.Size = New System.Drawing.Size(25, 25)
+        Me.btnWindCopy.Size = New System.Drawing.Size(33, 31)
         Me.btnWindCopy.TabIndex = 14
         Me.btnWindCopy.Text = "c"
         Me.btnWindCopy.UseVisualStyleBackColor = False
@@ -1311,18 +1382,20 @@ Partial Class frmStochasten
         'lblWindChecksum
         '
         Me.lblWindChecksum.AutoSize = True
-        Me.lblWindChecksum.Location = New System.Drawing.Point(6, 437)
+        Me.lblWindChecksum.Location = New System.Drawing.Point(8, 538)
+        Me.lblWindChecksum.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblWindChecksum.Name = "lblWindChecksum"
-        Me.lblWindChecksum.Size = New System.Drawing.Size(63, 13)
+        Me.lblWindChecksum.Size = New System.Drawing.Size(81, 17)
         Me.lblWindChecksum.TabIndex = 13
         Me.lblWindChecksum.Text = "Checksum="
         '
         'btnDeleteWindClass
         '
         Me.btnDeleteWindClass.BackColor = System.Drawing.Color.IndianRed
-        Me.btnDeleteWindClass.Location = New System.Drawing.Point(360, 50)
+        Me.btnDeleteWindClass.Location = New System.Drawing.Point(480, 62)
+        Me.btnDeleteWindClass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnDeleteWindClass.Name = "btnDeleteWindClass"
-        Me.btnDeleteWindClass.Size = New System.Drawing.Size(25, 25)
+        Me.btnDeleteWindClass.Size = New System.Drawing.Size(33, 31)
         Me.btnDeleteWindClass.TabIndex = 11
         Me.btnDeleteWindClass.Text = "-"
         Me.btnDeleteWindClass.UseVisualStyleBackColor = False
@@ -1330,9 +1403,10 @@ Partial Class frmStochasten
         'btnAddWindClass
         '
         Me.btnAddWindClass.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddWindClass.Location = New System.Drawing.Point(360, 19)
+        Me.btnAddWindClass.Location = New System.Drawing.Point(480, 23)
+        Me.btnAddWindClass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnAddWindClass.Name = "btnAddWindClass"
-        Me.btnAddWindClass.Size = New System.Drawing.Size(25, 25)
+        Me.btnAddWindClass.Size = New System.Drawing.Size(33, 31)
         Me.btnAddWindClass.TabIndex = 10
         Me.btnAddWindClass.Text = "+"
         Me.btnAddWindClass.UseVisualStyleBackColor = False
@@ -1342,18 +1416,20 @@ Partial Class frmStochasten
         Me.grWindKlassen.AllowUserToAddRows = False
         Me.grWindKlassen.AllowUserToDeleteRows = False
         Me.grWindKlassen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grWindKlassen.Location = New System.Drawing.Point(6, 17)
+        Me.grWindKlassen.Location = New System.Drawing.Point(8, 21)
+        Me.grWindKlassen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grWindKlassen.Name = "grWindKlassen"
         Me.grWindKlassen.RowHeadersWidth = 51
-        Me.grWindKlassen.Size = New System.Drawing.Size(348, 405)
+        Me.grWindKlassen.Size = New System.Drawing.Size(464, 498)
         Me.grWindKlassen.TabIndex = 1
         Me.grWindKlassen.Tag = "Zomer"
         '
         'tabExtra
         '
-        Me.tabExtra.Location = New System.Drawing.Point(4, 22)
+        Me.tabExtra.Location = New System.Drawing.Point(4, 25)
+        Me.tabExtra.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabExtra.Name = "tabExtra"
-        Me.tabExtra.Size = New System.Drawing.Size(1275, 477)
+        Me.tabExtra.Size = New System.Drawing.Size(1703, 590)
         Me.tabExtra.TabIndex = 13
         Me.tabExtra.Text = "Extra"
         Me.tabExtra.UseVisualStyleBackColor = True
@@ -1362,10 +1438,11 @@ Partial Class frmStochasten
         '
         Me.tabPostprocessing.Controls.Add(Me.btnRemoveOutputLocation)
         Me.tabPostprocessing.Controls.Add(Me.grOutputLocations)
-        Me.tabPostprocessing.Location = New System.Drawing.Point(4, 22)
+        Me.tabPostprocessing.Location = New System.Drawing.Point(4, 25)
+        Me.tabPostprocessing.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.tabPostprocessing.Name = "tabPostprocessing"
-        Me.tabPostprocessing.Padding = New System.Windows.Forms.Padding(3)
-        Me.tabPostprocessing.Size = New System.Drawing.Size(1275, 477)
+        Me.tabPostprocessing.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.tabPostprocessing.Size = New System.Drawing.Size(1703, 590)
         Me.tabPostprocessing.TabIndex = 4
         Me.tabPostprocessing.Text = "Uitvoer"
         Me.tabPostprocessing.UseVisualStyleBackColor = True
@@ -1374,10 +1451,10 @@ Partial Class frmStochasten
         '
         Me.btnRemoveOutputLocation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRemoveOutputLocation.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveOutputLocation.Location = New System.Drawing.Point(1242, 6)
-        Me.btnRemoveOutputLocation.Margin = New System.Windows.Forms.Padding(2)
+        Me.btnRemoveOutputLocation.Location = New System.Drawing.Point(1656, 7)
+        Me.btnRemoveOutputLocation.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnRemoveOutputLocation.Name = "btnRemoveOutputLocation"
-        Me.btnRemoveOutputLocation.Size = New System.Drawing.Size(28, 26)
+        Me.btnRemoveOutputLocation.Size = New System.Drawing.Size(37, 32)
         Me.btnRemoveOutputLocation.TabIndex = 1
         Me.btnRemoveOutputLocation.Text = "-"
         Me.btnRemoveOutputLocation.UseVisualStyleBackColor = False
@@ -1389,10 +1466,11 @@ Partial Class frmStochasten
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grOutputLocations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grOutputLocations.Location = New System.Drawing.Point(3, 6)
+        Me.grOutputLocations.Location = New System.Drawing.Point(4, 7)
+        Me.grOutputLocations.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grOutputLocations.Name = "grOutputLocations"
         Me.grOutputLocations.RowHeadersWidth = 51
-        Me.grOutputLocations.Size = New System.Drawing.Size(1234, 449)
+        Me.grOutputLocations.Size = New System.Drawing.Size(1645, 553)
         Me.grOutputLocations.TabIndex = 0
         '
         'TabRuns
@@ -1408,9 +1486,10 @@ Partial Class frmStochasten
         Me.TabRuns.Controls.Add(Me.lblnRuns)
         Me.TabRuns.Controls.Add(Me.lblCheckSumRuns)
         Me.TabRuns.Controls.Add(Me.grRuns)
-        Me.TabRuns.Location = New System.Drawing.Point(4, 22)
+        Me.TabRuns.Location = New System.Drawing.Point(4, 25)
+        Me.TabRuns.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.TabRuns.Name = "TabRuns"
-        Me.TabRuns.Size = New System.Drawing.Size(1275, 477)
+        Me.TabRuns.Size = New System.Drawing.Size(1703, 590)
         Me.TabRuns.TabIndex = 5
         Me.TabRuns.Text = "Simulaties"
         Me.TabRuns.UseVisualStyleBackColor = True
@@ -1420,9 +1499,10 @@ Partial Class frmStochasten
         Me.btnUitlezen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnUitlezen.BackColor = System.Drawing.Color.YellowGreen
         Me.btnUitlezen.Enabled = False
-        Me.btnUitlezen.Location = New System.Drawing.Point(1163, 181)
+        Me.btnUitlezen.Location = New System.Drawing.Point(1551, 223)
+        Me.btnUitlezen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnUitlezen.Name = "btnUitlezen"
-        Me.btnUitlezen.Size = New System.Drawing.Size(100, 50)
+        Me.btnUitlezen.Size = New System.Drawing.Size(133, 62)
         Me.btnUitlezen.TabIndex = 37
         Me.btnUitlezen.Text = "Uitlezen"
         Me.btnUitlezen.UseVisualStyleBackColor = False
@@ -1431,9 +1511,10 @@ Partial Class frmStochasten
         '
         Me.btnViewer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnViewer.BackColor = System.Drawing.Color.CornflowerBlue
-        Me.btnViewer.Location = New System.Drawing.Point(1163, 293)
+        Me.btnViewer.Location = New System.Drawing.Point(1551, 361)
+        Me.btnViewer.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnViewer.Name = "btnViewer"
-        Me.btnViewer.Size = New System.Drawing.Size(100, 50)
+        Me.btnViewer.Size = New System.Drawing.Size(133, 62)
         Me.btnViewer.TabIndex = 36
         Me.btnViewer.Text = "Publiceren"
         Me.btnViewer.UseVisualStyleBackColor = False
@@ -1442,9 +1523,10 @@ Partial Class frmStochasten
         '
         Me.btnWissen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnWissen.BackColor = System.Drawing.Color.DarkOrange
-        Me.btnWissen.Location = New System.Drawing.Point(1163, 69)
+        Me.btnWissen.Location = New System.Drawing.Point(1551, 85)
+        Me.btnWissen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnWissen.Name = "btnWissen"
-        Me.btnWissen.Size = New System.Drawing.Size(100, 50)
+        Me.btnWissen.Size = New System.Drawing.Size(133, 62)
         Me.btnWissen.TabIndex = 35
         Me.btnWissen.Text = "Wissen"
         Me.btnWissen.UseVisualStyleBackColor = False
@@ -1454,9 +1536,10 @@ Partial Class frmStochasten
         Me.btnPopulateRuns.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPopulateRuns.BackColor = System.Drawing.Color.IndianRed
         Me.btnPopulateRuns.Enabled = False
-        Me.btnPopulateRuns.Location = New System.Drawing.Point(1163, 13)
+        Me.btnPopulateRuns.Location = New System.Drawing.Point(1551, 16)
+        Me.btnPopulateRuns.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnPopulateRuns.Name = "btnPopulateRuns"
-        Me.btnPopulateRuns.Size = New System.Drawing.Size(100, 50)
+        Me.btnPopulateRuns.Size = New System.Drawing.Size(133, 62)
         Me.btnPopulateRuns.TabIndex = 34
         Me.btnPopulateRuns.Text = "Samenstellen"
         Me.btnPopulateRuns.UseVisualStyleBackColor = False
@@ -1465,9 +1548,10 @@ Partial Class frmStochasten
         '
         Me.btnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnExport.BackColor = System.Drawing.Color.SlateBlue
-        Me.btnExport.Location = New System.Drawing.Point(1163, 349)
+        Me.btnExport.Location = New System.Drawing.Point(1551, 430)
+        Me.btnExport.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(100, 50)
+        Me.btnExport.Size = New System.Drawing.Size(133, 62)
         Me.btnExport.TabIndex = 33
         Me.btnExport.Text = "Exporteren"
         Me.btnExport.UseVisualStyleBackColor = False
@@ -1476,9 +1560,10 @@ Partial Class frmStochasten
         '
         Me.btnPostprocessing.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPostprocessing.BackColor = System.Drawing.Color.LightSeaGreen
-        Me.btnPostprocessing.Location = New System.Drawing.Point(1163, 237)
+        Me.btnPostprocessing.Location = New System.Drawing.Point(1551, 292)
+        Me.btnPostprocessing.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnPostprocessing.Name = "btnPostprocessing"
-        Me.btnPostprocessing.Size = New System.Drawing.Size(100, 50)
+        Me.btnPostprocessing.Size = New System.Drawing.Size(133, 62)
         Me.btnPostprocessing.TabIndex = 32
         Me.btnPostprocessing.Text = "Nabewerken"
         Me.btnPostprocessing.UseVisualStyleBackColor = False
@@ -1487,9 +1572,10 @@ Partial Class frmStochasten
         '
         Me.btnStartStop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnStartStop.BackColor = System.Drawing.Color.Gold
-        Me.btnStartStop.Location = New System.Drawing.Point(1163, 125)
+        Me.btnStartStop.Location = New System.Drawing.Point(1551, 154)
+        Me.btnStartStop.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnStartStop.Name = "btnStartStop"
-        Me.btnStartStop.Size = New System.Drawing.Size(100, 50)
+        Me.btnStartStop.Size = New System.Drawing.Size(133, 62)
         Me.btnStartStop.TabIndex = 31
         Me.btnStartStop.Text = "Starten"
         Me.btnStartStop.UseVisualStyleBackColor = False
@@ -1498,9 +1584,10 @@ Partial Class frmStochasten
         '
         Me.lblSelected.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblSelected.AutoSize = True
-        Me.lblSelected.Location = New System.Drawing.Point(10, 454)
+        Me.lblSelected.Location = New System.Drawing.Point(13, 559)
+        Me.lblSelected.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblSelected.Name = "lblSelected"
-        Me.lblSelected.Size = New System.Drawing.Size(120, 13)
+        Me.lblSelected.Size = New System.Drawing.Size(161, 17)
         Me.lblSelected.TabIndex = 30
         Me.lblSelected.Text = "Geen runs geselecteerd"
         '
@@ -1508,9 +1595,10 @@ Partial Class frmStochasten
         '
         Me.lblnRuns.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblnRuns.AutoSize = True
-        Me.lblnRuns.Location = New System.Drawing.Point(10, 435)
+        Me.lblnRuns.Location = New System.Drawing.Point(13, 535)
+        Me.lblnRuns.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblnRuns.Name = "lblnRuns"
-        Me.lblnRuns.Size = New System.Drawing.Size(98, 13)
+        Me.lblnRuns.Size = New System.Drawing.Size(131, 17)
         Me.lblnRuns.TabIndex = 29
         Me.lblnRuns.Text = "Totaal aantal runs="
         '
@@ -1518,9 +1606,10 @@ Partial Class frmStochasten
         '
         Me.lblCheckSumRuns.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblCheckSumRuns.AutoSize = True
-        Me.lblCheckSumRuns.Location = New System.Drawing.Point(10, 415)
+        Me.lblCheckSumRuns.Location = New System.Drawing.Point(13, 511)
+        Me.lblCheckSumRuns.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblCheckSumRuns.Name = "lblCheckSumRuns"
-        Me.lblCheckSumRuns.Size = New System.Drawing.Size(63, 13)
+        Me.lblCheckSumRuns.Size = New System.Drawing.Size(81, 17)
         Me.lblCheckSumRuns.TabIndex = 28
         Me.lblCheckSumRuns.Text = "Checksum="
         '
@@ -1533,10 +1622,11 @@ Partial Class frmStochasten
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grRuns.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.grRuns.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
-        Me.grRuns.Location = New System.Drawing.Point(13, 13)
+        Me.grRuns.Location = New System.Drawing.Point(17, 16)
+        Me.grRuns.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grRuns.Name = "grRuns"
         Me.grRuns.RowHeadersWidth = 60
-        Me.grRuns.Size = New System.Drawing.Size(1144, 388)
+        Me.grRuns.Size = New System.Drawing.Size(1525, 478)
         Me.grRuns.TabIndex = 1
         '
         'dlgOpenFile
@@ -1573,7 +1663,7 @@ Partial Class frmStochasten
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(9, 37)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(111, 13)
+        Me.Label3.Size = New System.Drawing.Size(148, 17)
         Me.Label3.TabIndex = 32
         Me.Label3.Text = "Gebiedsreductiefactor"
         '
@@ -1582,7 +1672,7 @@ Partial Class frmStochasten
         Me.TextBox1.Enabled = False
         Me.TextBox1.Location = New System.Drawing.Point(140, 34)
         Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(38, 20)
+        Me.TextBox1.Size = New System.Drawing.Size(38, 22)
         Me.TextBox1.TabIndex = 10
         Me.TextBox1.Text = "1"
         '
@@ -1602,7 +1692,7 @@ Partial Class frmStochasten
         Me.ComboBox1.FormattingEnabled = True
         Me.ComboBox1.Location = New System.Drawing.Point(93, 33)
         Me.ComboBox1.Name = "ComboBox1"
-        Me.ComboBox1.Size = New System.Drawing.Size(98, 21)
+        Me.ComboBox1.Size = New System.Drawing.Size(98, 25)
         Me.ComboBox1.TabIndex = 35
         '
         'Label6
@@ -1610,7 +1700,7 @@ Partial Class frmStochasten
         Me.Label6.AutoSize = True
         Me.Label6.Location = New System.Drawing.Point(6, 36)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(81, 13)
+        Me.Label6.Size = New System.Drawing.Size(108, 17)
         Me.Label6.TabIndex = 36
         Me.Label6.Text = "Klimaatscenario"
         '
@@ -1634,7 +1724,7 @@ Partial Class frmStochasten
         Me.Label10.AutoSize = True
         Me.Label10.Location = New System.Drawing.Point(9, 54)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(113, 13)
+        Me.Label10.Size = New System.Drawing.Size(154, 17)
         Me.Label10.TabIndex = 32
         Me.Label10.Text = "Uitloop neerslag (uren)"
         '
@@ -1643,7 +1733,7 @@ Partial Class frmStochasten
         Me.TextBox2.Enabled = False
         Me.TextBox2.Location = New System.Drawing.Point(132, 51)
         Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(56, 20)
+        Me.TextBox2.Size = New System.Drawing.Size(56, 22)
         Me.TextBox2.TabIndex = 9
         Me.TextBox2.Text = "48"
         '
@@ -1652,7 +1742,7 @@ Partial Class frmStochasten
         Me.Label12.AutoSize = True
         Me.Label12.Location = New System.Drawing.Point(9, 27)
         Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(100, 13)
+        Me.Label12.Size = New System.Drawing.Size(137, 17)
         Me.Label12.TabIndex = 6
         Me.Label12.Text = "Neerslagduur (uren)"
         '
@@ -1661,7 +1751,7 @@ Partial Class frmStochasten
         Me.ComboBox2.FormattingEnabled = True
         Me.ComboBox2.Location = New System.Drawing.Point(132, 27)
         Me.ComboBox2.Name = "ComboBox2"
-        Me.ComboBox2.Size = New System.Drawing.Size(56, 21)
+        Me.ComboBox2.Size = New System.Drawing.Size(56, 25)
         Me.ComboBox2.TabIndex = 0
         '
         'Label13
@@ -1669,7 +1759,7 @@ Partial Class frmStochasten
         Me.Label13.AutoSize = True
         Me.Label13.Location = New System.Drawing.Point(9, 80)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(117, 13)
+        Me.Label13.Size = New System.Drawing.Size(157, 17)
         Me.Label13.TabIndex = 31
         Me.Label13.Text = "Parallelle berekeningen"
         '
@@ -1678,7 +1768,7 @@ Partial Class frmStochasten
         Me.TextBox3.Enabled = False
         Me.TextBox3.Location = New System.Drawing.Point(132, 77)
         Me.TextBox3.Name = "TextBox3"
-        Me.TextBox3.Size = New System.Drawing.Size(45, 20)
+        Me.TextBox3.Size = New System.Drawing.Size(45, 22)
         Me.TextBox3.TabIndex = 28
         Me.TextBox3.Text = "4"
         '
@@ -1702,7 +1792,7 @@ Partial Class frmStochasten
         Me.TextBox4.Enabled = False
         Me.TextBox4.Location = New System.Drawing.Point(177, 54)
         Me.TextBox4.Name = "TextBox4"
-        Me.TextBox4.Size = New System.Drawing.Size(759, 20)
+        Me.TextBox4.Size = New System.Drawing.Size(759, 22)
         Me.TextBox4.TabIndex = 39
         '
         'Label14
@@ -1710,7 +1800,7 @@ Partial Class frmStochasten
         Me.Label14.AutoSize = True
         Me.Label14.Location = New System.Drawing.Point(9, 57)
         Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(71, 13)
+        Me.Label14.Size = New System.Drawing.Size(94, 17)
         Me.Label14.TabIndex = 38
         Me.Label14.Text = "ResultatenDir"
         '
@@ -1719,7 +1809,7 @@ Partial Class frmStochasten
         Me.Label17.AutoSize = True
         Me.Label17.Location = New System.Drawing.Point(9, 31)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(74, 13)
+        Me.Label17.Size = New System.Drawing.Size(97, 17)
         Me.Label17.TabIndex = 26
         Me.Label17.Text = "StochastenDir"
         '
@@ -1728,7 +1818,7 @@ Partial Class frmStochasten
         Me.TextBox5.Enabled = False
         Me.TextBox5.Location = New System.Drawing.Point(177, 28)
         Me.TextBox5.Name = "TextBox5"
-        Me.TextBox5.Size = New System.Drawing.Size(759, 20)
+        Me.TextBox5.Size = New System.Drawing.Size(759, 22)
         Me.TextBox5.TabIndex = 25
         '
         'TextBox6
@@ -1736,7 +1826,7 @@ Partial Class frmStochasten
         Me.TextBox6.Enabled = False
         Me.TextBox6.Location = New System.Drawing.Point(177, 80)
         Me.TextBox6.Name = "TextBox6"
-        Me.TextBox6.Size = New System.Drawing.Size(759, 20)
+        Me.TextBox6.Size = New System.Drawing.Size(759, 22)
         Me.TextBox6.TabIndex = 34
         '
         'Label18
@@ -1744,7 +1834,7 @@ Partial Class frmStochasten
         Me.Label18.AutoSize = True
         Me.Label18.Location = New System.Drawing.Point(9, 83)
         Me.Label18.Name = "Label18"
-        Me.Label18.Size = New System.Drawing.Size(156, 13)
+        Me.Label18.Size = New System.Drawing.Size(208, 17)
         Me.Label18.TabIndex = 32
         Me.Label18.Text = "Configuratiebestand stochasten"
         '
@@ -1907,7 +1997,7 @@ Partial Class frmStochasten
         Me.Label19.AutoSize = True
         Me.Label19.Location = New System.Drawing.Point(6, 344)
         Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(63, 13)
+        Me.Label19.Size = New System.Drawing.Size(81, 17)
         Me.Label19.TabIndex = 2
         Me.Label19.Text = "Checksum="
         '
@@ -1939,7 +2029,7 @@ Partial Class frmStochasten
         Me.Label20.AutoSize = True
         Me.Label20.Location = New System.Drawing.Point(3, 344)
         Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(63, 13)
+        Me.Label20.Size = New System.Drawing.Size(81, 17)
         Me.Label20.TabIndex = 1
         Me.Label20.Text = "Checksum="
         '
@@ -2017,7 +2107,7 @@ Partial Class frmStochasten
         Me.Label21.AutoSize = True
         Me.Label21.Location = New System.Drawing.Point(6, 346)
         Me.Label21.Name = "Label21"
-        Me.Label21.Size = New System.Drawing.Size(63, 13)
+        Me.Label21.Size = New System.Drawing.Size(81, 17)
         Me.Label21.TabIndex = 2
         Me.Label21.Text = "Checksum="
         '
@@ -2059,7 +2149,7 @@ Partial Class frmStochasten
         Me.Label22.AutoSize = True
         Me.Label22.Location = New System.Drawing.Point(6, 349)
         Me.Label22.Name = "Label22"
-        Me.Label22.Size = New System.Drawing.Size(63, 13)
+        Me.Label22.Size = New System.Drawing.Size(81, 17)
         Me.Label22.TabIndex = 1
         Me.Label22.Text = "Checksum="
         '
@@ -2244,7 +2334,7 @@ Partial Class frmStochasten
         Me.Label23.AutoSize = True
         Me.Label23.Location = New System.Drawing.Point(158, 352)
         Me.Label23.Name = "Label23"
-        Me.Label23.Size = New System.Drawing.Size(66, 13)
+        Me.Label23.Size = New System.Drawing.Size(88, 17)
         Me.Label23.TabIndex = 3
         Me.Label23.Text = "Aantal runs="
         '
@@ -2264,7 +2354,7 @@ Partial Class frmStochasten
         Me.Label24.AutoSize = True
         Me.Label24.Location = New System.Drawing.Point(3, 352)
         Me.Label24.Name = "Label24"
-        Me.Label24.Size = New System.Drawing.Size(63, 13)
+        Me.Label24.Size = New System.Drawing.Size(81, 17)
         Me.Label24.TabIndex = 2
         Me.Label24.Text = "Checksum="
         '
@@ -2406,7 +2496,7 @@ Partial Class frmStochasten
         Me.ComboBox3.FormattingEnabled = True
         Me.ComboBox3.Location = New System.Drawing.Point(17, 17)
         Me.ComboBox3.Name = "ComboBox3"
-        Me.ComboBox3.Size = New System.Drawing.Size(154, 21)
+        Me.ComboBox3.Size = New System.Drawing.Size(154, 25)
         Me.ComboBox3.TabIndex = 0
         '
         'Button9
@@ -2500,9 +2590,10 @@ Partial Class frmStochasten
         '
         Me.lblProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblProgress.AutoSize = True
-        Me.lblProgress.Location = New System.Drawing.Point(14, 537)
+        Me.lblProgress.Location = New System.Drawing.Point(19, 661)
+        Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(59, 13)
+        Me.lblProgress.Size = New System.Drawing.Size(78, 17)
         Me.lblProgress.TabIndex = 23
         Me.lblProgress.Text = "Voortgang:"
         '
@@ -2510,22 +2601,24 @@ Partial Class frmStochasten
         '
         Me.prProgress.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.prProgress.Location = New System.Drawing.Point(14, 562)
+        Me.prProgress.Location = New System.Drawing.Point(19, 692)
+        Me.prProgress.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.prProgress.Name = "prProgress"
-        Me.prProgress.Size = New System.Drawing.Size(1275, 23)
+        Me.prProgress.Size = New System.Drawing.Size(1700, 28)
         Me.prProgress.TabIndex = 24
         '
         'frmStochasten
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1305, 597)
+        Me.ClientSize = New System.Drawing.Size(1740, 735)
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.tabStochastentool)
         Me.Controls.Add(Me.mnuMenu)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.MainMenuStrip = Me.mnuMenu
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmStochasten"
         Me.Text = "De Nieuwe StochastenTool"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized

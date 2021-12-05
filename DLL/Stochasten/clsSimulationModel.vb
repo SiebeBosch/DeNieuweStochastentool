@@ -28,6 +28,8 @@ Public Class clsSimulationModel
                 ModelType = GeneralFunctions.enmSimulationModel.SOBEK
             Case Is = "CUSTOM"
                 ModelType = GeneralFunctions.enmSimulationModel.Custom
+            Case Is = "DIMR"
+                ModelType = GeneralFunctions.enmSimulationModel.DIMR
         End Select
         Exec = myExec
         Args = myArgs

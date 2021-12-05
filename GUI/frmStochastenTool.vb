@@ -93,8 +93,10 @@ Public Class frmStochasten
                 Setup.SetActiveCase(myModel.CaseName)
                 Setup.InitSobekModel(True, True)
                 Setup.ReadSobekDataDetail(False, False, False, False, False, True, False, False, False, False, False)
-            ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DHYDRO Then
+            ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
                 'do nothing since D-Hydro does not yet have a case manager
+                Call Setup.SetDIMRProject(myModel.ModelDir)
+                Call Setup.DIMRData.DIMRConfig.Read()
             End If
         Next
 

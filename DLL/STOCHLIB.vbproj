@@ -179,6 +179,11 @@
     <Compile Include="Databases\clsDataGridViewDatabaseConnection.vb" />
     <Compile Include="DHYDRO\clsDHydroDIMRProject.vb" />
     <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
+    <Compile Include="DIMR\clsDIMR.vb" />
+    <Compile Include="DIMR\clsDIMRConfigComponent.vb" />
+    <Compile Include="DIMR\clsDIMRCONFIGFlow1DComponent.vb" />
+    <Compile Include="DIMR\clsDIMRConfigRRComponent.vb" />
+    <Compile Include="DIMR\clsDIMRConfigRTCComponent.vb" />
     <Compile Include="Files\clsCSVFile.vb" />
     <Compile Include="Files\clsDataField.vb" />
     <Compile Include="Files\clsTimeseriesTextFile.vb" />
@@ -337,6 +342,7 @@
     <Compile Include="SOBEK\cls2DResults.vb" />
     <Compile Include="SOBEK\cls2DResultsCase.vb" />
     <Compile Include="SOBEK\clsErnstDrainageDefinition.vb" />
+    <Compile Include="SOBEK\clsFnmFile.vb" />
     <Compile Include="SOBEK\clsFreeboardClass.vb" />
     <Compile Include="SOBEK\clsFrictionPair.vb" />
     <Compile Include="SOBEK\clsHisfileBinaryWriter.vb" />

@@ -1331,6 +1331,7 @@ Public Class GeneralFunctions
         LINRES = 3
         WAGENINGENMODEL = 4
         DHYDRO = 5
+        DIMR = 6
     End Enum
 
     Public Enum enmKlimaatScenario
@@ -5958,6 +5959,34 @@ Public Class GeneralFunctions
         Next
     End Sub
 
+    Public Function CopyDirectoryContent(SourcePath As String, destinationPath As String, IncludeSubdirs As Boolean) As Boolean
+        Try
+            Dim sourceDirectoryInfo As New System.IO.DirectoryInfo(SourcePath)
+
+            ' If the destination folder don't exist then create it
+            If Not System.IO.Directory.Exists(destinationPath) Then
+                System.IO.Directory.CreateDirectory(destinationPath)
+            End If
+
+            Dim fileSystemInfo As System.IO.FileSystemInfo
+            For Each fileSystemInfo In sourceDirectoryInfo.GetFileSystemInfos
+                Dim destinationFileName As String =
+                    System.IO.Path.Combine(destinationPath, fileSystemInfo.Name)
+
+                ' Now check whether its a file or a folder and take action accordingly
+                If TypeOf fileSystemInfo Is System.IO.FileInfo Then
+                    System.IO.File.Copy(fileSystemInfo.FullName, destinationFileName, True)
+                Else
+                    ' Recursively call the mothod to copy all the neste folders
+                    CopyDirectoryContent(fileSystemInfo.FullName, destinationFileName, IncludeSubdirs)
+                End If
+            Next
+
+        Catch ex As Exception
+            Me.setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+    End Function
 
 
     Public Function CollectAllFilesInDir(ByVal path As String, ByVal SubDirs As Boolean, ByVal RightSidePartOfFileName As String, ByRef Paths As Collection) As Boolean

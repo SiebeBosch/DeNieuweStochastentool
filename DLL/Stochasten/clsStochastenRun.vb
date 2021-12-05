@@ -105,6 +105,8 @@ Public Class clsStochastenRun
         Return P
     End Function
 
+
+
     Public Function Execute(Optional ByVal runIdx As Long = 0, Optional ByVal nRuns As Long = 1) As Boolean
         '------------------------------------------------------------------------
         'author: Siebe Bosch
@@ -126,30 +128,70 @@ Public Class clsStochastenRun
                 Me.Setup.GeneralFunctions.DatabaseWaitForUnlock(Me.Setup.StochastenAnalyse.StochastsConfigFile, 60)
                 Me.Setup.GeneralFunctions.DatabaseWriteLockFile(Me.Setup.StochastenAnalyse.StochastsConfigFile, ID)
 
-                If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DHYDRO Then
+                If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
 
-                    'create the paths to the meteo files, both absolute and relative
+                    'create the paths to the meteo files, both absolute and relative. Meteofiles reside in the RR module
                     Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
-                    'Dim myMeteoDir As String = myModel.TempWorkDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
-                    'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-                    'BuiFile = myMeteoDir & "meteo.bui"
-                    'EvpFile = myMeteoDir & "meteo.evp"
-                    'QscFile = myMeteoDir & "meteo.qsc"
-                    'WdcFile = myMeteoDir & "meteo.wdc"
-                    'QwcFile = myMeteoDir & "meteo.qwc"
-                    'TmpFile = myMeteoDir & "meteo.tmp"
-                    'RnfFile = myMeteoDir & "meteo.rnf"
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", BuiFile, BuiFileRelative)
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", EvpFile, EvpFileRelative)
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", QscFile, QscFileRelative)
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", WdcFile, WdcFileRelative)
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", QwcFile, QwcFileRelative)
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", TmpFile, TmpFileRelative)
-                    'Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir & "\CMTWORK\", RnfFile, RnfFileRelative)
+                    Dim myMeteoDir As String = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.GetSubDir & "\"
 
                     'copy the original project to the temporary work dir and then read it from the new location
                     Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
-                    Dim myProject = New ClsDHydroDIMRProject(Me.Setup, myModel.ModelDir & "\DIMR_config.bat")
+                    Dim myProject = New ClsDHydroDIMRProject(Me.Setup, myModel.ModelDir)
+                    myProject.CloneCaseForCommandLineRun(myModel.TempWorkDir)
+
+                    'create the meteo files and copy them into the case directory
+                    Dim BuiName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetBuiFileName
+                    Dim EvpName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetEvpFileName
+                    BuiFile = myMeteoDir & BuiName
+                    EvpFile = myMeteoDir & EvpName
+
+                    Dim myBui As New clsBuiFile(Me.Setup)
+                    Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
+                    Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+                    For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
+                        If Station.StationType = enmMeteoStationType.precipitation Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
+                            myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                        ElseIf Station.StationType = enmMeteoStationType.evaporation Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
+                            myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
+                        End If
+                    Next
+                    Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
+                    myBui.Write(BuiFile, 3)
+
+                    'copy the precipitation file to the unique directory for our desired run
+                    If Not System.IO.Directory.Exists(Dir) Then System.IO.Directory.CreateDirectory(Dir)
+                    File.Copy(BuiFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+
+                    'write the evaporation file for now we'll assume zero evaporation
+                    Dim myEvp As New clsEvpFile(Me.Setup)
+                    Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
+                    Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
+                    myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
+                    myEvp.Write(EvpFile)
+                    File.Copy(EvpFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+
+                    '----------------------------------------------------------------------------------------
+                    'release the database for use by other instances
+                    '----------------------------------------------------------------------------------------
+                    Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
+
+                    'update the progress bar
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("Running simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
+
+                    Dim myProcess As New Process
+                    myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
+                    myProcess.StartInfo.FileName = myModel.Exec
+                    myProcess.StartInfo.Arguments = myModel.Args
+                    myProcess.Start()
+
+                    While Not myProcess.HasExited
+                        'pom pom pom
+                        Call Setup.GeneralFunctions.Wait(2000)
+                    End While
+
+
 
 
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
