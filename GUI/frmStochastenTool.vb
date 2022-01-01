@@ -3875,10 +3875,7 @@ Public Class frmStochasten
 
     'End Sub
 
-    Private Sub UitvoerlocatiesImporterenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UitvoerlocatiesImporterenToolStripMenuItem.Click
-        Dim frmImport As New frmImportOutputlocations(Me.Setup, txtPeilgebieden.Text, cmbWinterpeil.Text, cmbZomerpeil.Text)
-        frmImport.ShowDialog()
-        PopulateOutputLocationsGrid()
+    Private Sub UitvoerlocatiesImporterenToolStripMenuItem_Click(sender As Object, e As EventArgs)
     End Sub
 
     Private Sub TrPatroon_MouseHover(sender As Object, e As EventArgs)
@@ -4092,6 +4089,26 @@ Public Class frmStochasten
             BuildWindGrid()    'when the user has copied the configuration from another climate scenario we need to rebuild our grids
         End If
 
+    End Sub
+
+
+    Private Sub UitvoerlocatiesImporterenToolStripMenuItem1_Click(sender As Object, e As EventArgs)
+        Dim frmImport As New frmImportOutputlocations(Me.Setup, txtPeilgebieden.Text, cmbWinterpeil.Text, cmbZomerpeil.Text)
+        frmImport.ShowDialog()
+        PopulateOutputLocationsGrid()
+    End Sub
+
+    Private Sub UitvoerlocatiesImporterenToolStripMenuItem_Click_1(sender As Object, e As EventArgs)
+    End Sub
+
+    Private Sub SOBEKToolStripMenuItem_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub UitvoerlocatiesImporterenToolStripMenuItem2_Click(sender As Object, e As EventArgs) Handles UitvoerlocatiesImporterenToolStripMenuItem2.Click
+        Dim frmImport As New frmImportOutputlocations(Me.Setup, txtPeilgebieden.Text, cmbWinterpeil.Text, cmbZomerpeil.Text)
+        frmImport.ShowDialog()
+        PopulateOutputLocationsGrid()
     End Sub
 
     Private Sub BtnViewer_Click(sender As Object, e As EventArgs) Handles btnViewer.Click

@@ -52,10 +52,6 @@ Public Class frmImportOutputlocations
 
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
-            'remove all existing locations first
-            query = "DELETE FROM OUTPUTLOCATIONS;"
-            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-
             'first get the list of simulation models
             query = "SELECT DISTINCT MODELID, MODELTYPE, MODELDIR, CASENAME FROM SIMULATIONMODELS;"
             Dim dtModels As New DataTable
@@ -86,13 +82,14 @@ Public Class frmImportOutputlocations
                     SubcatchmentsSF.sf.BeginPointInShapefile()
 
                     If dtModels.Rows(i)("MODELTYPE") = "SOBEK" Then
+
                         'read the model schematization
                         If Not Setup.SOBEKData.ReadProject(ModelDir, True) Then Throw New Exception("SOBEK Project could Not be read: " & ModelDir)
                         If Not Setup.SetAddSobekProject(ModelDir, True, True) Then Throw New Exception("Error adding SOBEK project " & ModelDir)
                         If Not Setup.SOBEKData.ActiveProject.SetActiveCase(CaseName) Then Throw New Exception("Error setting sobek case as active: " & CaseName)
                         If Not Setup.SOBEKData.ActiveProject.ActiveCase.Read(False, True, False, False, False, "") Then Throw New Exception("Error reading active SOBEK case: " & CaseName)
 
-                        If chkH.Checked Then
+                        If chkCalculationPoints.Checked Then
                             Dim WLPoints As New Dictionary(Of String, STOCHLIB.clsSbkVectorPoint)
                             Dim WLPoint As STOCHLIB.clsSbkVectorPoint
 
@@ -115,8 +112,6 @@ Public Class frmImportOutputlocations
 
                                     'retrieve the target levels from our subcatchments shapefile
                                     Dim ShapeIdx As Integer, WP As Double, ZP As Double
-                                    'SubcatchmentsSF.Open()
-                                    'SubcatchmentsSF.sf.BeginPointInShapefile()
                                     ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(WLPoint.X, WLPoint.Y)
                                     If ShapeIdx > 0 Then
                                         'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
@@ -130,11 +125,41 @@ Public Class frmImportOutputlocations
                                         Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & WLPoint.ID)
                                     End If
                                 End If
-
                             Next
-
                         End If
 
+                    ElseIf dtModels.Rows(i)("MODELTYPE") = "DIMR" Then
+
+                        'read results locations from a D-HYDRO model
+                        If Not Setup.SetDIMRProject(ModelDir) Then Throw New Exception("DIMR Project could not be set: " & ModelDir)
+                        If Not Setup.DIMRData.ReadAll() Then Throw New Exception("DIMR Project could not be read: " & ModelDir)
+
+                        If chkObservationPoints.Checked Then
+
+                            For Each ObsPoint As STOCHLIB.clsXY In Setup.DIMRData.FlowFM.ObservationPoints.Values
+                                'apply the selection by ID
+                                If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, ObsPoint.ID, True) Then
+                                    'compute the map coordinates of our point
+                                    Setup.GeneralFunctions.RD2WGS84(ObsPoint.X, ObsPoint.Y, Lat, Lon)
+
+                                    'retrieve the target levels from our subcatchments shapefile
+                                    Dim ShapeIdx As Integer, WP As Double, ZP As Double
+                                    ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(ObsPoint.X, ObsPoint.Y)
+                                    If ShapeIdx > 0 Then
+                                        'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                                        WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                                        ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','" & "water level" & "','" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                                    Else
+                                        'could not find target levels. Only write the location and parameters
+                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','" & "water level" & "','" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
+                                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                                        Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & ObsPoint.ID)
+                                    End If
+                                End If
+                            Next
+                        End If
                     End If
 
                     SubcatchmentsSF.sf.EndPointInShapefile()
@@ -150,9 +175,13 @@ Public Class frmImportOutputlocations
                 End If
             Next
         Catch ex As Exception
-            MsgBox(ex.Message)
+            Me.Setup.Log.AddError("Error importing output locations from model schematisation: " & ex.Message)
         Finally
             Me.Close()
         End Try
+    End Sub
+
+    Private Sub cmbModelID_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbModelID.SelectedIndexChanged
+
     End Sub
 End Class

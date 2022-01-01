@@ -2,6 +2,7 @@ licenses/*
 InnoSetup/*
 
 !.gitignore
+Example/*
 hydamo_shp/*
 hydamo_model/*
 boezemmodel/*

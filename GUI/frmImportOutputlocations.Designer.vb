@@ -31,11 +31,14 @@ Partial Class frmImportOutputlocations
         Me.Label2 = New System.Windows.Forms.Label()
         Me.cmbResultsFilter = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.chkH = New System.Windows.Forms.CheckBox()
+        Me.chkCalculationPoints = New System.Windows.Forms.CheckBox()
         Me.btnImport = New System.Windows.Forms.Button()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.lblProgress = New System.Windows.Forms.Label()
+        Me.chkObservationPoints = New System.Windows.Forms.CheckBox()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.GroupBox1.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
         'cmbModelID
@@ -54,11 +57,10 @@ Partial Class frmImportOutputlocations
         Me.GroupBox1.Controls.Add(Me.Label2)
         Me.GroupBox1.Controls.Add(Me.cmbResultsFilter)
         Me.GroupBox1.Controls.Add(Me.Label1)
-        Me.GroupBox1.Controls.Add(Me.chkH)
         Me.GroupBox1.Controls.Add(Me.cmbModelID)
         Me.GroupBox1.Location = New System.Drawing.Point(12, 12)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(776, 355)
+        Me.GroupBox1.Size = New System.Drawing.Size(776, 164)
         Me.GroupBox1.TabIndex = 1
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Modelselectie"
@@ -68,9 +70,9 @@ Partial Class frmImportOutputlocations
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(316, 104)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(353, 17)
+        Me.Label4.Size = New System.Drawing.Size(350, 17)
         Me.Label4.TabIndex = 7
-        Me.Label4.Text = "Wildcards allowed. Use ; as delimiter for multiple filters."
+        Me.Label4.Text = "Wildcards toegestaan. Gebruik ; voor meerdere filters."
         '
         'txtIDFilter
         '
@@ -115,17 +117,17 @@ Partial Class frmImportOutputlocations
         Me.Label1.TabIndex = 2
         Me.Label1.Text = "Model ID:"
         '
-        'chkH
+        'chkCalculationPoints
         '
-        Me.chkH.AutoSize = True
-        Me.chkH.Checked = True
-        Me.chkH.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkH.Location = New System.Drawing.Point(319, 39)
-        Me.chkH.Name = "chkH"
-        Me.chkH.Size = New System.Drawing.Size(160, 21)
-        Me.chkH.TabIndex = 1
-        Me.chkH.Text = "Waterhoogtelocaties"
-        Me.chkH.UseVisualStyleBackColor = True
+        Me.chkCalculationPoints.AutoSize = True
+        Me.chkCalculationPoints.Checked = True
+        Me.chkCalculationPoints.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkCalculationPoints.Location = New System.Drawing.Point(21, 33)
+        Me.chkCalculationPoints.Name = "chkCalculationPoints"
+        Me.chkCalculationPoints.Size = New System.Drawing.Size(115, 21)
+        Me.chkCalculationPoints.TabIndex = 1
+        Me.chkCalculationPoints.Text = "Rekenpunten"
+        Me.chkCalculationPoints.UseVisualStyleBackColor = True
         '
         'btnImport
         '
@@ -152,11 +154,35 @@ Partial Class frmImportOutputlocations
         Me.lblProgress.TabIndex = 3
         Me.lblProgress.Text = "Progress:"
         '
+        'chkObservationPoints
+        '
+        Me.chkObservationPoints.AutoSize = True
+        Me.chkObservationPoints.Checked = True
+        Me.chkObservationPoints.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkObservationPoints.Location = New System.Drawing.Point(21, 64)
+        Me.chkObservationPoints.Name = "chkObservationPoints"
+        Me.chkObservationPoints.Size = New System.Drawing.Size(258, 21)
+        Me.chkObservationPoints.TabIndex = 8
+        Me.chkObservationPoints.Text = "Observation points (alleen D-Hydro)"
+        Me.chkObservationPoints.UseVisualStyleBackColor = True
+        '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.chkObservationPoints)
+        Me.GroupBox2.Controls.Add(Me.chkCalculationPoints)
+        Me.GroupBox2.Location = New System.Drawing.Point(12, 182)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(338, 188)
+        Me.GroupBox2.TabIndex = 4
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Objecten"
+        '
         'frmImportOutputlocations
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.btnImport)
@@ -166,6 +192,8 @@ Partial Class frmImportOutputlocations
         Me.Text = "Uitvoerlocaties model importeren"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox2.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -174,7 +202,7 @@ Partial Class frmImportOutputlocations
     Friend WithEvents cmbModelID As ComboBox
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents Label1 As Label
-    Friend WithEvents chkH As CheckBox
+    Friend WithEvents chkCalculationPoints As CheckBox
     Friend WithEvents btnImport As Button
     Friend WithEvents prProgress As ProgressBar
     Friend WithEvents lblProgress As Label
@@ -183,4 +211,6 @@ Partial Class frmImportOutputlocations
     Friend WithEvents txtIDFilter As TextBox
     Friend WithEvents Label3 As Label
     Friend WithEvents Label4 As Label
+    Friend WithEvents chkObservationPoints As CheckBox
+    Friend WithEvents GroupBox2 As GroupBox
 End Class

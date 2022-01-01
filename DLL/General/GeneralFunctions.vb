@@ -10907,6 +10907,19 @@ Public Class GeneralFunctions
 
     End Function
 
+
+    Public Function ReadIniFileProperty(myLine As String) As String
+        Dim HashPos As Integer = Strings.InStr(myLine, "#")
+        If HashPos > 0 Then
+            myLine = Strings.Left(myLine, HashPos - 1)
+            myLine = myLine.Trim
+        End If
+        Dim IsPos As Integer = Strings.InStr(myLine, "=")
+        Dim myValue As String = Strings.Right(myLine, myLine.Length - IsPos)
+        myValue = myValue.Trim
+        Return myValue
+    End Function
+
     Friend Sub OffsetPoint(ByVal X As Double, ByVal Y As Double, ByVal myAngle As Double, ByVal myDist As Double, ByRef newX As Double, ByRef newY As Double, ByVal LeftSide As Boolean)
         If LeftSide = False Then myAngle = NormalizeAngle(myAngle + 180)
         myAngle = myAngle - 90 'de loodlijn
@@ -14662,6 +14675,27 @@ Public Class GeneralFunctions
         End Try
     End Function
 
+
+    Public Function GetRowFrom2DArrayOfByte(ByRef Array2D As Byte(,), RowIdx As Integer) As Byte()
+        Dim i As Integer
+        Dim Result As Byte()
+        ReDim Result(Array2D.GetLength(1) - 1)
+        For i = 0 To Array2D.GetLength(1) - 1
+            Result(i) = Array2D(RowIdx, i)
+        Next
+        Return Result
+    End Function
+
+
+    Public Function CharCodeBytesToString(ByVal bytes() As Byte, SkipSpaces As Boolean) As String
+        Dim Result As String = ""
+        For Each myByte As Byte In bytes
+            If Not SkipSpaces OrElse Not myByte = 32 Then
+                Result &= Chr(myByte)
+            End If
+        Next
+        Return Result
+    End Function
 
     Public Shared Function ReplaceStringInFile(ByVal FileName As String, ByVal ReplaceStr As String, ByVal ReplaceByStr As String, ByVal CompareMethod As Microsoft.VisualBasic.CompareMethod) As Boolean
         Try

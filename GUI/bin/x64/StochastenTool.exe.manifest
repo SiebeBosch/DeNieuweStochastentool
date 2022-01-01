@@ -54,6 +54,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DynamicInterop.dll" size="17920">
+      <assemblyIdentity name="DynamicInterop" version="0.9.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>jITQBiX1Cs5Dd1NOpaNThtMuNt0ssPAqJFdldrz5694=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GemBox.Spreadsheet.dll" size="1517568">
       <assemblyIdentity name="GemBox.Spreadsheet" version="37.3.30.1069" publicKeyToken="B1B72C69714D4847" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -90,6 +102,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="netstandard.dll" size="98616">
+      <assemblyIdentity name="netstandard" version="2.0.0.0" publicKeyToken="CC7B13FFCD2DDD51" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>i+SiJw+LK+pA8z95hp/cyjTge7dk5juB3tSdkNK3IN0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Newtonsoft.Json.dll" size="700336">
       <assemblyIdentity name="Newtonsoft.Json" version="12.0.0.0" publicKeyToken="30AD4FE6B2A6AEED" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -102,26 +126,38 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="630272">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ScientificDataSet.dll" size="381440">
+      <assemblyIdentity name="ScientificDataSet" version="0.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>avExE+jEmxcoK/WZJnBUv81S9jNgfEGI0be3k4DJf1w=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="632832">
       <assemblyIdentity name="StochastenTool" version="2.1.1.2" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Q1ijDoxgKAbBcpkvf+/sgiVDa1acS6b4wJvwUmL4+UE=</dsig:DigestValue>
+        <dsig:DigestValue>NvC3+tatE+o7ME2QtJZPUTUi/mO9V98icufG81DjvKs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="2934784">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="2941952">
       <assemblyIdentity name="STOCHLIB" version="2.1.1.2" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>XviZu36tuKQw2w5SAah/M2zS73CyNbLBQ8JHNwfM2jc=</dsig:DigestValue>
+        <dsig:DigestValue>B67FoowAbOUZKKIYRpdg/Yr3AdGPlqIoYwzP3jReHBU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -146,13 +182,13 @@
       <dsig:DigestValue>VT+JD9kEMG8zegAvICiuLRs8/pUtLNNhMl21oX1CRtw=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="StochastenTool.exe.config" size="3821">
+  <file name="StochastenTool.exe.config" size="3823">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>zPdxjtwqJdoDcBGH9X6p+IvXxZkXxMI5Ogjy/HRIEyo=</dsig:DigestValue>
+      <dsig:DigestValue>LoWBn4wDiXEthDIfI2QdL/Y8fw57LXGhneiT1Va0gio=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>

@@ -103,3 +103,8 @@ D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.vbproj.CopyCom
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.exe
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.xml
 D:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.pdb
+D:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\ScientificDataSet.dll
+D:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\netstandard.dll
+D:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\DynamicInterop.dll
+D:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\ScientificDataSet.xml
+D:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\DynamicInterop.xml

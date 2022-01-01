@@ -11,7 +11,7 @@
     <AssemblyName>STOCHLIB</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <OptionExplicit>On</OptionExplicit>
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>Off</OptionStrict>
@@ -113,6 +113,9 @@
     <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
+    <Reference Include="DynamicInterop, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\GUI\packages\DynamicInterop.0.9.1\lib\netstandard2.0\DynamicInterop.dll</HintPath>
+    </Reference>
     <Reference Include="ExcelNumberFormat, Version=1.0.10.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelNumberFormat.1.0.10\lib\net20\ExcelNumberFormat.dll</HintPath>
     </Reference>
@@ -137,6 +140,9 @@
     </Reference>
     <Reference Include="Npgsql">
       <HintPath>..\references\NpgSQL\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\GUI\packages\SDSLite.2.0.3\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -179,11 +185,16 @@
     <Compile Include="Databases\clsDataGridViewDatabaseConnection.vb" />
     <Compile Include="DHYDRO\clsDHydroDIMRProject.vb" />
     <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
+    <Compile Include="DIMR\cls1DBranch.vb" />
+    <Compile Include="DIMR\cls1DNode.vb" />
     <Compile Include="DIMR\clsDIMR.vb" />
     <Compile Include="DIMR\clsDIMRConfigComponent.vb" />
     <Compile Include="DIMR\clsDIMRCONFIGFlow1DComponent.vb" />
     <Compile Include="DIMR\clsDIMRConfigRRComponent.vb" />
     <Compile Include="DIMR\clsDIMRConfigRTCComponent.vb" />
+    <Compile Include="DIMR\clsMDUFile.vb" />
+    <Compile Include="DIMR\clsNetworkFile.vb" />
+    <Compile Include="DIMR\clsFlowFMComponent.vb" />
     <Compile Include="Files\clsCSVFile.vb" />
     <Compile Include="Files\clsDataField.vb" />
     <Compile Include="Files\clsTimeseriesTextFile.vb" />
