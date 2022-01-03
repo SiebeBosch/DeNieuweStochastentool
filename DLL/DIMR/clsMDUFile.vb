@@ -2,16 +2,16 @@
 Imports System.IO
 Public Class clsMDUFile
     Private Setup As clsSetup
-    Private DimrConfig As clsDIMRConfigFile
+    Private DIMR As clsDIMR
     Dim path As String
 
     Friend NetFile As String   'specifies the name of the geometry file (.nc)
     Friend HisFile As String   'specifies the name of the his results file (usually _his.nc)
     Friend MapFile As String   'specifies the name of the map results file (usually _map_nc)
 
-    Public Sub New(ByRef mySetup As clsSetup, ByRef myDimrConfig As clsDIMRConfigFile, myPath As String)
+    Public Sub New(ByRef mySetup As clsSetup, ByRef myDIMR As clsDIMR, myPath As String)
         Setup = mySetup
-        DimrConfig = myDimrConfig
+        DIMR = myDIMR
         path = myPath
     End Sub
 
@@ -22,7 +22,7 @@ Public Class clsMDUFile
                 While Not mduReader.EndOfStream
                     myLine = mduReader.ReadLine.Trim.ToLower
                     If Left(myLine, 7) = "netfile" Then
-                        NetFile = DimrConfig.Dir & "\" & "\" & DimrConfig.Flow1D.SubDir & "\" & Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
+                        NetFile = DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\" & Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
                     End If
                 End While
             End Using

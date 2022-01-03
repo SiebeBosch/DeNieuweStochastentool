@@ -8,16 +8,14 @@ Public Class clsDIMRConfigFile
     Private Setup As clsSetup
     Private DIMR As clsDIMR
 
-    Friend Dir As String
     Dim FileName As String = "DIMR_Config.xml"
 
     Public RR As clsDIMRCONFIGFRRComponent
     Public Flow1D As clsDIMRCONFIGFlow1DComponent
     Public RTC As clsDIMRCONFIGRTCComponent
 
-    Public Sub New(ByRef mySetup As clsSetup, ProjectDir As String, ByRef myDIMR As clsDIMR)
+    Public Sub New(ByRef mySetup As clsSetup, ByRef myDIMR As clsDIMR)
         Setup = mySetup
-        Dir = ProjectDir
         DIMR = myDIMR
         RR = New clsDIMRCONFIGFRRComponent(Me.Setup, Me.DIMR)
         RTC = New clsDIMRCONFIGRTCComponent(Me.Setup, Me.DIMR)
@@ -28,7 +26,7 @@ Public Class clsDIMRConfigFile
         Try
             Dim xml As New XmlDocument
             Dim node As XmlNode
-            xml.Load(Dir & "\" & FileName)
+            xml.Load(DIMR.ProjectDir & "\" & FileName)
 
             For Each node In xml.ChildNodes
                 If node.Name = "dimrConfig" Then

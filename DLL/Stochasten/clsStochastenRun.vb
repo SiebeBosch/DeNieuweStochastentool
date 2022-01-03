@@ -136,8 +136,9 @@ Public Class clsStochastenRun
 
                     'copy the original project to the temporary work dir and then read it from the new location
                     Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
-                    Dim myProject = New ClsDHydroDIMRProject(Me.Setup, myModel.ModelDir)
-                    myProject.CloneCaseForCommandLineRun(myModel.TempWorkDir)
+                    Dim myProject = New clsDIMR(Me.Setup, myModel.ModelDir)
+
+                    myProject.CloneCaseForCommandLineRun(myModel.TempWorkDir, SeasonClass.EventStart, SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd))
 
                     'create the meteo files and copy them into the case directory
                     Dim BuiName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetBuiFileName

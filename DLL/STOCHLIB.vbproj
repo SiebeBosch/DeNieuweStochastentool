@@ -187,6 +187,7 @@
     <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
     <Compile Include="DIMR\cls1DBranch.vb" />
     <Compile Include="DIMR\cls1DNode.vb" />
+    <Compile Include="DIMR\clsDelft3BIniFile.vb" />
     <Compile Include="DIMR\clsDIMR.vb" />
     <Compile Include="DIMR\clsDIMRConfigComponent.vb" />
     <Compile Include="DIMR\clsDIMRCONFIGFlow1DComponent.vb" />
@@ -195,6 +196,9 @@
     <Compile Include="DIMR\clsMDUFile.vb" />
     <Compile Include="DIMR\clsNetworkFile.vb" />
     <Compile Include="DIMR\clsFlowFMComponent.vb" />
+    <Compile Include="DIMR\clsRRComponent.vb" />
+    <Compile Include="DIMR\clsRTCComponent.vb" />
+    <Compile Include="DIMR\clsRtcRuntimeConfig.vb" />
     <Compile Include="Files\clsCSVFile.vb" />
     <Compile Include="Files\clsDataField.vb" />
     <Compile Include="Files\clsTimeseriesTextFile.vb" />

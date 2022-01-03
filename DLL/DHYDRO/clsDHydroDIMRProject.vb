@@ -13,15 +13,6 @@ Public Class ClsDHydroDIMRProject
         'DIMRConfigFile = New clsDIMRConfigFile(Setup, DIMRConfigFilePath)
     End Sub
 
-    Public Function CloneCaseForCommandLineRun(TempWorkDir As String) As Boolean
-        Try
-            Me.Setup.GeneralFunctions.CopyDirectoryContent(CaseDir, TempWorkDir, True)
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError(ex.Message)
-            Return False
-        End Try
-    End Function
 
 
 
