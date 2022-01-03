@@ -4008,7 +4008,7 @@ Public Class frmStochasten
 
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = txtResultsStartPercentage.Text
-        Setup.StochastenAnalyse.ReadSobekResults(Me.Setup.SqliteCon)
+        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon)
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
         Me.Cursor = Cursors.Default
@@ -4380,7 +4380,10 @@ Public Class frmStochasten
                         Dim T25 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 25, 0, 1)
                         Dim T50 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
                         Dim T100 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
-                        Dim locationsString As String = "        { %ID%: %" & dtLoc.Rows(i)("LOCATIENAAM") & "%, %lat%: " & dtLoc.Rows(i)("lat") & ", %lon%: " & dtLoc.Rows(i)("lon") & ", %WP%: " & dtLoc.Rows(i)("WP") & ", %ZP%: " & dtLoc.Rows(i)("ZP") & ", %T10%: " & T10 & ", %T25%: " & T25 & ", %T50%: " & T50 & ", %T100%: " & T100 & "}"
+                        Dim ZPString As String, WPString As String
+                        If IsDBNull(dtLoc(i)("ZP")) Then ZPString = "%ZP%: null" Else ZPString = "%ZP%:" & dtLoc(i)("ZP")
+                        If IsDBNull(dtLoc(i)("WP")) Then WPString = "%WP%: null" Else WPString = "%WP%:" & dtLoc(i)("WP")
+                        Dim locationsString As String = "        { %ID%: %" & dtLoc.Rows(i)("LOCATIENAAM") & "%, %lat%: " & dtLoc.Rows(i)("lat") & ", %lon%: " & dtLoc.Rows(i)("lon") & ", " & WPString & ", " & ZPString & ", %T10%: " & T10 & ", %T25%: " & T25 & ", %T50%: " & T50 & ", %T100%: " & T100 & "}"
                         If i < dtLoc.Rows.Count - 1 Then locationsString &= ","
                         locationsWriter.WriteLine(locationsString.Replace("%", Chr(34)))
                     End If

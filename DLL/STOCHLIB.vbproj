@@ -193,6 +193,7 @@
     <Compile Include="DIMR\clsDIMRCONFIGFlow1DComponent.vb" />
     <Compile Include="DIMR\clsDIMRConfigRRComponent.vb" />
     <Compile Include="DIMR\clsDIMRConfigRTCComponent.vb" />
+    <Compile Include="DIMR\clsHisNCFile.vb" />
     <Compile Include="DIMR\clsMDUFile.vb" />
     <Compile Include="DIMR\clsNetworkFile.vb" />
     <Compile Include="DIMR\clsFlowFMComponent.vb" />

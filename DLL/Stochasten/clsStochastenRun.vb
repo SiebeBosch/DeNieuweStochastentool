@@ -192,6 +192,28 @@ Public Class clsStochastenRun
                         Call Setup.GeneralFunctions.Wait(2000)
                     End While
 
+                    ''if the run was succesful, copy the results files
+                    'Dim logReader As New StreamReader(myModel.TempWorkDir & "\CMTWORK\PLUVIUS1.RTN")
+                    'Dim logStr As String = logReader.ReadLine.Trim
+                    'logReader.Close()
+
+                    ''warning if results are used although simulation crashed
+                    'If logStr <> "0" AndAlso StochastenAnalyse.AllowCrashedResults Then Me.Setup.Log.AddWarning("Simulatie " & ID & " was niet succesvol, maar resultaat werd toch gebruikt in de nabewerking, conform uw instellingen.")
+
+                    'If logStr = "0" OrElse StochastenAnalyse.AllowCrashedResults Then
+                    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
+                        fromFile = myProject.ProjectDir & "\" & myProject.DIMRConfig.Flow1D.SubDir & "\output\" & myFile.FileName
+                        toFile = Dir & "\" & myFile.FileName
+
+                        If File.Exists(fromFile) Then
+                            Call FileCopy(fromFile, toFile)
+                        Else
+                            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                        End If
+                    Next
+                    'Else
+                    '    Throw New Exception("Simulation for stochastic combination " & ID & " was unsuccessful.")
+                    'End If
 
 
 
