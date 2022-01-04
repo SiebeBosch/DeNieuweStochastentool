@@ -9,6 +9,7 @@ Namespace General
         Public GISData As clsGISData                                            'bevat alle shapefiles en rasters!
         Public SOBEKData As clsSOBEK                                            'bevat alle SOBEK-modellen en -cases
         Public DIMRData As clsDIMR
+        Public DHydroServerData As clsDHydroServerData
         Public KNMIData As clsKNMIData                  'bevat alle data van het KNMI
         Public StochastenAnalyse As clsStochastenAnalyse
         Public TijdreeksAnalyse As clsTijdreeksAnalyse

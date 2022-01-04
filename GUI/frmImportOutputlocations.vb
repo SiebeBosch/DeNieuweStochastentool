@@ -128,7 +128,7 @@ Public Class frmImportOutputlocations
                             Next
                         End If
 
-                    ElseIf dtModels.Rows(i)("MODELTYPE") = "DIMR" Then
+                    ElseIf dtModels.Rows(i)("MODELTYPE") = "DIMR" OrElse dtModels.Rows(i)("MODELTYPE") = "DHYDROSERVER" Then
 
                         'read results locations from a D-HYDRO model
                         If Not Setup.SetDIMRProject(ModelDir) Then Throw New Exception("DIMR Project could not be set: " & ModelDir)

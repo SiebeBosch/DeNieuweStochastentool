@@ -15,6 +15,10 @@ Public Class clsMDUFile
         path = myPath
     End Sub
 
+    Public Function getFilename() As String
+        Return Me.Setup.GeneralFunctions.GetFileNameFromPath(path)
+    End Function
+
     Public Function Read() As Boolean
         Try
             Dim myLine As String

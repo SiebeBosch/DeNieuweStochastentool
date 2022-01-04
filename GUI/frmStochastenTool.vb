@@ -93,7 +93,7 @@ Public Class frmStochasten
                 Setup.SetActiveCase(myModel.CaseName)
                 Setup.InitSobekModel(True, True)
                 Setup.ReadSobekDataDetail(False, False, False, False, False, True, False, False, False, False, False)
-            ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
+            ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR OrElse myModel.ModelType = enmSimulationModel.DHYDROSERVER Then
                 'do nothing since D-Hydro does not yet have a case manager
                 Call Setup.SetDIMRProject(myModel.ModelDir)
                 Call Setup.DIMRData.DIMRConfig.Read()
@@ -106,15 +106,52 @@ Public Class frmStochasten
             Me.Setup.StochastenAnalyse.MeteoStations.Add(myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value)
         Next
 
-        'de runs
-        If grRuns.SelectedRows.Count > 0 Then
-            If Not Me.Setup.StochastenAnalyse.Runs.RunSelected(grRuns, btnPostprocessing) Then
-                MsgBox("Fouten bij het draaien van de geselecteerde runs. me.Setup.controleer de logfile voor meldingen.")
-                Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
+        'een d-hydromodel op de server kan niet in combinatie met andere modellen draaien
+        If Setup.StochastenAnalyse.Models.Count = 1 AndAlso Setup.StochastenAnalyse.Models.Values(0).ModelType = enmSimulationModel.DHYDROSERVER Then
+            'just one model to run so we can wrap all simulations in one JSON and push it to the server 
+
+            '1. connect to the server (OAuth?)
+
+            '2. push the model schematization to the server
+
+            '3. build the populate_cases.json
+
+            Dim myJSON As String = Me.Setup.StochastenAnalyse.Build_Populate_Cases_JSON(Me.Setup.DIMRData)
+
+
+            '4. push the populate_cases.json
+
+            '5. polling the sever, waiting for an OK-response (200)
+
+            '6 retrieving the computed results
+
+            '7. writing them to the database
+
+
+            'de runs
+            If grRuns.SelectedRows.Count > 0 Then
+                If Not Me.Setup.StochastenAnalyse.Runs.RunSelected(grRuns, btnPostprocessing) Then
+                    MsgBox("Fouten bij het draaien van de geselecteerde runs. me.Setup.controleer de logfile voor meldingen.")
+                    Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
+                End If
+            Else
+                MsgBox("Selecteer de rijen van de simulaties die u wilt draaien")
             End If
+
+
         Else
-            MsgBox("Selecteer de rijen van de simulaties die u wilt draaien")
+            'de runs
+            If grRuns.SelectedRows.Count > 0 Then
+                If Not Me.Setup.StochastenAnalyse.Runs.RunSelected(grRuns, btnPostprocessing) Then
+                    MsgBox("Fouten bij het draaien van de geselecteerde runs. me.Setup.controleer de logfile voor meldingen.")
+                    Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
+                End If
+            Else
+                MsgBox("Selecteer de rijen van de simulaties die u wilt draaien")
+            End If
         End If
+
+
 
         'afsluiten & logfile schrijven
         Dim logfile As String = Replace(Me.Setup.StochastenAnalyse.XMLFile, ".xml", ".log", , , Microsoft.VisualBasic.CompareMethod.Text)

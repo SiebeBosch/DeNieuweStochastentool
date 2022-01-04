@@ -127,6 +127,32 @@ Public Class clsStochastenAnalyse
 
     End Function
 
+    Public Function Build_Populate_Cases_JSON(ByRef DIMRData As clsDIMR, ZipPath As String) As String
+        'this function creates a populate_cases.json file for D-Hydro simulations on the server
+        Dim myJSON As String = "{" & vbCrLf
+
+        'write the models
+        myJSON &= vbTab & "%models%: [" & vbCrLf
+        myJSON &= vbTab & vbTab & "{" & vbCrLf
+        myJSON &= vbTab & vbTab & vbTab & "%id%:%D-Hydro-model%," & vbCrLf
+        myJSON &= vbTab & vbTab & vbTab & "%name%:%D-Hydro-model%," & vbCrLf
+        myJSON &= vbTab & vbTab & vbTab & "%path%:%" & ZipPath & "%," & vbCrLf
+        myJSON &= vbTab & vbTab & vbTab & "%mdu_file%:%" & DIMRData.DIMRConfig.Flow1D.GetInputFile & "%," & vbCrLf
+        myJSON &= vbTab & vbTab & vbTab & "%fnm_file%:%" & DIMRData.DIMRConfig.RR.GetInputFile & "%," & vbCrLf
+        myJSON &= vbTab & vbTab & vbTab & "%rtc_file%:%" & DIMRData.DIMRConfig.RTC.GetInputFile & "%" & vbCrLf
+        myJSON &= vbTab & vbTab & "}"
+        myJSON &= vbTab & "]"
+
+        'myJSON &= vbTab & "%models%: [" & vbCrLf
+
+
+
+        myJSON &= "}"
+        Return Replace(myJSON, "%", Chr(34))
+    End Function
+
+
+
     Public Function WriteModelsToDB(ByRef con As SQLite.SQLiteConnection) As Boolean
         Dim myQuery As String
         myQuery = "DELETE FROM SIMULATIONMODELS"

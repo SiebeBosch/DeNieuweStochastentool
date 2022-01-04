@@ -1332,6 +1332,7 @@ Public Class GeneralFunctions
         WAGENINGENMODEL = 4
         DHYDRO = 5
         DIMR = 6
+        DHYDROSERVER = 7
     End Enum
 
     Public Enum enmKlimaatScenario
