@@ -122,7 +122,7 @@ Public Class clsNetworkFile
                 'walk through all vector points
                 For vpidx = vpstartidx + 1 To vpstartidx + network1d_geom_node_count(i) - 1
                     curChainage = prevChainage + Me.Setup.GeneralFunctions.Pythagoras(network1d_geom_x(vpidx - 1), network1d_geom_y(vpidx - 1), network1d_geom_x(vpidx), network1d_geom_y(vpidx))
-                    myBranch.AddVectorPoint(network1d_geom_x(vpidx), network1d_geom_x(vpidx), curChainage)
+                    myBranch.AddVectorPoint(network1d_geom_x(vpidx), network1d_geom_y(vpidx), curChainage)
                     prevChainage = curChainage
                 Next
 
