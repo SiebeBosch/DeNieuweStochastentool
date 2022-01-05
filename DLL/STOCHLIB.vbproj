@@ -187,6 +187,8 @@
     <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
     <Compile Include="DIMR\cls1DBranch.vb" />
     <Compile Include="DIMR\cls1DNode.vb" />
+    <Compile Include="DIMR\clsBoundariesBC.vb" />
+    <Compile Include="DIMR\clsBoundaryCondition.vb" />
     <Compile Include="DIMR\clsDelft3BIniFile.vb" />
     <Compile Include="DIMR\clsDIMR.vb" />
     <Compile Include="DIMR\clsDIMRConfigComponent.vb" />
@@ -197,6 +199,7 @@
     <Compile Include="DIMR\clsMDUFile.vb" />
     <Compile Include="DIMR\clsNetworkFile.vb" />
     <Compile Include="DIMR\clsFlowFMComponent.vb" />
+    <Compile Include="DIMR\clsQuantity.vb" />
     <Compile Include="DIMR\clsRRComponent.vb" />
     <Compile Include="DIMR\clsRTCComponent.vb" />
     <Compile Include="DIMR\clsRtcRuntimeConfig.vb" />
@@ -407,6 +410,8 @@
     <Compile Include="SOBEK\Simulations\clsSobekRun.vb" />
     <Compile Include="SOBEK\Simulations\clsSobekSimulation.vb" />
     <Compile Include="SOBEK\Simulations\clsSobekSimulations.vb" />
+    <Compile Include="Stochasten\clsFlowForcing.vb" />
+    <Compile Include="Stochasten\clsMeteoForcing.vb" />
     <Compile Include="Stochasten\clsMileageCounter.vb" />
     <Compile Include="General\clsSavitzkyGolaySmoothing.vb" />
     <Compile Include="General\clsSetup.vb" />

@@ -438,6 +438,74 @@ Public Class clsStochastenRuns
 
     End Function
 
+    Public Function GetSelectedFlowForcings(ByRef grRuns As DataGridView) As Dictionary(Of String, clsFlowForcing)
+        '------------------------------------------------------------------------------------------------------------------------------
+        'this routine returns a dictionary containing all unique flow forcings for the selected runs
+        '------------------------------------------------------------------------------------------------------------------------------
+        Dim ID As String, myRun As clsStochastenRun
+        Dim i As Long, n As Long
+        Dim myForcing As clsFlowForcing
+        Dim myForcings As New Dictionary(Of String, clsFlowForcing)
+
+        Try
+            'first figure out how many runs to do
+            n = 0
+            For Each myrow As DataGridViewRow In grRuns.SelectedRows
+                If Not myrow.Cells("DONE").Value = True Then n += 1
+            Next
+
+            'loop through all runs and establish which meteo forcing it has
+            i = 0
+            For Each myRow As DataGridViewRow In grRuns.SelectedRows
+                If Not myRow.Cells("DONE").Value = True Then
+                    i += 1
+                    ID = myRow.Cells("ID").Value
+                    myRun = Runs.Item(ID.Trim.ToUpper)
+                    myForcing = New clsFlowForcing(myRun.WLClass.ID, myRun.SeasonClass.Name)
+                    If Not myForcings.ContainsKey(myForcing.GetID) Then myForcings.Add(myForcing.GetID, myForcing)
+                End If
+            Next
+            Return myForcings
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error retrieving meteo forcings for selected runs.")
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetSelectedMeteoForcings(ByRef grRuns As DataGridView) As Dictionary(Of String, clsMeteoForcing)
+
+        '------------------------------------------------------------------------------------------------------------------------------
+        'this routine returns a dictionary containing all unique meteo forcings for the selected runs
+        '------------------------------------------------------------------------------------------------------------------------------
+        Dim ID As String, myRun As clsStochastenRun
+        Dim i As Long, n As Long
+        Dim myForcing As clsMeteoForcing
+        Dim myForcings As New Dictionary(Of String, clsMeteoForcing)
+
+        Try
+            'first figure out how many runs to do
+            n = 0
+            For Each myrow As DataGridViewRow In grRuns.SelectedRows
+                If Not myrow.Cells("DONE").Value = True Then n += 1
+            Next
+
+            'loop through all runs and establish which meteo forcing it has
+            i = 0
+            For Each myRow As DataGridViewRow In grRuns.SelectedRows
+                If Not myRow.Cells("DONE").Value = True Then
+                    i += 1
+                    ID = myRow.Cells("ID").Value
+                    myRun = Runs.Item(ID.Trim.ToUpper)
+                    myForcing = myRun.getMeteoForcing()                     'retrieve the meteo forcings for this run
+                    If Not myForcings.ContainsKey(myForcing.GetID) Then myForcings.Add(myForcing.GetID, myForcing)
+                End If
+            Next
+            Return myForcings
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error retrieving meteo forcings for selected runs.")
+            Return Nothing
+        End Try
+    End Function
     Public Function RunSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
 
         '------------------------------------------------------------------------------------------------------------------------------

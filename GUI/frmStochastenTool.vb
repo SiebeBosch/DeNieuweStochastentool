@@ -108,7 +108,7 @@ Public Class frmStochasten
 
         'een d-hydromodel op de server kan niet in combinatie met andere modellen draaien
         If Setup.StochastenAnalyse.Models.Count = 1 AndAlso Setup.StochastenAnalyse.Models.Values(0).ModelType = enmSimulationModel.DHYDROSERVER Then
-            'just one model to run so we can wrap all simulations in one JSON and push it to the server 
+            'just one D-Hydro model & run on a server so we can wrap all simulations in one JSON and push it to the server 
 
             '1. connect to the server (OAuth?)
 
@@ -116,8 +116,7 @@ Public Class frmStochasten
 
             '3. build the populate_cases.json
 
-            Dim myJSON As String = Me.Setup.StochastenAnalyse.Build_Populate_Cases_JSON(Me.Setup.DIMRData)
-
+            Dim myJSON As String = Build_Populate_Cases_JSON(Setup.StochastenAnalyse.Models.Values(0))
 
             '4. push the populate_cases.json
 
@@ -162,8 +161,120 @@ Public Class frmStochasten
         btnStartStop.Text = "Starten"
         btnStartStop.BackColor = Color.MediumSeaGreen
 
-
     End Sub
+
+    Public Function Build_Populate_Cases_JSON(ByRef myModel As STOCHLIB.clsSimulationModel) As String
+        Try
+            'this function creates a populate_cases.json file for D-Hydro simulations on the server (DHYDROSERVER)
+            Dim myJSON As String = "{" & vbCrLf
+
+            'write the boundary conditions (stochasts):
+            myJSON &= vbTab & "%boundary_conditions%: [" & vbCrLf
+            myJSON &= vbTab & vbTab & "{" & vbCrLf
+
+            'meteo forcing is built up of: duration_volume_pattern_season
+            'we loop through all simulations and create all necessary combinations of these parameters
+            Dim MeteoForcings As Dictionary(Of String, STOCHLIB.clsMeteoForcing)
+            MeteoForcings = Me.Setup.StochastenAnalyse.Runs.GetSelectedMeteoForcings(grRuns)
+            myJSON &= vbTab & vbTab & "%meteo%: [" & vbCrLf
+            For Each myForcing As STOCHLIB.clsMeteoForcing In MeteoForcings.Values
+                myJSON &= vbTab & vbTab & vbTab & "{" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "%id%:%" & myForcing.GetID & "%," & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "%name%:%" & myForcing.GetID & "%," & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "%stowa_bui%: {" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%duration%:" & myForcing.GetDuration & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%pattern%:%" & myForcing.GetPattern.ToLower & "%" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%volume%:" & myForcing.GetVolume & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%season%:%" & myForcing.GetSeason.ToLower & "%" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "}" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & "}," & vbCrLf
+            Next
+            myJSON &= vbTab & vbTab & "]" & vbCrLf
+
+            'flow forcing is built up of timeseries
+            myJSON &= vbTab & vbTab & "%flow%: [" & vbCrLf
+            Dim FlowForcings As Dictionary(Of String, STOCHLIB.clsFlowForcing)
+            FlowForcings = Me.Setup.StochastenAnalyse.Runs.GetSelectedFlowForcings(grRuns)
+            For Each myForcing As STOCHLIB.clsFlowForcing In FlowForcings.Values
+                myJSON &= vbTab & vbTab & vbTab & "{" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "%id%:%" & myForcing.GetID & "%" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "%name%:%" & myForcing.GetID & "%" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "%time_series%: [" & vbCrLf
+
+                'walk through all boundary objects and retrieve the timeseries for them from the database
+                Dim cn As New SQLite.SQLiteConnection
+                Dim da As SQLite.SQLiteDataAdapter
+                Dim dt As DataTable
+                Dim query As String
+                Dim TableStart As Date
+                cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
+                cn.Open()
+
+                For Each myNodeID As String In myModel.Boundaries
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "{" & vbCrLf
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%header%: {" & vbCrLf
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%objectid%: %" & myNodeID & "%," & vbCrLf
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%type%: %" & "waterlevelbnd" & "%," & vbCrLf
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "}," & vbCrLf
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%time_series%: {" & vbCrLf
+
+                    'retrieve the timeseries from our database and write it to the JSON
+                    dt = New DataTable
+                    query = "SELECT MINUUT, " & myNodeID & " from RANDREEKSEN where NAAM='" & myForcing.GetID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
+                    da = New SQLite.SQLiteDataAdapter(query, cn)
+                    da.Fill(dt)
+                    If dt.Rows.Count > 0 Then
+                        'first subtract the difference between the start of the table and the start of the simulation
+                        'also make sure the waterlevel boundary is set to be time dependent!
+                        Dim SeasonClass As STOCHLIB.clsStochasticSeasonClass = Me.Setup.StochastenAnalyse.Seasons.Item(myForcing.GetSeason.Trim.ToUpper)
+                        TableStart = SeasonClass.GetEventStart
+                        For r = 0 To dt.Rows.Count - 1
+                            myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%date%: %" & Format(TableStart.AddMinutes(dt.Rows(r)(0)), "yyyy-MM-dd") & "%," & vbCrLf
+                            myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%time%: %" & Format(TableStart.AddMinutes(dt.Rows(r)(0)), "HH:mm:ss") & "%," & vbCrLf
+                            myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "%value%: " & dt.Rows(r)(1) & vbCrLf
+                        Next
+                    End If
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & vbTab & "}" & vbCrLf
+                    myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "}," & vbCrLf
+                Next
+
+                myJSON &= vbTab & vbTab & vbTab & vbTab & "]" & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & "}," & vbCrLf
+            Next
+            myJSON &= vbTab & vbTab & "]" & vbCrLf
+
+            myJSON &= vbTab & vbTab & "}" & vbCrLf
+            myJSON &= vbTab & "]" & vbCrLf
+
+            'write the model
+            myJSON &= vbTab & "%models%: [" & vbCrLf
+            myJSON &= vbTab & vbTab & "{" & vbCrLf
+            myJSON &= vbTab & vbTab & vbTab & "%id%:%D-Hydro-model%," & vbCrLf
+            myJSON &= vbTab & vbTab & vbTab & "%name%:%D-Hydro-model%," & vbCrLf
+            myJSON &= vbTab & vbTab & vbTab & "%path%:%" & "c:\temp\model.zip" & "%," & vbCrLf
+            myJSON &= vbTab & vbTab & vbTab & "%mdu_file%:%" & Me.Setup.DIMRData.DIMRConfig.Flow1D.GetInputFile & "%," & vbCrLf
+            myJSON &= vbTab & vbTab & vbTab & "%fnm_file%:%" & Me.Setup.DIMRData.DIMRConfig.RR.GetInputFile & "%," & vbCrLf
+            myJSON &= vbTab & vbTab & vbTab & "%rtc_file%:%" & Me.Setup.DIMRData.DIMRConfig.RTC.GetInputFile & "%" & vbCrLf
+            myJSON &= vbTab & vbTab & "}" & vbCrLf
+            myJSON &= vbTab & "]" & vbCrLf
+
+            myJSON &= vbTab & "%cases%: [" & vbCrLf
+
+
+            myJSON &= vbTab & vbTab & "{" & vbCrLf
+
+            myJSON &= vbTab & vbTab & "}" & vbCrLf
+            myJSON &= vbTab & "]" & vbCrLf
+
+            myJSON &= "}"
+            Return Replace(myJSON, "%", Chr(34))
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error creating populate_cases.json for DHYDROSERVER simulation: " & ex.Message)
+            Return String.Empty
+        End Try
+
+
+    End Function
 
     Public Sub BuildMeteoStationsGrid()
         Dim query As [String]

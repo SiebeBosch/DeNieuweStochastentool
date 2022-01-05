@@ -55,6 +55,18 @@ Public Class clsStochastenRun
         StochastenAnalyse = myAnalyse
     End Sub
 
+    Public Function getMeteoForcing() As clsMeteoForcing
+        'creates and returns the meteo forcing for this run so it can be passed to a DHYDROSERVER implementation
+        Dim myForcing As New clsMeteoForcing(duur, VolumeClass.Volume, PatternClass.Patroon, SeasonClass.Name)
+        Return myForcing
+    End Function
+
+    Public Function GetFlowForcing() As clsFlowForcing
+        'creates and returns the flow forcing for this run so it can be passed to a DHYDROSERVER implementation
+        Dim myForcing As New clsFlowForcing(WLClass.ID, SeasonClass.Name)
+        Return myForcing
+    End Function
+
     Public Function CalcIDExcepVolume() As String
         'the most robust method to calculate this ID is to get rid of the string containing Volume
         Dim VolStr As String = VolumeClass.Volume.ToString & "mm_"
@@ -173,6 +185,55 @@ Public Class clsStochastenRun
                     myEvp.Write(EvpFile)
                     File.Copy(EvpFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
 
+                    '--------------------------------------------------------------------------------------------------------------------
+                    'copy the groundwater file
+                    If GWClass IsNot Nothing AndAlso GWClass.FileName <> "" Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                        If Not CopyGroundwaterFile(myModel) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    End If
+                    '--------------------------------------------------------------------------------------------------------------------
+
+                    '--------------------------------------------------------------------------------------------------------------------
+                    'create the boundary file
+                    If WLClass IsNot Nothing Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
+                        If Not BuildWaterLevelBoundaries(myModel) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
+                    End If
+                    '--------------------------------------------------------------------------------------------------------------------
+
+                    '--------------------------------------------------------------------------------------------------------------------
+                    'copy the file for the extra1 stochast
+                    If Extra1Class IsNot Nothing AndAlso Extra1Class.FileName <> "" Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
+                        If Not CopyExtraFiles(myModel, 1) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                    End If
+                    '--------------------------------------------------------------------------------------------------------------------
+
+                    '--------------------------------------------------------------------------------------------------------------------
+                    'copy the file for the extra2 stochast
+                    If Not Extra2Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
+                        If Not CopyExtraFiles(myModel, 2) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                    End If
+                    '--------------------------------------------------------------------------------------------------------------------
+
+                    '--------------------------------------------------------------------------------------------------------------------
+                    'copy the file for the extra3 stochast
+                    If Not Extra3Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
+                        If Not CopyExtraFiles(myModel, 3) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                    End If
+                    '--------------------------------------------------------------------------------------------------------------------
+
+                    '--------------------------------------------------------------------------------------------------------------------
+                    'copy the file for the extra4 stochast
+                    If Not Extra4Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
+                        If Not CopyExtraFiles(myModel, 4) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                    End If
+                    '--------------------------------------------------------------------------------------------------------------------
+
+
                     '----------------------------------------------------------------------------------------
                     'release the database for use by other instances
                     '----------------------------------------------------------------------------------------
@@ -191,14 +252,6 @@ Public Class clsStochastenRun
                         'pom pom pom
                         Call Setup.GeneralFunctions.Wait(2000)
                     End While
-
-                    ''if the run was succesful, copy the results files
-                    'Dim logReader As New StreamReader(myModel.TempWorkDir & "\CMTWORK\PLUVIUS1.RTN")
-                    'Dim logStr As String = logReader.ReadLine.Trim
-                    'logReader.Close()
-
-                    ''warning if results are used although simulation crashed
-                    'If logStr <> "0" AndAlso StochastenAnalyse.AllowCrashedResults Then Me.Setup.Log.AddWarning("Simulatie " & ID & " was niet succesvol, maar resultaat werd toch gebruikt in de nabewerking, conform uw instellingen.")
 
                     'If logStr = "0" OrElse StochastenAnalyse.AllowCrashedResults Then
                     For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
@@ -246,41 +299,53 @@ Public Class clsStochastenRun
                     If Not myProject.CloneCaseForCommandLineRun(Directory.GetParent(myModel.ModelDir).FullName, myModel.CaseName.Trim.ToUpper, myModel.TempWorkDir, BuiFileRelative, EvpFileRelative, QscFileRelative, WdcFileRelative, QwcFileRelative, TmpFileRelative, RnfFileRelative) Then Throw New Exception("Error: could not clone SOBEK case for running from the command line.")
                     myProject = New clsSobekProject(Me.Setup, myModel.TempWorkDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
 
+                    '--------------------------------------------------------------------------------------------------------------------
                     'copy the groundwater file
                     If Not GWClass Is Nothing AndAlso GWClass.FileName <> "" Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
                         If Not CopyGroundwaterFile(myModel) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
                     End If
+                    '--------------------------------------------------------------------------------------------------------------------
 
+                    '--------------------------------------------------------------------------------------------------------------------
                     'create the boundary file
                     If Not WLClass Is Nothing Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
                         If Not BuildWaterLevelBoundaries(myModel) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
                     End If
+                    '--------------------------------------------------------------------------------------------------------------------
 
+                    '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra1 stochast
                     If Not Extra1Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
                         If Not CopyExtraFiles(myModel, 1) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
                     End If
+                    '--------------------------------------------------------------------------------------------------------------------
 
+                    '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra2 stochast
                     If Not Extra2Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
                         If Not CopyExtraFiles(myModel, 2) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
                     End If
+                    '--------------------------------------------------------------------------------------------------------------------
 
+                    '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra3 stochast
                     If Not Extra3Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
                         If Not CopyExtraFiles(myModel, 3) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
                     End If
+                    '--------------------------------------------------------------------------------------------------------------------
 
+                    '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra4 stochast
                     If Not Extra4Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
                         If Not CopyExtraFiles(myModel, 4) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
                     End If
+                    '--------------------------------------------------------------------------------------------------------------------
 
                     'write the precipitation file and make a backup in the stochast directory
                     Dim myBui As New clsBuiFile(Me.Setup)
@@ -408,7 +473,16 @@ Public Class clsStochastenRun
 
         Try
             fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(GWClass.FileName, Setup.Settings.RootDir)
-            toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
+
+            'the target location depends on the type of model we're writing this stochast for
+            If myModel.ModelType = enmSimulationModel.SOBEK Then
+                toFile = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
+            ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
+                toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
+            Else
+                Throw New Exception("Stochast initial groundwater not yet supported for requested model type: " & myModel.ModelType.ToString)
+            End If
+
             toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
             If File.Exists(fromFile) Then
                 FileCopy(fromFile, toFile)
@@ -416,6 +490,7 @@ Public Class clsStochastenRun
             Else
                 Throw New Exception("Fout: grondwaterbestand niet gevonden niet: " & fromFile)
             End If
+
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
@@ -428,23 +503,33 @@ Public Class clsStochastenRun
         Dim fromFile As String, toFile As String, toStochastDir As String
         Dim ExtraClass As clsStochasticExtraClass = Nothing
 
-        Select Case ExtraNum
-            Case Is = 1
-                ExtraClass = Extra1Class
-            Case Is = 2
-                ExtraClass = Extra2Class
-            Case Is = 3
-                ExtraClass = Extra3Class
-            Case Is = 4
-                ExtraClass = Extra4Class
-        End Select
-
         Try
+
+            Select Case ExtraNum
+                Case Is = 1
+                    ExtraClass = Extra1Class
+                Case Is = 2
+                    ExtraClass = Extra2Class
+                Case Is = 3
+                    ExtraClass = Extra3Class
+                Case Is = 4
+                    ExtraClass = Extra4Class
+            End Select
+
             Dim fromFiles As String = ExtraClass.FileName
+
             While Not fromFiles = ""
                 fromFile = Setup.GeneralFunctions.ParseString(fromFiles, ";")
                 fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(fromFile, Me.Setup.Settings.RootDir)
-                toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+
+                If myModel.ModelType = enmSimulationModel.SOBEK Then
+                    toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+                ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
+                    toFile = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+                Else
+                    Throw New Exception("Kan invoerbestand " & fromFile & " niet naar het doelmodel kopieren omdat het modeltype niet wordt ondersteund voor de onderhavige stochast: " & myModel.ModelType.ToString)
+                End If
+
                 toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 If File.Exists(fromFile) Then
                     FileCopy(fromFile, toFile)
@@ -452,6 +537,7 @@ Public Class clsStochastenRun
                 Else
                     Throw New Exception("Fout: bestand voor extra stochast niet gevonden niet: " & fromFile)
                 End If
+
             End While
             Return True
         Catch ex As Exception
@@ -491,6 +577,12 @@ Public Class clsStochastenRun
         Dim TableStart As DateTime
         Dim mySpan As New TimeSpan
 
+        'query the database in order to retrieve the time series
+        Dim cn As New SQLite.SQLiteConnection
+        Dim da As SQLite.SQLiteDataAdapter
+        Dim dt As New DataTable
+        Dim query As String
+
         Try
 
             If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
@@ -504,13 +596,7 @@ Public Class clsStochastenRun
                     Dim WLTable As New clsSobekTable(Me.Setup)
                     Dim WindTable As New clsSobekTable(Me.Setup)
 
-                    If Not myRecord Is Nothing Then
-
-                        'query the database in order to retrieve the time series
-                        Dim cn As New SQLite.SQLiteConnection
-                        Dim da As SQLite.SQLiteDataAdapter
-                        Dim dt As New DataTable
-                        Dim query As String
+                    If myRecord IsNot Nothing Then
 
                         'query the database to retrieve the water level boundary timeseries
                         If SeasonClass.WaterLevelsUse Then
@@ -520,6 +606,7 @@ Public Class clsStochastenRun
                             cn.Open()
                             query = "SELECT MINUUT, " & myNode & " from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
                             da = New SQLite.SQLiteDataAdapter(query, cn)
+                            dt = New DataTable
                             da.Fill(dt)
 
                             If dt.Rows.Count > 0 Then
@@ -550,8 +637,46 @@ Public Class clsStochastenRun
                 End Using
                 File.Copy(myModel.TempWorkDir & "\WORK\boundary.dat", Dir & "\boundary.dat", True)
 
+            ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
+
+                'first we must read the contents of boundaries.bc into memory
+                Dim BoundariesBC As New STOCHLIB.clsBoundariesBC(Me.Setup, myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\boundaries.bc")
+                BoundariesBC.Read()
+
+                'now we must replace the timeseries as specified in this file's content
+                'get the node id's
+                If SeasonClass.WaterLevelsUse Then
+                    For Each NodeID As String In myModel.Boundaries
+                        'see if this boundary has a record inside BoundariesBC
+                        If BoundariesBC.BoundaryConditions.ContainsKey(NodeID.Trim.ToUpper) Then
+                            'we found the matching record! Now replace it with the requested series from our database
+                            cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
+                            cn.Open()
+                            query = "SELECT MINUUT, " & NodeID & " from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
+                            da = New SQLite.SQLiteDataAdapter(query, cn)
+                            dt = New DataTable
+                            da.Fill(dt)
+
+                            'write our timeseries to the boundaries.bc content
+                            Dim myData As New clsSobekTable(Me.Setup)
+                            For r = 0 To dt.Rows.Count - 1
+                                myData.AddDatevalPair(TableStart.AddMinutes(dt.Rows(r)(0)), dt.Rows(r)(1))
+                            Next
+
+                            BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).setDatatable(myData)
+
+                        End If
+
+                    Next
+                End If
+
+                'and finally: write the adjusted boundaries.bc file
+                Dim Path As String = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & "boundaries.bc"
+                BoundariesBC.write(Path)
+                File.Copy(Path, Dir & "\boundaries.bc", True)
+
             Else
-                Throw New Exception("Error: models other than SOBEK are not yet supported for adjusting boundary values")
+                Throw New Exception("Error: models other than SOBEK or DIMR are not yet supported for adjusting boundary values")
             End If
 
             Return True

@@ -91,8 +91,10 @@ Public Class clsStochasticSeasonClass
         Extra2Use = False
         Extra3Use = False
         Extra4Use = False
-
     End Sub
+    Public Function GetEventStart() As Date
+        Return EventStart
+    End Function
 
     Public Function GetAddVolumeClass(Volume As Double, Volume_P As Double) As clsStochasticVolumeClass
         If Volumes.ContainsKey(Volume) Then
