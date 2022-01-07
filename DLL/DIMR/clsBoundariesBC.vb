@@ -4,7 +4,7 @@ Public Class clsBoundariesBC
     Private Setup As clsSetup
     Dim Path As String
 
-    Dim Version As Integer
+    Dim Version As Double
     Dim FileType As String
     Dim Comment As New List(Of String)
     Friend BoundaryConditions As New Dictionary(Of String, clsBoundaryCondition)
@@ -44,6 +44,7 @@ Public Class clsBoundariesBC
                         If Left(myLine, 4) = "name" Then
                             name = Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
                             myBoundaryCondition = New clsBoundaryCondition(Me.Setup, name)
+                            BoundaryConditions.Add(name.Trim.ToUpper, myBoundaryCondition)
                         ElseIf Left(myLine, 8) = "function" Then
                             myBoundaryCondition.setFunction(Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine))
                         ElseIf Left(myLine, 17) = "timeInterpolation" Then

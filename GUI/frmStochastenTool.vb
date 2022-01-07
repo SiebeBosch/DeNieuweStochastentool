@@ -220,7 +220,8 @@ Public Class frmStochasten
 
                     'retrieve the timeseries from our database and write it to the JSON
                     dt = New DataTable
-                    query = "SELECT MINUUT, " & myNodeID & " from RANDREEKSEN where NAAM='" & myForcing.GetID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
+                    query = "SELECT MINUUT, WAARDE from RANDREEKSEN where KLIMAATSCENARIO='" & Me.Setup.StochastenAnalyse.KlimaatScenario & "' AND NAAM='" & myForcing.GetID & "' AND NODEID='" & myNodeID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
+
                     da = New SQLite.SQLiteDataAdapter(query, cn)
                     da.Fill(dt)
                     If dt.Rows.Count > 0 Then
@@ -1472,20 +1473,12 @@ Public Class frmStochasten
                 If IsNumeric(Pars(1)) Then
                     MsgBox("Fout: het ID van een boundary node mag geen numerieke waarde zijn. Hernoem het ID in de modelschematisatie.")
                 Else
-
                     'add randknoop as a new record to the RANDKNOPEN table
                     cmd = New SQLite.SQLiteCommand With {
                     .Connection = Me.Setup.SqliteCon,
                     .CommandText = "INSERT INTO RANDKNOPEN (MODELID, KNOOPID) VALUES ('" & Pars(0) & "','" & Pars(1) & "');"
                         }
                     cmd.ExecuteNonQuery()
-
-                    'also add a column to the database with timeseries for windopzet
-                    Me.Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", Pars(1), enmSQLiteDataType.SQLITEREAL)
-
-                    'also add a column to the database with timeseries of windopzet for the boundary
-                    Me.Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "WINDREEKSEN", Pars(1), enmSQLiteDataType.SQLITEREAL)
-
                 End If
 
             End If
@@ -1507,12 +1500,6 @@ Public Class frmStochasten
 
                 'remove the node from the table with nodes
                 Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "DELETE FROM RANDKNOPEN WHERE KNOOPID='" & KNOOPID & "';")
-
-                'also remove the column from the database with timetables for waterlevels
-                If Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", KNOOPID) Then Me.Setup.GeneralFunctions.SQLiteDeleteColumn(Me.Setup.SqliteCon, "RANDREEKSEN", KNOOPID)
-
-                'also remove the column from the database with timetables for windopzet
-                If Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "WINDREEKSEN", KNOOPID) Then Me.Setup.GeneralFunctions.SQLiteDeleteColumn(Me.Setup.SqliteCon, "WINDREEKSEN", KNOOPID)
 
             Next
             Me.Setup.SqliteCon.Close()
@@ -1574,26 +1561,56 @@ Public Class frmStochasten
         Dim daBND As SQLite.SQLiteDataAdapter
         Dim dtBND As DataTable
 
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
+        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
             'gives, in combination with a selected boundary node, a timeseries
             If grWaterLevelClasses.SelectedRows.Count = 1 Then
 
+                Dim dtSeries As DataTable   'a datatable for each timeseries
+                dtBND = New DataTable           'a datatable for the entire collection (each boundary)
+                Dim timecol As New DataColumn("MINUUT")
+                dtBND.Columns.Add(timecol)
+
                 '---------------------------------------------------------------------------------------------------
-                'populates the grid me.Setup.containing the timeseries for this combination of boundary and boundary class
+                'populates the grid containing the timeseries for this combination of boundary and boundary class
                 '---------------------------------------------------------------------------------------------------
                 Dim NAAM As String = grWaterLevelClasses.SelectedRows(0).Cells("NAAM").Value
 
-                Dim query As String = "SELECT MINUUT"
+                Dim query As String = "SELECT MINUUT, WAARDE"
+                Dim colidx As Integer = 0
+                Dim minuut As Integer, waarde As Double
+                Dim ts As Integer
                 For Each myRow As DataGridViewRow In grBoundaryNodes.Rows
-                    query &= ", " & myRow.Cells("KNOOPID").Value
-                Next
-                query &= " FROM RANDREEKSEN WHERE DUUR=" & cmbDuration.Text & " AND NAAM='" & NAAM & "' ORDER BY MINUUT;"
+                    colidx += 1
+                    dtSeries = New DataTable
 
-                daBND = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
-                dtBND = New DataTable
-                daBND.Fill(dtBND)
+                    Dim valcol As New DataColumn(myRow.Cells("KNOOPID").Value)
+                    dtBND.Columns.Add(valcol)
+
+                    query = "SELECT MINUUT, WAARDE FROM RANDREEKSEN WHERE NODEID='" & myRow.Cells("KNOOPID").Value & "' AND KLIMAATSCENARIO='" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "' AND DUUR=" & cmbDuration.Text & " AND NAAM='" & NAAM & "' ORDER BY MINUUT;"
+                    Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtSeries, False)
+
+                    For ts = 0 To dtSeries.Rows.Count - 1
+                        minuut = dtSeries.Rows(ts)(0)
+                        waarde = dtSeries.Rows(ts)(1)
+
+                        Dim Found As Boolean = False
+                        For i = 0 To dtBND.Rows.Count - 1
+                            If dtBND.Rows(i)(0) = minuut Then
+                                dtBND.Rows(i)(colidx) = waarde
+                                Found = True
+                                Exit For
+                            End If
+                        Next
+                        If Not Found Then
+                            dtBND.Rows.Add()
+                            dtBND.Rows(dtBND.Rows.Count - 1)(0) = minuut
+                            dtBND.Rows(dtBND.Rows.Count - 1)(colidx) = waarde
+                        End If
+                    Next
+                Next
+
                 grWaterLevelSeries.DataSource = dtBND
 
                 'also show in the chart
@@ -1611,33 +1628,33 @@ Public Class frmStochasten
                 Next
                 chartBoundaries.DataSource = dtBND
 
-                'find out if we're missing dates/values. 10 minutes base is compulsory for water levels!
-                Dim missing As Integer = ((Int(cmbDuration.Text) + Int(txtUitloop.Text)) * 6) - grWaterLevelSeries.Rows.Count
-                If missing > 0 Then
-                    Dim LastTS As Long
-                    If grWaterLevelSeries.Rows.Count > 0 Then
-                        LastTS = grWaterLevelSeries.Rows(grWaterLevelSeries.Rows.Count - 1).Cells("MINUUT").Value
-                    Else
-                        LastTS = 0
-                    End If
+                ''find out if we're missing dates/values. 10 minutes base is compulsory for water levels!
+                'Dim missing As Integer = ((Int(cmbDuration.Text) + Int(txtUitloop.Text)) * 6) - grWaterLevelSeries.Rows.Count
+                'If missing > 0 Then
+                '    Dim LastTS As Long
+                '    If grWaterLevelSeries.Rows.Count > 0 Then
+                '        LastTS = grWaterLevelSeries.Rows(grWaterLevelSeries.Rows.Count - 1).Cells("MINUUT").Value
+                '    Else
+                '        LastTS = 0
+                '    End If
 
-                    'add the missing rows to the database table
-                    If Me.Setup.SqliteCon.State = ConnectionState.Closed Then Me.Setup.SqliteCon.Open()
-                    Dim cmd As New SQLite.SQLiteCommand With {
-                    .Connection = Me.Setup.SqliteCon
-                        }
+                '    'add the missing rows to the database table
+                '    If Me.Setup.SqliteCon.State = ConnectionState.Closed Then Me.Setup.SqliteCon.Open()
+                '    Dim cmd As New SQLite.SQLiteCommand With {
+                '    .Connection = Me.Setup.SqliteCon
+                '        }
 
-                    For i = 0 To missing - 1
-                        cmd.CommandText = "INSERT INTO RANDREEKSEN (DUUR, NAAM, MINUUT) VALUES (" & cmbDuration.Text & ",'" & NAAM & "'," & LastTS + i * 10 & ");"
-                        cmd.ExecuteNonQuery()
-                    Next
-                End If
+                '    For i = 0 To missing - 1
+                '        cmd.CommandText = "INSERT INTO RANDREEKSEN (KLIMAATSCENARIO, DUUR, NAAM, NODEID, MINUUT, WAARDE) VALUES ('" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "'," & cmbDuration.Text & ",'" & NAAM & "'," & LastTS + i * 10 & ");"
+                '        cmd.ExecuteNonQuery()
+                '    Next
+                'End If
 
-                'refresh the datagrid
-                daBND = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
-                dtBND = New DataTable
-                daBND.Fill(dtBND)
-                grWaterLevelSeries.DataSource = dtBND
+                ''refresh the datagrid
+                'daBND = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
+                'dtBND = New DataTable
+                'daBND.Fill(dtBND)
+                'grWaterLevelSeries.DataSource = dtBND
 
             End If
             Me.Setup.SqliteCon.Close()
@@ -1647,10 +1664,10 @@ Public Class frmStochasten
     Private Sub UpdateWaterLevelSeries()
         'changes in the timeseries for water levels (boundaries) must be updated in the database
         Dim cmd As SQLite.SQLiteCommand
-        Dim LeftPart As String, RightPart As String, Timestep As Long
+        Dim query As String, Timestep As Long
         Dim r As Integer, c As Integer
 
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
+        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
             'get the name of the boundary class
@@ -1661,7 +1678,7 @@ Public Class frmStochasten
             .Connection = Me.Setup.SqliteCon
                 }
             If cmd.Connection.State = ConnectionState.Closed Then cmd.Connection.Open()
-            cmd.CommandText = "DELETE * FROM RANDREEKSEN WHERE DUUR=" & cmbDuration.Text & " AND NAAM='" & NAAM & "';"
+            cmd.CommandText = "DELETE * FROM RANDREEKSEN WHERE KLIMAATSCENARIO='" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "' AND DUUR=" & cmbDuration.Text & " AND NAAM='" & NAAM & "';"
             cmd.ExecuteNonQuery()
 
             'now populate the database again with the data from the grid
@@ -1671,20 +1688,8 @@ Public Class frmStochasten
             If cmd.Connection.State = ConnectionState.Closed Then cmd.Connection.Open()
             For r = 0 To grWaterLevelSeries.RowCount - 1
                 Timestep = grWaterLevelSeries.Rows(r).Cells(0).Value
-                LeftPart = "INSERT INTO RANDREEKSEN (DUUR, NAAM, MINUUT"
-                RightPart = " VALUES (" & cmbDuration.Text & ",'" & NAAM & "'," & Timestep
-
-                For c = 1 To grWaterLevelSeries.ColumnCount - 1
-                    LeftPart &= "," & grWaterLevelSeries.Columns.Item(c).HeaderText
-                    If grWaterLevelSeries.Rows(r).Cells(c).Value Is DBNull.Value Then
-                        RightPart &= ",0"
-                    Else
-                        RightPart &= "," & grWaterLevelSeries.Rows(r).Cells(c).Value
-                    End If
-                Next
-                LeftPart &= ")"
-                RightPart &= ");"
-                cmd.CommandText = LeftPart & RightPart
+                query = "INSERT INTO RANDREEKSEN (KLIMAATSCENARIO, DUUR, NAAM, NODEID, MINUUT, WAARDE) VALUES ('" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "'," & cmbDuration.Text & ",'" & NAAM & "','" & grWaterLevelSeries.Columns.Item(c).HeaderText & "'," & Timestep & "," & grWaterLevelSeries.Rows(r).Cells(c).Value & ");"
+                cmd.CommandText = query
                 cmd.ExecuteNonQuery()
             Next
             Me.Setup.SqliteCon.Close()
@@ -1738,7 +1743,7 @@ Public Class frmStochasten
                     }
                 cmd.ExecuteNonQuery()
 
-                cmd.CommandText = "DELETE FROM RANDREEKSEN WHERE NAAM='" & myRow.Cells("NAAM").Value & "' AND DUUR=" & cmbDuration.Text & ";"
+                cmd.CommandText = "DELETE FROM RANDREEKSEN WHERE KLIMAATSCENARIO='" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "' AND NAAM='" & myRow.Cells("NAAM").Value & "' AND DUUR=" & cmbDuration.Text & ";"
                 cmd.ExecuteNonQuery()
             Next
             Call BuildWaterLevelClassesGrid()
@@ -1800,7 +1805,7 @@ Public Class frmStochasten
         '------------------------------------------------------------------------------------------------
         'this routine edits a selected boundary timetable record (row)
         '------------------------------------------------------------------------------------------------
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
+        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
 
             If PastedFromClipBoard = False Then
                 If grWaterLevelClasses.SelectedRows.Count > 0 Then
@@ -1822,7 +1827,7 @@ Public Class frmStochasten
 
                         For i = 0 To grBoundaryNodes.Rows.Count - 1
                             KNOOPID = grBoundaryNodes.Rows(i).Cells("KNOOPID").Value
-                            cmd.CommandText = "UPDATE RANDREEKSEN SET " & KNOOPID & "=" & myRow.Cells(KNOOPID).Value & " WHERE NAAM='" & NAAM & "' AND MINUUT=" & TIMESTEP & " AND DUUR=" & DUUR & ";"
+                            cmd.CommandText = "UPDATE RANDREEKSEN SET WAARDE=" & myRow.Cells("WAARDE").Value & " WHERE KLIMAATSCENARIO='" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "' AND NAAM='" & NAAM & "' AND NODEID='" & KNOOPID & "' AND MINUUT=" & TIMESTEP & " AND DUUR=" & DUUR & ";"
                             cmd.ExecuteNonQuery()
                         Next
                     End If
@@ -2708,9 +2713,13 @@ Public Class frmStochasten
         '------------------------------------------------------------------------------------
         Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDREEKSEN", 1, 15, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RANDREEKSEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RANDREEKSEN")
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "REEKS_SCNARIOIDX")
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "NODEID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "NODEID", enmSQLiteDataType.SQLITETEXT, "REEKS_NODEIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "NAAM", enmSQLiteDataType.SQLITETEXT, "REEKS_NAAMIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "DUUR", enmSQLiteDataType.SQLITEINT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "MINUUT") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "MINUUT", enmSQLiteDataType.SQLITEINT)
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "WAARDE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "WAARDE", enmSQLiteDataType.SQLITEREAL)
+
 
         'remove the 'old' system: by date. From now on we will work with timesteps expressed in minutes only
         If Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "DATUM") Then
@@ -2735,17 +2744,58 @@ Public Class frmStochasten
                             transaction.Commit()
                         End Using
                     End Using
-
-                    'For iRecord = 0 To dtRecords.Rows.Count - 1
-                    '    'Me.Setup.GeneralFunctions.UpdateProgressBar("", iRecord, dtRecords.Rows.Count - 1)
-                    '    Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "UPDATE RANDREEKSEN SET MINUUT=" & iRecord * 10 & " WHERE NAAM='" & dtNames(iName)(0) & "' AND DUUR=" & dtDurations(iDur)(0) & " AND DATUM='" & dtRecords(iRecord)(0) & "';", False)
-                    'Next
                 Next
             Next
             Me.Setup.GeneralFunctions.UpdateProgressBar("Conversion done.", 0, 10, True)
 
             If Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "DATUM") Then Setup.GeneralFunctions.SQLiteDeleteColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "DATUM")
         End If
+
+        'remove the less old system where every node had its own column. From now on we will work with nodeID's as values in records
+        'every column we encounter will be read and its contents will be written to a new row
+        'first create a list of nodes, by reading them from the RANDKNOPEN table
+        Dim query As String = "SELECT DISTINCT KNOOPID from RANDKNOPEN;"
+        Dim dtNodes As New DataTable
+        Dim NodeID As String
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtNodes)
+        If dtNodes.Rows.Count > 0 Then
+            'now check if our randreeksen table contains columns that have our KNOOPID a header
+            For i = 0 To dtNodes.Rows.Count - 1
+                NodeID = dtNodes.Rows(i)(0)
+                If Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", NodeID) Then
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("Randreeks oude stijl gevonden in de database. Ogenblik geduld terwijl die worden geactualiseerd...", i, dtNodes.Rows.Count, True)
+
+                    'read the entire series for this boundary node
+                    Dim dtSeries As New DataTable
+                    query = "SELECT NAAM, DUUR, MINUUT," & NodeID & " FROM RANDREEKSEN WHERE " & NodeID & " IS NOT NULL;"
+                    Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtSeries, False)
+
+                    'write this series in the new fashion to our RANDREEKSEN table. Do this in a bulk insert to speed things up a bit
+                    Using cmd As New SQLite.SQLiteCommand
+                        cmd.Connection = Me.Setup.SqliteCon
+                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                            For j = 0 To dtSeries.Rows.Count - 1
+                                cmd.CommandText = "INSERT INTO RANDREEKSEN (KLIMAATSCENARIO, NAAM, NODEID, DUUR, MINUUT, WAARDE) VALUES ('" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & "','" & dtSeries.Rows(j)(0) & "','" & NodeID & "'," & dtSeries.Rows(j)(1) & "," & dtSeries.Rows(j)(2) & "," & dtSeries.Rows(j)(3) & ");"
+                                cmd.ExecuteNonQuery()
+                            Next
+                            transaction.Commit() 'this is where the bulk insert is finally executed.
+                        End Using
+                    End Using
+
+                    'remove the old rows
+                    query = "DELETE FROM RANDREEKSEN WHERE " & NodeID & " IS NOT NULL;"
+                    Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+
+                    'and finally drop the column
+                    Me.Setup.GeneralFunctions.SQLiteDropColumn(Me.Setup.SqliteCon, "RANDREEKSEN", NodeID)
+
+                End If
+            Next
+        End If
+
+        'finally we can remove some old rubbish. Every instance where klimaatscenario is empty, waarde is empty or nodeid is empty
+        query = "DELETE FROM RANDREEKSEN WHERE (KLIMAATSCENARIO IS NULL OR NAAM IS NULL OR DUUR IS NULL OR MINUUT IS NULL OR NODEID IS NULL OR WAARDE IS NULL);"
+        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
     End Sub
 
@@ -2907,7 +2957,7 @@ Public Class frmStochasten
             'insert the record in the new format
             If IsDBNull(dt.Rows(i)(5)) Then KansCorr = 0 Else KansCorr = dt.Rows(i)(5)
             If IsDBNull(dt.Rows(i)(0)) Then Kans = KansCorr Else Kans = dt.Rows(i)(0)
-            query = "INSERT INTO " & TableName & " (KLIMAATSCENARIO, SEIZOEN, DUUR, VOLUME, USE, KANS, KANSCORR) Then VALUES ('" & ClimateScenarioColumn & "','" & dt.Rows(i)(1) & "'," & dt.Rows(i)(2) & "," & dt.Rows(i)(3) & "," & dt.Rows(i)(4) & "," & Kans & "," & KansCorr & ");"
+            query = "INSERT INTO " & TableName & " (KLIMAATSCENARIO, SEIZOEN, DUUR, VOLUME, USE, KANS, KANSCORR) VALUES ('" & ClimateScenarioColumn & "','" & dt.Rows(i)(1) & "'," & dt.Rows(i)(2) & "," & dt.Rows(i)(3) & "," & dt.Rows(i)(4) & "," & Kans & "," & KansCorr & ");"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False,, nAffected)
         Next
 
@@ -4257,6 +4307,23 @@ Public Class frmStochasten
         Dim frmImport As New frmImportOutputlocations(Me.Setup, txtPeilgebieden.Text, cmbWinterpeil.Text, cmbZomerpeil.Text)
         frmImport.ShowDialog()
         PopulateOutputLocationsGrid()
+    End Sub
+
+    Private Sub grWaterLevelClasses_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grWaterLevelClasses.CellContentClick
+
+    End Sub
+
+    Private Sub RandvoorwaardenUitCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RandvoorwaardenUitCSVToolStripMenuItem.Click
+        Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField) From {
+        {"KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT)},
+        {"NAAM", New STOCHLIB.clsDataField("NAAM", enmSQLiteDataType.SQLITETEXT)},
+        {"NODEID", New STOCHLIB.clsDataField("NODEID", enmSQLiteDataType.SQLITETEXT)},
+        {"DUUR", New STOCHLIB.clsDataField("DUUR", enmSQLiteDataType.SQLITEINT)},
+        {"MINUUT", New STOCHLIB.clsDataField("MINUUT", enmSQLiteDataType.SQLITEINT)},
+        {"WAARDE", New STOCHLIB.clsDataField("WAARDE", enmSQLiteDataType.SQLITEREAL)}
+        }
+        Dim myForm As New STOCHLIB.frmTextFileToSQLite(Me.Setup, Me.Setup.SqliteCon, "RANDREEKSEN", myFields)
+        myForm.ShowDialog()
     End Sub
 
     Private Sub BtnViewer_Click(sender As Object, e As EventArgs) Handles btnViewer.Click

@@ -36,13 +36,13 @@ Public Class frmTextFileToSQLite
 
     End Sub
 
-    Private Sub btnRead_Click(sender As Object, e As EventArgs) Handles btnRead.Click
+    Private Sub BtnRead_Click(sender As Object, e As EventArgs) Handles btnRead.Click
         Try
             'before we can actually read data from the csv file we'll need to set from which column the data needs to be extracted
             Dim i As Integer
             For i = 0 To grFields.Rows.Count - 1
-                If Not RequiredFields.ContainsKey(grFields.Rows(i).Cells(2).Value) Then Throw New Exception("Error: matching required fields with the specification.")
-                Dim myField As clsDataField = RequiredFields.Item(grFields.Rows(i).Cells(2).Value)
+                If Not RequiredFields.ContainsKey(grFields.Rows(i).Cells(0).Value) Then Throw New Exception("Error: matching required fields with the specification.")
+                Dim myField As clsDataField = RequiredFields.Item(grFields.Rows(i).Cells(0).Value)
                 myField.TextFileColIdx = CSV.GetFieldIdx(grFields.Rows(i).Cells(2).Value)
             Next
 

@@ -6831,6 +6831,15 @@ Public Class GeneralFunctions
         End If
     End Function
 
+    Public Function SQLiteColumnNameValid(ColName As String) As Boolean
+        If IsNumeric(Left(ColName, 1)) Then
+            Return False
+        ElseIf IsNumeric(Right(ColName, 1)) Then
+            Return False
+        Else
+            Return True
+        End If
+    End Function
     Public Function HydrologischHalfJaar(ByRef myDate As DateTime, Optional ByVal WinZomMonth As Integer = 3, Optional ByVal WinZomDay As Integer = 15, Optional ByVal ZomWinMonth As Integer = 10, Optional ByVal ZomWinDay As Integer = 15) As enmSeason
         If myDate.Month < WinZomMonth Then
             Return enmSeason.hydrowinterhalfyear

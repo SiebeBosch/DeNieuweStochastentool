@@ -475,9 +475,9 @@ Public Class clsStochastenRun
             fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(GWClass.FileName, Setup.Settings.RootDir)
 
             'the target location depends on the type of model we're writing this stochast for
-            If myModel.ModelType = enmSimulationModel.SOBEK Then
+            If myModel.ModelType = enmSimulationModel.DIMR Then
                 toFile = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
-            ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
+            ElseIf myModel.ModelType = enmSimulationModel.sobek Then
                 toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
             Else
                 Throw New Exception("Stochast initial groundwater not yet supported for requested model type: " & myModel.ModelType.ToString)
@@ -652,7 +652,11 @@ Public Class clsStochastenRun
                             'we found the matching record! Now replace it with the requested series from our database
                             cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
                             cn.Open()
-                            query = "SELECT MINUUT, " & NodeID & " from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
+
+                            Dim ColName As String = NodeID
+                            If Not Me.Setup.GeneralFunctions.SQLiteColumnNameValid(NodeID) Then ColName = Chr(34) & NodeID & Chr(34) 'since the boundary node has its own column and column names cannot be numeric
+
+                            query = "SELECT MINUUT, " & ColName & " from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
                             da = New SQLite.SQLiteDataAdapter(query, cn)
                             dt = New DataTable
                             da.Fill(dt)

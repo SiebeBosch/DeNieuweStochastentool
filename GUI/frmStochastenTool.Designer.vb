@@ -38,6 +38,7 @@ Partial Class frmStochasten
         Me.GetijdenClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DirectoriesHernoemenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ModelsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UitvoerlocatiesImporterenToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.MappenBeherenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StochastendirectoriesHernoemenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MappenVerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -57,6 +58,7 @@ Partial Class frmStochasten
         Me.PolygonenUitShapefileToevoegenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImporterenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VolumesUitCSVToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.RandvoorwaardenUitCSVToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LegeDatabaseCreërenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -252,7 +254,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -403,6 +404,12 @@ Partial Class frmStochasten
         Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.ModelsToolStripMenuItem.Text = "Modellen"
         '
+        'UitvoerlocatiesImporterenToolStripMenuItem2
+        '
+        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Name = "UitvoerlocatiesImporterenToolStripMenuItem2"
+        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Size = New System.Drawing.Size(269, 26)
+        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Text = "Uitvoerlocaties importeren"
+        '
         'MappenBeherenToolStripMenuItem
         '
         Me.MappenBeherenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StochastendirectoriesHernoemenToolStripMenuItem, Me.MappenVerwijderenToolStripMenuItem})
@@ -524,7 +531,7 @@ Partial Class frmStochasten
         '
         'ImporterenToolStripMenuItem
         '
-        Me.ImporterenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesUitCSVToolStripMenuItem})
+        Me.ImporterenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesUitCSVToolStripMenuItem, Me.RandvoorwaardenUitCSVToolStripMenuItem})
         Me.ImporterenToolStripMenuItem.Name = "ImporterenToolStripMenuItem"
         Me.ImporterenToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
         Me.ImporterenToolStripMenuItem.Text = "Importeren"
@@ -532,8 +539,14 @@ Partial Class frmStochasten
         'VolumesUitCSVToolStripMenuItem
         '
         Me.VolumesUitCSVToolStripMenuItem.Name = "VolumesUitCSVToolStripMenuItem"
-        Me.VolumesUitCSVToolStripMenuItem.Size = New System.Drawing.Size(199, 26)
+        Me.VolumesUitCSVToolStripMenuItem.Size = New System.Drawing.Size(264, 26)
         Me.VolumesUitCSVToolStripMenuItem.Text = "Volumes uit CSV"
+        '
+        'RandvoorwaardenUitCSVToolStripMenuItem
+        '
+        Me.RandvoorwaardenUitCSVToolStripMenuItem.Name = "RandvoorwaardenUitCSVToolStripMenuItem"
+        Me.RandvoorwaardenUitCSVToolStripMenuItem.Size = New System.Drawing.Size(264, 26)
+        Me.RandvoorwaardenUitCSVToolStripMenuItem.Text = "Randvoorwaarden uit CSV"
         '
         'ConverterenVanAccessNaarSQLiteToolStripMenuItem
         '
@@ -1195,11 +1208,11 @@ Partial Class frmStochasten
         '
         Me.grWLChart.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grWLChart.Controls.Add(Me.chartBoundaries)
-        Me.grWLChart.Location = New System.Drawing.Point(329, 10)
+        Me.grWLChart.Location = New System.Drawing.Point(617, 10)
         Me.grWLChart.Margin = New System.Windows.Forms.Padding(4)
         Me.grWLChart.Name = "grWLChart"
         Me.grWLChart.Padding = New System.Windows.Forms.Padding(4)
-        Me.grWLChart.Size = New System.Drawing.Size(648, 575)
+        Me.grWLChart.Size = New System.Drawing.Size(1082, 575)
         Me.grWLChart.TabIndex = 9
         Me.grWLChart.TabStop = False
         Me.grWLChart.Text = "Grafiek"
@@ -2601,12 +2614,6 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1700, 28)
         Me.prProgress.TabIndex = 24
         '
-        'UitvoerlocatiesImporterenToolStripMenuItem2
-        '
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Name = "UitvoerlocatiesImporterenToolStripMenuItem2"
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Size = New System.Drawing.Size(269, 26)
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Text = "Uitvoerlocaties importeren"
-        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -2939,4 +2946,5 @@ Partial Class frmStochasten
     Friend WithEvents lblProgress As Label
     Friend WithEvents prProgress As ProgressBar
     Friend WithEvents UitvoerlocatiesImporterenToolStripMenuItem2 As ToolStripMenuItem
+    Friend WithEvents RandvoorwaardenUitCSVToolStripMenuItem As ToolStripMenuItem
 End Class

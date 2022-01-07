@@ -22,6 +22,7 @@ Partial Class frmTextFileToSQLite
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmTextFileToSQLite))
         Me.grFields = New System.Windows.Forms.DataGridView()
         Me.colItem = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colDataType = New System.Windows.Forms.DataGridViewComboBoxColumn()
@@ -82,7 +83,7 @@ Partial Class frmTextFileToSQLite
         Me.lblProgress.AutoSize = True
         Me.lblProgress.Location = New System.Drawing.Point(15, 441)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(63, 16)
+        Me.lblProgress.Size = New System.Drawing.Size(65, 17)
         Me.lblProgress.TabIndex = 33
         Me.lblProgress.Text = "Progress"
         '
@@ -134,6 +135,7 @@ Partial Class frmTextFileToSQLite
         Me.Controls.Add(Me.btnRead)
         Me.Controls.Add(Me.btnImport)
         Me.Controls.Add(Me.txtCSVFile)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmTextFileToSQLite"
         Me.Text = "Text file to SQLite"
         CType(Me.grFields, System.ComponentModel.ISupportInitialize).EndInit()
