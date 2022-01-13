@@ -90,6 +90,114 @@ Public Class clsStochastenAnalyse
         End If
     End Function
 
+
+    Public Function ClassifyGroundwaterBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), ExportDir As String) As Boolean
+        Try
+            Dim mySeason As clsSeason
+            Dim myDuration As clsDuration
+            Dim TimeSteps As List(Of Long)
+            Dim ts As Long, j As Long, k As Long, n As Long
+            Dim myDate As Date, myPar As String
+            Dim ws As clsExcelSheet
+            Dim lPercentile As Double      'lower boundary percentile for this class
+            Dim uPercentile As Double      'upper boundary percentile for this class
+            Dim repPerc As Double          'percentile for the class
+            Dim repVal As Double          'representative value for the class
+
+
+            'carry out the POT analysis on the rainfall volumes
+            If Not Setup.TijdreeksStatistiek.CalcPOTEvents(Duration, seizoen.ToString, False) Then Throw New Exception("Error executing a POT-analysis on precipitation volumes for the " & seizoen.ToString)
+
+            'now store the starting timesteps for each rainfall event in a list
+            'note: these time step indices are valid for ALL unpaved.3b records
+            Dim myTijdreeks As clsRainfallSeries = Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0)
+            mySeason = myTijdreeks.Seasons.GetByEnum(seizoen)
+            myDuration = mySeason.GetDuration(Duration)
+            TimeSteps = New List(Of Long)
+            TimeSteps = myDuration.POTEvents.GetStartingTimeSteps
+
+            'read the his results for all location and the previously defined initial timesteps per event
+            Dim myResult As New List(Of STOCHLIB.HisDataRow)
+            Dim myResults As New List(Of List(Of STOCHLIB.HisDataRow))
+            myCase.RRResults.UPFLODT.OpenFile()
+            myPar = myCase.RRResults.UPFLODT.getParName("Groundw.Level")
+            For ts = 0 To TimeSteps.Count - 1
+                myDate = Dates(TimeSteps(ts))
+                myResult = myCase.RRResults.UPFLODT.ReadTimeStep(myDate, myPar)
+                myResults.Add(myResult)
+            Next
+            myCase.RRResults.UPFLODT.Close()
+
+            'now walk through all rows of the classification datagridview to decide which percentile we'll use
+            For Each myRow As DataGridViewRow In myDataGrid.Rows
+
+                'determine the boundaries of the current groundwater class
+                lPercentile = myRow.Cells(1).Value
+                uPercentile = myRow.Cells(2).Value
+                repPerc = (lPercentile + uPercentile) / 2
+
+                n = myCase.RRData.Unpaved3B.Records.Count
+                j = 0
+
+                'now that we have the starting time index numbers for the POT-events, we can get the groundwater levels from the starting times for each event
+                For Each myRecord In myCase.RRData.Unpaved3B.Records.Values
+
+                    j += 1
+                    k = -1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("Groundwater classification for season " & seizoen.ToString & " and class " & myRow.Cells("colNaam").Value & ".", j, n)
+                    ws = Me.Setup.ExcelFile.GetAddSheet(seizoensnaam)
+                    ws.ws.Cells(0, 0).Value = "Datum"
+                    ws.ws.Cells(0, j).Value = myRecord.ID
+
+                    'get the results for this record from the lists
+                    Dim GW(0 To TimeSteps.Count - 1) As Double
+                    For Each myResult In myResults
+                        For Each Result As STOCHLIB.HisDataRow In myResult
+                            If Result.LocationName = myRecord.ID Then
+                                k += 1
+                                GW(k) = Result.Value 'store the results in a temporary array to allow percentile computation later
+                                ws.ws.Cells(k + 1, 0).Value = Result.TimeStep
+                                ws.ws.Cells(k + 1, j).Value = Result.Value
+                            End If
+                        Next
+                    Next
+
+                    'update the unpaved.3b record
+                    repVal = Me.Setup.GeneralFunctions.Percentile(GW, repPerc)
+                    myRecord.ig = 0
+                    myRecord.igconst = Math.Round(myRecord.lv - repVal, 2)
+
+                    'write the statistics to Excel
+                    ws = Me.Setup.ExcelFile.GetAddSheet(seizoensnaam & ".Stats")
+                    Dim r As Integer = myRow.Index * 3
+                    ws.ws.Cells(0, j + 1).Value = myRecord.ID
+                    ws.ws.Cells(r + 1, 0).Value = myRow.Cells(0).Value
+                    ws.ws.Cells(r + 1, 1).Value = "Percentiel " & repPerc
+                    ws.ws.Cells(r + 1, j + 1).Value = Math.Round(repVal, 2)
+                    ws.ws.Cells(r + 2, 0).Value = myRow.Cells(0).Value
+                    ws.ws.Cells(r + 2, 1).Value = "Maaiveldhoogte (m NAP)"
+                    ws.ws.Cells(r + 2, j + 1).Value = myRecord.lv
+                    ws.ws.Cells(r + 3, 0).Value = myRow.Cells(0).Value
+                    ws.ws.Cells(r + 3, 1).Value = "Grondwaterdiepte (m)"
+                    ws.ws.Cells(r + 3, j + 1).Value = Math.Round(myRecord.lv - repVal, 2)
+                Next
+
+                'set path to the adjusted unpaved.3b file and initialize writing the groundwater level values
+                Dim mypath As String = ExportDir & "\" & seizoen.ToString & "_" & myRow.Cells(0).Value & "\"
+                If Not System.IO.Directory.Exists(mypath) Then System.IO.Directory.CreateDirectory(mypath)
+                myCase.RRData.Unpaved3B.Write(mypath & "unpaved.3b", False)
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.AddError("Error in function ClassifyGroundwaterBySeason of class frmClassifyGroundWater.")
+            Return False
+        End Try
+
+
+    End Function
+
+
     Public Function PopulateModelsAndLocationsFromDB(ByRef con As SQLite.SQLiteConnection) As Boolean
         Try
             Dim myQuery As String, dtModel As New DataTable, dtLoc As New DataTable, i As Integer, j As Integer, myModel As clsSimulationModel

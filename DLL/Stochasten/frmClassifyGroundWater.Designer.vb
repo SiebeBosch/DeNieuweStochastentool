@@ -40,12 +40,12 @@ Partial Class frmClassifyGroundWater
         Me.cmbDuration = New System.Windows.Forms.ComboBox()
         Me.dlgSaveFile = New System.Windows.Forms.SaveFileDialog()
         Me.Instellingen = New System.Windows.Forms.GroupBox()
+        Me.radZomWin = New System.Windows.Forms.RadioButton()
+        Me.radJaarRond = New System.Windows.Forms.RadioButton()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.groupSbk = New System.Windows.Forms.GroupBox()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.lblProgress = New System.Windows.Forms.Label()
-        Me.radJaarRond = New System.Windows.Forms.RadioButton()
-        Me.radZomWin = New System.Windows.Forms.RadioButton()
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -54,25 +54,28 @@ Partial Class frmClassifyGroundWater
         '
         'txtSobekProject
         '
-        Me.txtSobekProject.Location = New System.Drawing.Point(90, 25)
+        Me.txtSobekProject.Location = New System.Drawing.Point(120, 31)
+        Me.txtSobekProject.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtSobekProject.Name = "txtSobekProject"
-        Me.txtSobekProject.Size = New System.Drawing.Size(575, 20)
+        Me.txtSobekProject.Size = New System.Drawing.Size(765, 22)
         Me.txtSobekProject.TabIndex = 0
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(18, 28)
+        Me.Label1.Location = New System.Drawing.Point(24, 34)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(43, 13)
+        Me.Label1.Size = New System.Drawing.Size(56, 17)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "Project:"
         '
         'btnSbkProject
         '
-        Me.btnSbkProject.Location = New System.Drawing.Point(671, 23)
+        Me.btnSbkProject.Location = New System.Drawing.Point(895, 28)
+        Me.btnSbkProject.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnSbkProject.Name = "btnSbkProject"
-        Me.btnSbkProject.Size = New System.Drawing.Size(22, 22)
+        Me.btnSbkProject.Size = New System.Drawing.Size(29, 27)
         Me.btnSbkProject.TabIndex = 2
         Me.btnSbkProject.Text = ".."
         Me.btnSbkProject.UseVisualStyleBackColor = True
@@ -80,17 +83,19 @@ Partial Class frmClassifyGroundWater
         'cmbSobekCases
         '
         Me.cmbSobekCases.FormattingEnabled = True
-        Me.cmbSobekCases.Location = New System.Drawing.Point(90, 51)
+        Me.cmbSobekCases.Location = New System.Drawing.Point(120, 63)
+        Me.cmbSobekCases.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbSobekCases.Name = "cmbSobekCases"
-        Me.cmbSobekCases.Size = New System.Drawing.Size(603, 21)
+        Me.cmbSobekCases.Size = New System.Drawing.Size(803, 24)
         Me.cmbSobekCases.TabIndex = 3
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(18, 54)
+        Me.Label2.Location = New System.Drawing.Point(24, 66)
+        Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(34, 13)
+        Me.Label2.Size = New System.Drawing.Size(44, 17)
         Me.Label2.TabIndex = 4
         Me.Label2.Text = "Case:"
         '
@@ -99,33 +104,41 @@ Partial Class frmClassifyGroundWater
         Me.grGrondwaterKlassen.AllowUserToAddRows = False
         Me.grGrondwaterKlassen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.grGrondwaterKlassen.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colNaam, Me.colPercentiel, Me.colTotPerc})
-        Me.grGrondwaterKlassen.Location = New System.Drawing.Point(18, 25)
+        Me.grGrondwaterKlassen.Location = New System.Drawing.Point(24, 31)
+        Me.grGrondwaterKlassen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.grGrondwaterKlassen.Name = "grGrondwaterKlassen"
-        Me.grGrondwaterKlassen.Size = New System.Drawing.Size(349, 132)
+        Me.grGrondwaterKlassen.RowHeadersWidth = 51
+        Me.grGrondwaterKlassen.Size = New System.Drawing.Size(465, 162)
         Me.grGrondwaterKlassen.TabIndex = 5
         '
         'colNaam
         '
         Me.colNaam.HeaderText = "klassenaam"
+        Me.colNaam.MinimumWidth = 6
         Me.colNaam.Name = "colNaam"
+        Me.colNaam.Width = 125
         '
         'colPercentiel
         '
         Me.colPercentiel.HeaderText = "van percentiel"
+        Me.colPercentiel.MinimumWidth = 6
         Me.colPercentiel.Name = "colPercentiel"
+        Me.colPercentiel.Width = 125
         '
         'colTotPerc
         '
         Me.colTotPerc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colTotPerc.HeaderText = "tot percentiel"
+        Me.colTotPerc.MinimumWidth = 6
         Me.colTotPerc.Name = "colTotPerc"
         '
         'btnDeleteGroundwaterClass
         '
         Me.btnDeleteGroundwaterClass.BackColor = System.Drawing.Color.IndianRed
-        Me.btnDeleteGroundwaterClass.Location = New System.Drawing.Point(373, 54)
+        Me.btnDeleteGroundwaterClass.Location = New System.Drawing.Point(497, 66)
+        Me.btnDeleteGroundwaterClass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnDeleteGroundwaterClass.Name = "btnDeleteGroundwaterClass"
-        Me.btnDeleteGroundwaterClass.Size = New System.Drawing.Size(25, 25)
+        Me.btnDeleteGroundwaterClass.Size = New System.Drawing.Size(33, 31)
         Me.btnDeleteGroundwaterClass.TabIndex = 13
         Me.btnDeleteGroundwaterClass.Text = "-"
         Me.btnDeleteGroundwaterClass.UseVisualStyleBackColor = False
@@ -133,9 +146,10 @@ Partial Class frmClassifyGroundWater
         'btnAddGroundwaterClass
         '
         Me.btnAddGroundwaterClass.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddGroundwaterClass.Location = New System.Drawing.Point(373, 25)
+        Me.btnAddGroundwaterClass.Location = New System.Drawing.Point(497, 31)
+        Me.btnAddGroundwaterClass.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnAddGroundwaterClass.Name = "btnAddGroundwaterClass"
-        Me.btnAddGroundwaterClass.Size = New System.Drawing.Size(25, 25)
+        Me.btnAddGroundwaterClass.Size = New System.Drawing.Size(33, 31)
         Me.btnAddGroundwaterClass.TabIndex = 12
         Me.btnAddGroundwaterClass.Text = "+"
         Me.btnAddGroundwaterClass.UseVisualStyleBackColor = False
@@ -143,9 +157,10 @@ Partial Class frmClassifyGroundWater
         'btnClassify
         '
         Me.btnClassify.BackColor = System.Drawing.Color.Yellow
-        Me.btnClassify.Location = New System.Drawing.Point(640, 323)
+        Me.btnClassify.Location = New System.Drawing.Point(853, 398)
+        Me.btnClassify.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnClassify.Name = "btnClassify"
-        Me.btnClassify.Size = New System.Drawing.Size(85, 39)
+        Me.btnClassify.Size = New System.Drawing.Size(113, 48)
         Me.btnClassify.TabIndex = 14
         Me.btnClassify.Text = "Classificeer!"
         Me.btnClassify.UseVisualStyleBackColor = False
@@ -153,18 +168,20 @@ Partial Class frmClassifyGroundWater
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(19, 32)
+        Me.Label4.Location = New System.Drawing.Point(25, 39)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(138, 13)
+        Me.Label4.Size = New System.Drawing.Size(188, 17)
         Me.Label4.TabIndex = 18
         Me.Label4.Text = "Duur gebeurtenissen (uren):"
         '
         'cmbDuration
         '
         Me.cmbDuration.FormattingEnabled = True
-        Me.cmbDuration.Location = New System.Drawing.Point(176, 29)
+        Me.cmbDuration.Location = New System.Drawing.Point(235, 36)
+        Me.cmbDuration.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.cmbDuration.Name = "cmbDuration"
-        Me.cmbDuration.Size = New System.Drawing.Size(95, 21)
+        Me.cmbDuration.Size = New System.Drawing.Size(125, 24)
         Me.cmbDuration.TabIndex = 19
         '
         'Instellingen
@@ -173,21 +190,49 @@ Partial Class frmClassifyGroundWater
         Me.Instellingen.Controls.Add(Me.radJaarRond)
         Me.Instellingen.Controls.Add(Me.cmbDuration)
         Me.Instellingen.Controls.Add(Me.Label4)
-        Me.Instellingen.Location = New System.Drawing.Point(437, 118)
+        Me.Instellingen.Location = New System.Drawing.Point(583, 145)
+        Me.Instellingen.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Instellingen.Name = "Instellingen"
-        Me.Instellingen.Size = New System.Drawing.Size(288, 185)
+        Me.Instellingen.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.Instellingen.Size = New System.Drawing.Size(384, 228)
         Me.Instellingen.TabIndex = 20
         Me.Instellingen.TabStop = False
         Me.Instellingen.Text = "Classificeren voor:"
+        '
+        'radZomWin
+        '
+        Me.radZomWin.AutoSize = True
+        Me.radZomWin.Checked = True
+        Me.radZomWin.Location = New System.Drawing.Point(29, 89)
+        Me.radZomWin.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.radZomWin.Name = "radZomWin"
+        Me.radZomWin.Size = New System.Drawing.Size(183, 21)
+        Me.radZomWin.TabIndex = 21
+        Me.radZomWin.TabStop = True
+        Me.radZomWin.Text = "Zomer- en winterhalfjaar"
+        Me.radZomWin.UseVisualStyleBackColor = True
+        '
+        'radJaarRond
+        '
+        Me.radJaarRond.AutoSize = True
+        Me.radJaarRond.Location = New System.Drawing.Point(29, 117)
+        Me.radJaarRond.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.radJaarRond.Name = "radJaarRond"
+        Me.radJaarRond.Size = New System.Drawing.Size(86, 21)
+        Me.radJaarRond.TabIndex = 20
+        Me.radJaarRond.Text = "Jaarrond"
+        Me.radJaarRond.UseVisualStyleBackColor = True
         '
         'GroupBox1
         '
         Me.GroupBox1.Controls.Add(Me.grGrondwaterKlassen)
         Me.GroupBox1.Controls.Add(Me.btnAddGroundwaterClass)
         Me.GroupBox1.Controls.Add(Me.btnDeleteGroundwaterClass)
-        Me.GroupBox1.Location = New System.Drawing.Point(18, 118)
+        Me.GroupBox1.Location = New System.Drawing.Point(24, 145)
+        Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(413, 185)
+        Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.GroupBox1.Size = New System.Drawing.Size(551, 228)
         Me.GroupBox1.TabIndex = 21
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Grondwaterklassen"
@@ -199,56 +244,38 @@ Partial Class frmClassifyGroundWater
         Me.groupSbk.Controls.Add(Me.btnSbkProject)
         Me.groupSbk.Controls.Add(Me.cmbSobekCases)
         Me.groupSbk.Controls.Add(Me.Label2)
-        Me.groupSbk.Location = New System.Drawing.Point(15, 12)
+        Me.groupSbk.Location = New System.Drawing.Point(20, 15)
+        Me.groupSbk.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.groupSbk.Name = "groupSbk"
-        Me.groupSbk.Size = New System.Drawing.Size(710, 100)
+        Me.groupSbk.Padding = New System.Windows.Forms.Padding(4, 4, 4, 4)
+        Me.groupSbk.Size = New System.Drawing.Size(947, 123)
         Me.groupSbk.TabIndex = 22
         Me.groupSbk.TabStop = False
         Me.groupSbk.Text = "Sobek"
         '
         'prProgress
         '
-        Me.prProgress.Location = New System.Drawing.Point(18, 339)
+        Me.prProgress.Location = New System.Drawing.Point(24, 417)
+        Me.prProgress.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.prProgress.Name = "prProgress"
-        Me.prProgress.Size = New System.Drawing.Size(616, 23)
+        Me.prProgress.Size = New System.Drawing.Size(821, 28)
         Me.prProgress.TabIndex = 23
         '
         'lblProgress
         '
         Me.lblProgress.AutoSize = True
-        Me.lblProgress.Location = New System.Drawing.Point(15, 323)
+        Me.lblProgress.Location = New System.Drawing.Point(20, 398)
+        Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(56, 13)
+        Me.lblProgress.Size = New System.Drawing.Size(74, 17)
         Me.lblProgress.TabIndex = 24
         Me.lblProgress.Text = "Voortgang"
         '
-        'radJaarRond
-        '
-        Me.radJaarRond.AutoSize = True
-        Me.radJaarRond.Location = New System.Drawing.Point(22, 95)
-        Me.radJaarRond.Name = "radJaarRond"
-        Me.radJaarRond.Size = New System.Drawing.Size(66, 17)
-        Me.radJaarRond.TabIndex = 20
-        Me.radJaarRond.Text = "Jaarrond"
-        Me.radJaarRond.UseVisualStyleBackColor = True
-        '
-        'radZomWin
-        '
-        Me.radZomWin.AutoSize = True
-        Me.radZomWin.Checked = True
-        Me.radZomWin.Location = New System.Drawing.Point(22, 72)
-        Me.radZomWin.Name = "radZomWin"
-        Me.radZomWin.Size = New System.Drawing.Size(138, 17)
-        Me.radZomWin.TabIndex = 21
-        Me.radZomWin.TabStop = True
-        Me.radZomWin.Text = "Zomer- en winterhalfjaar"
-        Me.radZomWin.UseVisualStyleBackColor = True
-        '
         'frmClassifyGroundWater
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(737, 374)
+        Me.ClientSize = New System.Drawing.Size(983, 460)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.groupSbk)
@@ -256,6 +283,7 @@ Partial Class frmClassifyGroundWater
         Me.Controls.Add(Me.Instellingen)
         Me.Controls.Add(Me.btnClassify)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmClassifyGroundWater"
         Me.Text = "Initiële grondwaterstanden classificeren"
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).EndInit()

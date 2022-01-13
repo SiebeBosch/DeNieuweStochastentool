@@ -1,16 +1,13 @@
 ﻿Imports STOCHLIB.General
 Imports STOCHLIB.GeneralFunctions
 Imports System.Windows.Forms
-Imports System.IO
+Public Class frmClassifyGroundwaterDHydro
 
-Public Class frmClassifyGroundWater
-
-    Dim myProject As STOCHLIB.clsSobekProject
     Private Setup As clsSetup
 
     Public Sub New(ByRef mySetup As clsSetup)
 
-        ' This call is required by the Windows Form Designer.
+        ' This call is required by the designer.
         InitializeComponent()
 
         ' Add any initialization after the InitializeComponent() call.
@@ -18,28 +15,14 @@ Public Class frmClassifyGroundWater
 
     End Sub
 
-    Private Sub btnSbkProject_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnSbkProject.Click
-        dlgFolder.Description = "Selecteer uw SOBEK-project (.LIT)"
-        dlgFolder.ShowDialog()
-
-        If System.IO.Directory.Exists(dlgFolder.SelectedPath) Then
-            txtSobekProject.Text = dlgFolder.SelectedPath
-            Setup.SetAddSobekProject(dlgFolder.SelectedPath, dlgFolder.SelectedPath)
-            Setup.PopulateComboBoxSobekCases(cmbSobekCases)
+    Private Sub btnRRDir_Click(sender As Object, e As EventArgs) Handles btnRRDir.Click
+        Dim Result As System.Windows.Forms.DialogResult = dlgFolder.ShowDialog()
+        If Result = Windows.Forms.DialogResult.OK Then
+            txtRRDir.Text = dlgFolder.SelectedPath
         End If
     End Sub
 
-    Private Sub btnDeleteGroundwaterClass_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnDeleteGroundwaterClass.Click
-        For Each myRow As DataGridViewRow In grGrondwaterKlassen.SelectedRows
-            grGrondwaterKlassen.Rows.Remove(myRow)
-        Next
-    End Sub
-
-    Private Sub btnAddGroundwaterClass_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddGroundwaterClass.Click
-        grGrondwaterKlassen.Rows.Add()
-    End Sub
-
-    Private Sub btnClassify_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnClassify.Click
+    Private Sub btnClassify_Click(sender As Object, e As EventArgs) Handles btnClassify.Click
         Dim myRecord As clsUnpaved3BRecord
         Dim Seizoensnaam As String
         Dim i As Long
@@ -51,16 +34,23 @@ Public Class frmClassifyGroundWater
             For i = 0 To grGrondwaterKlassen.Rows.Count - 1
                 My.Settings.GroundwaterClasses.Add(grGrondwaterKlassen.Rows(i).Cells(0).Value & ";" & grGrondwaterKlassen.Rows(i).Cells(1).Value & ";" & grGrondwaterKlassen.Rows(i).Cells(2).Value)
             Next
-            My.Settings.SobekDir = txtSobekProject.Text
             My.Settings.Save()
+
+            Dim CaseListItem As New clsSobekCaseListItem(Me.Setup)
+            CaseListItem.name = "RR"
+            CaseListItem.dir = txtRRDir.Text
+
+            Dim myProj As New clsSobekProject(Me.Setup)
+            Dim myCase As New ClsSobekCase(Me.Setup, myProj, CaseListItem)
+
 
             'initialize the progress bar on this form
             Setup.SetProgress(prProgress, lblProgress)
 
             'set the active case and read the unpaved data
-            Setup.SetActiveCase(cmbSobekCases.Text)
-            Setup.SOBEKData.ActiveProject.ActiveCase.RRData.Unpaved3B.Read()
-            Setup.SOBEKData.ActiveProject.ActiveCase.RRResults.UPFLODT = New STOCHLIB.clsHisFileBinaryReader(Setup.SOBEKData.ActiveProject.ActiveCase.CaseDir & "\upflowdt.his", Me.Setup)
+            'Setup.SetActiveCase(cmbSobekCases.Text)
+            myCase.RRData.Unpaved3B.Read()
+            myCase.RRResults.UPFLODT = New STOCHLIB.clsHisFileBinaryReader(myCase.CaseDir & "\upflowdt.his", Me.Setup)
 
             'POT analysis settings
             Setup.InitializeTijdreeksStatistiek()
@@ -70,7 +60,7 @@ Public Class frmClassifyGroundWater
             dlgFolder.Description = "Uitvoermap voor de grondwaterklassen."
             dlgFolder.ShowDialog()
             Dim ExportDir As String = dlgFolder.SelectedPath
-            Me.Setup.Settings.SetExportDirs(ExportDir, True, True, False, False, False)
+            Me.Setup.Settings.SetExportDirs(ExportDir, False, False, False, False, False)
 
             Dim seizoen As enmSeason
 
@@ -81,8 +71,8 @@ Public Class frmClassifyGroundWater
             Else
 
                 'pick the first location to extract the rainfall series from and then read the precipitation
-                myRecord = Setup.SOBEKData.ActiveProject.ActiveCase.RRData.Unpaved3B.Records.Values(0)
-                If Not Setup.TijdreeksStatistiek.addRainfallSeriesFromHisFile(Setup.SOBEKData.ActiveProject.ActiveCase.CaseDir & "\upflowdt.his", myRecord.ID, "Rainfall") Then Throw New Exception("Error reading time series from hisfile.")
+                myRecord = myCase.RRData.Unpaved3B.Records.Values(0)
+                If Not Setup.TijdreeksStatistiek.addRainfallSeriesFromHisFile(myCase.CaseDir & "\upflowdt.his", myRecord.ID, "Rainfall") Then Throw New Exception("Error reading time series from hisfile.")
                 Dates = Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0).Dates 'local copy of the dates
 
                 'Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0).WriteCSV(myRecord.ID)
@@ -99,14 +89,15 @@ Public Class frmClassifyGroundWater
                             seizoen = enmSeason.hydrowinterhalfyear
                             Seizoensnaam = "winter"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, myCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
                     Next
 
                 ElseIf radJaarRond.Checked Then
 
                     seizoen = enmSeason.yearround
                     Seizoensnaam = "jaarrond"
-                    Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, myCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+
                 End If
             End If
 
@@ -121,11 +112,9 @@ Public Class frmClassifyGroundWater
             Me.Setup.Log.AddError(ex.Message)
             MsgBox("Error: could not classify groundwater levels from hisfile contents.")
         End Try
-
     End Sub
 
-
-    Private Sub frmClassifyGroundWater_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+    Private Sub frmClassifyGroundwaterDHydro_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim i As Integer, myStr As String
         Dim Name As String, lBound As Object, uBound As Object
 
@@ -151,11 +140,13 @@ Public Class frmClassifyGroundWater
 
     End Sub
 
-    Private Sub Instellingen_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Instellingen.Enter
-
+    Private Sub btnAddGroundwaterClass_Click(sender As Object, e As EventArgs) Handles btnAddGroundwaterClass.Click
+        grGrondwaterKlassen.Rows.Add()
     End Sub
 
-    Private Sub cmbSobekCases_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbSobekCases.SelectedIndexChanged
-
+    Private Sub btnDeleteGroundwaterClass_Click(sender As Object, e As EventArgs) Handles btnDeleteGroundwaterClass.Click
+        For Each myRow As DataGridViewRow In grGrondwaterKlassen.SelectedRows
+            grGrondwaterKlassen.Rows.Remove(myRow)
+        Next
     End Sub
 End Class

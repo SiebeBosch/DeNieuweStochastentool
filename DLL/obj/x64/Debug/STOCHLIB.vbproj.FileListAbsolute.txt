@@ -166,3 +166,4 @@ D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DynamicInterop.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ScientificDataSet.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DynamicInterop.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ScientificDataSet.xml
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.frmClassifyGroundwaterDHydro.resources

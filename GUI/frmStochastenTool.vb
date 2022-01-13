@@ -2365,8 +2365,6 @@ Public Class frmStochasten
     End Sub
 
     Private Sub GrondwatersClassificerenToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GrondwatersClassificerenToolStripMenuItem.Click
-        Dim myForm As New STOCHLIB.frmClassifyGroundWater(Me.Setup)
-        myForm.Show()
     End Sub
 
 
@@ -4324,6 +4322,16 @@ Public Class frmStochasten
         }
         Dim myForm As New STOCHLIB.frmTextFileToSQLite(Me.Setup, Me.Setup.SqliteCon, "RANDREEKSEN", myFields)
         myForm.ShowDialog()
+    End Sub
+
+    Private Sub SOBEKToolStripMenuItem_Click_1(sender As Object, e As EventArgs) Handles SOBEKToolStripMenuItem.Click
+        Dim myForm As New STOCHLIB.frmClassifyGroundWater(Me.Setup)
+        myForm.Show()
+    End Sub
+
+    Private Sub DHydroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DHydroToolStripMenuItem.Click
+        Dim myForm As New STOCHLIB.frmClassifyGroundwaterDHydro(Me.Setup)
+        myForm.Show()
     End Sub
 
     Private Sub BtnViewer_Click(sender As Object, e As EventArgs) Handles btnViewer.Click

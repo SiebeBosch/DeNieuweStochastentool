@@ -72,7 +72,7 @@ Public Class clsBoundariesBC
         End Try
     End Function
 
-    Public Function Write(path As String) As Boolean
+    Public Function Write(path As String, StartDate As Date) As Boolean
         Try
             Using bcWriter As New StreamWriter(path)
                 For Each myComment As String In Comment
@@ -87,10 +87,10 @@ Public Class clsBoundariesBC
                     bcWriter.WriteLine("name       = " & myBC.name)
                     bcWriter.WriteLine("function   = " & myBC.bcfunction)
                     bcWriter.WriteLine("timeInterpolation = " & myBC.timeInterpolation)
-                    For Each myQuantity As clsQuantity In myBC.quantities.Values
-                        bcWriter.WriteLine("quantity   = " & myQuantity.name)
-                        bcWriter.WriteLine("unit       = " & myQuantity.unit)
-                    Next
+                    bcWriter.WriteLine("quantity   = time")
+                    bcWriter.WriteLine("unit       = minutes since " & Format(StartDate, "yyyy-MM-dd HH:mm:ss"))
+                    bcWriter.WriteLine("quantity   = waterlevelbnd")
+                    bcWriter.WriteLine("unit       = m")
                     For i = 0 To myBC.DataTable.XValues.Count - 1
                         bcWriter.WriteLine(myBC.DataTable.XValues.Values(i) & "    " & myBC.DataTable.Values1.Values(i))
                     Next

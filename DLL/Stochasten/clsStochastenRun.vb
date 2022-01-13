@@ -88,15 +88,15 @@ Public Class clsStochastenRun
         Pars(0) = GetID()
         Pars(1) = SeasonClass.Name.ToString
         Pars(2) = duur
-        If Not VolumeClass Is Nothing Then Pars(3) = VolumeClass.Volume 'neerslagvolume
-        If Not PatternClass Is Nothing Then Pars(4) = PatternClass.Patroon.ToString 'neerslagpatroon
-        If Not GWClass Is Nothing Then Pars(5) = GWClass.ID 'initiele grondwaterdiepte
-        If Not WLClass Is Nothing Then Pars(6) = WLClass.ID 'waterhoogte
-        If Not WindClass Is Nothing Then Pars(7) = WindClass.ID 'wind
-        If Not Extra1Class Is Nothing Then Pars(8) = Extra1Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
-        If Not Extra2Class Is Nothing Then Pars(9) = Extra2Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
-        If Not Extra3Class Is Nothing Then Pars(10) = Extra3Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
-        If Not Extra4Class Is Nothing Then Pars(10) = Extra4Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
+        If VolumeClass IsNot Nothing Then Pars(3) = VolumeClass.Volume 'neerslagvolume
+        If PatternClass IsNot Nothing Then Pars(4) = PatternClass.Patroon.ToString 'neerslagpatroon
+        If GWClass IsNot Nothing Then Pars(5) = GWClass.ID 'initiele grondwaterdiepte
+        If WLClass IsNot Nothing Then Pars(6) = WLClass.ID 'waterhoogte
+        If WindClass IsNot Nothing Then Pars(7) = WindClass.ID 'wind
+        If Extra1Class IsNot Nothing Then Pars(8) = Extra1Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
+        If Extra2Class IsNot Nothing Then Pars(9) = Extra2Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
+        If Extra3Class IsNot Nothing Then Pars(10) = Extra3Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
+        If Extra4Class IsNot Nothing Then Pars(10) = Extra4Class.ID 'bijv. ruwheid, gemaalfalen, sliblaag
         Pars(11) = calcP()
         Pars(12) = False
         myGrid.Rows.Add(Pars)
@@ -653,10 +653,8 @@ Public Class clsStochastenRun
                             cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
                             cn.Open()
 
-                            Dim ColName As String = NodeID
-                            If Not Me.Setup.GeneralFunctions.SQLiteColumnNameValid(NodeID) Then ColName = Chr(34) & NodeID & Chr(34) 'since the boundary node has its own column and column names cannot be numeric
 
-                            query = "SELECT MINUUT, " & ColName & " from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
+                            query = "SELECT MINUUT, WAARDE from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " AND NODEID='" & NodeID & "' ORDER BY MINUUT;"
                             da = New SQLite.SQLiteDataAdapter(query, cn)
                             dt = New DataTable
                             da.Fill(dt)
@@ -664,7 +662,7 @@ Public Class clsStochastenRun
                             'write our timeseries to the boundaries.bc content
                             Dim myData As New clsSobekTable(Me.Setup)
                             For r = 0 To dt.Rows.Count - 1
-                                myData.AddDatevalPair(TableStart.AddMinutes(dt.Rows(r)(0)), dt.Rows(r)(1))
+                                myData.AddDataPair(2, dt.Rows(r)(0), dt.Rows(r)(1))
                             Next
 
                             BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).setDatatable(myData)
@@ -676,7 +674,7 @@ Public Class clsStochastenRun
 
                 'and finally: write the adjusted boundaries.bc file
                 Dim Path As String = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & "boundaries.bc"
-                BoundariesBC.write(Path)
+                BoundariesBC.Write(Path, SeasonClass.EventStart)
                 File.Copy(Path, Dir & "\boundaries.bc", True)
 
             Else
