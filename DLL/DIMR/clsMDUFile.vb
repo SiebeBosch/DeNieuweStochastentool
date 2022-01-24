@@ -8,6 +8,7 @@ Public Class clsMDUFile
     Friend NetFile As String   'specifies the name of the geometry file (.nc)
     Friend HisFile As String   'specifies the name of the his results file (usually _his.nc)
     Friend MapFile As String   'specifies the name of the map results file (usually _map_nc)
+    Friend ObsFile As String   'specifies the name of the observationpoints file
 
     Public Sub New(ByRef mySetup As clsSetup, ByRef myDIMR As clsDIMR, myPath As String)
         Setup = mySetup
@@ -25,8 +26,10 @@ Public Class clsMDUFile
             Using mduReader As New StreamReader(path)
                 While Not mduReader.EndOfStream
                     myLine = mduReader.ReadLine.Trim.ToLower
-                    If Left(myLine, 7) = "netfile" Then
+                    If Left(myLine.Trim.ToLower, 7) = "netfile" Then
                         NetFile = DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\" & Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
+                    ElseIf Left(myLine.Trim.ToLower, 7) = "obsfile" Then
+                        ObsFile = DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\" & Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
                     End If
                 End While
             End Using

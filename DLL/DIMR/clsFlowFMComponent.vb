@@ -13,6 +13,10 @@ Public Class clsFlowFMComponent
         DIMR = myDIMR
     End Sub
 
+    Public Function getDirectory() As String
+        Return DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\"
+    End Function
+
     Public Function ReadNetwork() As Boolean
         Try
             If Not System.IO.File.Exists(MDUFile.NetFile) Then Throw New Exception("Network topology file not found: " & Network.Path)
@@ -78,9 +82,10 @@ Public Class clsFlowFMComponent
             Dim X As Double, Y As Double
             Dim myLine As String
             Dim ID As String, BranchID As String, Chainage As Double
+            Dim iniPath As String = DIMR.FlowFM.MDUFile.ObsFile
 
             ObservationPoints = New Dictionary(Of String, clsXY)
-            Using iniReader As New StreamReader("d:\GITHUB\PILOT_HENA\dellen_rr_fm_rtc_T1\dflowfm\observationPoints.ini")
+            Using iniReader As New StreamReader(iniPath)
                 While Not iniReader.EndOfStream
                     myLine = iniReader.ReadLine()
                     If myLine.Trim.ToLower = "[observationpoint]" Then

@@ -506,6 +506,26 @@ Public Class clsStochastenRuns
             Return Nothing
         End Try
     End Function
+
+    Public Function GetSelected(ByRef grRuns As DataGridView) As Dictionary(Of String, clsStochastenRun)
+        'returns a dictionary containing all selected stochastic runs that have no results yet
+        Dim Selection As New Dictionary(Of String, clsStochastenRun)
+        Dim ID As String, myRun As clsStochastenRun
+        Try
+            For Each myRow As DataGridViewRow In grRuns.SelectedRows
+                If Not myRow.Cells("DONE").Value = True Then
+                    ID = myRow.Cells("ID").Value
+                    myRun = Runs.Item(ID.Trim.ToUpper)
+                    Selection.Add(ID.Trim.ToUpper, myRun)
+                End If
+            Next
+            Return Selection
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetSelectedRuns of class clsStochastenRuns: " & ex.Message)
+            Return Selection
+        End Try
+    End Function
+
     Public Function RunSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
 
         '------------------------------------------------------------------------------------------------------------------------------

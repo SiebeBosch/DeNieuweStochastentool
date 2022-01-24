@@ -30,6 +30,10 @@ Public Class clsSimulationModel
                 ModelType = GeneralFunctions.enmSimulationModel.Custom
             Case Is = "DIMR"
                 ModelType = GeneralFunctions.enmSimulationModel.DIMR
+            Case Is = "DHYDRO"
+                ModelType = GeneralFunctions.enmSimulationModel.DHYDRO
+            Case Is = "DHYDROSERVER"
+                ModelType = GeneralFunctions.enmSimulationModel.DHYDROSERVER
         End Select
         Exec = myExec
         Args = myArgs
