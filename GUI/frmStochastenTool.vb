@@ -424,7 +424,7 @@ Public Class frmStochasten
                     ElseIf grModels.Columns(eventargs2.ColumnIndex).Name = "MODELDIR" Then
                         Dim dlgFolder As New FolderBrowserDialog
                         dlgFolder.ShowDialog()
-                        grModels.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = dlgFolder.SelectedPath
+                        grModels.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = Me.Setup.GeneralFunctions.removetrailingbackslashFromDir(dlgFolder.SelectedPath)
                     ElseIf grModels.Columns(eventargs2.ColumnIndex).Name = "TEMPWORKDIR" Then
                         Dim dlgFolder As New FolderBrowserDialog
                         dlgFolder.ShowDialog()
@@ -2374,16 +2374,13 @@ Public Class frmStochasten
     Private Sub BtnPostprocessing_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostprocessing.Click
 
         Me.Setup.SetProgress(prProgress, lblProgress)
-        Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingsreeksen berekenen...", 0, 10, True)
 
         'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
         Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
-
         Me.Cursor = Cursors.WaitCursor
         Setup.StochastenAnalyse.CalculateExceedanceTables(Me.Setup.SqliteCon)
 
-        Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
         Me.Cursor = Cursors.Default
 
     End Sub

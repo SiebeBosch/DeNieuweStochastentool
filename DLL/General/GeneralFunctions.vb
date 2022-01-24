@@ -7756,6 +7756,15 @@ Public Class GeneralFunctions
 
     End Sub
 
+    Public Function RemovetrailingbackslashFromDir(path As String) As String
+        If Strings.Right(path, 1) = "\" Then
+            Return Strings.Left(path, path.Length - 1)
+        Else
+            Return path
+        End If
+    End Function
+
+
     Public Sub BESSEL2WGS84(ByVal phi As Double, ByVal lambda As Double, ByRef PhiWGS As Double, ByRef LamWGS As Double)
         Dim dphi As Double, dlam As Double, phicor As Double, lamcor As Double
 

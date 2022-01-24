@@ -48,10 +48,17 @@ Public Class clsNetworkFile
     Public Function Read() As Boolean
         Try
             'we use the microsoft scientific dataset library to read this netcdf-file
+            If Not System.IO.File.Exists(Path) Then Throw New Exception("FlowFM network file does not exist and could not be read: " & Path)
+
             Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
             Dim myDataset As sds.DataSet() = dataset.GetLinkedDataSets
+            Me.Setup.Log.AddMessage("Number of datasets found in network file: " & myDataset.Length & ".")
+
             Dim myDimensions As sds.ReadOnlyDimensionList = dataset.Dimensions
+            Me.Setup.Log.AddMessage("Number of dimensions found in network file: " & myDimensions.Count & ".")
+
             Dim myVariables As sds.ReadOnlyVariableCollection = dataset.Variables
+            Me.Setup.Log.AddMessage("Number of variables found in network file: " & myVariables.Count & ".")
 
             'read all variables describing our 1D network from the file
             network1d_geom_y = dataset.GetData(Of Double())(24)
@@ -78,6 +85,8 @@ Public Class clsNetworkFile
             mesh1d_node_long_name = dataset.GetData(Of Byte(,))(3)
             mesh1d_node_id = dataset.GetData(Of Byte(,))(2)
             mesh1d = dataset.GetData(Of Int32)(1)
+
+            Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 
             Dim IDArray As Byte()
             Dim ID As String

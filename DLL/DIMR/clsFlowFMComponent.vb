@@ -21,7 +21,8 @@ Public Class clsFlowFMComponent
         Try
             If Not System.IO.File.Exists(MDUFile.NetFile) Then Throw New Exception("Network topology file not found: " & Network.Path)
             Network = New clsNetworkFile(MDUFile.NetFile, Me.Setup)
-            Return Network.Read()
+            If Not Network.Read() Then Throw New Exception("Error reading FlowFM Network.")
+            Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
             Return False

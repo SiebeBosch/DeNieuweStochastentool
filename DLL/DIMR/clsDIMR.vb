@@ -58,11 +58,9 @@ Public Class clsDIMR
         'reads the entire project
         Try
             If Not DIMRConfig.Read() Then Throw New Exception("Error reading DIMR Config File.")
-
-            FlowFM.ReadMDU       'read the MDU file. This contains references to e.g. our _net.nc file we must read
-            FlowFM.ReadNetwork()             'read the network file
-            FlowFM.ReadObservationPoints()  'read all observation points in the model
-
+            If Not FlowFM.ReadMDU() Then Throw New Exception("Error reading FlowFM MDU-file.")       'read the MDU file. This contains references to e.g. our _net.nc file we must read
+            If Not FlowFM.ReadNetwork() Then Throw New Exception("Error reading FlowFM network.")             'read the network file
+            If Not FlowFM.ReadObservationPoints() Then Throw New Exception("Error reading FlowFM Observation Points.")  'read all observation points in the model
 
             Return True
         Catch ex As Exception

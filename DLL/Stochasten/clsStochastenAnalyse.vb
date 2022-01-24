@@ -623,6 +623,8 @@ Public Class clsStochastenAnalyse
 
     Public Function CalculateExceedanceTables(ByRef con As SQLite.SQLiteConnection) As Boolean
         Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
+
             'now only read results locations
             Dim locdt As New DataTable, locIdx As Integer
             Dim query As String = "SELECT DISTINCT LOCATIENAAM, RESULTSTYPE FROM OUTPUTLOCATIONS;"
@@ -643,10 +645,10 @@ Public Class clsStochastenAnalyse
             Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False)
 
             'for each location in our results table we will now create an exceedance table and write it to the database
-            Me.Setup.GeneralFunctions.UpdateProgressBar("Calculating exceedance tables...", 0, 10, True)
+            Dim nLocs As Integer = locdt.Rows.Count
             For locIdx = 0 To locdt.Rows.Count - 1
 
-                Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, locdt.Rows.Count)
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, nLocs)
 
                 Dim dtRuns As New DataTable
                 Dim dtResults As New DataTable
@@ -674,9 +676,11 @@ Public Class clsStochastenAnalyse
                     End Using
                 End If
             Next
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen succesvol berekend.", 10, 10, True)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function CalculateExceedanceTables of class clsStochastenAnalyse: " & ex.Message)
+            Me.Setup.Log.ShowAll()
             Return False
         End Try
     End Function
@@ -688,6 +692,7 @@ Public Class clsStochastenAnalyse
         Dim dtRes As New DataTable, query As String
 
         Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen...", 0, 10, True)
 
             'first thing to do is clear all results for the current scenario and duration from the database since the results will change by definition when new computations are added
             If Not con.State = ConnectionState.Open Then con.Open()
@@ -703,7 +708,7 @@ Public Class clsStochastenAnalyse
             i = 0
             For Each myRun As clsStochastenRun In Runs.Runs.Values                        'doorloop alle runs en lees de resultaatbestanden uit
                 i += 1
-                Me.Setup.GeneralFunctions.UpdateProgressBar("Processing results for simulation " & i & " of " & n, i, n, True)
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen voor simulatie " & i & " van " & n, i, n, True)
                 For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
                     For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
                         If Right(myFile.FileName, 4).ToLower = ".his" Then                      'this is a Deltares HIS-file. Read it using the corresponding reader
@@ -828,9 +833,12 @@ Public Class clsStochastenAnalyse
 
 
             con.Close()
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten met succes uitgelezen.", 10, 10, True)
+
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.ShowAll()
             Return False
         End Try
 

@@ -37,6 +37,9 @@ Public Class frmImportOutputlocations
 
     Private Sub BtnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
         Try
+
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Uitvoerlocaties importeren...", 0, 10, True)
+
             Dim i As Integer, j As Integer
             Dim ModelID As String
             Dim ModelDir As String
@@ -58,6 +61,9 @@ Public Class frmImportOutputlocations
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False)
 
             For i = 0 To dtModels.Rows.Count - 1
+
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", 0, 10, True)
+
                 If cmbModelID.Text = dtModels.Rows(i)("MODELID") Then
                     ModelID = dtModels.Rows(i)("MODELID")
                     ModelDir = dtModels.Rows(i)("MODELDIR")
@@ -100,6 +106,8 @@ Public Class frmImportOutputlocations
                             WLPoints = Setup.SOBEKData.ActiveProject.ActiveCase.CFTopo.CollectAllWaterLevelPoints
                             Me.Setup.GeneralFunctions.UpdateProgressBar("Writing points to database...", 0, 10, True)
 
+                            j = 0
+                            Me.Setup.GeneralFunctions.UpdateProgressBar("", 0, 10, True)
                             For j = 0 To WLPoints.Count - 1
                                 Me.Setup.GeneralFunctions.UpdateProgressBar("", j, WLPoints.Count)
                                 WLPoint = WLPoints.Values(j)
@@ -136,7 +144,13 @@ Public Class frmImportOutputlocations
 
                         If chkObservationPoints.Checked Then
 
+                            j = 0
+                            Dim n As Integer = Setup.DIMRData.FlowFM.ObservationPoints.Count
                             For Each ObsPoint As STOCHLIB.clsXY In Setup.DIMRData.FlowFM.ObservationPoints.Values
+
+                                j += 1
+                                Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+
                                 'apply the selection by ID
                                 If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, ObsPoint.ID, True) Then
                                     'compute the map coordinates of our point
@@ -168,12 +182,13 @@ Public Class frmImportOutputlocations
                     'now that we have read all output locations, refresh the datagridview containing our output locations
 
                     Me.Setup.SqliteCon.Close()
-                    Setup.GeneralFunctions.UpdateProgressBar("klaar", 0, 1)
                     Me.Setup.Log.write(Setup.Settings.RootDir & "\logfile.txt", True)
                     Me.Setup.Log.Clear()
 
                 End If
             Next
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Uitvoerlocaties met succes geïmporteerd...", 10, 10, True)
+
         Catch ex As Exception
             Me.Setup.Log.AddError("Error importing output locations from model schematisation: " & ex.Message)
         Finally
