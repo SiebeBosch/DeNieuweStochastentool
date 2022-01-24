@@ -143,6 +143,7 @@
     </Reference>
     <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\GUI\packages\SDSLite.2.0.3\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

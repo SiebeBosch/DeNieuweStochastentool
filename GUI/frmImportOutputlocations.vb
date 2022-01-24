@@ -39,6 +39,7 @@ Public Class frmImportOutputlocations
         Try
 
             Me.Setup.GeneralFunctions.UpdateProgressBar("Uitvoerlocaties importeren...", 0, 10, True)
+            Me.Setup.Log.AddMessage("Starting import of output locations.")
 
             Dim i As Integer, j As Integer
             Dim ModelID As String
@@ -139,10 +140,14 @@ Public Class frmImportOutputlocations
                     ElseIf dtModels.Rows(i)("MODELTYPE") = "DIMR" OrElse dtModels.Rows(i)("MODELTYPE") = "DHYDROSERVER" Then
 
                         'read results locations from a D-HYDRO model
+                        Me.Setup.Log.AddMessage("Setting DIMR Project to " & ModelDir)
                         If Not Setup.SetDIMRProject(ModelDir) Then Throw New Exception("DIMR Project could not be set: " & ModelDir)
+
+                        Me.Setup.Log.AddMessage("Reading DIMRData")
                         If Not Setup.DIMRData.ReadAll() Then Throw New Exception("DIMR Project could not be read: " & ModelDir)
 
                         If chkObservationPoints.Checked Then
+                            Me.Setup.Log.AddMessage("Reading observation points.")
 
                             j = 0
                             Dim n As Integer = Setup.DIMRData.FlowFM.ObservationPoints.Count
@@ -191,6 +196,7 @@ Public Class frmImportOutputlocations
 
         Catch ex As Exception
             Me.Setup.Log.AddError("Error importing output locations from model schematisation: " & ex.Message)
+            Me.Setup.Log.ShowAll()
         Finally
             Me.Close()
         End Try

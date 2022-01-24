@@ -1,5 +1,4 @@
 licenses/*
-InnoSetup/*
 
 !.gitignore
 Example/*

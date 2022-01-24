@@ -1,5 +1,4 @@
-﻿Imports Microsoft.Research
-Imports sds = Microsoft.Research.Science.Data
+﻿Imports Microsoft.Research.Science.Data
 Imports Microsoft.Research.Science.Data.Imperative
 Imports STOCHLIB.General
 
@@ -47,44 +46,55 @@ Public Class clsNetworkFile
 
     Public Function Read() As Boolean
         Try
+            Me.Setup.Log.AddMessage("Setting network file variables.")
+            Dim DataSet As Microsoft.Research.Science.Data.DataSet
+            Dim myDatasets As Microsoft.Research.Science.Data.DataSet()
+            Me.Setup.Log.AddMessage("Network file variables successfully set.")
+
             'we use the microsoft scientific dataset library to read this netcdf-file
-            If Not System.IO.File.Exists(Path) Then Throw New Exception("FlowFM network file does not exist and could not be read: " & Path)
+            If Not System.IO.File.Exists(Path) Then
+                Throw New Exception("FlowFM network file does not exist and could not be read: " & Path)
+            Else
+                Me.Setup.Log.AddMessage("FlowFM Network file found: " & Path)
+            End If
 
-            Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
-            Dim myDataset As sds.DataSet() = dataset.GetLinkedDataSets
-            Me.Setup.Log.AddMessage("Number of datasets found in network file: " & myDataset.Length & ".")
+            DataSet = Microsoft.Research.Science.Data.DataSet.Open(Path & "?openMode=readOnly")
+            Me.Setup.Log.AddMessage("FlowFM networkfile successfully opened: " & Path)
 
-            Dim myDimensions As sds.ReadOnlyDimensionList = dataset.Dimensions
+            myDatasets = DataSet.GetLinkedDataSets
+            Me.Setup.Log.AddMessage("Number of datasets found in network file: " & myDatasets.Length & ".")
+
+            Dim myDimensions As Microsoft.Research.Science.Data.ReadOnlyDimensionList = DataSet.Dimensions
             Me.Setup.Log.AddMessage("Number of dimensions found in network file: " & myDimensions.Count & ".")
 
-            Dim myVariables As sds.ReadOnlyVariableCollection = dataset.Variables
+            Dim myVariables As Microsoft.Research.Science.Data.ReadOnlyVariableCollection = DataSet.Variables
             Me.Setup.Log.AddMessage("Number of variables found in network file: " & myVariables.Count & ".")
 
             'read all variables describing our 1D network from the file
-            network1d_geom_y = dataset.GetData(Of Double())(24)
-            network1d_geom_x = dataset.GetData(Of Double())(23)
-            network1d_geom_node_count = dataset.GetData(Of Int32())(22)
-            network1d_geometry = dataset.GetData(Of Int32)(21)
-            network1d_edge_nodes = dataset.GetData(Of Int32(,))(20)
-            network1d_branch_order = dataset.GetData(Of Int32())(19)
-            network1d_edge_length = dataset.GetData(Of Double())(18)
-            network1d_branch_long_name = dataset.GetData(Of Byte(,))(17)
-            network1d_branch_id = dataset.GetData(Of Byte(,))(16)
-            network1d_node_y = dataset.GetData(Of Double())(15)
-            network1d_node_x = dataset.GetData(Of Double())(14)
-            network1d_node_long_name = dataset.GetData(Of Byte(,))(13)
-            network1d_node_id = dataset.GetData(Of Byte(,))(12)
-            network1d = dataset.GetData(Of Int32)(11)
-            mesh1d_node_offset = dataset.GetData(Of Double())(10)
-            mesh1d_node_branch = dataset.GetData(Of Int32())(9)
-            mesh1d_edge_y = dataset.GetData(Of Double())(8)
-            mesh1d_edge_x = dataset.GetData(Of Double())(7)
-            mesh1d_edge_offset = dataset.GetData(Of Double())(6)
-            mesh1d_edge_branch = dataset.GetData(Of Int32())(5)
-            mesh1d_edge_nodes = dataset.GetData(Of Int32(,))(4)
-            mesh1d_node_long_name = dataset.GetData(Of Byte(,))(3)
-            mesh1d_node_id = dataset.GetData(Of Byte(,))(2)
-            mesh1d = dataset.GetData(Of Int32)(1)
+            network1d_geom_y = DataSet.GetData(Of Double())(24)
+            network1d_geom_x = DataSet.GetData(Of Double())(23)
+            network1d_geom_node_count = DataSet.GetData(Of Int32())(22)
+            network1d_geometry = DataSet.GetData(Of Int32)(21)
+            network1d_edge_nodes = DataSet.GetData(Of Int32(,))(20)
+            network1d_branch_order = DataSet.GetData(Of Int32())(19)
+            network1d_edge_length = DataSet.GetData(Of Double())(18)
+            network1d_branch_long_name = DataSet.GetData(Of Byte(,))(17)
+            network1d_branch_id = DataSet.GetData(Of Byte(,))(16)
+            network1d_node_y = DataSet.GetData(Of Double())(15)
+            network1d_node_x = DataSet.GetData(Of Double())(14)
+            network1d_node_long_name = DataSet.GetData(Of Byte(,))(13)
+            network1d_node_id = DataSet.GetData(Of Byte(,))(12)
+            network1d = DataSet.GetData(Of Int32)(11)
+            mesh1d_node_offset = DataSet.GetData(Of Double())(10)
+            mesh1d_node_branch = DataSet.GetData(Of Int32())(9)
+            mesh1d_edge_y = DataSet.GetData(Of Double())(8)
+            mesh1d_edge_x = DataSet.GetData(Of Double())(7)
+            mesh1d_edge_offset = DataSet.GetData(Of Double())(6)
+            mesh1d_edge_branch = DataSet.GetData(Of Int32())(5)
+            mesh1d_edge_nodes = DataSet.GetData(Of Int32(,))(4)
+            mesh1d_node_long_name = DataSet.GetData(Of Byte(,))(3)
+            mesh1d_node_id = DataSet.GetData(Of Byte(,))(2)
+            mesh1d = DataSet.GetData(Of Int32)(1)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 

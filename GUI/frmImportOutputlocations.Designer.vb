@@ -51,6 +51,8 @@ Partial Class frmImportOutputlocations
         '
         'GroupBox1
         '
+        Me.GroupBox1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox1.Controls.Add(Me.Label4)
         Me.GroupBox1.Controls.Add(Me.txtIDFilter)
         Me.GroupBox1.Controls.Add(Me.Label3)
@@ -131,6 +133,7 @@ Partial Class frmImportOutputlocations
         '
         'btnImport
         '
+        Me.btnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnImport.Location = New System.Drawing.Point(695, 383)
         Me.btnImport.Name = "btnImport"
         Me.btnImport.Size = New System.Drawing.Size(93, 55)
@@ -140,6 +143,7 @@ Partial Class frmImportOutputlocations
         '
         'prProgress
         '
+        Me.prProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.prProgress.Location = New System.Drawing.Point(21, 415)
         Me.prProgress.Name = "prProgress"
         Me.prProgress.Size = New System.Drawing.Size(668, 23)
@@ -147,6 +151,7 @@ Partial Class frmImportOutputlocations
         '
         'lblProgress
         '
+        Me.lblProgress.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblProgress.AutoSize = True
         Me.lblProgress.Location = New System.Drawing.Point(18, 383)
         Me.lblProgress.Name = "lblProgress"
@@ -168,11 +173,14 @@ Partial Class frmImportOutputlocations
         '
         'GroupBox2
         '
+        Me.GroupBox2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox2.Controls.Add(Me.chkObservationPoints)
         Me.GroupBox2.Controls.Add(Me.chkCalculationPoints)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 182)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(338, 188)
+        Me.GroupBox2.Size = New System.Drawing.Size(776, 188)
         Me.GroupBox2.TabIndex = 4
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Objecten"
