@@ -186,10 +186,20 @@ Public Class clsStochastenRun
                     File.Copy(EvpFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
 
                     '--------------------------------------------------------------------------------------------------------------------
-                    'copy the groundwater file
-                    If GWClass IsNot Nothing AndAlso GWClass.FileName <> "" Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        If Not CopyGroundwaterFile(myModel) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    'copy the groundwater file(s)
+                    If GWClass IsNot Nothing Then
+                        If GWClass.RRFiles.Count > 0 Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                            If Not CopyGroundwaterFiles(myModel, GWClass.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        End If
+                        If GWClass.RRFiles.Count > 0 Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                            If Not CopyGroundwaterFiles(myModel, GWClass.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        End If
+                        If GWClass.RRFiles.Count > 0 Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                            If Not CopyGroundwaterFiles(myModel, GWClass.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        End If
                     End If
                     '--------------------------------------------------------------------------------------------------------------------
 
@@ -301,9 +311,20 @@ Public Class clsStochastenRun
 
                     '--------------------------------------------------------------------------------------------------------------------
                     'copy the groundwater file
-                    If Not GWClass Is Nothing AndAlso GWClass.FileName <> "" Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        If Not CopyGroundwaterFile(myModel) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    If GWClass IsNot Nothing Then
+                        If GWClass.RRFiles.Count > 0 Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                            If Not CopyGroundwaterFiles(myModel, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        End If
+                        If GWClass.FlowFiles.Count > 0 Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                            If Not CopyGroundwaterFiles(myModel, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        End If
+                        If GWClass.RTCFiles.Count > 0 Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                            If Not CopyGroundwaterFiles(myModel, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        End If
+
                     End If
                     '--------------------------------------------------------------------------------------------------------------------
 
@@ -468,28 +489,31 @@ Public Class clsStochastenRun
 
     End Function
 
-    Public Function CopyGroundwaterFile(ByRef myModel As clsSimulationModel) As Boolean
+    Public Function CopyGroundwaterFiles(ByRef myModel As clsSimulationModel, FileNames As List(Of String), ModelSubdir As String) As Boolean
         Dim fromFile As String, toFile As String, toStochastDir As String
 
         Try
-            fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(GWClass.FileName, Setup.Settings.RootDir)
+            'v2.205: introducing multi-file support for groundwater stochast
+            For Each FileName As String In FileNames
+                fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(FileName, Setup.Settings.RootDir)
 
-            'the target location depends on the type of model we're writing this stochast for
-            If myModel.ModelType = enmSimulationModel.DIMR Then
-                toFile = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
-            ElseIf myModel.ModelType = enmSimulationModel.sobek Then
-                toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
-            Else
-                Throw New Exception("Stochast initial groundwater not yet supported for requested model type: " & myModel.ModelType.ToString)
-            End If
+                'the target location depends on the type of model we're writing this stochast for
+                If myModel.ModelType = enmSimulationModel.DIMR Then
+                    toFile = myModel.TempWorkDir & "\" & ModelSubdir & "\" & Setup.GeneralFunctions.FileNameFromPath(FileName)
+                ElseIf myModel.ModelType = enmSimulationModel.SOBEK Then
+                    toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(FileName)
+                Else
+                    Throw New Exception("Stochast initial groundwater not yet supported for requested model type: " & myModel.ModelType.ToString)
+                End If
 
-            toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(GWClass.FileName)
-            If File.Exists(fromFile) Then
-                FileCopy(fromFile, toFile)
-                FileCopy(fromFile, toStochastDir)
-            Else
-                Throw New Exception("Fout: grondwaterbestand niet gevonden niet: " & fromFile)
-            End If
+                toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(FileName)
+                If File.Exists(fromFile) Then
+                    FileCopy(fromFile, toFile)
+                    FileCopy(fromFile, toStochastDir)
+                Else
+                    Throw New Exception("Fout: grondwaterbestand niet gevonden niet: " & fromFile)
+                End If
+            Next
 
             Return True
         Catch ex As Exception

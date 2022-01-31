@@ -23,6 +23,7 @@
   #define MySourceDir BinLocation + "\x64\"
   #define SystemFlag "64bit"
   #define stochastenviewer = "Stochastenviewer.zip"
+  #define NetCDF = "netCDF4.8.0-NC4-64.exe"
 #else
   #define CPU "Win32"
   #define mapwingis = "MapWinGIS-only-v5.2.4-Win32-VS2017.exe"
@@ -92,6 +93,7 @@ VersionInfoProductTextVersion={#MyAppVersion}
 Source: "{#MySourceDir}\*.*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs {#SystemFlag}; Excludes: "*.pdb,*.xml,*.ocx,Native.HYDROC01.manifest"
 Source: "{#SetupLocation}\{#vcredist}"; DestDir: "{app}"
 Source: "{#SetupLocation}\{#mapwingis}"; DestDir: "{app}"
+Source: "{#SetupLocation}\{#NetCDF}"; DestDir: "{app}"
 
 ; write the external licenses to a dedicated folder in the app dir
 #define licensesdir = "licenses"
@@ -118,8 +120,9 @@ Filename: "{app}\{#vcredist}"; Parameters: "/quiet"; Flags: waituntilterminated;
 ;Filename: "{#SetupLocation}\{#vcredist}"; Parameters: "/quiet"; Flags: waituntilterminated; Check: VCRedistNeedsInstall_x86()
 Filename: "{app}\{#vcredist}"; Parameters: "/quiet"; Flags: waituntilterminated; Check: VCRedistNeedsInstall_x86()
 #endif
-;also install MapWinGIS
+;also install MapWinGIS and NetCDF
 Filename: "{app}\{#mapwingis}"; Parameters: "/verysilent /norestart /DIR=..\MapWinGIS"; Flags: waituntilterminated
+Filename: "{app}\{#netCDF}"; Parameters: "/verysilent /norestart /DIR=..\NetCDF"; Flags: waituntilterminated
 ;And (optionally) Stochastentool itself:
 Filename: "{app}\Stochastentool.exe"; Flags: shellexec runasoriginaluser postinstall nowait skipifsilent; Description: "Start De Nieuwe Stochastentool?"
 

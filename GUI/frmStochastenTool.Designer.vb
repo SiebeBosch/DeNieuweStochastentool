@@ -35,6 +35,8 @@ Partial Class frmStochasten
         Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GrondwatersClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.SOBEKToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DHydroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetijdenClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DirectoriesHernoemenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ModelsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -254,8 +256,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.SOBEKToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.DHydroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -330,7 +330,7 @@ Partial Class frmStochasten
         Me.mnuMenu.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenu.Name = "mnuMenu"
         Me.mnuMenu.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.mnuMenu.Size = New System.Drawing.Size(1740, 30)
+        Me.mnuMenu.Size = New System.Drawing.Size(1740, 28)
         Me.mnuMenu.TabIndex = 4
         Me.mnuMenu.Text = "MenuStrip1"
         '
@@ -338,32 +338,32 @@ Partial Class frmStochasten
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenXMLToolStripMenuItem, Me.SaveXMLToolStripMenuItem1, Me.SaveXMLToolStripMenuItem})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(76, 26)
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(76, 24)
         Me.FileToolStripMenuItem.Text = "Bestand"
         '
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
         '
         Me.EditToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasteToolStripMenuItem})
         Me.EditToolStripMenuItem.Name = "EditToolStripMenuItem"
-        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 26)
+        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 24)
         Me.EditToolStripMenuItem.Text = "Bewerken"
         '
         'PasteToolStripMenuItem
@@ -377,7 +377,7 @@ Partial Class frmStochasten
         '
         Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GrondwatersClassificerenToolStripMenuItem, Me.GetijdenClassificerenToolStripMenuItem, Me.DirectoriesHernoemenToolStripMenuItem})
         Me.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
-        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(58, 26)
+        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.ToolsToolStripMenuItem.Text = "Tools"
         '
         'GrondwatersClassificerenToolStripMenuItem
@@ -386,6 +386,18 @@ Partial Class frmStochasten
         Me.GrondwatersClassificerenToolStripMenuItem.Name = "GrondwatersClassificerenToolStripMenuItem"
         Me.GrondwatersClassificerenToolStripMenuItem.Size = New System.Drawing.Size(300, 26)
         Me.GrondwatersClassificerenToolStripMenuItem.Text = "Grondwater classificeren"
+        '
+        'SOBEKToolStripMenuItem
+        '
+        Me.SOBEKToolStripMenuItem.Name = "SOBEKToolStripMenuItem"
+        Me.SOBEKToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
+        Me.SOBEKToolStripMenuItem.Text = "SOBEK"
+        '
+        'DHydroToolStripMenuItem
+        '
+        Me.DHydroToolStripMenuItem.Name = "DHydroToolStripMenuItem"
+        Me.DHydroToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
+        Me.DHydroToolStripMenuItem.Text = "D-Hydro"
         '
         'GetijdenClassificerenToolStripMenuItem
         '
@@ -404,7 +416,7 @@ Partial Class frmStochasten
         '
         Me.ModelsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UitvoerlocatiesImporterenToolStripMenuItem2})
         Me.ModelsToolStripMenuItem.Name = "ModelsToolStripMenuItem"
-        Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(86, 26)
+        Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.ModelsToolStripMenuItem.Text = "Modellen"
         '
         'UitvoerlocatiesImporterenToolStripMenuItem2
@@ -418,7 +430,7 @@ Partial Class frmStochasten
         Me.MappenBeherenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StochastendirectoriesHernoemenToolStripMenuItem, Me.MappenVerwijderenToolStripMenuItem})
         Me.MappenBeherenToolStripMenuItem.Enabled = False
         Me.MappenBeherenToolStripMenuItem.Name = "MappenBeherenToolStripMenuItem"
-        Me.MappenBeherenToolStripMenuItem.Size = New System.Drawing.Size(95, 26)
+        Me.MappenBeherenToolStripMenuItem.Size = New System.Drawing.Size(95, 24)
         Me.MappenBeherenToolStripMenuItem.Text = "Directories"
         '
         'StochastendirectoriesHernoemenToolStripMenuItem
@@ -438,7 +450,7 @@ Partial Class frmStochasten
         Me.KaartToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VerschilkaartToolStripMenuItem, Me.ToonPolygonenToolStripMenuItem, Me.AchtergrondkaartToolStripMenuItem})
         Me.KaartToolStripMenuItem.Enabled = False
         Me.KaartToolStripMenuItem.Name = "KaartToolStripMenuItem"
-        Me.KaartToolStripMenuItem.Size = New System.Drawing.Size(58, 26)
+        Me.KaartToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.KaartToolStripMenuItem.Text = "Kaart"
         '
         'VerschilkaartToolStripMenuItem
@@ -504,7 +516,7 @@ Partial Class frmStochasten
         Me.GrafiekenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem})
         Me.GrafiekenToolStripMenuItem.Enabled = False
         Me.GrafiekenToolStripMenuItem.Name = "GrafiekenToolStripMenuItem"
-        Me.GrafiekenToolStripMenuItem.Size = New System.Drawing.Size(86, 26)
+        Me.GrafiekenToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.GrafiekenToolStripMenuItem.Text = "Grafieken"
         '
         'ReferentiepeilenUitShapefileToevoegenToolStripMenuItem
@@ -517,7 +529,7 @@ Partial Class frmStochasten
         '
         Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UpgradeNaarToolStripMenuItem, Me.PolygonenUitShapefileToevoegenToolStripMenuItem1, Me.ImporterenToolStripMenuItem, Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem, Me.LegeDatabaseCreërenToolStripMenuItem, Me.VerwijderenToolStripMenuItem})
         Me.DatabaseToolStripMenuItem1.Name = "DatabaseToolStripMenuItem1"
-        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(86, 26)
+        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(86, 24)
         Me.DatabaseToolStripMenuItem1.Text = "Database"
         '
         'UpgradeNaarToolStripMenuItem
@@ -585,7 +597,7 @@ Partial Class frmStochasten
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(54, 26)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(54, 24)
         Me.AboutToolStripMenuItem.Text = "Over"
         '
         'tabStochastentool
@@ -605,7 +617,7 @@ Partial Class frmStochasten
         Me.tabStochastentool.Controls.Add(Me.tabExtra)
         Me.tabStochastentool.Controls.Add(Me.tabPostprocessing)
         Me.tabStochastentool.Controls.Add(Me.TabRuns)
-        Me.tabStochastentool.Location = New System.Drawing.Point(13, 33)
+        Me.tabStochastentool.Location = New System.Drawing.Point(14, 33)
         Me.tabStochastentool.Margin = New System.Windows.Forms.Padding(4)
         Me.tabStochastentool.Name = "tabStochastentool"
         Me.tabStochastentool.SelectedIndex = 0
@@ -2616,18 +2628,6 @@ Partial Class frmStochasten
         Me.prProgress.Name = "prProgress"
         Me.prProgress.Size = New System.Drawing.Size(1700, 28)
         Me.prProgress.TabIndex = 24
-        '
-        'SOBEKToolStripMenuItem
-        '
-        Me.SOBEKToolStripMenuItem.Name = "SOBEKToolStripMenuItem"
-        Me.SOBEKToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
-        Me.SOBEKToolStripMenuItem.Text = "SOBEK"
-        '
-        'DHydroToolStripMenuItem
-        '
-        Me.DHydroToolStripMenuItem.Name = "DHydroToolStripMenuItem"
-        Me.DHydroToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
-        Me.DHydroToolStripMenuItem.Text = "D-Hydro"
         '
         'frmStochasten
         '

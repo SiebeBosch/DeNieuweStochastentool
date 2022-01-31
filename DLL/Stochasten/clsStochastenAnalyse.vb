@@ -377,10 +377,37 @@ Public Class clsStochastenAnalyse
 
                             'add the groundwater classes that are in use
                             Dim grGroundwater As DataGridView = GroundwaterGrids.Item(i)
+                            Dim FileNames As String = "", FileName As String = ""
                             Setup.GeneralFunctions.UpdateProgressBar("Populating groundwater for " & mySeason.Name, 2, 10, True)
                             For Each GwRow As DataGridViewRow In grGroundwater.Rows
                                 If GwRow.Cells("USE").Value = 1 Then
-                                    myGW = New clsStochasticGroundwaterClass(GwRow.Cells("NAAM").Value, GwRow.Cells("KANS").Value, GwRow.Cells("BESTAND").Value)
+                                    myGW = New clsStochasticGroundwaterClass(GwRow.Cells("NAAM").Value, GwRow.Cells("KANS").Value)
+
+                                    'v2.205: introducing multi-file support for this stochast. Also introduce distinction between RR, Flow and RTC
+                                    If Not IsDBNull(GwRow.Cells("RRFILES").Value) Then
+                                        FileNames = GwRow.Cells("RRFILES").Value
+                                        While FileNames.Length > 0
+                                            FileName = Me.Setup.GeneralFunctions.ParseString(FileNames, ";")
+                                            myGW.AddRRFile(FileName)
+                                        End While
+                                    End If
+
+                                    If Not IsDBNull(GwRow.Cells("FLOWFILES").Value) Then
+                                        FileNames = GwRow.Cells("FLOWFILES").Value
+                                        While FileNames.Length > 0
+                                            FileName = Me.Setup.GeneralFunctions.ParseString(FileNames, ";")
+                                            myGW.AddFlowFile(FileName)
+                                        End While
+                                    End If
+
+                                    If Not IsDBNull(GwRow.Cells("RTCFILES").Value) Then
+                                        FileNames = GwRow.Cells("RTCFILES").Value
+                                        While FileNames.Length > 0
+                                            FileName = Me.Setup.GeneralFunctions.ParseString(FileNames, ";")
+                                            myGW.AddRtcFile(FileName)
+                                        End While
+                                    End If
+
                                     mySeason.Groundwater.Add(myGW.ID, myGW)
                                     mySeason.GroundwaterUse = True
                                 End If
