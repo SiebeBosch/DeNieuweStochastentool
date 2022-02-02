@@ -54,7 +54,7 @@ Public Class clsDIMRConfigFile
                                                 RTC.SetInputFile(dNode.InnerText)
                                             End If
                                         Next
-                                    Case Is = "Flow1D"
+                                    Case Is = "Flow1D", "FlowFM"
                                         Flow1D.InUse = True
                                         For Each dNode As XmlNode In cNode.ChildNodes
                                             If dNode.Name = "library" Then Flow1D.SetLibrary(dNode.InnerText)
