@@ -50,18 +50,30 @@ Public Class clsHisNCFile
             'returns byref the results:
             'waterlevels contains a 2D array where the first dimension contains the timesteps and the second the object index
             'IDList contains an array of strings
+
+            Dim WaterLevelID As Integer
+            Dim TimestepID As Integer
+            Dim StationID As Integer
+            Dim i As Integer
+
             Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
             Dim myDataset As sds.DataSet() = dataset.GetLinkedDataSets
             Dim myDimensions As sds.ReadOnlyDimensionList = dataset.Dimensions
             Dim myVariables As sds.ReadOnlyVariableCollection = dataset.Variables
-            Waterlevels = dataset.GetData(Of Double(,))(26)
-            Dim ObservationPointIDs As Byte(,) = dataset.GetData(Of Byte(,))(20)
-            Dim TimeStamps As Double() = dataset.GetData(Of Double())(141)
+
+            For i = 0 To dataset.Variables.Count - 1
+                If dataset.Variables.Item(i).Name = "waterlevel" Then WaterLevelID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "timestep" Then TimestepID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "station_id" Then StationID = dataset.Variables.Item(i).ID
+            Next
+
+            Waterlevels = dataset.GetData(Of Double(,))(WaterLevelID)
+            Dim ObservationPointIDs As Byte(,) = dataset.GetData(Of Byte(,))(StationID)
+            Dim TimeStamps As Double() = dataset.GetData(Of Double())(TimestepID)
 
             'de id's zijn samengesteld uit een array van bytes
             Dim IDArray As Byte()
             ReDim IDList(UBound(ObservationPointIDs, 1))
-            Dim i As Integer
             For i = 0 To UBound(ObservationPointIDs, 1)
                 IDArray = Me.Setup.GeneralFunctions.GetRowFrom2DArrayOfByte(ObservationPointIDs, i)
                 IDList(i) = Me.Setup.GeneralFunctions.CharCodeBytesToString(IDArray, True)
