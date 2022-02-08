@@ -10,7 +10,7 @@
         Volume = myVolume
         Pattern = myPattern
         Season = mySeason
-        ID = Duration & "H_" & Volume & "MM_" & Pattern.ToUpper & "_" & Season.ToUpper
+        ID = Duration & "H_" & Volume & "MM_" & Pattern.ToString.ToUpper & "_" & Season.ToUpper
     End Sub
 
     Public Function GetID() As String

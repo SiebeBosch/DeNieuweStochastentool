@@ -118,9 +118,8 @@ Public Class frmStochasten
 
             'also write the input files to the same folder
 
-
-
-
+        ElseIf Setup.StochastenAnalyse.Models.Count > 1 AndAlso Setup.StochastenAnalyse.Models.Values(0).ModelType = enmSimulationModel.DHYDRO Then
+            Throw New Exception("Kritieke fout: het aansturen van DHYDRO via de case manager kan alleen als slechts één model betrokken is bij de analyse. Maak voor meer modellen gebruik van de DIMR om D-Hydro te draaien.")
         Else
             'de runs
             If grRuns.SelectedRows.Count > 0 Then
@@ -172,7 +171,7 @@ Public Class frmStochasten
                 myJSON &= vbTab & vbTab & vbTab & vbTab & "%name%:%" & myForcing.GetID & "%," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & vbTab & "%stowa_bui%: {" & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%duration%:" & myForcing.GetDuration & "," & vbCrLf
-                myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%pattern%:%" & myForcing.GetPattern.ToLower & "%," & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%pattern%:%" & myForcing.GetPattern.ToString.ToLower & "%," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%volume%:" & myForcing.GetVolume & "," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & vbTab & vbTab & "%season%:%" & myForcing.GetSeason.ToLower & "%" & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & vbTab & "}" & vbCrLf
@@ -273,6 +272,7 @@ Public Class frmStochasten
                 myJSON &= vbTab & vbTab & "{" & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & "%id%:%" & myRun.ID & "%," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & "%name%:%" & myRun.ID & "%," & vbCrLf
+                myJSON &= vbTab & vbTab & vbTab & "%model%:%" & "D-Hydro-model" & "%," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & "%meteo_bc_id%:%" & myRun.getMeteoForcing.GetID & "%," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & "%flow_bc_id%:%" & myRun.GetFlowForcing.GetID & "%," & vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & "%files%:[" & vbCrLf
