@@ -20,27 +20,28 @@ Public Class clsSimulationModel
         Setup = mySetup
     End Sub
 
-    Public Sub New(ByRef mySetup As clsSetup, ByVal myId As String, ByVal myType As String, ByVal myExec As String, ByVal myArgs As String, ByVal myModelDir As String, ByVal myCaseName As String, ByVal myTempWorkDir As String)
+    Public Sub New(ByRef mySetup As clsSetup, ByVal myId As String, ByVal myType As String, ByVal myExec As String, ByVal myArgs As String, ByVal myModelDir As String, ByVal myCaseName As String, ByVal myTempWorkDir As String, RRResultsFiles As String, FlowResultsFiles As String)
+        Dim myFile As String
         Setup = mySetup
         Id = myId
-        Select Case myType.Trim.ToUpper
-            Case Is = "SOBEK"
-                ModelType = GeneralFunctions.enmSimulationModel.SOBEK
-            Case Is = "CUSTOM"
-                ModelType = GeneralFunctions.enmSimulationModel.Custom
-            Case Is = "DIMR"
-                ModelType = GeneralFunctions.enmSimulationModel.DIMR
-            Case Is = "DHYDRO"
-                ModelType = GeneralFunctions.enmSimulationModel.DHYDRO
-            Case Is = "DHYDROSERVER"
-                ModelType = GeneralFunctions.enmSimulationModel.DHYDROSERVER
-        End Select
+        ModelType = DirectCast([Enum].Parse(GetType(GeneralFunctions.enmSimulationModel), myType.Trim.ToUpper), GeneralFunctions.enmSimulationModel)
         Exec = myExec
         Args = myArgs
         ModelDir = myModelDir
         CaseName = myCaseName
         TempWorkDir = myTempWorkDir
+
         ResultsFiles = New clsResultsFiles(Me.Setup, Me)
+        While Not RRResultsFiles = ""
+            myFile = Me.Setup.GeneralFunctions.ParseString(RRResultsFiles, ";")
+            ResultsFiles.GetAdd(myFile, GeneralFunctions.enmHydroModule.RR)
+        End While
+
+        While Not FlowResultsFiles = ""
+            myFile = Me.Setup.GeneralFunctions.ParseString(FlowResultsFiles, ";")
+            ResultsFiles.GetAdd(myFile, GeneralFunctions.enmHydroModule.FLOW)
+        End While
+
 
     End Sub
 

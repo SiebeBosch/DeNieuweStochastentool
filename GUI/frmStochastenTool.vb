@@ -23,6 +23,8 @@ Public Class frmStochasten
     Dim PastedFromClipBoard As Boolean = False
     Private Setup As clsSetup
 
+    Dim SelectedRows As New List(Of Integer)
+
     'variables for the markers
     Dim minScale As Double = 0, maxScale As Double = 0
 
@@ -378,7 +380,7 @@ Public Class frmStochasten
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
             'populate the grid me.Setup.containing meteo stations
-            query = "SELECT LOCATIEID,MODELID,MODELPAR,RESULTSFILE,RESULTSTYPE,X,Y,LAT,LON,ZP,WP FROM OUTPUTLOCATIONS;"
+            query = "SELECT LOCATIEID,MODELID,MODULE,MODELPAR,RESULTSFILE,RESULTSTYPE,X,Y,LAT,LON,ZP,WP FROM OUTPUTLOCATIONS;"
             da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
             grOutputLocations.DataSource = dt
@@ -688,7 +690,7 @@ Public Class frmStochasten
                 'Loop through the nodes
                 For Each n_node In m_node.ChildNodes
                     If n_node.Name.Trim.ToLower = "model" Then
-                        ReDim Pars(6)
+                        ReDim Pars(8)
                         If Not IsNumeric(n_node.Attributes.GetNamedItem("id").Value) Then Throw New Exception("Model ID in XML-file moet een geheel getal zijn.")
 
                         'add the model found to the database
@@ -699,7 +701,9 @@ Public Class frmStochasten
                         Pars(4) = n_node.Attributes.GetNamedItem("modeldir").Value
                         Pars(5) = n_node.Attributes.GetNamedItem("casename").Value
                         Pars(6) = Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.Attributes.GetNamedItem("tempworkdir").Value, RootDir)
-                        query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR) VALUES ('" & Pars(0) & "','" & Pars(1) & "','" & Pars(2) & "','" & Pars(3) & "','" & Pars(4) & "','" & Pars(5) & "','" & Pars(6) & "');"
+                        Pars(7) = n_node.Attributes.GetNamedItem("resultsfiles_rr").Value
+                        Pars(8) = n_node.Attributes.GetNamedItem("resultsfiles_flow").Value
+                        query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & Pars(0) & "','" & Pars(1) & "','" & Pars(2) & "','" & Pars(3) & "','" & Pars(4) & "','" & Pars(5) & "','" & Pars(6) & "','" & Pars(7) & "','" & Pars(8) & "');"
                         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
                         If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
@@ -723,12 +727,12 @@ Public Class frmStochasten
                 Next
             Next
 
-            query = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR FROM SIMULATIONMODELS;"
+            query = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW FROM SIMULATIONMODELS;"
             If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
             grModels.DataSource = dtModels
 
             'now repopulate the datagridview based on the output locations
-            query = "SELECT MODELID, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, ZP, WP FROM OUTPUTLOCATIONS;"
+            query = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, ZP, WP FROM OUTPUTLOCATIONS;"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLocations, True)
             grOutputLocations.DataSource = dtLocations
 
@@ -2167,6 +2171,16 @@ Public Class frmStochasten
 
     End Sub
 
+    Function RowHeaderClicked(sender2, eventargs2)
+
+        MsgBox("row clicked: " & sender2.selectedrows.count)
+        'SelectedRows = New List(Of Integer)
+        'For i = 0 To sender2.rows.Count - 1
+        '    If sender2.rows(i).selected Then SelectedRows.Add(i)
+        'Next
+        'MsgBox("Selectedrows is " & SelectedRows.Count)
+    End Function
+
     '========================================================================================================================
     '   STOCHAST EXTRA1 t/m 4
     '========================================================================================================================
@@ -2207,7 +2221,10 @@ Public Class frmStochasten
                         Dim mySeason As String = myRow.Cells(0).Value
                         Dim myExtraGrid As New DataGridView With {
                         .Name = mySeason & "_Extra" & ExtraNum.ToString.Trim,
-                        .AllowUserToAddRows = False
+                        .AllowUserToAddRows = False,
+                        .AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells,
+                        .MultiSelect = True,
+                        .SelectionMode = DataGridViewSelectionMode.RowHeaderSelect
                             }
 
 
@@ -2251,6 +2268,11 @@ Public Class frmStochasten
                         ReadExtraClasses(mySeason, ExtraNum, dt)    'reads the groundwater classes for the current season and climate from the database
                         myExtraGrid.DataSource = dt
 
+                        AddHandler myExtraGrid.RowHeaderMouseClick, AddressOf RowHeaderClicked
+
+
+
+
                         AddHandler myExtraGrid.CellValueChanged,
                             Sub(sender2, eventargs2)
                                 Call UpdateExtra(myExtraGrid, ExtraNum, mySeason, cmbClimate.Text)
@@ -2279,20 +2301,42 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 query = "INSERT INTO EXTRA" & ExtraNum & " (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, BESTAND, KANS) VALUES ('" & cmbClimate.Text & "','" & mySeason & "',''," & False & ",'',0);"
                                 Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
-                                ReadExtraClasses(mySeason, ExtraNum, dt)    're-populate the extra grid by re-reading the datatable from database
+                                BuildExtraGrids(ExtraNum) 'rebuild our extra grid so our changes become visible
                             End Sub
 
                         AddHandler remButton.Click,
                             Sub(sender2, eventargs2)
-                                If myExtraGrid.SelectedRows.Count > 0 Then
-                                    For Each dataRow As DataGridViewRow In myExtraGrid.SelectedRows
-                                        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & dataRow.Cells("NAAM").Value & "';"
+                                'MsgBox("Extragrid has " & myExtraGrid.Rows.Count & " rows")
+                                'If myExtraGrid.SelectedCells.Count > 0 Then
+                                '    Dim rowIdx As Integer = myExtraGrid.SelectedCells.Item(0).RowIndex
+                                '    query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & myExtraGrid.Rows(rowIdx).Cells("NAAM").Value & "';"
+                                '    Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+                                '    BuildExtraGrids(ExtraNum) 'rebuild our extra grid so our changes become visible
+                                'Else
+                                '    MsgBox("Selecteer eerst de te verwijderen rij in het gegevensgrid.")
+                                'End If
+
+                                If SelectedRows.Count > 0 Then
+                                    For i = 0 To SelectedRows.Count - 1
+                                        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & myExtraGrid.Rows(SelectedRows(i)).Cells("NAAM").Value & "';"
+                                        MsgBox("executing query " & query)
                                         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
                                     Next
-                                    ReadExtraClasses(mySeason, ExtraNum, dt)
                                 Else
                                     MsgBox("Selecteer eerst de te verwijderen rijen in het gegevensgrid.")
                                 End If
+
+                                'If myExtraGrid.SelectedRows.Count > 0 Then
+                                '    For Each dataRow As DataGridViewRow In myExtraGrid.SelectedRows
+                                '        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & dataRow.Cells("NAAM").Value & "';"
+                                '        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+                                '    Next
+                                '    ReadExtraClasses(mySeason, ExtraNum, dt)
+                                '    myExtraGrid.DataSource = dt
+                                'Else
+                                '    MsgBox("Selecteer eerst de te verwijderen rijen in het gegevensgrid.")
+                                'End If
+                                BuildExtraGrids(ExtraNum) 'rebuild our extra grid so our changes become visible immediately
                             End Sub
 
                         AddHandler copyButton.Click,
@@ -2660,6 +2704,7 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIEID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIEID", enmSQLiteDataType.SQLITETEXT, "LOC_IDIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIENAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, "LOC_NAAMIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "MODELID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "MODELID", enmSQLiteDataType.SQLITEINT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "MODULE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "MODULE", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "RESULTSFILE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "RESULTSFILE", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "MODELPAR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "MODELPAR", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "RESULTSTYPE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "RESULTSTYPE", enmSQLiteDataType.SQLITETEXT)
@@ -2685,6 +2730,8 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "MODELDIR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "MODELDIR", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "CASENAME") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "CASENAME", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "TEMPWORKDIR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "TEMPWORKDIR", enmSQLiteDataType.SQLITETEXT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RR", enmSQLiteDataType.SQLITETEXT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW", enmSQLiteDataType.SQLITETEXT)
     End Sub
 
     Public Sub UpdateRunsTable()
@@ -3358,8 +3405,9 @@ Public Class frmStochasten
 
             Dim i As Long
             Dim myModel As STOCHLIB.clsSimulationModel
+            Dim myModule As String 'RR or FLOW'
             Dim CheckSum As Double
-            Dim myResultsfile As STOCHLIB.clsResultsFile
+            Dim myResultsfile As STOCHLIB.clsResultsFile = Nothing
             Dim myParameter As STOCHLIB.clsResultsFileParameter
             Dim myLocation As STOCHLIB.clsResultsFileLocation
 
@@ -3375,12 +3423,14 @@ Public Class frmStochasten
             For Each myRow As DataGridViewRow In grModels.Rows
                 i += 1
                 Setup.GeneralFunctions.UpdateProgressBar("Reading results from simulation model ", i, grModels.Rows.Count, True)
-                myModel = New STOCHLIB.clsSimulationModel(Me.Setup, myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value, myRow.Cells(3).Value, myRow.Cells(4).Value, myRow.Cells(5).Value, myRow.Cells(6).Value) ', myRow.Cells(6).Value)
+                myModel = New STOCHLIB.clsSimulationModel(Me.Setup, myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value, myRow.Cells(3).Value, myRow.Cells(4).Value, myRow.Cells(5).Value, myRow.Cells(6).Value, myRow.Cells(7).Value, myRow.Cells(8).Value) ', myRow.Cells(6).Value)
                 Dim iLoc As Integer = 0, nLoc As Integer = grOutputLocations.Rows.Count
                 For Each locRow As DataGridViewRow In grOutputLocations.Rows
                     Setup.GeneralFunctions.UpdateProgressBar("", iLoc, nLoc)
                     If CType(locRow.Cells("MODELID").Value, Int16) = myModel.Id Then
-                        myResultsfile = myModel.ResultsFiles.GetAdd(locRow.Cells("RESULTSFILE").Value)
+
+                        myModule = DirectCast([Enum].Parse(GetType(STOCHLIB.GeneralFunctions.enmHydroModule), locRow.Cells("MODULE").Value.ToString.Trim.ToUpper), STOCHLIB.GeneralFunctions.enmHydroModule)
+                        myResultsfile = myModel.ResultsFiles.GetAdd(locRow.Cells("RESULTSFILE").Value, myModule)
                         myParameter = myResultsfile.GetAddParameter(locRow.Cells("MODELPAR").Value)
                         myLocation = myParameter.GetAddLocation(locRow.Cells("LOCATIEID").Value, locRow.Cells("LOCATIEID").Value, Setup.StochastenAnalyse.Duration)
                         If locRow.Cells("RESULTSTYPE").Value.ToString.Trim.ToUpper = "MIN" Then
@@ -4184,6 +4234,8 @@ Public Class frmStochasten
             attrList.Add("modeldir")
             attrList.Add("casename")
             attrList.Add("tempworkdir")
+            attrList.Add("resultsfiles_rr")
+            attrList.Add("resultsfiles_flow")
             For Each myRow As DataGridViewRow In grModels.Rows
                 valsList = New List(Of String)
                 valsList.Add(myRow.Cells(0).Value)
@@ -4193,6 +4245,8 @@ Public Class frmStochasten
                 valsList.Add(myRow.Cells(4).Value)
                 valsList.Add(myRow.Cells(5).Value)
                 valsList.Add(myRow.Cells(6).Value)
+                valsList.Add(myRow.Cells(7).Value)
+                valsList.Add(myRow.Cells(8).Value)
                 Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "model", 4, attrList, valsList)
 
                 attrList = New List(Of String)
@@ -4624,7 +4678,7 @@ Public Class frmStochasten
         Try
             'now reread our results locations!
             Dim dtLoc = New DataTable
-            Dim query As String = "SELECT MODELID, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, WP, ZP FROM OUTPUTLOCATIONS;"
+            Dim query As String = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, WP, ZP FROM OUTPUTLOCATIONS;"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLoc, True)
 
             'write the dataset to json
@@ -4771,7 +4825,7 @@ Public Class frmStochasten
                 Me.Setup.SqliteCon.Open()
                 Using transaction = Me.Setup.SqliteCon.BeginTransaction
                     For i = 0 To grOutputLocations.Rows.Count - 1
-                        cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, WP, ZP) VALUES ('" & grOutputLocations.Rows(i).Cells("LOCATIEID").Value & "','" & grOutputLocations.Rows(i).Cells("LOCATIEID").Value & "','" & grOutputLocations.Rows(i).Cells("MODELID").Value & "','" & grOutputLocations.Rows(i).Cells("MODELPAR").Value & "','" & grOutputLocations.Rows(i).Cells("RESULTSFILE").Value & "','" & grOutputLocations.Rows(i).Cells("RESULTSTYPE").Value & "'," & grOutputLocations.Rows(i).Cells("X").Value & "," & grOutputLocations.Rows(i).Cells("Y").Value & "," & grOutputLocations.Rows(i).Cells("LAT").Value & "," & grOutputLocations.Rows(i).Cells("LON").Value & "," & grOutputLocations.Rows(i).Cells("WP").Value & "," & grOutputLocations.Rows(i).Cells("ZP").Value & ");"
+                        cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, WP, ZP) VALUES ('" & grOutputLocations.Rows(i).Cells("LOCATIEID").Value & "','" & grOutputLocations.Rows(i).Cells("LOCATIEID").Value & "','" & grOutputLocations.Rows(i).Cells("MODELID").Value & "','" & grOutputLocations.Rows(i).Cells("MODULE").Value & "','" & grOutputLocations.Rows(i).Cells("MODELPAR").Value & "','" & grOutputLocations.Rows(i).Cells("RESULTSFILE").Value & "','" & grOutputLocations.Rows(i).Cells("RESULTSTYPE").Value & "'," & grOutputLocations.Rows(i).Cells("X").Value & "," & grOutputLocations.Rows(i).Cells("Y").Value & "," & grOutputLocations.Rows(i).Cells("LAT").Value & "," & grOutputLocations.Rows(i).Cells("LON").Value & "," & grOutputLocations.Rows(i).Cells("WP").Value & "," & grOutputLocations.Rows(i).Cells("ZP").Value & ");"
                         cmd.ExecuteNonQuery()
                     Next
                     transaction.Commit() 'this is where the bulk insert is finally executed.

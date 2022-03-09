@@ -146,7 +146,7 @@ Public Class frmImportOutputlocations
                         Me.Setup.Log.AddMessage("Reading DIMRData")
                         If Not Setup.DIMRData.ReadAll() Then Throw New Exception("DIMR Project could not be read: " & ModelDir)
 
-                        If chkObservationPoints.Checked Then
+                        If chkObservationPoints1D.Checked Then
                             Me.Setup.Log.AddMessage("Reading observation points.")
 
                             j = 0
@@ -179,6 +179,13 @@ Public Class frmImportOutputlocations
                                 End If
                             Next
                         End If
+
+                        If chkObservationPoints2D.Checked Then
+                            'here we'll read the 2D observation points as used for our mesh results
+
+                        End If
+
+
                     End If
 
                     SubcatchmentsSF.sf.EndPointInShapefile()

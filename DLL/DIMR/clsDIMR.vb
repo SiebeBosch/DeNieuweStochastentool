@@ -26,16 +26,16 @@ Public Class clsDIMR
         ProjectDir = myProjectDir
         DIMRConfig = New clsDIMRConfigFile(Me.Setup, Me)
         DIMRConfig.Read()
-        FlowFM = New clsFlowFMComponent(Me.Setup, Me)
-        RR = New clsRRComponent(Me.Setup, Me)
-        RTC = New clsRTCComponent(Me.Setup, Me)
+        'FlowFM = New clsFlowFMComponent(Me.Setup, Me)
+        'RR = New clsRRComponent(Me.Setup, Me)
+        'RTC = New clsRTCComponent(Me.Setup, Me)
     End Sub
 
     Public Function SetProject(myProjectDir As String) As Boolean
         Try
             ProjectDir = myProjectDir
             DIMRConfig = New clsDIMRConfigFile(Me.Setup, Me)
-            FlowFM = New clsFlowFMComponent(Me.Setup, Me)
+            'FlowFM = New clsFlowFMComponent(Me.Setup, Me)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error creating DIMR Project " + ex.Message)
@@ -81,9 +81,9 @@ Public Class clsDIMR
             ProjectDir = TempWorkDir
             readConfiguration()
 
-            FlowFM.WriteSimulationPeriod(StartDate, EndDate)
-            RR.WriteSimulationPeriod(StartDate, EndDate)
-            RTC.WriteSimulationPeriod(StartDate, EndDate)
+            If FlowFM IsNot Nothing Then FlowFM.WriteSimulationPeriod(StartDate, EndDate)
+            If RR IsNot Nothing Then RR.WriteSimulationPeriod(StartDate, EndDate)
+            If RTC IsNot Nothing Then RTC.WriteSimulationPeriod(StartDate, EndDate)
 
             Return True
         Catch ex As Exception

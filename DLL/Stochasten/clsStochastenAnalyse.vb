@@ -201,7 +201,8 @@ Public Class clsStochastenAnalyse
     Public Function PopulateModelsAndLocationsFromDB(ByRef con As SQLite.SQLiteConnection) As Boolean
         Try
             Dim myQuery As String, dtModel As New DataTable, dtLoc As New DataTable, i As Integer, j As Integer, myModel As clsSimulationModel
-            Dim ModelID As Integer, myResultsFile As clsResultsFile, myModelPar As clsResultsFileParameter, myModelLoc As clsResultsFileLocation
+            Dim ModelID As Integer, myResultsFile As clsResultsFile = Nothing, myModelPar As clsResultsFileParameter, myModelLoc As clsResultsFileLocation
+            Dim myModule As STOCHLIB.GeneralFunctions.enmHydroModule
 
             'clear all existing models from memory
             Models.Clear()
@@ -209,7 +210,7 @@ Public Class clsStochastenAnalyse
             myQuery = "SELECT * FROM SIMULATIONMODELS"
             Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtModel)
             For i = 0 To dtModel.Rows.Count - 1
-                myModel = New clsSimulationModel(Me.Setup, dtModel.Rows(i)("MODELID"), dtModel.Rows(i)("MODELTYPE"), dtModel.Rows(i)("EXECUTABLE"), dtModel.Rows(i)("ARGUMENTS"), dtModel.Rows(i)("MODELDIR"), dtModel.Rows(i)("CASENAME"), dtModel.Rows(i)("TEMPWORKDIR"))
+                myModel = New clsSimulationModel(Me.Setup, dtModel.Rows(i)("MODELID"), dtModel.Rows(i)("MODELTYPE"), dtModel.Rows(i)("EXECUTABLE"), dtModel.Rows(i)("ARGUMENTS"), dtModel.Rows(i)("MODELDIR"), dtModel.Rows(i)("CASENAME"), dtModel.Rows(i)("TEMPWORKDIR"), dtModel.Rows(i)("RESULTSFILES_RR"), dtModel.Rows(i)("RESULTSFILES_FLOW"))
                 Models.Add(myModel.Id, myModel)
 
                 'while we're in this model, read all outputlocations
@@ -218,7 +219,8 @@ Public Class clsStochastenAnalyse
                 For j = 0 To dtLoc.Rows.Count - 1
                     ModelID = dtLoc.Rows(j)("MODELID")
                     If ModelID = myModel.Id Then
-                        myResultsFile = myModel.ResultsFiles.GetAdd(dtLoc.Rows(j)("RESULTSFILE"))
+                        myModule = DirectCast([Enum].Parse(GetType(GeneralFunctions.enmHydroModule), dtLoc.Rows(j)("MODULE").ToString.Trim.ToUpper), GeneralFunctions.enmHydroModule)
+                        myResultsFile = myModel.ResultsFiles.GetAdd(dtLoc.Rows(j)("RESULTSFILE"), myModule)
                         myResultsFile.FullPath = ResultsDir & "\" & dtLoc.Rows(j)("RESULTSFILE")
                         myModelPar = myResultsFile.GetAddParameter(dtLoc.Rows(j)("MODELPAR"))
                         myModelLoc = myModelPar.GetAddLocation(dtLoc.Rows(j)("LOCATIEID"), dtLoc.Rows(j)("LOCATIENAAM"), Duration)
@@ -624,7 +626,6 @@ Public Class clsStochastenAnalyse
             Else
                 Throw New Exception("Error: no location information in the database for " & LocationName)
             End If
-
 
             For Each myModel As clsSimulationModel In Me.Setup.StochastenAnalyse.Models.Values
                 For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values

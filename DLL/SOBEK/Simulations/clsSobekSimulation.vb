@@ -136,29 +136,63 @@ Public Class clsSobekSimulation
                 Dim fromFile As String, fromFile2 As String
                 Dim toFile As String, toFile2 As String
 
+                'if our simulation was succssful we'll copy the Flow Resultsfile(s) to our results dir
                 For Each myFile As STOCHLIB.clsResultsFile In Model.ResultsFiles.Files.Values
-                    fromFile = SimulationDir & "\WORK\" & myFile.FileName
-                    fromFile2 = SimulationDir & "\WORK\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
-                    toFile = ResultsDir & "\" & myFile.FileName
-                    toFile2 = ResultsDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
 
-                    If File.Exists(fromFile) Then
-                        While Setup.GeneralFunctions.IsFileLocked(fromFile)
-                            System.Threading.Thread.Sleep(100)
-                        End While
-                        Call FileCopy(fromFile, toFile)
+                    If Model.ModelType = GeneralFunctions.enmSimulationModel.SOBEK Then
+                        fromFile = SimulationDir & "\WORK\" & myFile.FileName
+                        fromFile2 = SimulationDir & "\WORK\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+                        toFile = ResultsDir & "\" & myFile.FileName
+                        toFile2 = ResultsDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+
+                        If File.Exists(fromFile) Then
+                            While Setup.GeneralFunctions.IsFileLocked(fromFile)
+                                System.Threading.Thread.Sleep(100)
+                            End While
+                            Call FileCopy(fromFile, toFile)
+                        Else
+                            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                        End If
+
+                        If File.Exists(fromFile2) Then
+                            While Setup.GeneralFunctions.IsFileLocked(fromFile2)
+                                System.Threading.Thread.Sleep(100)
+                            End While
+                            Call FileCopy(fromFile2, toFile2)
+                        Else
+                            Me.Setup.Log.AddWarning("Uitvoerbestand bestaat niet: " & fromFile2 & ". resultaten voor ID's langer dan 20 karakters kunnen daarom niet correct worden uitgelezen.")
+                        End If
+
+                    ElseIf Model.ModelType = GeneralFunctions.enmSimulationModel.DIMR Then
+
+                        fromFile = SimulationDir & "\WORK\" & myFile.FileName
+                        fromFile2 = SimulationDir & "\WORK\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+                        toFile = ResultsDir & "\" & myFile.FileName
+                        toFile2 = ResultsDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+
+                        If File.Exists(fromFile) Then
+                            While Setup.GeneralFunctions.IsFileLocked(fromFile)
+                                System.Threading.Thread.Sleep(100)
+                            End While
+                            Call FileCopy(fromFile, toFile)
+                        Else
+                            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                        End If
+
+                        If File.Exists(fromFile2) Then
+                            While Setup.GeneralFunctions.IsFileLocked(fromFile2)
+                                System.Threading.Thread.Sleep(100)
+                            End While
+                            Call FileCopy(fromFile2, toFile2)
+                        Else
+                            Me.Setup.Log.AddWarning("Uitvoerbestand bestaat niet: " & fromFile2 & ". resultaten voor ID's langer dan 20 karakters kunnen daarom niet correct worden uitgelezen.")
+                        End If
+
+
                     Else
-                        Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                        Me.Setup.Log.AddError("Error copying results file to results folder. Modeltype not yet supported: " & Model.ModelType.ToString)
                     End If
 
-                    If File.Exists(fromFile2) Then
-                        While Setup.GeneralFunctions.IsFileLocked(fromFile2)
-                            System.Threading.Thread.Sleep(100)
-                        End While
-                        Call FileCopy(fromFile2, toFile2)
-                    Else
-                        Me.Setup.Log.AddWarning("Uitvoerbestand bestaat niet: " & fromFile2 & ". resultaten voor ID's langer dan 20 karakters kunnen daarom niet correct worden uitgelezen.")
-                    End If
                 Next
             End If
 

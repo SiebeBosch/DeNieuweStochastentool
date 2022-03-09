@@ -25,6 +25,11 @@ Public Class GeneralFunctions
         Public PARAMETER As String
     End Structure
 
+    Public Enum enmHydroModule
+        RR = 0
+        FLOW = 1
+    End Enum
+
     Public Enum enmValidationResult
         Successful = 0
         Unsuccessful = 1

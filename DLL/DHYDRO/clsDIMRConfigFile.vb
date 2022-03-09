@@ -36,6 +36,7 @@ Public Class clsDIMRConfigFile
                                 Dim myName As String = cNode.Attributes.GetNamedItem("name").InnerText
                                 Select Case myName
                                     Case Is = "Rainfall Runoff"
+                                        DIMR.RR = New clsRRComponent(Me.Setup, DIMR)
                                         RR.InUse = True
                                         For Each dNode As XmlNode In cNode.ChildNodes
                                             If dNode.Name = "library" Then RR.SetLibrary(dNode.InnerText)
@@ -46,6 +47,7 @@ Public Class clsDIMRConfigFile
                                             End If
                                         Next
                                     Case Is = "Real-Time Control"
+                                        DIMR.RTC = New clsRTCComponent(Me.Setup, DIMR)
                                         RTC.InUse = True
                                         For Each dNode As XmlNode In cNode.ChildNodes
                                             If dNode.Name = "library" Then RTC.SetLibrary(dNode.InnerText)
@@ -55,6 +57,7 @@ Public Class clsDIMRConfigFile
                                             End If
                                         Next
                                     Case Is = "Flow1D", "FlowFM"
+                                        DIMR.FlowFM = New clsFlowFMComponent(Me.Setup, DIMR)
                                         Flow1D.InUse = True
                                         For Each dNode As XmlNode In cNode.ChildNodes
                                             If dNode.Name = "library" Then Flow1D.SetLibrary(dNode.InnerText)

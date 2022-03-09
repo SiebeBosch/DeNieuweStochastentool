@@ -35,8 +35,9 @@ Partial Class frmImportOutputlocations
         Me.btnImport = New System.Windows.Forms.Button()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.lblProgress = New System.Windows.Forms.Label()
-        Me.chkObservationPoints = New System.Windows.Forms.CheckBox()
+        Me.chkObservationPoints1D = New System.Windows.Forms.CheckBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chkObservationPoints2D = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
@@ -126,9 +127,9 @@ Partial Class frmImportOutputlocations
         Me.chkCalculationPoints.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkCalculationPoints.Location = New System.Drawing.Point(21, 33)
         Me.chkCalculationPoints.Name = "chkCalculationPoints"
-        Me.chkCalculationPoints.Size = New System.Drawing.Size(115, 21)
+        Me.chkCalculationPoints.Size = New System.Drawing.Size(228, 21)
         Me.chkCalculationPoints.TabIndex = 1
-        Me.chkCalculationPoints.Text = "Rekenpunten"
+        Me.chkCalculationPoints.Text = "Rekenpunten 1D-schematisatie"
         Me.chkCalculationPoints.UseVisualStyleBackColor = True
         '
         'btnImport
@@ -159,24 +160,25 @@ Partial Class frmImportOutputlocations
         Me.lblProgress.TabIndex = 3
         Me.lblProgress.Text = "Progress:"
         '
-        'chkObservationPoints
+        'chkObservationPoints1D
         '
-        Me.chkObservationPoints.AutoSize = True
-        Me.chkObservationPoints.Checked = True
-        Me.chkObservationPoints.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkObservationPoints.Location = New System.Drawing.Point(21, 64)
-        Me.chkObservationPoints.Name = "chkObservationPoints"
-        Me.chkObservationPoints.Size = New System.Drawing.Size(258, 21)
-        Me.chkObservationPoints.TabIndex = 8
-        Me.chkObservationPoints.Text = "Observation points (alleen D-Hydro)"
-        Me.chkObservationPoints.UseVisualStyleBackColor = True
+        Me.chkObservationPoints1D.AutoSize = True
+        Me.chkObservationPoints1D.Checked = True
+        Me.chkObservationPoints1D.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkObservationPoints1D.Location = New System.Drawing.Point(21, 60)
+        Me.chkObservationPoints1D.Name = "chkObservationPoints1D"
+        Me.chkObservationPoints1D.Size = New System.Drawing.Size(280, 21)
+        Me.chkObservationPoints1D.TabIndex = 8
+        Me.chkObservationPoints1D.Text = "Observation points 1D (alleen D-Hydro)"
+        Me.chkObservationPoints1D.UseVisualStyleBackColor = True
         '
         'GroupBox2
         '
         Me.GroupBox2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GroupBox2.Controls.Add(Me.chkObservationPoints)
+        Me.GroupBox2.Controls.Add(Me.chkObservationPoints2D)
+        Me.GroupBox2.Controls.Add(Me.chkObservationPoints1D)
         Me.GroupBox2.Controls.Add(Me.chkCalculationPoints)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 182)
         Me.GroupBox2.Name = "GroupBox2"
@@ -184,6 +186,18 @@ Partial Class frmImportOutputlocations
         Me.GroupBox2.TabIndex = 4
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Objecten"
+        '
+        'chkObservationPoints2D
+        '
+        Me.chkObservationPoints2D.AutoSize = True
+        Me.chkObservationPoints2D.Checked = True
+        Me.chkObservationPoints2D.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkObservationPoints2D.Location = New System.Drawing.Point(21, 91)
+        Me.chkObservationPoints2D.Name = "chkObservationPoints2D"
+        Me.chkObservationPoints2D.Size = New System.Drawing.Size(280, 21)
+        Me.chkObservationPoints2D.TabIndex = 9
+        Me.chkObservationPoints2D.Text = "Observation points 2D (alleen D-Hydro)"
+        Me.chkObservationPoints2D.UseVisualStyleBackColor = True
         '
         'frmImportOutputlocations
         '
@@ -219,6 +233,7 @@ Partial Class frmImportOutputlocations
     Friend WithEvents txtIDFilter As TextBox
     Friend WithEvents Label3 As Label
     Friend WithEvents Label4 As Label
-    Friend WithEvents chkObservationPoints As CheckBox
+    Friend WithEvents chkObservationPoints1D As CheckBox
     Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents chkObservationPoints2D As CheckBox
 End Class

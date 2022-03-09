@@ -11,9 +11,9 @@ Public Class clsResultsFiles
     Model = myModel
   End Sub
 
-  Public Function GetAdd(ByVal myFile As String) As clsResultsFile
-    If Not Files.ContainsKey(myFile.Trim.ToUpper) Then Files.Add(myFile.Trim.ToUpper, New clsResultsFile(Me.Setup, Model, myFile))
-    Return Files(myFile.Trim.ToUpper)
-  End Function
+    Public Function GetAdd(ByVal myFile As String, myModule As STOCHLIB.GeneralFunctions.enmHydroModule) As clsResultsFile
+        If Not Files.ContainsKey(myFile.Trim.ToUpper) Then Files.Add(myFile.Trim.ToUpper, New clsResultsFile(Me.Setup, Model, myModule, myFile))
+        Return Files(myFile.Trim.ToUpper)
+    End Function
 
 End Class
