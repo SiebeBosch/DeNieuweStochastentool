@@ -124,6 +124,9 @@
       <HintPath>..\references\Gembox\GemBox.Spreadsheet.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GemBox.Spreadsheet.WinFormsUtilities">
+      <HintPath>..\References\Gembox\GemBox.Spreadsheet.WinFormsUtilities.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.11.21.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.21\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -196,6 +199,11 @@
     <Compile Include="DIMR\clsDIMRCONFIGFlow1DComponent.vb" />
     <Compile Include="DIMR\clsDIMRConfigRRComponent.vb" />
     <Compile Include="DIMR\clsDIMRConfigRTCComponent.vb" />
+    <Compile Include="DIMR\clsDIMRFileOperation.vb" />
+    <Compile Include="DIMR\clsDIMRRun.vb" />
+    <Compile Include="DIMR\clsDIMRRuns.vb" />
+    <Compile Include="DIMR\clsDIMRScenario.vb" />
+    <Compile Include="DIMR\clsDIMRScenarios.vb" />
     <Compile Include="DIMR\clsHisNCFile.vb" />
     <Compile Include="DIMR\clsMDUFile.vb" />
     <Compile Include="DIMR\clsNetworkFile.vb" />

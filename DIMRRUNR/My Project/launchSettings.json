@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DIMRRUNR": {
+      "commandName": "Project",
+      "commandLineArgs": "d:\\SYNC\\PROJECTEN\\H1301.DijkringenWRIJ\\03.Dijkring48.Simulaties\\Configuratie.xlsx"
+    }
+  }
+}

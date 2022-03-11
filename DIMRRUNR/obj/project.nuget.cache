@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "ucWhhv/BXZ9tdFnHuBDfDrjln6y6m0QATVEP0y1730l5UjUU0RtImnATZ7NQubgqaWwYW8Q77jTiCavvLGr86w==",
+  "success": true,
+  "projectFilePath": "D:\\GITHUB\\DeNieuweStochastentool\\DIMRRUNR\\DIMRRUNR.vbproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\siebe\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\siebe\\.nuget\\packages\\system.io.packaging\\6.0.0\\system.io.packaging.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

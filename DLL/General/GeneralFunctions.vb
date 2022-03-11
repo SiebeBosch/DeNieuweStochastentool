@@ -24,6 +24,17 @@ Public Class GeneralFunctions
         Public LOCATIONID As String
         Public PARAMETER As String
     End Structure
+    Public Enum enmDIMRFileOperation
+        replacefile = 0
+        replacesnippet = 1
+        replacevalue = 2
+    End Enum
+
+    Public Enum enmDIMRFileType
+        structuredefinitions = 0
+        boundaryconditions = 1
+        restartfile = 2
+    End Enum
 
     Public Enum enmHydroModule
         RR = 0

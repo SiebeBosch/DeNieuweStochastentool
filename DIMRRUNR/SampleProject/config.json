@@ -1,0 +1,56 @@
+{
+	"dimr_config_path": "d:\\SYNC\\PROJECTEN\\H1301.DijkringenWRIJ\\03.Dijkring49.Stochasten\\Testmodel\\model\\dimr_config.xml",
+	"executable":"run.bat",
+	"simulation_dirs": ["c:\\temp\\run1", "c:\\temp\\run2", "c:\\temp\\run3", "c:\\temp\\run4"],
+	"scenarios":[
+		{
+			"name": "Bislich", 
+			"source_files": [
+				{"filename":"structures.ini", "source_file":"d:\\SYNC\\PROJECTEN\\H1301.DijkringenWRIJ\\02.Dijkring49.Scenarios\\DR48_Bislich_T100\\dflowfm\\structures.ini", "target_module":"flowfm"}
+			], 
+			"results_files": [
+				{"filename":"dr48_his.nc", "hydromodule":"flowfm"}
+			],
+			"parameters":[
+			],
+			"scenarios":[
+				{
+					"name":"T100",
+					"parameters":[
+						{"parameter":{
+							"hydromodule":"flowfm",
+							"filetype":"ini",
+							"sourcefile":"structures.ini",
+							"header":"[Structure]",
+							"id":"dambreak_bislich_19",
+							"attribute":"T0",
+							"replacement_value":"1296600.0"
+							}
+						}					
+					],
+					"files": [
+						{"filename":"dr48_20101115_120000_rst.nc", "source_file":"d:\\SYNC\\PROJECTEN\\H1301.DijkringenWRIJ\\02.Dijkring49.Scenarios\\DR48_Bislich_T100\\dflowfm\\dr48_20101115_120000_rst.nc", "target_module":"flowfm"}
+					]
+				},
+				{
+					"name":"T1000",
+					"parameters":[
+						{"parameter":{
+							"hydromodule":"flowfm",
+							"filetype":"ini",
+							"sourcefile":"structures.ini",
+							"header":"[Structure]",
+							"id":"dambreak_bislich_19",
+							"attribute":"T0",
+							"replacement_value":"1296600.0"
+							}
+						}					
+					],
+					"files": [
+						{"filename":"dr48_20101115_120000_rst.nc", "source_file":"d:\\SYNC\\PROJECTEN\\H1301.DijkringenWRIJ\\02.Dijkring49.Scenarios\\DR48_Bislich_T100\\dflowfm\\dr48_20101115_120000_rst.nc", "target_module":"flowfm"}
+					]
+				}
+			]
+		}
+	]
+}	

@@ -1,0 +1,161 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v3.1",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v3.1": {
+      "DIMRRUNR/1.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1",
+          "STOCHLIB": "1.0.0",
+          "System.IO.Packaging": "6.0.0",
+          "GemBox.Spreadsheet": "37.3.30.1069",
+          "GemBox.Spreadsheet.WinFormsUtilities": "37.3.30.1069"
+        },
+        "runtime": {
+          "DIMRRUNR.dll": {}
+        }
+      },
+      "Newtonsoft.Json/13.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.1.25517"
+          }
+        }
+      },
+      "System.IO.Packaging/6.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/System.IO.Packaging.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
+      "STOCHLIB/1.0.0": {
+        "runtime": {
+          "STOCHLIB.dll": {}
+        }
+      },
+      "GemBox.Spreadsheet/37.3.30.1069": {
+        "runtime": {
+          "GemBox.Spreadsheet.dll": {
+            "assemblyVersion": "37.3.30.1069",
+            "fileVersion": "37.3.30.1069"
+          }
+        }
+      },
+      "GemBox.Spreadsheet.WinFormsUtilities/37.3.30.1069": {
+        "runtime": {
+          "GemBox.Spreadsheet.WinFormsUtilities.dll": {
+            "assemblyVersion": "37.3.30.1069",
+            "fileVersion": "37.3.30.1069"
+          }
+        }
+      },
+      "ScientificDataSet/0.0.0.0": {
+        "runtime": {
+          "ScientificDataSet.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "System.Data.SQLite/1.0.113.0": {
+        "runtime": {
+          "System.Data.SQLite.dll": {
+            "assemblyVersion": "1.0.113.0",
+            "fileVersion": "1.0.113.0"
+          }
+        }
+      },
+      "HtmlAgilityPack/1.11.21.0": {
+        "runtime": {
+          "HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.11.21.0",
+            "fileVersion": "1.11.21.0"
+          }
+        }
+      },
+      "alglibnet2/0.0.0.0": {
+        "runtime": {
+          "alglibnet2.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "DynamicInterop/0.9.0.0": {
+        "runtime": {
+          "DynamicInterop.dll": {
+            "assemblyVersion": "0.9.0.0",
+            "fileVersion": "0.9.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DIMRRUNR/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json/13.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "path": "newtonsoft.json/13.0.1",
+      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+    },
+    "System.IO.Packaging/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C7OkTRIjqIjAKu6ef/fuj8ynCZTPcTYZnvHaq48bniACgXXJogmEoIc56YCDNTc14xhsbLmgpS3KP+evbsUa2g==",
+      "path": "system.io.packaging/6.0.0",
+      "hashPath": "system.io.packaging.6.0.0.nupkg.sha512"
+    },
+    "STOCHLIB/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GemBox.Spreadsheet/37.3.30.1069": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GemBox.Spreadsheet.WinFormsUtilities/37.3.30.1069": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ScientificDataSet/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Data.SQLite/1.0.113.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HtmlAgilityPack/1.11.21.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "alglibnet2/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DynamicInterop/0.9.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

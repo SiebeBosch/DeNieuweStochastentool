@@ -66,7 +66,6 @@ D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.CopyComplete
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.pdb
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbprojAssemblyReference.cache
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.Win32.Primitives.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\netstandard.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\System.AppContext.dll
@@ -167,3 +166,6 @@ D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ScientificDataSet.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DynamicInterop.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ScientificDataSet.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.frmClassifyGroundwaterDHydro.resources
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbprojAssemblyReference.cache
+D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\GemBox.Spreadsheet.WinFormsUtilities.dll
+D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\GemBox.Spreadsheet.WinFormsUtilities.xml
