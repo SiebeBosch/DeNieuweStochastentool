@@ -1,0 +1,32 @@
+[General]
+    fileVersion           = 1.01                
+    fileType              = boundConds          
+
+[forcing]
+    name                  = Node001             
+    function              = timeseries          
+    timeInterpolation     = linear              
+    quantity              = time                
+    unit                  = minutes since 2010-11-01 00:00:00
+    quantity              = dischargebnd        
+    unit                  = m³/s                
+    0 1000 
+    5760 3000 
+    12960 5000 
+    20160 4500 
+    34560 1500 
+    41760 1000 
+    44640 1000 
+
+[forcing]
+    name                  = Node002             
+    function              = qhtable             
+    timeInterpolation     = linear              
+    quantity              = qhbnd waterlevel    
+    unit                  = m                   
+    quantity              = qhbnd discharge     
+    unit                  = m³/s                
+    10 1000 
+    12 4000 
+    14 5000 
+

@@ -1,0 +1,1409 @@
+** INFO   : Read Structure data from structures.ini
+** WARNING: readMDUFile: [general] guiversion=1.5.0.53505 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [geometry] branchfile=branches.gui was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [numerics] qhrelax=0.01 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [physics] effectspiral=0 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [output] wrishp_enc=0 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [output] waterlevelclasses=0 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [output] waterdepthclasses=0 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [output] velocitymagnitudeclasses=0 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [output] velocitydirectionclassesinterv=30 was in file, but not used. Check possible typo.
+** WARNING: readMDUFile: [volumetables] usevolumetablesfile=0 was in file, but not used. Check possible typo.
+** INFO   : Reading Roughness ...
+** INFO   : Reading Roughness Done
+** INFO   : Reading Cross Section Definitions ...
+** WARNING: Total area behind levee should be larger then flow area behind levee. Cross-Section Definition id: CrossSection_1D_1.
+** WARNING: Total area behind levee should be larger then flow area behind levee. Cross-Section Definition id: CrossSection_1D_2.
+** INFO   : Levee transition height (summerdike) =  0.500 m (default)
+** INFO   : Reading Cross Section Definitions Done
+** INFO   : Reading Cross Section Locations ...
+** INFO   : Reading Cross Section Locations Done
+** INFO   : All 1D-Reading Done
+** INFO   : Reading Structures ...
+** INFO   : Reading Structures Done
+** INFO   : Initializing flow model geometry...
+** INFO   : Opened file : Boundary01.pli
+** INFO   : Closed file : Boundary01.pli
+** INFO   : boundary: 'Boundary01.pli' opened 98 cells.
+** INFO   : waterlevelbnd Boundary01.pli      98 nr of open bndcells
+** INFO   : Opened file : Boundary02.pli
+** INFO   : Closed file : Boundary02.pli
+** INFO   : boundary: 'Boundary02.pli' opened 85 cells.
+** INFO   : waterlevelbnd Boundary02.pli      85 nr of open bndcells
+** INFO   : Opened file : Boundary03.pli
+** INFO   : Closed file : Boundary03.pli
+** INFO   : boundary: 'Boundary03.pli' opened 98 cells.
+** INFO   : waterlevelbnd Boundary03.pli      98 nr of open bndcells
+** INFO   : dischargebnd Node001       1 nr of open bndcells
+** INFO   : qhbnd Node002       1 nr of open bndcells
+** INFO   : merged 0 samples in .01 seconds.
+** INFO   : setbedlevelfromextfile: Using bedlevel as specified in net-file.
+** INFO   : setbedlevelfromextfile: Setting 2D bedlevel from file 'bedlevel_bedlevel_Set_value_1.pol'.
+** INFO   : Opened file : bedlevel_bedlevel_Set_value_1.pol
+** INFO   : Closed file : bedlevel_bedlevel_Set_value_1.pol
+** INFO   : setbedlevelfromextfile: Mirroring input bedlevels at open boundaries.
+** INFO   : Done initializing flow model geometry.
+** INFO   : Start initializing external forcings...
+** INFO   : Reading initial field file 'initialFields.ini'.
+** INFO   : Finish initializing 1dField file 'InitialWaterLevel.ini':         0 [Branch] blocks have been read and handled.
+** INFO   : Finish initializing the initial field file 'initialFields.ini':       3 blocks have been read and handled.
+** INFO   : Done initializing external forcings.
+** INFO   : Opened file : FlowFM_fxw.pliz
+** INFO   : Closed file : FlowFM_fxw.pliz
+** INFO   : Finding crossed flowlinks...
+** INFO   : done
+** INFO   : fixed weirs with kdtree2, elapsed time:     0.30000E-02s.
+** INFO   : fixed weirs: read files,  elapsed time:     0.20000E-02s.
+** INFO   : fixed weirs: pol_to_flowlinks, elapsed time:      0.0000    s.
+** INFO   : fixed weirs: find_crossed_links, elapsed time:     0.10000E-02s.
+** INFO   : fixed weirs: attributes,  elapsed time:      0.0000    s.
+** INFO   : nogauss , nocg :           4502          4119
+** INFO   : ** Model initialization was successful **
+** INFO   : * Active Model definition:
+# Generated on 15:07:45, 12-03-2022
+# Deltares, D-Flow FM Version 1.2.140.140648, Jan 20 2022, 12:02:37
+# Source:https://svn.oss.deltares.nl/repos/delft3d/trunk/
+
+[General]
+Program                                   = D-Flow FM           # Program
+Version                                   = 1.2.140.140648      # Version number of computational kernel
+fileType                                  = modelDef            # File type. Do not edit this.
+fileVersion                               = 1.09                # File format version (do not edit this)
+AutoStart                                 = 0                   # Autostart simulation after loading MDU (0: no, 1: autostart, 2: autostartstop)
+ModelSpecific                             =                                                                 # Optional 'model specific ID', to enable certain custom runtime function calls (instead of via MDU name).
+PathsRelativeToParent                     = 0                   # Default: 0. Whether or not (1/0) to resolve file names (e.g. inside the *.ext file) relative to their direct parent, instead of to the toplevel MDU working dir.
+
+[geometry]
+NetFile                                   = flowfm_net.nc       # Unstructured grid file *_net.nc
+BedlevelFile                              =                     # Bedlevels points file e.g. *.xyz, only needed for bedlevtype not equal 3
+GridEnclosureFile                         =                     # Enclosure file to clip outer parts from the grid *.pol
+DryPointsFile                             =                     # Dry points file *.xyz (third column dummy z values), or dry areas polygon file *.pol (third column 1/-1: inside/outside)
+CrossDefFile                              = crsdef.ini          # 1D Cross section definition file (*.ini)
+CrossLocFile                              = crsloc.ini          # 1D Cross section location file (*.ini)
+StorageNodeFile                           =                     # 1D Storage node/manhole file (*.ini)
+frictFile                                 = roughness-Channels.ini;roughness-Main.ini;roughness-Sewer.ini;roughness-FloodPlain1.ini;roughness-FloodPlain2.ini# 1D Roughness files (*.ini)
+StructureFile                             = structures.ini      # Hydraulic structure file (*.ini)
+WaterLevIniFile                           =                     # Initial water levels sample file *.xyz using flood fill algorithm
+LandBoundaryFile                          =                     # Land boundaries file *.ldb, used for visualization
+ThinDamFile                               =                     # Polyline file *_thd.pli, containing thin dams
+Cutcelllist                               =                     # File with names of cutcell polygons, e.g. cutcellpolygons.lst
+FixedWeirFile                             = FlowFM_fxw.pliz     # Polyline file *_fxw.pliz, containing fixed weirs with rows x, y, crest level, left ground level, right ground level
+PillarFile                                =                     # Polyline file *_pillar.pliz, containing four colums with x, y, diameter and Cd coefficient
+Gulliesfile                               =                     # Polyline file *_gul.pliz, containing lowest bed level along talweg x, y, z level
+Roofsfile                                 =                     # Polyline file *_rof.pliz, containing roofgutter heights x, y, z level
+VertplizFile                              =                     # Vertical layering file *_vlay.pliz with rows x, y, Z, first Z, nr of layers, second Z, layer type
+ProflocFile                               =                     # Channel profile location file *_proflocation.xyz with rows x, y, z, profile number ref
+ProfdefFile                               =                     # Channel profile definition file *_profdefinition.def with definition for all profile numbers
+ProfdefxyzFile                            =                     # Channel profile definition file _profdefinition.def with definition for all profile numbers
+IniFieldFile                              = initialFields.ini   # Initial values and parameter fields file
+UseCaching                                = 0                   # Use caching for geometrical/network-related items (0: no, 1: yes)
+Uniformwidth1D                            = 1.                  # Uniform width for channel profiles not specified by profloc
+Uniformheight1D                           = 1.                  # Uniform height for channel profiles not specified by profloc
+Uniformtyp1Dstreetinlets                  = -2                  # Uniform type street inlets
+Uniformtyp1Droofgutterpipes               = -2                  # Uniform type roof gutter pipes
+1D2DLinkFile                              =                     # File *.ini containing custom parameters for 1D2D links
+Dxmin1D                                   = 1.                  # Minimum 1D link length, (except for duikers)
+Dxwuimin2D                                = 0.                  # Smallest fraction dx/wu , set dx > Dxwuimin2D*wu, Default = 0.1
+ManholeFile                               =                     # File *.ini containing manholes
+PipeFile                                  =                     # File *.pliz containing pipe-based 'culverts'
+ShipdefFile                               =                     # File *.shd containing ship definitions
+WaterLevIni                               = 2.                  # Initial water levels sample file *.xyz using flood fill algorithm
+BedlevUni                                 = -999.               # Uniform bed level used at missing z values if BedlevType > 2
+BedlevType                                = 1                   # Bathymetry specification
+                                                                # 1: at cell centers (from BathymetryFile)
+                                                                # 2: at faces (from BathymetryFile)
+                                                                # 3: at nodes, face levels mean of node values
+                                                                # 4: at nodes, face levels min. of node values
+                                                                # 5: at nodes, face levels max. of node values
+                                                                # 6: at nodes, face levels max. of cell-center values
+Blmeanbelow                               = -999.               # If not -999d0, below this level the cell center bed level is the mean of surrouding net nodes
+Blminabove                                = -999.               # If not -999d0, above this level the cell center bed level is the min. of surrouding net nodes
+Groundlayerthickness                      = -999.               # Only in pipes: groundlayer thickness (m)
+PartitionFile                             =                     # Domain partition polygon file *_part.pol for parallel run
+AngLat                                    = 0.                  # Angle of latitude S-N (deg), 0: no Coriolis
+AngLon                                    = 0.                  # Angle of longitude E-W (deg), 0: Greenwich, used in solar heat flux computation.
+Conveyance2D                              = -1                  # -1: R=HU,0: R=H, 1: R=A/P, 2: K=analytic-1D conv, 3: K=analytic-2D conv
+Nonlin1D                                  = 1                   # Non-linear 1D volumes, 1 = Preisman slot, 2 = pipes closed (Nested Newton)
+Slotw2D                                   = 0.                  # -
+Slotw1D                                   = 5.d-3               # -
+Sillheightmin                             = 0.25                # Weir treatment only if both sills larger than this value (m)
+Makeorthocenters                          = 0                   # Switch from circumcentres to orthocentres in geominit (i>=1: number of iterations, 0: do not use)
+Dcenterinside                             = 1.                  # Limit cell center (1.0: in cell, 0.0: on c/g)
+Bamin                                     = 1.d-6               # Minimum grid cell area, in combination with cut cells
+OpenBoundaryTolerance                     = 3.                  # Search tolerance factor between boundary polyline and grid cells, in cell size units
+AllowBndAtBifurcation                     = 1                   # Allow 1d boundary node when connecting branch leads to bifurcation (1: yes, 0: no)
+CreateLinks1D2D                           = 0                   # Ruecksichtslos create links between 1D nodes and 2D cells when initializing model (1: yes, 0: no)
+RenumberFlowNodes                         = 1                   # Renumber the flow nodes (1: yes, 0: no)
+dxDoubleAt1DEndNodes                      = 1                   # Extend 1D end nodes by 0.5 dx (1: yes, 0: no).
+ChangeVelocityAtStructures                = 1                   # Change the flow velocity at structures in the advection calculation
+ChangeStructureDimensions                 = 0                   # Change the structure dimensions of (universal) weirs, orifices, bridges and general structures in case these dimensions exceed the dimensions of the channel
+Kmx                                       = 0                   # Maximum number of vertical layers
+Layertype                                 = 1                   # Vertical layer type (1: all sigma, 2: all z, 3: use VertplizFile)
+Numtopsig                                 = 0                   # Number of sigma layers in top of z-layer model
+SigmaGrowthFactor                         = 1.                  # Layer thickness growth factor from bed up
+StretchType                               = -1                  # Type of layer stretching, 0 = uniform, 1 = user defined, 2 = fixed level double exponential
+Keepzlayeringatbed                        = 2                   # 0:possibly very thin layer at bed, 1:bedlayerthickness == zlayerthickness, 2=equal thickness first two layers
+Ihuz                                      = 4                   # if keepzlayeratbed>=3 : 1=central from bed til second, 2=all central, 3=from bed till highest equal levels
+ihuzcsig                                  = 3                   # if keepzlayeratbed>=3 : 1,2,3=av,mx,mn of Leftsig,Rightsig,4=uniform
+Zlayeratubybob                            = 0                   # Lowest connected cells governed by bob instead of by bL L/R
+
+[volumeTables]
+useVolumeTables                           = 0                   # Use 1D volume tables (1: yes, 0: no).
+
+[numerics]
+CFLMax                                    = 0.7                 # Maximum Courant number
+EpsMaxlev                                 = 1.d-4               # Stop criterium for non linear iteration
+EpsMaxlevm                                = 1.d-4               # Stop criterium for Nested Newton loop in non linear iteration
+Lincontin                                 = 0                   # Default 0; Set to 1 for linearizing d(Hu)/dx; link to AdvecType
+AdvecType                                 = 33                  # Advection type (0: none, 1: Wenneker, 2: Wenneker q(uio-u), 3: Perot q(uio-u), 4: Perot q(ui-u), 5: Perot q(ui-u) without itself), 33: as 3 using links (faster)
+AdvecCorrection1D2D                       = 0                   # Advection correction of 1D2D link volume (0: regular advection, 1: link volume au*dx, 2: advection on 1D2D switched off.
+TimeStepType                              = 2                   # Time step handling (0: only transport, 1: transport + velocity update, 2: full implicit step-reduce, 3: step-Jacobi, 4: explicit)
+maxNonlinearIterations                    = 100                 # Maximal iterations in non-linear iteration loop before a time step reduction is applied
+setHorizontalBobsFor1d2d                  = 0                   # bobs are set to 2D bedlevel, to prevent incorrect storage in sewer system (0: no, 1:yes).
+Icoriolistype                             = 5                   # 0=No, 5=default, 3,4 no weights, 5-10 Kleptsova hu/hs, 25-30 Ham hs/hu, odd: 2D hs/hu, even: hsk/huk
+Newcorio                                  = 1                   # 0=prior to 27-11-2019, 1=no normal forcing on open bnds, plus 12 variants )
+Corioadamsbashfordfac                     = 0.5                 # 0=No, 0.5d0=AdamsBashford, only for Newcorio=1)
+Limtyphu                                  = 0                   # Limiter type for waterdepth in continuity eqn. (0: none, 1: minmod, 2: van Leer, 3: Kooren, 4: monotone central)
+Limtypmom                                 = 4                   # Limiter type for cell center advection velocity (0: none, 1: minmod, 2: van Leer, 3: Kooren, 4: monotone central)
+Limtypsa                                  = 4                   # Limiter type for salinity transport (0: none, 1: minmod, 2: van Leer, 3: Kooren, 4: monotone central)
+TransportMethod                           = 1                   # Transport method (0: Herman's method, 1: transport module)
+TransportTimestepping                     = 1                   # Timestepping method in Transport module, 0 = global, 1 = local (default)
+TransportAutoTimestepdiff                 = 0                   # Auto Timestepdiff in Transport, 0 : lim diff, no lim Dt_tr, 1 : no lim diff, lim Dt_tr, 2: no lim diff, no lim Dt_tr, 3=implicit (only 2D)
+Implicitdiffusion2D                       = 0                   # 1 = Yes, 0 = No
+Vertadvtypsal                             = 6                   # Vertical advection type for salinity (0: none, 1: upwind explicit, 2: central explicit, 3: upwind implicit, 4: central implicit, 5: central implicit but upwind for neg. stratif., 6: higher order explicit, no Forester)
+Vertadvtyptem                             = 6                   # Vertical advection type for temperature (0: none, 1: upwind explicit, 2: central explicit, 3: upwind implicit, 4: central implicit, 5: central implicit but upwind for neg. stratif., 6: higher order explicit, no Forester)
+Vertadvtypmom                             = 6                   # Vertical advection type for u1: 0: No, 3: Upwind implicit, 4: Central implicit, 5: QUICKEST implicit., 6: centerbased upwind expl, 7=6 HO
+Vertadvtypmom3onbnd                       = 0                   # vert. adv. u1 bnd UpwimpL: 0=follow javau , 1 = on bnd, 2= on and near bnd
+Cffacver                                  = 0.                  # Factor for including (1-CFL) in HO term vertical   (0d0: no, 1d0: yes)
+Jarhoxu                                   = 0                   # Include density gradient in advection term (0: no(strongly advised), 1: yes, 2: Also in barotropic and baroclinic pressure term)
+Horadvtypzlayer                           = 0                   # Horizontal advection treatment of z-layers (1: default, 2: sigma-like)
+Pure1D                                    = 0                   # 0 = org 1D advec, 1 = pure1D using vol1_f, 2 = pure1D using vol1
+Zlayercenterbedvel                        = 1                   # reconstruction of center velocity at half closed bedcells (0=no, 1: copy bed link velocities)
+Structurelayersactive                     = 1                   # 0=structure flow through all layers, 1=structure flow only through open layers
+Icgsolver                                 = 4                   # Solver type (1: sobekGS_OMP, 2: sobekGS_OMPthreadsafe, 3: sobekGS, 4: sobekGS + Saadilud, 5: parallel/global Saad, 6: parallel/Petsc, 7: parallel/GS)
+Maxdegree                                 = 6                   # Maximum degree in Gauss elimination
+Noderivedtypes                            = 5                   # 0=use der. types. , 1 = less, 2 = lesser, 5 = also dealloc der. types
+jposhchk                                  = 2                   # Check for positive waterdepth (0: no, 1: 0.7*dts, just redo, 2: 1.0*dts, close all links, 3: 0.7*dts, close all links, 4: 1.0*dts, reduce au, 5: 0.7*dts, reduce au)
+FixedWeirScheme                           = 6                   # Fixed weir scheme (0: none, 1: compact stencil, 2: whole tile lifted, full subgrid weir + factor)
+FixedWeirContraction                      = 1.                  # Fixed weir flow width contraction factor
+Fixedweirfrictscheme                      = 1                   # Fixed weir friction scheme (0: friction based on hu, 1: friction based on subgrid weir friction scheme)
+Fixedweirtopwidth                         = 5.                  # Uniform width of the groyne part of fixed weirs
+Fixedweirtopfrictcoef                     = 0.25                # Uniform friction coefficient of the groyne part of fixed weirs
+Fixedweirtalud                            = 4.                  # Uniform talud slope of fixed weirs
+Izbndpos                                  = 0                   # Position of z boundary (0: D3Dflow, 1: on net boundary, 2: on specified polyline)
+Tlfsmo                                    = 0.                  # Fourier smoothing time (s) on water level boundaries
+Logprofatubndin                           = 1                   # ubnds inflow: 0=uniform U1, 1 = log U1, 2 = user3D
+Logprofkepsbndin                          = 0                   # inflow: 0=0 keps, 1 = log keps inflow, 2 = log keps in and outflow
+Slopedrop2D                               = 0.3                 # Apply drop losses only if local bed slope > Slopedrop2D, (<=0: no drop losses)
+Drop1D                                    = 0                   # Apply drop losses in 1D (0: no, 1:yes)
+Drop3D                                    = 1.                  # Apply droplosses in 3D if z upwind below bob + 2/3 hu*drop3D
+Chkadvd                                   = 0.1                 # Check advection terms if depth < chkadvdp, => less setbacks
+Trsh_u1Lb                                 = 0.                  # 2D bedfriction in 3D below this threshold (m)
+Epshstem                                  = 1.d-3               # Only compute heatflx + evap if depth > epshstem
+Zwsbtol                                   = 0.                  # tolerance for zws(kb-1) at bed
+Teta0                                     = 0.55                # Theta of time integration (0.5 < theta < 1)
+Jbasqbnddownwindhs                        = 0                   # Water depth scheme at discharge boundaries (0: original hu, 1: downwind hs)
+cstbnd                                    = 0                   # Delft-3D type velocity treatment near boundaries for small coastal models (1: yes, 0: no)
+Maxitverticalforestersal                  = 0                   # Forester iterations for salinity (0: no vertical filter for salinity, > 0: max nr of iterations)
+Maxitverticalforestertem                  = 0                   # Forester iterations for temperature (0: no vertical filter for temperature, > 0: max nr of iterations)
+Turbulencemodel                           = 3                   # Turbulence model (0: none, 1: constant, 2: algebraic, 3: k-epsilon, 4: k-tau)
+Turbulenceadvection                       = 3                   # Turbulence advection (0: none, 3: horizontally explicit and vertically implicit)
+Eddyviscositybedfacmax                    = 0.                  # Limit eddy viscosity at bed )
+AntiCreep                                 = 0                   # Include anti-creep calculation (0: no, 1: yes)
+Maxwaterleveldiff                         = 0.                  # upper bound (in m) on water level changes (<= 0: no bounds). Run will abort when violated.
+Maxvelocitydiff                           = 0.                  # upper bound (in m/s) on velocity changes (<= 0: no bounds). Run will abort when violated.
+Maxvelocity                               = 0.                  # upper bound (in m/s) on velocity (<= 0: no bounds). Run will abort when violated.
+Waterlevelwarn                            = 0.                  # warning level (in m) on water level (<= 0: no check).
+Velocitywarn                              = 0.                  # warning level (in m/s) on velocity u1 (<= 0: no check).
+Velmagnwarn                               = 0.                  # warning level (in m/s) on velocity magnitude (<= 0: no check).
+MinTimestepBreak                          = 0.                  # smallest allowed timestep (in s), checked on a sliding average of several timesteps. Run will abort when violated.
+Epshu                                     = 1.d-4               # Threshold water depth for wet and dry cells
+SobekDFM_umin                             = 0.                  # Minimal velocity treshold for weir losses in Sobek-DFM coupling.
+SobekDFM_umin_method                      = 0                   # Method for minimal velocity treshold for weir losses in Sobek-DFM coupling.
+SobekDFM_Minimal_1d2d_Embankment          = 1.d-2               # Minimal crest height of 1D2D SOBEK-DFM embankments.
+sobekDFM_relax                            = 0.1                 # Relaxation factor for SOBEK-DFM coupling algorithm.
+jaupwindsrc                               = 1                   # 1st-order upwind advection at sources/sinks (1) or higher-order (0)
+jasfer3D                                  = 0                   # corrections for spherical coordinates
+HorizontalMomentumFilter                  = 0                   # apply horizontal filter (1:explicit, 2,3:implicit) or not (0)
+checkerboardmonitor                       = 0                   # compute and output checkerboard monitor (1) or not (0)
+LocSaltLev                                = 1.                  # salinity level for case of lock exchange
+LocSaltMin                                = 5.                  # minimum salinity for case of lock exchange
+LocSaltMax                                = 10.                 # maximum salinity for case of lock exchange
+Numlimdt_baorg                            = 0                   # if previous numlimdt > Numlimdt_baorg keep original cell area ba in cutcell
+Baorgfracmin                              = 0.                  # Cell area = max(orgcellarea*Baorgfracmin, cutcell area)
+SubsUplUpdateS1                           = 0                   # Update water levels (S1) due to subsidence / uplift
+Oceaneddysizefrac                         = 5.d-2
+Oceaneddysize                             = 0.
+Oceaneddyamp                              = 5.d-2
+Oceaneddyvel                              = 0.
+Oceaneddyyoff                             = 0.
+Oceaneddyxoff                             = 0.
+
+[physics]
+UnifFrictCoef                             = 0.25                # Uniform friction coefficient (0: no friction)
+UnifFrictType                             = 2                   # Uniform friction type (0: Chezy, 1: Manning, 2: White-Colebrook, 3: idem, WAQUA style)
+UnifFrictCoef1D                           = 0.25                # Uniform friction coefficient in 1D links (0: no friction)
+UnifFrictCoef1D2D                         = 0.25                # Uniform friction coefficient in 1D links (0: no friction)
+UnifFrictCoefLin                          = 0.                  # Uniform linear friction coefficient (0: no friction)
+UnifFrictCoef1DgrLay                      = 5.d-2               # Uniform ground layer friction coefficient for ocean models (m/s) (0: no friction)
+Umodlin                                   = 1.                  # Linear friction umod, for ifrctyp=4,5,6
+Vicouv                                    = 1.                  # Uniform horizontal eddy viscosity (m2/s)
+Dicouv                                    = 1.                  # Uniform horizontal eddy diffusivity (m2/s)
+Vicoww                                    = 1.d-6               # Uniform vertical eddy viscosity (m2/s)
+Dicoww                                    = 1.d-6               # Uniform vertical eddy diffusivity (m2/s)
+Vicwminb                                  = 0.                  # Minimum visc in prod and buoyancy term (m2/s)
+Xlozmidov                                 = 0.                  # Ozmidov length scale (m), default=0.0, no contribution of internal waves to vertical diffusion
+Smagorinsky                               = 0.                  # Smagorinsky factor in horizontal turbulence, e.g. 0.15
+Elder                                     = 0.                  # Elder factor in horizontal turbulence
+irov                                      = 0                   # 0=free slip, 1 = partial slip using wall_ks
+wall_ks                                   = 0.                  # Wall roughness type (0: free slip, 1: partial slip using wall_ks)
+Rhomean                                   = 1000.               # Average water density (kg/m3)
+Idensform                                 = 0                   # Density calulation (0: uniform, 1: Eckart, 2: Unesco, 3: baroclinic case)
+Ag                                        = 9.81                # Gravitational acceleration
+TidalForcing                              = 0                   # Tidal forcing, if jsferic=1 (0: no, 1: yes)
+SelfAttractionLoading                     = 0                   # Self attraction and loading (0=no, 1=yes, 2=only self attraction)
+SelfAttractionLoading_correct_wl_with_ini = 0                   # correct water level with initial water level in Self attraction and loading (0=no, 1=yes)
+ITcap                                     = 0.                  # Upper limit on internal tides dissipation (W/m^2)
+Doodsonstart                              = 55.565              # TRIWAQ: 55.565, D3D: 57.555
+Doodsonstop                               = 375.575             # TRIWAQ: 375.575, D3D: 275.555
+Doodsoneps                                = 0.                  # TRIWAQ = 0.0  400 cmps , D3D = 0.03   60 cmps
+VillemonteCD1                             = 1.                  # Calibration coefficient for Villemonte. Default = 1.0.
+VillemonteCD2                             = 10.                 # Calibration coefficient for Villemonte. Default = 10.0.
+Salinity                                  = 0                   # Include salinity, (0=no, 1=yes)
+InitialSalinity                           = 0.                  # Uniform initial salinity concentration (ppt)
+Sal0abovezlev                             = -999.               # Vertical level (m) above which salinity is set 0
+DeltaSalinity                             = -999.               # for testcases
+Salimax                                   = -999.               # Limit the salinity
+Salimin                                   = 0.                  # Limit the salinity
+Backgroundsalinity                        = 30.                 # Background salinity for eqn. of state (psu) if salinity not computed
+Backgroundwatertemperature                = 20.                 # Background water temperature for eqn. of state (deg C) if temperature not computed
+Temperature                               = 0                   # Include temperature (0: no, 1: only transport, 3: excess model of D3D, 5: composite (ocean) model)
+InitialTemperature                        = 6.                  # Uniform initial water temperature (degC)
+Secchidepth                               = 1.                  # Water clarity parameter (m)
+Stanton                                   = 1.3d-3              # Coefficient for convective heat flux, if negative, Ccon = abs(Stanton)*Cdwind
+Dalton                                    = 1.3d-3              # Coefficient for evaporative heat flux, if negative, Ceva = abs(Dalton)*Cdwind
+Tempmax                                   = -999.               # Limit the temperature
+Tempmin                                   = 0.                  # Limit the temperature
+Surftempsmofac                            = 0.                  # Hor . Smoothing factor for surface water in heatflx comp. (0.0-1.0), 0=no
+SecondaryFlow                             = 0                   # Secondary flow (0: no, 1: yes)
+BetaSpiral                                = 0.                  # Weight factor of the spiral flow intensity on flow dispersion stresses
+Equili                                    = 0                   # Equilibrium spiral flow intensity (0: no, 1: yes)
+
+[sediment]
+Sedimentmodelnr                           = 0                   # Sediment model nr, (0=no, 1=Krone, 2=SvR2007, 3=E-H, 4=MorphologyModule)
+Nr_of_sedfractions                        = 0                   # Nr of sediment fractions, (specify the next parameters for each fraction)
+MxgrKrone                                 = 0                   # Highest fraction index treated by Krone
+Seddenscoupling                           = 0                   # Sed rho coupling (0=no, 1=yes
+
+[veg]
+Vegetationmodelnr                         = 0                   # Vegetation model nr, (0=no, 1=Baptist DFM)
+Clveg                                     = 0.8                 # Stem distance factor, default 0.8 ()
+Cdveg                                     = 0.7                 # Stem Cd coefficient , default 0.7 ()
+Cbveg                                     = 0.                  # Stem stiffness coefficient , default 0.7 ()
+Rhoveg                                    = 0.                  # Stem Rho, if > 0, -> bouyant stick procedure, default 0.0 ()
+Stemheightstd                             = 0.                  # Stem height standard deviation fraction, e.g. 0.1  ()
+Densvegminbap                             = 0.                  # Minimum vegetation density in Baptist formula  (1/m2)
+
+[wind]
+ICdtyp                                    = 2                   # Wind drag coefficient type (1=Const; 2=Smith&Banke (2 pts); 3=S&B (3 pts); 4=Charnock 1955, 5=Hwang 2005, 6=Wuest 2005, 7=Hersbach 2010 (2 pts)
+Cdbreakpoints                             = 6.3d-4 7.23d-3      # Wind drag coefficient break points
+Windspeedbreakpoints                      = 0. 100.             # Wind speed break points (m/s)
+Relativewind                              = 0                   # Wind speed relative to top-layer water speed, 1=yes, 0 = no)
+Windpartialdry                            = 0                   # Reduce windstress on water if link partially dry, only for bedlevtyp=3, 0 = no, 1 = yes = default
+Rhoair                                    = 1.205               # Air density (kg/m3)
+PavBnd                                    = 0.                  # Average air pressure on open boundaries (N/m2) (only applied if > 0)
+Pavini                                    = 0.                  # Average air pressure for initial water level correction (N/m2) (only applied if > 0)
+Stericcorrection                          = 0                   # Steric correction on waterlevel bnds, for which sal + temp should be prescribed
+
+[grw]
+groundwater                               = 0                   # 0=No (horizontal) groundwater flow, 1=With groundwater flow
+Infiltrationmodel                         = 2                   # Infiltration method (0: No infiltration1: Interception layer2: Constant infiltration capacity3: model unsaturated/saturated (with grw)4: Horton)
+Hinterceptionlayer                        = 0.                  # Intercept this amount of rain (m)
+UnifInfiltrationCapacity                  = 0.                  # Uniform maximum infiltration capacity (m/s)
+Conductivity                              = 0.                  # non dimensionless K conductivity   saturated (m/s), Q = K*A*i (m3/s)
+h_aquiferuni                              = 20.                 # bgrw = bl - h_aquiferuni (m), if negative, bgrw = bgrwuni
+h_unsatini                                = 0.200000002980232   # initial level groundwater is bedlevel - h_unsatini (m), if negative, sgrw = sgrwini
+
+[hydrology]
+InterceptionModel                         = 0                   # Interception model (0: none, 1: on, via layer thickness)
+
+[waves]
+Wavemodelnr                               = 0                   # Wave model nr. (0: none, 1: fetch/depth limited hurdlestive, 2: Young-Verhagen, 3: SWAN, 5: uniform, 6: SWAN-NetCDF
+Wavenikuradse                             = 1.d-2               # Wave friction Nikuradse ks coefficient (m), used in Krone-Swart
+Rouwav                                    = FR84                # Friction model for wave induced shear stress: FR84 (default) or: MS90, HT91, GM79, DS88, BK67, CJ85, OY88, VR04
+Gammax                                    = 1.                  # Maximum wave height/water depth ratio
+uorbfac                                   = 1                   # Orbital velocities: 0=D3D style; 1=Guza style
+jahissigwav                               = 1                   # 1: sign wave height on his output; 0: hrms wave height on his output. Default=1.
+jamapsigwav                               = 0                   # 1: sign wave height on map output; 0: hrms wave height on map output. Default=0 (legacy behaviour).
+hminlw                                    = 0.2                 # Cut-off depth for application of wave forces in momentum balance
+
+[time]
+RefDate                                   = 20101101            # Reference date (yyyymmdd)
+Tzone                                     = 0.                  # Time zone assigned to input time series
+DtUser                                    = 60.                 # Time interval (s) for external forcing update
+DtNodal                                   = 21600.              # Time interval (s) for updating nodal factors in astronomical boundary conditions
+DtMax                                     = 30.                 # Maximal computation timestep (s)
+Dtfacmax                                  = 1.1                 # Max timestep increase factor ( )
+DtInit                                    = 1.                  # Initial computation timestep (s)
+Timestepanalysis                          = 0                   # 0=no, 1=see file *.steps
+Autotimestepvisc                          = 0                   # 0 = no, 1 = yes (Time limitation based on explicit diffusive term)
+AutoTimestepNoStruct                      = 1                   # 0 = no, 1 = yes (Exclude structure links (and neighbours) from time step limitation)
+AutoTimestepNoQout                        = 1                   # 0 = no, 1 = yes (Exclude negative qin terms from time step limitation)
+Tunit                                     = S                   # Time unit for start/stop times (D, H, M or S)
+TStart                                    = 0.                  # Start time w.r.t. RefDate (in TUnit)
+TStop                                     = 2678400.            # Stop  time w.r.t. RefDate (in TUnit)
+UpdateRoughnessInterval                   = 86400.              # Update interval for time dependent roughness parameters (in s)
+
+[restart]
+RestartFile                               =                     # Restart netcdf-file, either *_rst.nc or *_map.nc
+RestartDateTime                           = yyyymmddhhmmss      # Restart date and time (yyyymmddhhmmss) when restarting from *_map.nc
+RstIgnoreBl                               = 0                   # Flag indicating whether bed level from restart should be ignored (0=no (default), 1=yes)
+
+[external forcing]
+ExtForceFile                              =                     # Old format for external forcings file *.ext, link with tim/cmp-format boundary conditions specification
+ExtForceFileNew                           = FlowFM_bnd.ext      # New format for external forcings file *.ext, link with bc-format boundary conditions specification
+Rainfall                                  = 0                   # Include rainfall, (0=no, 1=yes)
+QExt                                      = 0                   # Include user Qin/out, externally provided, (0=no, 1=yes)
+Evaporation                               = 0                   # Include evaporation in water balance, (0=no, 1=yes)
+WindExt                                   = 0                   # Include wind, externally provided, (0=no, 1=reserved for EC, 2=yes)
+
+[trachytopes]
+TrtRou                                    = N                   # Include alluvial and vegetation roughness (trachytopes) (Y: yes, N: no)
+TrtDef                                    =                     # File (*.ttd) including trachytope definitions
+TrtL                                      =                     # File (*.arl) including distribution of trachytope definitions
+DtTrt                                     = 60.                 # Trachytope roughness update time interval (s)
+TrtMxR                                    = 8                   # Maximum recursion level for composite trachytope definitions
+TrtCll                                    =                     # Calibration factor file for roughness from trachytopes (see also [calibration] block)
+TrtMnH                                    = 0.1                 # Minimum water depth for roughness computations
+TrtMth                                    = 1                   # Area averaging method, (1=Nikuradse k based, 2=Chezy C based (parallel and serial))
+
+[calibration]
+UseCalibration                            = 0                   # Activate calibration factor friction multiplier (1 = yes, 0 = no)
+DefinitionFile                            =                     # File (*.cld) including calibration definitions
+AreaFile                                  =                     # File (*.cll) including area distribution of calibration definitions
+
+[output]
+OutputDir                                 = output              # Output directory of map-, his-, rst-, dat- and timings-files, default: DFM_OUTPUT_<modelname>. Set to . for current dir.
+FlowGeomFile                              =                     # Flow geometry NetCDF *_flowgeom.nc
+ObsFile                                   =                     # Points file *.xyn with observation stations with rows x, y, station name
+CrsFile                                   =                     # Polyline file *_crs.pli defining observation cross sections
+RugFile                                   =                     # Polyline file *_rug.pli defining runup gauges
+FouFile                                   =                     # Fourier analysis input file *.fou
+FouUpdateStep                             = 0                   # Fourier update step type: 0=every user time step, 1=every computational timestep, 2=same as history output.
+HisFile                                   =                     # HisFile name *_his.nc
+MapFile                                   =                     # MapFile name *_map.nc
+HisInterval                               = 600. 0. 2678400.    # History times (s), interval, starttime, stoptime (s), if starttime, stoptime are left blank, use whole simulation period
+XLSInterval                               = 0.                  # Interval (s) XLS history
+MapInterval                               = 86400. 0. 2678400.  # Map times (s), interval, starttime, stoptime (s), if starttime, stoptime are left blank, use whole simulation period
+RstInterval                               = 0. 0. 2678400.      # Restart times (s), interval, starttime, stoptime (s), if starttime, stoptime are left blank, use whole simulation period
+MbaInterval                               = 0.                  # Mass balance area output interval (s)
+MbaWriteCsv                               = 0                   # Write mass balance area output to a csv-file (1: yes, 0: no)
+MbaLumpFromToMba                          = 0                   # Lump MBA from/to other areas mass balance terms (1: yes, 0: no)
+MbaLumpBoundaries                         = 0                   # Lump MBA boundary mass balance terms (1: yes, 0: no)
+MbaLumpSourceSinks                        = 0                   # Lump MBA source/sink mass balance terms (1: yes, 0: no)
+MbaLumpProcesses                          = 0                   # Lump MBA processes mass balance terms (1: yes, 0: no)
+WaqOutputDir                              =                     # Output directory of WAQ communication files (flowgeom, vol, flo, etc.), default: DFM_DELWAQ_<modelname>. Set to . for current dir.
+WaqInterval                               = 0. 0. 2678400.      # DELWAQ output times, given as "interval" "start period" "end period" (s)
+WaqHorAggr                                =                     # DELWAQ output horizontal aggregation file (*.dwq)
+WaqVertAggr                               =                     # DELWAQ output vertical aggregation file (*.vag)
+ClassMapInterval                          = 0. 0. 2678400.      # Class map times (s), interval, starttime, stoptime (s), if starttime, stoptime are left blank, use whole simulation period
+ClassMapFile                              =                     # ClassMapFile name *_clm.nc
+WaterlevelClasses                         =                     # Class map's list of class values for water levels
+WaterDepthClasses                         =                     # Class map's list of class values for water depths
+VelocityMagnitudeClasses                  =                     # Class map's list of class values for velocity magnitudes
+VelocityDirectionClassesInterval          =                     # Class map's step size of class values for velocity direction
+StatsInterval                             = 3600.               # Screen step output interval in seconds simulation time, if negative in seconds wall clock time
+WriteBalancefile                          = 0                   # Write balance file (1: yes, 0: no)
+TimingsInterval                           = 0.                  # Timings statistics output interval
+TimeSplitInterval                         = 0 s                 # Time splitting interval, after which a new output file is started. value+unit, e.g. '1 M', valid units: Y,M,D,h,m,s.
+MapFormat                                 = 4                   # Map file format, 1: netCDF, 2: Tecplot, 3: netCFD and Tecplot, 4: NetCDF-UGRID
+NcFormat                                  = 3                   # Format for all NetCDF output files (3: classic, 4: NetCDF4+HDF5)
+NcNoUnlimited                             = 0                   # Write full-length time-dimension instead of unlimited dimension (1: yes, 0: no). (Might require NcFormat=4.)
+NcNoForcedFlush                           = 0                   # Do not force flushing of map-like files every output timestep (1: yes, 0: no).
+NcWriteLatLon                             = 0                   # Write extra lat-lon coordinates for all projected coordinate variables in each NetCDF file (for CF-compliancy).
+Wrihis_balance                            = 1                   # Write mass balance totals to his file (1: yes, 0: no)
+Wrihis_sourcesink                         = 1                   # Write sources-sinks statistics to his file (1: yes, 0: no)
+Wrihis_structure_gen                      = 1                   # Write general structure parameters to his file (1: yes, 0: no)
+Wrihis_structure_dam                      = 1                   # Write dam parameters to his file (1: yes, 0: no)
+Wrihis_structure_pump                     = 1                   # Write pump parameters to his file (1: yes, 0: no)
+Wrihis_structure_gate                     = 1                   # Write gate parameters to his file (1: yes, 0: no)
+Wrihis_structure_weir                     = 1                   # Write weir parameters to his file (1: yes, 0: no)
+Wrihis_structure_orifice                  = 1                   # Write orifice parameters to his file (1: yes, 0: no)
+Wrihis_structure_bridge                   = 1                   # Write bridge parameters to his file (1: yes, 0: no)
+Wrihis_structure_culvert                  = 1                   # Write culvert parameters to his file (1: yes, 0: no)
+Wrihis_structure_damBreak                 = 1                   # Write dam break parameters to his file (1: yes, 0: no)
+Wrihis_structure_uniWeir                  = 1                   # Write universal weir parameters to his file (1: yes, 0: no)
+Wrihis_structure_compound                 = 1                   # Write compound structure parameters to his file (1: yes, 0: no)
+Wrihis_structure_longculvert              = 1                   # Write long culvert parameters to his file (1: yes, 0: no)
+Wrihis_turbulence                         = 0                   # Write k, eps and vicww to his file (1: yes, 0: no)
+Wrihis_wind                               = 0                   # Write wind velocities to his file (1: yes, 0: no)
+Wrihis_rain                               = 1                   # Write precipitation to his file (1: yes, 0: no)
+Wrihis_infiltration                       = 0                   # Write infiltration to his file (1: yes, 0: no)
+Wrihis_temperature                        = 0                   # Write temperature to his file (1: yes, 0: no)
+Wrihis_waves                              = 1                   # Write wave data to his file (1: yes, 0: no)
+Wrihis_heat_fluxes                        = 0                   # Write heat fluxes to his file (1: yes, 0: no)
+Wrihis_salinity                           = 0                   # Write salinity to his file (1: yes, 0: no)
+Wrihis_density                            = 0                   # Write density to his file (1: yes, 0: no)
+Wrihis_waterlevel_s1                      = 1                   # Write water level to his file (1: yes, 0: no)
+Wrihis_bedlevel                           = 1                   # Write bed level to his file (1: yes, 0: no)
+Wrihis_waterdepth                         = 1                   # Write waterd epth to his file (1: yes, 0: no)
+Wrihis_velocity_vector                    = 1                   # Write velocity vectors to his file (1: yes, 0: no)
+Wrihis_upward_velocity_component          = 0                   # Write upward velocity to his file (1: yes, 0: no)
+Wrihis_sediment                           = 0                   # Write sediment transport to his file (1: yes, 0: no)
+Wrihis_constituents                       = 0                   # Write tracers to his file (1: yes, 0: no)
+Wrihis_zcor                               = 1                   # Write vertical coordinates to his file (1: yes, 0: no)
+Wrihis_lateral                            = 1                   # Write lateral data to his file (1: yes, 0: no)
+Wrihis_taucurrent                         = 1                   # Write mean bed shear stress to his file (1: yes, 0: no)
+Wrihis_velocity                           = 1                   # Write velocity magnitude to his file (1: yes, 0: no)
+Wrihis_discharge                          = 1                   # Write discharge magnitude to his file (1: yes, 0: no)
+Wrimap_waterlevel_s0                      = 0                   # Write water levels for previous time step to map file (1: yes, 0: no)
+Wrimap_waterlevel_s1                      = 1                   # Write water levels to map file (1: yes, 0: no)
+Wrimap_flow_analysis                      = 0                   # Write flow analysis data to map file (1: yes, 0: no)
+Wrimap_evaporation                        = 0                   # Write evaporation to map file (1: yes, 0: no)
+Wrimap_volume1                            = 0                   # Write volumes to map file (1: yes, 0: no)
+Wrimap_waterdepth                         = 1                   # Write water depths to map file (1: yes, 0: no)
+Wrimap_waterdepth_hu                      = 0                   # Write water depths on u-points to map file (1: yes, 0: no)
+Wrimap_ancillary_variables                = 0                   # Write ancillary_variables attributes to map file (1: yes, 0: no)
+Wrimap_flowarea_au                        = 0                   # Write flow areas au to map file (1: yes, 0: no)
+Wrimap_velocity_component_u0              = 0                   # Write velocity component for previous time step to map file (1: yes, 0: no)
+Wrimap_velocity_component_u1              = 1                   # Write velocity component to map file (1: yes, 0: no)
+Wrimap_velocity_vector                    = 1                   # Write cell-center velocity vectors to map file (1: yes, 0: no)
+Wrimap_velocity_magnitude                 = 1                   # Write cell-center velocity vector magnitude to map file (1: yes, 0: no)
+Wrimap_velocity_vectorq                   = 0                   # Write cell-center velocity vectors (discharge-based) to map file (1: yes, 0: no)
+Wrimap_upward_velocity_component          = 0                   # Write upward velocity component on cell interfaces (1: yes, 0: no)
+Wrimap_density_rho                        = 0                   # Write flow density to map file (1: yes, 0: no)
+Wrimap_horizontal_viscosity_viu           = 0                   # Write horizontal viscosity to map file (1: yes, 0: no)
+Wrimap_horizontal_diffusivity_diu         = 0                   # Write horizontal diffusivity to map file (1: yes, 0: no)
+Wrimap_flow_flux_q1                       = 1                   # Write flow flux to map file (1: yes, 0: no)
+Wrimap_flow_flux_q1_main                  = 0                   # Write flow flux in main channel to map file (1: yes, 0: no)
+Wrimap_numlimdt                           = 1                   # Write the number times a cell was Courant limiting to map file (1: yes, 0: no). (Consider using Wrimap_flow_analysis instead.)
+Wrimap_taucurrent                         = 0                   # Write the shear stress to map file (1: yes, 0: no)
+Wrimap_chezy                              = 0                   # Write the chezy roughness to map file (1: yes, 0: no)
+Wrimap_turbulence                         = 0                   # Write vicww, k and eps to map file (1: yes, 0: no)
+Wrimap_rain                               = 0                   # Write rainfall rates to map file (1: yes, 0: no)
+Wrimap_interception                       = 0                   # Write interception to map file (1: yes, 0: no)
+Wrimap_wind                               = 0                   # Write wind velocities to map file (1: yes, 0: no)
+Wrimap_windstress                         = 0                   # Write wind stress to map file (1: yes, 0: no)
+Writek_CdWind                             = 1                   # Write wind friction coeffs to tek file (1: yes, 0: no)
+Wrimap_DTcell                             = 0                   # Write time step per cell based on CFL (1: yes, 0: no)
+Wrimap_wet_waterdepth_threshold           = 1.d-2               # Waterdepth threshold above which a grid point counts as 'wet'. Used for Wrimap_time_water_on_ground.
+Wrimap_time_water_on_ground               = 1                   # Write cumulative time when water is above ground level to map file, only for 1D nodes (1: yes, 0: no)
+Wrimap_freeboard                          = 1                   # Write freeboard to map file, only for 1D nodes (1: yes, 0: no)
+Wrimap_waterdepth_on_ground               = 1                   # Write waterdepth that is above ground level to map file, only for 1D nodes (1: yes, 0: no)
+Wrimap_volume_on_ground                   = 1                   # Write volume that is above ground level to map file, only for 1D nodes (1: yes, 0: no)
+Wrimap_total_net_inflow_1d2d              = 1                   # Write current total 1d2d net inflow (discharge) and cumulative total 1d2d net inflow (volume) to map file, only for 1D nodes (1: yes, 0: no)
+Wrimap_total_net_inflow_lateral           = 1                   # Write current total lateral net inflow (discharge) and cumulative total net lateral inflow (volume) to map file, only for 1D nodes (1: yes, 0: no)
+Wrimap_water_level_gradient               = 0                   # Write water level gradient to map file, only on 1D links (1: yes, 0: no)
+Writepart_domain                          = 1                   # Write partition domain info. for postprocessing
+Wrishp_crs                                = 0                   # Write grid-snapped cross sections to shapefile (1: yes, 0: no)
+Wrishp_obs                                = 0                   # Write grid-snapped observation stations to shapefile (1: yes, 0: no)
+Wrishp_weir                               = 0                   # Write grid-snapped weirs to shapefile (1: yes, 0: no)
+Wrishp_thd                                = 0                   # Write grid-snapped thin dams to shapefile (1: yes, 0: no)
+Wrishp_gate                               = 0                   # Write grid-snapped gates to shapefile (1: yes, 0: no)
+Wrishp_emb                                = 0                   # Write grid-snapped 1d2d embankments to shapefile (1: yes, 0: no)
+Wrishp_fxw                                = 0                   # Write grid-snapped fixed weirs to shapefile (1: yes, 0: no)
+Wrishp_src                                = 0                   # Write grid-snapped source-sinks to shapefile (1: yes, 0: no)
+Wrishp_pump                               = 0                   # Write grid-snapped pumps to shapefile (1: yes, 0: no)
+Wrishp_dryarea                            = 0                   # Write a shape file for dry areas
+wrishp_genstruc                           = 0                   # Write a shape file for general structures
+WriteDFMinterpretedvalues                 = 0                   # Write DFMinterpretedvalues (1: yes, 0: no)
+WriteDetailedTimers                       = 0                   # Write detailed timers output file (1: yes, 0: no)
+MapOutputTimeVector                       =                     # File (*.mpt) containing fixed map output times (s) w.r.t. RefDate
+FullGridOutput                            = 0                   # Full grid output mode for layer positions (0: compact, 1: full time-varying grid layer data)
+EulerVelocities                           = 0                   # Euler velocities output (0: GLM, 1: Euler velocities)
+Wrirst_bnd                                = 1                   # Write waterlevel, bedlevel and coordinates of boundaries to restart files
+Wrimap_bnd                                = 0                   # Write boundary points to map file (1: yes, 0: no)
+Wrimap_Qin                                = 0                   # Write sum of all influxes to map file (1: yes, 0: no)
+Wrimap_every_dt                           = 0                   # Write output to map file every dt, based on start and stop from MapInterval, 0=no (default), 1=yes
+
+[particles]
+ParticlesFile                             = 
+ParticlesReleaseFile                      = 
+AddTracer                                 = 0                   # add tracer (1) or not (other)
+StartTime                                 = 0.                  # starttime (if >0)
+TimeStep                                  = 0.                  # time step (>0) or every computational time step
+3Dtype                                    = 0                   # 3D type: depth averaged (0) or free surface (1)
+
+[processes]
+SubstanceFile                             =                     # substance file
+AdditionalHistoryOutputFile               =                     # extra history output file
+StatisticsFile                            =                     # statistics file
+ThetaVertical                             = 0.                  # theta vertical for waq
+DtProcesses                               = 0.                  # waq processes time step
+DtMassBalance                             = 0.                  # waq mass balance output time step
+ProcessFluxIntegration                    = 1                   # Process fluxes integration option (1: WAQ, 2: D-Flow FM)
+Wriwaqbot3Doutput                         = 0                   # Write 3D water quality bottom variables (1: yes, 0: no)
+VolumeDryThreshold                        = 1.d-3
+DepthDryThreshold                         = 1.d-3
+** INFO   : **
+** INFO   : Modelinit finished   at: 15:07:45, 12-03-2022
+** INFO   : 
+** INFO   : 
+** INFO   : nr of netnodes               ( )  :                     8606
+** INFO   : nr of netlinks               ( )  :                    16890
+** INFO   : 
+** INFO   : nr of 2D netlinks            ( )  :                    16755
+** INFO   : nr of 1D netlinks            ( )  :                      135
+** INFO   : 
+** INFO   : nr of netcells               ( )  :                     8286
+** INFO   : nr of netcells 1D2D          ( )  :                     8338
+** INFO   : 
+** INFO   : nr of flownodes              ( )  :                     8621
+** INFO   : nr of internal flownodes     ( )  :                     8338
+** INFO   : nr of 2D internal flownodes  ( )  :                     8286
+** INFO   : nr of 1D internal flownodes  ( )  :                       52
+** INFO   : 
+** INFO   : nr of openbnd cells       ( )     :                      283
+** INFO   : nr of 2D boundaries       ( )     :                      281
+** INFO   : nr of 1D boundaries       ( )     :                        2
+** INFO   : nr of flowlinks           ( )     :                    16807
+** INFO   : nr of internal links      ( )     :                    16524
+** INFO   : nr of 1D links            ( )     :                      135
+** INFO   : 
+** INFO   : nr of closed walls     ( )  :                       85
+** INFO   : 
+** INFO   : 
+** INFO   : my model area          (m2) :         0.1326266399E+08
+** INFO   : my model volume        (m3) :         0.1932700781E+03
+** INFO   : 
+** INFO   : 
+** INFO   : Writing initial output to file(s)...
+** INFO   :    Sim. time done   Sim. time left   Real time used   Real time left Steps left Complete% Interval-averaged time step
+** INFO   :           0d  0:01:00         30d 23:59:00          0d  0:00:00     ??d ??:??:??          44639     0.0%     0.00000
+** INFO   : Done writing initial output to file(s).
+** INFO   :           0d  1:00:00         30d 23:00:00          0d  0:00:00          0d  0:02:55      44580     0.1%     0.00000
+** INFO   :           0d  2:00:00         30d 22:00:00          0d  0:00:00          0d  0:02:19      44520     0.3%    30.00000
+** INFO   :           0d  3:00:00         30d 21:00:00          0d  0:00:01          0d  0:02:06      44460     0.4%    30.00000
+** INFO   :           0d  4:00:00         30d 20:00:00          0d  0:00:01          0d  0:01:58      44400     0.5%    30.00000
+** INFO   :           0d  5:00:00         30d 19:00:00          0d  0:00:01          0d  0:01:55      44340     0.7%    30.00000
+** INFO   :           0d  6:00:00         30d 18:00:00          0d  0:00:01          0d  0:01:53      44280     0.8%    30.00000
+** INFO   :           0d  7:00:00         30d 17:00:00          0d  0:00:01          0d  0:01:51      44220     0.9%    30.00000
+** INFO   :           0d  8:00:00         30d 16:00:00          0d  0:00:01          0d  0:01:50      44160     1.1%    30.00000
+** INFO   :           0d  9:00:00         30d 15:00:00          0d  0:00:01          0d  0:01:49      44100     1.2%    30.00000
+** INFO   :           0d 10:00:00         30d 14:00:00          0d  0:00:01          0d  0:01:48      44040     1.3%    30.00000
+** INFO   :           0d 11:00:00         30d 13:00:00          0d  0:00:02          0d  0:01:47      43980     1.5%    30.00000
+** INFO   :           0d 12:00:00         30d 12:00:00          0d  0:00:02          0d  0:01:46      43920     1.6%    30.00000
+** INFO   :           0d 13:00:00         30d 11:00:00          0d  0:00:02          0d  0:01:46      43860     1.7%    30.00000
+** INFO   :           0d 14:00:00         30d 10:00:00          0d  0:00:02          0d  0:01:45      43800     1.9%    30.00000
+** INFO   :           0d 15:00:00         30d  9:00:00          0d  0:00:02          0d  0:01:45      43740     2.0%    30.00000
+** INFO   :           0d 16:00:00         30d  8:00:00          0d  0:00:02          0d  0:01:44      43680     2.2%    30.00000
+** INFO   :           0d 17:00:00         30d  7:00:00          0d  0:00:02          0d  0:01:44      43620     2.3%    30.00000
+** INFO   :           0d 18:00:00         30d  6:00:00          0d  0:00:03          0d  0:01:43      43560     2.4%    30.00000
+** INFO   :           0d 19:00:00         30d  5:00:00          0d  0:00:03          0d  0:01:43      43500     2.6%    30.00000
+** INFO   :           0d 20:00:00         30d  4:00:00          0d  0:00:03          0d  0:01:43      43440     2.7%    30.00000
+** INFO   :           0d 21:00:00         30d  3:00:00          0d  0:00:03          0d  0:01:43      43380     2.8%    30.00000
+** INFO   :           0d 22:00:00         30d  2:00:00          0d  0:00:03          0d  0:01:42      43320     3.0%    30.00000
+** INFO   :           0d 23:00:00         30d  1:00:00          0d  0:00:03          0d  0:01:42      43260     3.1%    30.00000
+** INFO   :           1d  0:00:00         30d  0:00:00          0d  0:00:03          0d  0:01:42      43200     3.2%    30.00000
+** INFO   :           1d  1:00:00         29d 23:00:00          0d  0:00:04          0d  0:01:42      43140     3.4%    30.00000
+** INFO   :           1d  2:00:00         29d 22:00:00          0d  0:00:04          0d  0:01:41      43080     3.5%    30.00000
+** INFO   :           1d  3:00:00         29d 21:00:00          0d  0:00:04          0d  0:01:41      43020     3.6%    30.00000
+** INFO   :           1d  4:00:00         29d 20:00:00          0d  0:00:04          0d  0:01:41      42960     3.8%    30.00000
+** INFO   :           1d  5:00:00         29d 19:00:00          0d  0:00:04          0d  0:01:41      42900     3.9%    30.00000
+** INFO   :           1d  6:00:00         29d 18:00:00          0d  0:00:04          0d  0:01:41      42840     4.0%    30.00000
+** INFO   :           1d  7:00:00         29d 17:00:00          0d  0:00:04          0d  0:01:40      42780     4.2%    30.00000
+** INFO   :           1d  8:00:00         29d 16:00:00          0d  0:00:05          0d  0:01:40      42720     4.3%    30.00000
+** INFO   :           1d  9:00:00         29d 15:00:00          0d  0:00:05          0d  0:01:40      42660     4.4%    30.00000
+** INFO   :           1d 10:00:00         29d 14:00:00          0d  0:00:05          0d  0:01:40      42600     4.6%    30.00000
+** INFO   :           1d 11:00:00         29d 13:00:00          0d  0:00:05          0d  0:01:40      42540     4.7%    30.00000
+** INFO   :           1d 12:00:00         29d 12:00:00          0d  0:00:05          0d  0:01:40      42480     4.8%    30.00000
+** INFO   :           1d 13:00:00         29d 11:00:00          0d  0:00:05          0d  0:01:40      42420     5.0%    30.00000
+** INFO   :           1d 14:00:00         29d 10:00:00          0d  0:00:05          0d  0:01:40      42360     5.1%    30.00000
+** INFO   :           1d 15:00:00         29d  9:00:00          0d  0:00:06          0d  0:01:39      42300     5.2%    30.00000
+** INFO   :           1d 16:00:00         29d  8:00:00          0d  0:00:06          0d  0:01:39      42240     5.4%    30.00000
+** INFO   :           1d 17:00:00         29d  7:00:00          0d  0:00:06          0d  0:01:39      42180     5.5%    30.00000
+** INFO   :           1d 18:00:00         29d  6:00:00          0d  0:00:06          0d  0:01:39      42120     5.6%    30.00000
+** INFO   :           1d 19:00:00         29d  5:00:00          0d  0:00:06          0d  0:01:39      42060     5.8%    30.00000
+** INFO   :           1d 20:00:00         29d  4:00:00          0d  0:00:06          0d  0:01:39      42000     5.9%    30.00000
+** INFO   :           1d 21:00:00         29d  3:00:00          0d  0:00:06          0d  0:01:39      41940     6.1%    30.00000
+** INFO   :           1d 22:00:00         29d  2:00:00          0d  0:00:07          0d  0:01:39      41880     6.2%    30.00000
+** INFO   :           1d 23:00:00         29d  1:00:00          0d  0:00:07          0d  0:01:39      41820     6.3%    30.00000
+** INFO   :           2d  0:00:00         29d  0:00:00          0d  0:00:07          0d  0:01:38      41760     6.5%    30.00000
+** INFO   :           2d  1:00:00         28d 23:00:00          0d  0:00:07          0d  0:01:38      41700     6.6%    30.00000
+** INFO   :           2d  2:00:00         28d 22:00:00          0d  0:00:07          0d  0:01:38      41640     6.7%    30.00000
+** INFO   :           2d  3:00:00         28d 21:00:00          0d  0:00:07          0d  0:01:38      41580     6.9%    30.00000
+** INFO   :           2d  4:00:00         28d 20:00:00          0d  0:00:07          0d  0:01:38      41520     7.0%    30.00000
+** INFO   :           2d  5:00:00         28d 19:00:00          0d  0:00:07          0d  0:01:38      41460     7.1%    30.00000
+** INFO   :           2d  6:00:00         28d 18:00:00          0d  0:00:08          0d  0:01:38      41400     7.3%    30.00000
+** INFO   :           2d  7:00:00         28d 17:00:00          0d  0:00:08          0d  0:01:38      41340     7.4%    30.00000
+** INFO   :           2d  8:00:00         28d 16:00:00          0d  0:00:08          0d  0:01:37      41280     7.5%    30.00000
+** INFO   :           2d  9:00:00         28d 15:00:00          0d  0:00:08          0d  0:01:37      41220     7.7%    30.00000
+** INFO   :           2d 10:00:00         28d 14:00:00          0d  0:00:08          0d  0:01:37      41160     7.8%    30.00000
+** INFO   :           2d 11:00:00         28d 13:00:00          0d  0:00:08          0d  0:01:37      41100     7.9%    30.00000
+** INFO   :           2d 12:00:00         28d 12:00:00          0d  0:00:09          0d  0:01:37      41040     8.1%    30.00000
+** INFO   :           2d 13:00:00         28d 11:00:00          0d  0:00:09          0d  0:01:37      40980     8.2%    30.00000
+** INFO   :           2d 14:00:00         28d 10:00:00          0d  0:00:09          0d  0:01:37      40920     8.3%    30.00000
+** INFO   :           2d 15:00:00         28d  9:00:00          0d  0:00:09          0d  0:01:37      40860     8.5%    30.00000
+** INFO   :           2d 16:00:00         28d  8:00:00          0d  0:00:09          0d  0:01:37      40800     8.6%    30.00000
+** INFO   :           2d 17:00:00         28d  7:00:00          0d  0:00:09          0d  0:01:36      40740     8.7%    30.00000
+** INFO   :           2d 18:00:00         28d  6:00:00          0d  0:00:09          0d  0:01:36      40680     8.9%    30.00000
+** INFO   :           2d 19:00:00         28d  5:00:00          0d  0:00:10          0d  0:01:36      40620     9.0%    30.00000
+** INFO   :           2d 20:00:00         28d  4:00:00          0d  0:00:10          0d  0:01:36      40560     9.1%    30.00000
+** INFO   :           2d 21:00:00         28d  3:00:00          0d  0:00:10          0d  0:01:36      40500     9.3%    30.00000
+** INFO   :           2d 22:00:00         28d  2:00:00          0d  0:00:10          0d  0:01:36      40440     9.4%    30.00000
+** INFO   :           2d 23:00:00         28d  1:00:00          0d  0:00:10          0d  0:01:36      40380     9.5%    30.00000
+** INFO   :           3d  0:00:00         28d  0:00:00          0d  0:00:10          0d  0:01:35      40320     9.7%    30.00000
+** INFO   :           3d  1:00:00         27d 23:00:00          0d  0:00:10          0d  0:01:35      40260     9.8%    30.00000
+** INFO   :           3d  2:00:00         27d 22:00:00          0d  0:00:11          0d  0:01:35      40200     9.9%    30.00000
+** INFO   :           3d  3:00:00         27d 21:00:00          0d  0:00:11          0d  0:01:35      40140    10.1%    30.00000
+** INFO   :           3d  4:00:00         27d 20:00:00          0d  0:00:11          0d  0:01:35      40080    10.2%    30.00000
+** INFO   :           3d  5:00:00         27d 19:00:00          0d  0:00:11          0d  0:01:35      40020    10.4%    30.00000
+** INFO   :           3d  6:00:00         27d 18:00:00          0d  0:00:11          0d  0:01:34      39960    10.5%    30.00000
+** INFO   :           3d  7:00:00         27d 17:00:00          0d  0:00:11          0d  0:01:34      39900    10.6%    30.00000
+** INFO   :           3d  8:00:00         27d 16:00:00          0d  0:00:11          0d  0:01:34      39840    10.8%    30.00000
+** INFO   :           3d  9:00:00         27d 15:00:00          0d  0:00:11          0d  0:01:34      39780    10.9%    30.00000
+** INFO   :           3d 10:00:00         27d 14:00:00          0d  0:00:12          0d  0:01:34      39720    11.0%    30.00000
+** INFO   :           3d 11:00:00         27d 13:00:00          0d  0:00:12          0d  0:01:34      39660    11.2%    30.00000
+** INFO   :           3d 12:00:00         27d 12:00:00          0d  0:00:12          0d  0:01:33      39600    11.3%    30.00000
+** INFO   :           3d 13:00:00         27d 11:00:00          0d  0:00:12          0d  0:01:33      39540    11.4%    30.00000
+** INFO   :           3d 14:00:00         27d 10:00:00          0d  0:00:12          0d  0:01:33      39480    11.6%    30.00000
+** INFO   :           3d 15:00:00         27d  9:00:00          0d  0:00:12          0d  0:01:33      39420    11.7%    30.00000
+** INFO   :           3d 16:00:00         27d  8:00:00          0d  0:00:12          0d  0:01:33      39360    11.8%    30.00000
+** INFO   :           3d 17:00:00         27d  7:00:00          0d  0:00:13          0d  0:01:33      39300    12.0%    30.00000
+** INFO   :           3d 18:00:00         27d  6:00:00          0d  0:00:13          0d  0:01:32      39240    12.1%    30.00000
+** INFO   :           3d 19:00:00         27d  5:00:00          0d  0:00:13          0d  0:01:32      39180    12.2%    30.00000
+** INFO   :           3d 20:00:00         27d  4:00:00          0d  0:00:13          0d  0:01:32      39120    12.4%    30.00000
+** INFO   :           3d 21:00:00         27d  3:00:00          0d  0:00:13          0d  0:01:32      39060    12.5%    30.00000
+** INFO   :           3d 22:00:00         27d  2:00:00          0d  0:00:13          0d  0:01:32      39000    12.6%    30.00000
+** INFO   :           3d 23:00:00         27d  1:00:00          0d  0:00:13          0d  0:01:32      38940    12.8%    30.00000
+** INFO   :           4d  0:00:00         27d  0:00:00          0d  0:00:14          0d  0:01:32      38880    12.9%    30.00000
+** INFO   :           4d  1:00:00         26d 23:00:00          0d  0:00:14          0d  0:01:31      38820    13.0%    30.00000
+** INFO   :           4d  2:00:00         26d 22:00:00          0d  0:00:14          0d  0:01:31      38760    13.2%    30.00000
+** INFO   :           4d  3:00:00         26d 21:00:00          0d  0:00:14          0d  0:01:31      38700    13.3%    30.00000
+** INFO   :           4d  4:00:00         26d 20:00:00          0d  0:00:14          0d  0:01:31      38640    13.4%    30.00000
+** INFO   :           4d  5:00:00         26d 19:00:00          0d  0:00:14          0d  0:01:31      38580    13.6%    30.00000
+** INFO   :           4d  6:00:00         26d 18:00:00          0d  0:00:14          0d  0:01:31      38520    13.7%    30.00000
+** INFO   :           4d  7:00:00         26d 17:00:00          0d  0:00:15          0d  0:01:31      38460    13.8%    30.00000
+** INFO   :           4d  8:00:00         26d 16:00:00          0d  0:00:15          0d  0:01:30      38400    14.0%    30.00000
+** INFO   :           4d  9:00:00         26d 15:00:00          0d  0:00:15          0d  0:01:30      38340    14.1%    30.00000
+** INFO   :           4d 10:00:00         26d 14:00:00          0d  0:00:15          0d  0:01:30      38280    14.2%    30.00000
+** INFO   :           4d 11:00:00         26d 13:00:00          0d  0:00:15          0d  0:01:30      38220    14.4%    30.00000
+** INFO   :           4d 12:00:00         26d 12:00:00          0d  0:00:15          0d  0:01:30      38160    14.5%    30.00000
+** INFO   :           4d 13:00:00         26d 11:00:00          0d  0:00:15          0d  0:01:30      38100    14.7%    30.00000
+** INFO   :           4d 14:00:00         26d 10:00:00          0d  0:00:16          0d  0:01:30      38040    14.8%    30.00000
+** INFO   :           4d 15:00:00         26d  9:00:00          0d  0:00:16          0d  0:01:30      37980    14.9%    30.00000
+** INFO   :           4d 16:00:00         26d  8:00:00          0d  0:00:16          0d  0:01:30      37920    15.1%    30.00000
+** INFO   :           4d 17:00:00         26d  7:00:00          0d  0:00:16          0d  0:01:29      37860    15.2%    30.00000
+** INFO   :           4d 18:00:00         26d  6:00:00          0d  0:00:16          0d  0:01:29      37800    15.3%    30.00000
+** INFO   :           4d 19:00:00         26d  5:00:00          0d  0:00:16          0d  0:01:29      37740    15.5%    30.00000
+** INFO   :           4d 20:00:00         26d  4:00:00          0d  0:00:16          0d  0:01:29      37680    15.6%    30.00000
+** INFO   :           4d 21:00:00         26d  3:00:00          0d  0:00:17          0d  0:01:29      37620    15.7%    30.00000
+** INFO   :           4d 22:00:00         26d  2:00:00          0d  0:00:17          0d  0:01:29      37560    15.9%    30.00000
+** INFO   :           4d 23:00:00         26d  1:00:00          0d  0:00:17          0d  0:01:29      37500    16.0%    30.00000
+** INFO   :           5d  0:00:00         26d  0:00:00          0d  0:00:17          0d  0:01:29      37440    16.1%    30.00000
+** INFO   :           5d  1:00:00         25d 23:00:00          0d  0:00:17          0d  0:01:28      37380    16.3%    30.00000
+** INFO   :           5d  2:00:00         25d 22:00:00          0d  0:00:17          0d  0:01:28      37320    16.4%    30.00000
+** INFO   :           5d  3:00:00         25d 21:00:00          0d  0:00:17          0d  0:01:28      37260    16.5%    30.00000
+** INFO   :           5d  4:00:00         25d 20:00:00          0d  0:00:18          0d  0:01:28      37200    16.7%    30.00000
+** INFO   :           5d  5:00:00         25d 19:00:00          0d  0:00:18          0d  0:01:28      37140    16.8%    30.00000
+** INFO   :           5d  6:00:00         25d 18:00:00          0d  0:00:18          0d  0:01:28      37080    16.9%    30.00000
+** INFO   :           5d  7:00:00         25d 17:00:00          0d  0:00:18          0d  0:01:28      37020    17.1%    30.00000
+** INFO   :           5d  8:00:00         25d 16:00:00          0d  0:00:18          0d  0:01:28      36960    17.2%    30.00000
+** INFO   :           5d  9:00:00         25d 15:00:00          0d  0:00:18          0d  0:01:27      36900    17.3%    30.00000
+** INFO   :           5d 10:00:00         25d 14:00:00          0d  0:00:18          0d  0:01:27      36840    17.5%    30.00000
+** INFO   :           5d 11:00:00         25d 13:00:00          0d  0:00:19          0d  0:01:27      36780    17.6%    30.00000
+** INFO   :           5d 12:00:00         25d 12:00:00          0d  0:00:19          0d  0:01:27      36720    17.7%    30.00000
+** INFO   :           5d 13:00:00         25d 11:00:00          0d  0:00:19          0d  0:01:27      36660    17.9%    30.00000
+** INFO   :           5d 14:00:00         25d 10:00:00          0d  0:00:19          0d  0:01:27      36600    18.0%    30.00000
+** INFO   :           5d 15:00:00         25d  9:00:00          0d  0:00:19          0d  0:01:27      36540    18.1%    30.00000
+** INFO   :           5d 16:00:00         25d  8:00:00          0d  0:00:19          0d  0:01:26      36480    18.3%    30.00000
+** INFO   :           5d 17:00:00         25d  7:00:00          0d  0:00:19          0d  0:01:26      36420    18.4%    30.00000
+** INFO   :           5d 18:00:00         25d  6:00:00          0d  0:00:20          0d  0:01:26      36360    18.6%    30.00000
+** INFO   :           5d 19:00:00         25d  5:00:00          0d  0:00:20          0d  0:01:26      36300    18.7%    30.00000
+** INFO   :           5d 20:00:00         25d  4:00:00          0d  0:00:20          0d  0:01:26      36240    18.8%    30.00000
+** INFO   :           5d 21:00:00         25d  3:00:00          0d  0:00:20          0d  0:01:26      36180    19.0%    30.00000
+** INFO   :           5d 22:00:00         25d  2:00:00          0d  0:00:20          0d  0:01:26      36120    19.1%    30.00000
+** INFO   :           5d 23:00:00         25d  1:00:00          0d  0:00:20          0d  0:01:25      36060    19.2%    30.00000
+** INFO   :           6d  0:00:00         25d  0:00:00          0d  0:00:20          0d  0:01:25      36000    19.4%    30.00000
+** INFO   :           6d  1:00:00         24d 23:00:00          0d  0:00:21          0d  0:01:25      35940    19.5%    30.00000
+** INFO   :           6d  2:00:00         24d 22:00:00          0d  0:00:21          0d  0:01:25      35880    19.6%    30.00000
+** INFO   :           6d  3:00:00         24d 21:00:00          0d  0:00:21          0d  0:01:25      35820    19.8%    30.00000
+** INFO   :           6d  4:00:00         24d 20:00:00          0d  0:00:21          0d  0:01:25      35760    19.9%    30.00000
+** INFO   :           6d  5:00:00         24d 19:00:00          0d  0:00:21          0d  0:01:25      35700    20.0%    30.00000
+** INFO   :           6d  6:00:00         24d 18:00:00          0d  0:00:21          0d  0:01:24      35640    20.2%    30.00000
+** INFO   :           6d  7:00:00         24d 17:00:00          0d  0:00:21          0d  0:01:24      35580    20.3%    30.00000
+** INFO   :           6d  8:00:00         24d 16:00:00          0d  0:00:22          0d  0:01:24      35520    20.4%    30.00000
+** INFO   :           6d  9:00:00         24d 15:00:00          0d  0:00:22          0d  0:01:24      35460    20.6%    30.00000
+** INFO   :           6d 10:00:00         24d 14:00:00          0d  0:00:22          0d  0:01:24      35400    20.7%    30.00000
+** INFO   :           6d 11:00:00         24d 13:00:00          0d  0:00:22          0d  0:01:24      35340    20.8%    30.00000
+** INFO   :           6d 12:00:00         24d 12:00:00          0d  0:00:22          0d  0:01:23      35280    21.0%    30.00000
+** INFO   :           6d 13:00:00         24d 11:00:00          0d  0:00:22          0d  0:01:23      35220    21.1%    30.00000
+** INFO   :           6d 14:00:00         24d 10:00:00          0d  0:00:22          0d  0:01:23      35160    21.2%    30.00000
+** INFO   :           6d 15:00:00         24d  9:00:00          0d  0:00:23          0d  0:01:23      35100    21.4%    30.00000
+** INFO   :           6d 16:00:00         24d  8:00:00          0d  0:00:23          0d  0:01:23      35040    21.5%    30.00000
+** INFO   :           6d 17:00:00         24d  7:00:00          0d  0:00:23          0d  0:01:23      34980    21.6%    30.00000
+** INFO   :           6d 18:00:00         24d  6:00:00          0d  0:00:23          0d  0:01:23      34920    21.8%    30.00000
+** INFO   :           6d 19:00:00         24d  5:00:00          0d  0:00:23          0d  0:01:22      34860    21.9%    30.00000
+** INFO   :           6d 20:00:00         24d  4:00:00          0d  0:00:23          0d  0:01:22      34800    22.0%    30.00000
+** INFO   :           6d 21:00:00         24d  3:00:00          0d  0:00:23          0d  0:01:22      34740    22.2%    30.00000
+** INFO   :           6d 22:00:00         24d  2:00:00          0d  0:00:24          0d  0:01:22      34680    22.3%    30.00000
+** INFO   :           6d 23:00:00         24d  1:00:00          0d  0:00:24          0d  0:01:22      34620    22.4%    30.00000
+** INFO   :           7d  0:00:00         24d  0:00:00          0d  0:00:24          0d  0:01:22      34560    22.6%    30.00000
+** INFO   :           7d  1:00:00         23d 23:00:00          0d  0:00:24          0d  0:01:22      34500    22.7%    30.00000
+** INFO   :           7d  2:00:00         23d 22:00:00          0d  0:00:24          0d  0:01:21      34440    22.9%    30.00000
+** INFO   :           7d  3:00:00         23d 21:00:00          0d  0:00:24          0d  0:01:21      34380    23.0%    30.00000
+** INFO   :           7d  4:00:00         23d 20:00:00          0d  0:00:24          0d  0:01:21      34320    23.1%    30.00000
+** INFO   :           7d  5:00:00         23d 19:00:00          0d  0:00:25          0d  0:01:21      34260    23.3%    30.00000
+** INFO   :           7d  6:00:00         23d 18:00:00          0d  0:00:25          0d  0:01:21      34200    23.4%    30.00000
+** INFO   :           7d  7:00:00         23d 17:00:00          0d  0:00:25          0d  0:01:21      34140    23.5%    30.00000
+** INFO   :           7d  8:00:00         23d 16:00:00          0d  0:00:25          0d  0:01:21      34080    23.7%    30.00000
+** INFO   :           7d  9:00:00         23d 15:00:00          0d  0:00:25          0d  0:01:20      34020    23.8%    30.00000
+** INFO   :           7d 10:00:00         23d 14:00:00          0d  0:00:25          0d  0:01:20      33960    23.9%    30.00000
+** INFO   :           7d 11:00:00         23d 13:00:00          0d  0:00:25          0d  0:01:20      33900    24.1%    30.00000
+** INFO   :           7d 12:00:00         23d 12:00:00          0d  0:00:26          0d  0:01:20      33840    24.2%    30.00000
+** INFO   :           7d 13:00:00         23d 11:00:00          0d  0:00:26          0d  0:01:20      33780    24.3%    30.00000
+** INFO   :           7d 14:00:00         23d 10:00:00          0d  0:00:26          0d  0:01:20      33720    24.5%    30.00000
+** INFO   :           7d 15:00:00         23d  9:00:00          0d  0:00:26          0d  0:01:20      33660    24.6%    30.00000
+** INFO   :           7d 16:00:00         23d  8:00:00          0d  0:00:26          0d  0:01:19      33600    24.7%    30.00000
+** INFO   :           7d 17:00:00         23d  7:00:00          0d  0:00:26          0d  0:01:19      33540    24.9%    30.00000
+** INFO   :           7d 18:00:00         23d  6:00:00          0d  0:00:26          0d  0:01:19      33480    25.0%    30.00000
+** INFO   :           7d 19:00:00         23d  5:00:00          0d  0:00:27          0d  0:01:19      33420    25.1%    30.00000
+** INFO   :           7d 20:00:00         23d  4:00:00          0d  0:00:27          0d  0:01:19      33360    25.3%    30.00000
+** INFO   :           7d 21:00:00         23d  3:00:00          0d  0:00:27          0d  0:01:19      33300    25.4%    30.00000
+** INFO   :           7d 22:00:00         23d  2:00:00          0d  0:00:27          0d  0:01:19      33240    25.5%    30.00000
+** INFO   :           7d 23:00:00         23d  1:00:00          0d  0:00:27          0d  0:01:19      33180    25.7%    30.00000
+** INFO   :           8d  0:00:00         23d  0:00:00          0d  0:00:27          0d  0:01:18      33120    25.8%    30.00000
+** INFO   :           8d  1:00:00         22d 23:00:00          0d  0:00:27          0d  0:01:18      33060    25.9%    30.00000
+** INFO   :           8d  2:00:00         22d 22:00:00          0d  0:00:28          0d  0:01:18      33000    26.1%    30.00000
+** INFO   :           8d  3:00:00         22d 21:00:00          0d  0:00:28          0d  0:01:18      32940    26.2%    30.00000
+** INFO   :           8d  4:00:00         22d 20:00:00          0d  0:00:28          0d  0:01:18      32880    26.3%    30.00000
+** INFO   :           8d  5:00:00         22d 19:00:00          0d  0:00:28          0d  0:01:18      32820    26.5%    30.00000
+** INFO   :           8d  6:00:00         22d 18:00:00          0d  0:00:28          0d  0:01:18      32760    26.6%    30.00000
+** INFO   :           8d  7:00:00         22d 17:00:00          0d  0:00:28          0d  0:01:18      32700    26.7%    30.00000
+** INFO   :           8d  8:00:00         22d 16:00:00          0d  0:00:28          0d  0:01:17      32640    26.9%    30.00000
+** INFO   :           8d  9:00:00         22d 15:00:00          0d  0:00:29          0d  0:01:17      32580    27.0%    30.00000
+** INFO   :           8d 10:00:00         22d 14:00:00          0d  0:00:29          0d  0:01:17      32520    27.2%    30.00000
+** INFO   :           8d 11:00:00         22d 13:00:00          0d  0:00:29          0d  0:01:17      32460    27.3%    30.00000
+** INFO   :           8d 12:00:00         22d 12:00:00          0d  0:00:29          0d  0:01:17      32400    27.4%    30.00000
+** INFO   :           8d 13:00:00         22d 11:00:00          0d  0:00:29          0d  0:01:17      32340    27.6%    30.00000
+** INFO   :           8d 14:00:00         22d 10:00:00          0d  0:00:29          0d  0:01:17      32280    27.7%    30.00000
+** INFO   :           8d 15:00:00         22d  9:00:00          0d  0:00:29          0d  0:01:16      32220    27.8%    30.00000
+** INFO   :           8d 16:00:00         22d  8:00:00          0d  0:00:30          0d  0:01:16      32160    28.0%    30.00000
+** INFO   :           8d 17:00:00         22d  7:00:00          0d  0:00:30          0d  0:01:16      32100    28.1%    30.00000
+** INFO   :           8d 18:00:00         22d  6:00:00          0d  0:00:30          0d  0:01:16      32040    28.2%    30.00000
+** INFO   :           8d 19:00:00         22d  5:00:00          0d  0:00:30          0d  0:01:16      31980    28.4%    30.00000
+** INFO   :           8d 20:00:00         22d  4:00:00          0d  0:00:30          0d  0:01:16      31920    28.5%    30.00000
+** INFO   :           8d 21:00:00         22d  3:00:00          0d  0:00:30          0d  0:01:16      31860    28.6%    30.00000
+** INFO   :           8d 22:00:00         22d  2:00:00          0d  0:00:30          0d  0:01:15      31800    28.8%    30.00000
+** INFO   :           8d 23:00:00         22d  1:00:00          0d  0:00:31          0d  0:01:15      31740    28.9%    30.00000
+** INFO   :           9d  0:00:00         22d  0:00:00          0d  0:00:31          0d  0:01:15      31680    29.0%    30.00000
+** INFO   :           9d  1:00:00         21d 23:00:00          0d  0:00:31          0d  0:01:15      31620    29.2%    30.00000
+** INFO   :           9d  2:00:00         21d 22:00:00          0d  0:00:31          0d  0:01:15      31560    29.3%    30.00000
+** INFO   :           9d  3:00:00         21d 21:00:00          0d  0:00:31          0d  0:01:15      31500    29.4%    30.00000
+** INFO   :           9d  4:00:00         21d 20:00:00          0d  0:00:31          0d  0:01:15      31440    29.6%    30.00000
+** INFO   :           9d  5:00:00         21d 19:00:00          0d  0:00:31          0d  0:01:14      31380    29.7%    30.00000
+** INFO   :           9d  6:00:00         21d 18:00:00          0d  0:00:32          0d  0:01:14      31320    29.8%    30.00000
+** INFO   :           9d  7:00:00         21d 17:00:00          0d  0:00:32          0d  0:01:14      31260    30.0%    30.00000
+** INFO   :           9d  8:00:00         21d 16:00:00          0d  0:00:32          0d  0:01:14      31200    30.1%    30.00000
+** INFO   :           9d  9:00:00         21d 15:00:00          0d  0:00:32          0d  0:01:14      31140    30.2%    30.00000
+** INFO   :           9d 10:00:00         21d 14:00:00          0d  0:00:32          0d  0:01:13      31080    30.4%    30.00000
+** INFO   :           9d 11:00:00         21d 13:00:00          0d  0:00:32          0d  0:01:13      31020    30.5%    30.00000
+** INFO   :           9d 12:00:00         21d 12:00:00          0d  0:00:32          0d  0:01:13      30960    30.6%    30.00000
+** INFO   :           9d 13:00:00         21d 11:00:00          0d  0:00:32          0d  0:01:13      30900    30.8%    30.00000
+** INFO   :           9d 14:00:00         21d 10:00:00          0d  0:00:33          0d  0:01:13      30840    30.9%    30.00000
+** INFO   :           9d 15:00:00         21d  9:00:00          0d  0:00:33          0d  0:01:13      30780    31.0%    30.00000
+** INFO   :           9d 16:00:00         21d  8:00:00          0d  0:00:33          0d  0:01:12      30720    31.2%    30.00000
+** INFO   :           9d 17:00:00         21d  7:00:00          0d  0:00:33          0d  0:01:12      30660    31.3%    30.00000
+** INFO   :           9d 18:00:00         21d  6:00:00          0d  0:00:33          0d  0:01:12      30600    31.5%    30.00000
+** INFO   :           9d 19:00:00         21d  5:00:00          0d  0:00:33          0d  0:01:12      30540    31.6%    30.00000
+** INFO   :           9d 20:00:00         21d  4:00:00          0d  0:00:33          0d  0:01:12      30480    31.7%    30.00000
+** INFO   :           9d 21:00:00         21d  3:00:00          0d  0:00:34          0d  0:01:12      30420    31.9%    30.00000
+** INFO   :           9d 22:00:00         21d  2:00:00          0d  0:00:34          0d  0:01:12      30360    32.0%    30.00000
+** INFO   :           9d 23:00:00         21d  1:00:00          0d  0:00:34          0d  0:01:11      30300    32.1%    30.00000
+** INFO   :          10d  0:00:00         21d  0:00:00          0d  0:00:34          0d  0:01:11      30240    32.3%    30.00000
+** INFO   :          10d  1:00:00         20d 23:00:00          0d  0:00:34          0d  0:01:11      30180    32.4%    30.00000
+** INFO   :          10d  2:00:00         20d 22:00:00          0d  0:00:34          0d  0:01:11      30120    32.5%    30.00000
+** INFO   :          10d  3:00:00         20d 21:00:00          0d  0:00:34          0d  0:01:11      30060    32.7%    30.00000
+** INFO   :          10d  4:00:00         20d 20:00:00          0d  0:00:34          0d  0:01:11      30000    32.8%    30.00000
+** INFO   :          10d  5:00:00         20d 19:00:00          0d  0:00:35          0d  0:01:10      29940    32.9%    30.00000
+** INFO   :          10d  6:00:00         20d 18:00:00          0d  0:00:35          0d  0:01:10      29880    33.1%    30.00000
+** INFO   :          10d  7:00:00         20d 17:00:00          0d  0:00:35          0d  0:01:10      29820    33.2%    30.00000
+** INFO   :          10d  8:00:00         20d 16:00:00          0d  0:00:35          0d  0:01:10      29760    33.3%    30.00000
+** INFO   :          10d  9:00:00         20d 15:00:00          0d  0:00:35          0d  0:01:10      29700    33.5%    30.00000
+** INFO   :          10d 10:00:00         20d 14:00:00          0d  0:00:35          0d  0:01:10      29640    33.6%    30.00000
+** INFO   :          10d 11:00:00         20d 13:00:00          0d  0:00:35          0d  0:01:10      29580    33.7%    30.00000
+** INFO   :          10d 12:00:00         20d 12:00:00          0d  0:00:36          0d  0:01:09      29520    33.9%    30.00000
+** INFO   :          10d 13:00:00         20d 11:00:00          0d  0:00:36          0d  0:01:09      29460    34.0%    30.00000
+** INFO   :          10d 14:00:00         20d 10:00:00          0d  0:00:36          0d  0:01:09      29400    34.1%    30.00000
+** INFO   :          10d 15:00:00         20d  9:00:00          0d  0:00:36          0d  0:01:09      29340    34.3%    30.00000
+** INFO   :          10d 16:00:00         20d  8:00:00          0d  0:00:36          0d  0:01:09      29280    34.4%    30.00000
+** INFO   :          10d 17:00:00         20d  7:00:00          0d  0:00:36          0d  0:01:09      29220    34.5%    30.00000
+** INFO   :          10d 18:00:00         20d  6:00:00          0d  0:00:36          0d  0:01:08      29160    34.7%    30.00000
+** INFO   :          10d 19:00:00         20d  5:00:00          0d  0:00:36          0d  0:01:08      29100    34.8%    30.00000
+** INFO   :          10d 20:00:00         20d  4:00:00          0d  0:00:37          0d  0:01:08      29040    34.9%    30.00000
+** INFO   :          10d 21:00:00         20d  3:00:00          0d  0:00:37          0d  0:01:08      28980    35.1%    30.00000
+** INFO   :          10d 22:00:00         20d  2:00:00          0d  0:00:37          0d  0:01:08      28920    35.2%    30.00000
+** INFO   :          10d 23:00:00         20d  1:00:00          0d  0:00:37          0d  0:01:08      28860    35.4%    30.00000
+** INFO   :          11d  0:00:00         20d  0:00:00          0d  0:00:37          0d  0:01:08      28800    35.5%    30.00000
+** INFO   :          11d  1:00:00         19d 23:00:00          0d  0:00:37          0d  0:01:07      28740    35.6%    30.00000
+** INFO   :          11d  2:00:00         19d 22:00:00          0d  0:00:37          0d  0:01:07      28680    35.8%    30.00000
+** INFO   :          11d  3:00:00         19d 21:00:00          0d  0:00:38          0d  0:01:07      28620    35.9%    30.00000
+** INFO   :          11d  4:00:00         19d 20:00:00          0d  0:00:38          0d  0:01:07      28560    36.0%    30.00000
+** INFO   :          11d  5:00:00         19d 19:00:00          0d  0:00:38          0d  0:01:07      28500    36.2%    30.00000
+** INFO   :          11d  6:00:00         19d 18:00:00          0d  0:00:38          0d  0:01:07      28440    36.3%    30.00000
+** INFO   :          11d  7:00:00         19d 17:00:00          0d  0:00:38          0d  0:01:06      28380    36.4%    30.00000
+** INFO   :          11d  8:00:00         19d 16:00:00          0d  0:00:38          0d  0:01:06      28320    36.6%    30.00000
+** INFO   :          11d  9:00:00         19d 15:00:00          0d  0:00:38          0d  0:01:06      28260    36.7%    30.00000
+** INFO   :          11d 10:00:00         19d 14:00:00          0d  0:00:38          0d  0:01:06      28200    36.8%    30.00000
+** INFO   :          11d 11:00:00         19d 13:00:00          0d  0:00:39          0d  0:01:06      28140    37.0%    30.00000
+** INFO   :          11d 12:00:00         19d 12:00:00          0d  0:00:39          0d  0:01:06      28080    37.1%    30.00000
+** INFO   :          11d 13:00:00         19d 11:00:00          0d  0:00:39          0d  0:01:05      28020    37.2%    30.00000
+** INFO   :          11d 14:00:00         19d 10:00:00          0d  0:00:39          0d  0:01:05      27960    37.4%    30.00000
+** INFO   :          11d 15:00:00         19d  9:00:00          0d  0:00:39          0d  0:01:05      27900    37.5%    30.00000
+** INFO   :          11d 16:00:00         19d  8:00:00          0d  0:00:39          0d  0:01:05      27840    37.6%    30.00000
+** INFO   :          11d 17:00:00         19d  7:00:00          0d  0:00:39          0d  0:01:05      27780    37.8%    30.00000
+** INFO   :          11d 18:00:00         19d  6:00:00          0d  0:00:39          0d  0:01:05      27720    37.9%    30.00000
+** INFO   :          11d 19:00:00         19d  5:00:00          0d  0:00:40          0d  0:01:05      27660    38.0%    30.00000
+** INFO   :          11d 20:00:00         19d  4:00:00          0d  0:00:40          0d  0:01:04      27600    38.2%    30.00000
+** INFO   :          11d 21:00:00         19d  3:00:00          0d  0:00:40          0d  0:01:04      27540    38.3%    30.00000
+** INFO   :          11d 22:00:00         19d  2:00:00          0d  0:00:40          0d  0:01:04      27480    38.4%    30.00000
+** INFO   :          11d 23:00:00         19d  1:00:00          0d  0:00:40          0d  0:01:04      27420    38.6%    30.00000
+** INFO   :          12d  0:00:00         19d  0:00:00          0d  0:00:40          0d  0:01:04      27360    38.7%    30.00000
+** INFO   :          12d  1:00:00         18d 23:00:00          0d  0:00:40          0d  0:01:04      27300    38.8%    30.00000
+** INFO   :          12d  2:00:00         18d 22:00:00          0d  0:00:40          0d  0:01:03      27240    39.0%    30.00000
+** INFO   :          12d  3:00:00         18d 21:00:00          0d  0:00:41          0d  0:01:03      27180    39.1%    30.00000
+** INFO   :          12d  4:00:00         18d 20:00:00          0d  0:00:41          0d  0:01:03      27120    39.2%    30.00000
+** INFO   :          12d  5:00:00         18d 19:00:00          0d  0:00:41          0d  0:01:03      27060    39.4%    30.00000
+** INFO   :          12d  6:00:00         18d 18:00:00          0d  0:00:41          0d  0:01:03      27000    39.5%    30.00000
+** INFO   :          12d  7:00:00         18d 17:00:00          0d  0:00:41          0d  0:01:03      26940    39.7%    30.00000
+** INFO   :          12d  8:00:00         18d 16:00:00          0d  0:00:41          0d  0:01:02      26880    39.8%    30.00000
+** INFO   :          12d  9:00:00         18d 15:00:00          0d  0:00:41          0d  0:01:02      26820    39.9%    30.00000
+** INFO   :          12d 10:00:00         18d 14:00:00          0d  0:00:42          0d  0:01:02      26760    40.1%    30.00000
+** INFO   :          12d 11:00:00         18d 13:00:00          0d  0:00:42          0d  0:01:02      26700    40.2%    30.00000
+** INFO   :          12d 12:00:00         18d 12:00:00          0d  0:00:42          0d  0:01:02      26640    40.3%    30.00000
+** INFO   :          12d 13:00:00         18d 11:00:00          0d  0:00:42          0d  0:01:02      26580    40.5%    30.00000
+** INFO   :          12d 14:00:00         18d 10:00:00          0d  0:00:42          0d  0:01:02      26520    40.6%    30.00000
+** INFO   :          12d 15:00:00         18d  9:00:00          0d  0:00:42          0d  0:01:01      26460    40.7%    30.00000
+** INFO   :          12d 16:00:00         18d  8:00:00          0d  0:00:42          0d  0:01:01      26400    40.9%    30.00000
+** INFO   :          12d 17:00:00         18d  7:00:00          0d  0:00:42          0d  0:01:01      26340    41.0%    30.00000
+** INFO   :          12d 18:00:00         18d  6:00:00          0d  0:00:43          0d  0:01:01      26280    41.1%    30.00000
+** INFO   :          12d 19:00:00         18d  5:00:00          0d  0:00:43          0d  0:01:01      26220    41.3%    30.00000
+** INFO   :          12d 20:00:00         18d  4:00:00          0d  0:00:43          0d  0:01:01      26160    41.4%    30.00000
+** INFO   :          12d 21:00:00         18d  3:00:00          0d  0:00:43          0d  0:01:01      26100    41.5%    30.00000
+** INFO   :          12d 22:00:00         18d  2:00:00          0d  0:00:43          0d  0:01:00      26040    41.7%    30.00000
+** INFO   :          12d 23:00:00         18d  1:00:00          0d  0:00:43          0d  0:01:00      25980    41.8%    30.00000
+** INFO   :          13d  0:00:00         18d  0:00:00          0d  0:00:43          0d  0:01:00      25920    41.9%    30.00000
+** INFO   :          13d  1:00:00         17d 23:00:00          0d  0:00:44          0d  0:01:00      25860    42.1%    30.00000
+** INFO   :          13d  2:00:00         17d 22:00:00          0d  0:00:44          0d  0:01:00      25800    42.2%    30.00000
+** INFO   :          13d  3:00:00         17d 21:00:00          0d  0:00:44          0d  0:01:00      25740    42.3%    30.00000
+** INFO   :          13d  4:00:00         17d 20:00:00          0d  0:00:44          0d  0:01:00      25680    42.5%    30.00000
+** INFO   :          13d  5:00:00         17d 19:00:00          0d  0:00:44          0d  0:01:00      25620    42.6%    30.00000
+** INFO   :          13d  6:00:00         17d 18:00:00          0d  0:00:44          0d  0:00:59      25560    42.7%    30.00000
+** INFO   :          13d  7:00:00         17d 17:00:00          0d  0:00:44          0d  0:00:59      25500    42.9%    30.00000
+** INFO   :          13d  8:00:00         17d 16:00:00          0d  0:00:45          0d  0:00:59      25440    43.0%    30.00000
+** INFO   :          13d  9:00:00         17d 15:00:00          0d  0:00:45          0d  0:00:59      25380    43.1%    30.00000
+** INFO   :          13d 10:00:00         17d 14:00:00          0d  0:00:45          0d  0:00:59      25320    43.3%    30.00000
+** INFO   :          13d 11:00:00         17d 13:00:00          0d  0:00:45          0d  0:00:59      25260    43.4%    30.00000
+** INFO   :          13d 12:00:00         17d 12:00:00          0d  0:00:45          0d  0:00:59      25200    43.5%    30.00000
+** INFO   :          13d 13:00:00         17d 11:00:00          0d  0:00:45          0d  0:00:58      25140    43.7%    30.00000
+** INFO   :          13d 14:00:00         17d 10:00:00          0d  0:00:45          0d  0:00:58      25080    43.8%    30.00000
+** INFO   :          13d 15:00:00         17d  9:00:00          0d  0:00:46          0d  0:00:58      25020    44.0%    30.00000
+** INFO   :          13d 16:00:00         17d  8:00:00          0d  0:00:46          0d  0:00:58      24960    44.1%    30.00000
+** INFO   :          13d 17:00:00         17d  7:00:00          0d  0:00:46          0d  0:00:58      24900    44.2%    30.00000
+** INFO   :          13d 18:00:00         17d  6:00:00          0d  0:00:46          0d  0:00:58      24840    44.4%    30.00000
+** INFO   :          13d 19:00:00         17d  5:00:00          0d  0:00:46          0d  0:00:58      24780    44.5%    30.00000
+** INFO   :          13d 20:00:00         17d  4:00:00          0d  0:00:46          0d  0:00:57      24720    44.6%    30.00000
+** INFO   :          13d 21:00:00         17d  3:00:00          0d  0:00:46          0d  0:00:57      24660    44.8%    30.00000
+** INFO   :          13d 22:00:00         17d  2:00:00          0d  0:00:46          0d  0:00:57      24600    44.9%    30.00000
+** INFO   :          13d 23:00:00         17d  1:00:00          0d  0:00:47          0d  0:00:57      24540    45.0%    30.00000
+** INFO   :          14d  0:00:00         17d  0:00:00          0d  0:00:47          0d  0:00:57      24480    45.2%    30.00000
+** INFO   :          14d  1:00:00         16d 23:00:00          0d  0:00:47          0d  0:00:57      24420    45.3%    30.00000
+** INFO   :          14d  2:00:00         16d 22:00:00          0d  0:00:47          0d  0:00:56      24360    45.4%    30.00000
+** INFO   :          14d  3:00:00         16d 21:00:00          0d  0:00:47          0d  0:00:56      24300    45.6%    30.00000
+** INFO   :          14d  4:00:00         16d 20:00:00          0d  0:00:47          0d  0:00:56      24240    45.7%    30.00000
+** INFO   :          14d  5:00:00         16d 19:00:00          0d  0:00:47          0d  0:00:56      24180    45.8%    30.00000
+** INFO   :          14d  6:00:00         16d 18:00:00          0d  0:00:48          0d  0:00:56      24120    46.0%    30.00000
+** INFO   :          14d  7:00:00         16d 17:00:00          0d  0:00:48          0d  0:00:56      24060    46.1%    30.00000
+** INFO   :          14d  8:00:00         16d 16:00:00          0d  0:00:48          0d  0:00:56      24000    46.2%    30.00000
+** INFO   :          14d  9:00:00         16d 15:00:00          0d  0:00:48          0d  0:00:56      23940    46.4%    30.00000
+** INFO   :          14d 10:00:00         16d 14:00:00          0d  0:00:48          0d  0:00:55      23880    46.5%    30.00000
+** INFO   :          14d 11:00:00         16d 13:00:00          0d  0:00:48          0d  0:00:55      23820    46.6%    30.00000
+** INFO   :          14d 12:00:00         16d 12:00:00          0d  0:00:48          0d  0:00:55      23760    46.8%    30.00000
+** INFO   :          14d 13:00:00         16d 11:00:00          0d  0:00:49          0d  0:00:55      23700    46.9%    30.00000
+** INFO   :          14d 14:00:00         16d 10:00:00          0d  0:00:49          0d  0:00:55      23640    47.0%    30.00000
+** INFO   :          14d 15:00:00         16d  9:00:00          0d  0:00:49          0d  0:00:55      23580    47.2%    30.00000
+** INFO   :          14d 16:00:00         16d  8:00:00          0d  0:00:49          0d  0:00:55      23520    47.3%    30.00000
+** INFO   :          14d 17:00:00         16d  7:00:00          0d  0:00:49          0d  0:00:54      23460    47.4%    30.00000
+** INFO   :          14d 18:00:00         16d  6:00:00          0d  0:00:49          0d  0:00:54      23400    47.6%    30.00000
+** INFO   :          14d 19:00:00         16d  5:00:00          0d  0:00:49          0d  0:00:54      23340    47.7%    30.00000
+** INFO   :          14d 20:00:00         16d  4:00:00          0d  0:00:50          0d  0:00:54      23280    47.9%    30.00000
+** INFO   :          14d 21:00:00         16d  3:00:00          0d  0:00:50          0d  0:00:54      23220    48.0%    30.00000
+** INFO   :          14d 22:00:00         16d  2:00:00          0d  0:00:50          0d  0:00:54      23160    48.1%    30.00000
+** INFO   :          14d 23:00:00         16d  1:00:00          0d  0:00:50          0d  0:00:54      23100    48.3%    30.00000
+** INFO   :          15d  0:00:00         16d  0:00:00          0d  0:00:50          0d  0:00:54      23040    48.4%    30.00000
+** INFO   :          15d  1:00:00         15d 23:00:00          0d  0:00:50          0d  0:00:53      22980    48.5%    30.00000
+** INFO   :          15d  2:00:00         15d 22:00:00          0d  0:00:50          0d  0:00:53      22920    48.7%    30.00000
+** INFO   :          15d  3:00:00         15d 21:00:00          0d  0:00:51          0d  0:00:53      22860    48.8%    30.00000
+** INFO   :          15d  4:00:00         15d 20:00:00          0d  0:00:51          0d  0:00:53      22800    48.9%    30.00000
+** INFO   :          15d  5:00:00         15d 19:00:00          0d  0:00:51          0d  0:00:53      22740    49.1%    30.00000
+** INFO   :          15d  6:00:00         15d 18:00:00          0d  0:00:51          0d  0:00:53      22680    49.2%    30.00000
+** INFO   :          15d  7:00:00         15d 17:00:00          0d  0:00:51          0d  0:00:53      22620    49.3%    30.00000
+** INFO   :          15d  8:00:00         15d 16:00:00          0d  0:00:51          0d  0:00:52      22560    49.5%    30.00000
+** INFO   :          15d  9:00:00         15d 15:00:00          0d  0:00:51          0d  0:00:52      22500    49.6%    30.00000
+** INFO   :          15d 10:00:00         15d 14:00:00          0d  0:00:52          0d  0:00:52      22440    49.7%    30.00000
+** INFO   :          15d 11:00:00         15d 13:00:00          0d  0:00:52          0d  0:00:52      22380    49.9%    30.00000
+** INFO   :          15d 12:00:00         15d 12:00:00          0d  0:00:52          0d  0:00:52      22320    50.0%    30.00000
+** INFO   :          15d 13:00:00         15d 11:00:00          0d  0:00:52          0d  0:00:52      22260    50.1%    30.00000
+** INFO   :          15d 14:00:00         15d 10:00:00          0d  0:00:52          0d  0:00:52      22200    50.3%    30.00000
+** INFO   :          15d 15:00:00         15d  9:00:00          0d  0:00:52          0d  0:00:52      22140    50.4%    30.00000
+** INFO   :          15d 16:00:00         15d  8:00:00          0d  0:00:52          0d  0:00:51      22080    50.5%    30.00000
+** INFO   :          15d 17:00:00         15d  7:00:00          0d  0:00:53          0d  0:00:51      22020    50.7%    30.00000
+** INFO   :          15d 18:00:00         15d  6:00:00          0d  0:00:53          0d  0:00:51      21960    50.8%    29.50820
+** INFO   :          15d 19:00:00         15d  5:00:00          0d  0:00:53          0d  0:00:51      21900    50.9%    29.26829
+** INFO   :          15d 20:00:00         15d  4:00:00          0d  0:00:53          0d  0:00:51      21840    51.1%    30.00000
+** INFO   :          15d 21:00:00         15d  3:00:00          0d  0:00:53          0d  0:00:51      21780    51.2%    30.00000
+** INFO   :          15d 22:00:00         15d  2:00:00          0d  0:00:53          0d  0:00:51      21720    51.3%    30.00000
+** INFO   :          15d 23:00:00         15d  1:00:00          0d  0:00:54          0d  0:00:50      21660    51.5%    30.00000
+** INFO   :          16d  0:00:00         15d  0:00:00          0d  0:00:54          0d  0:00:50      21600    51.6%    30.00000
+** INFO   :          16d  1:00:00         14d 23:00:00          0d  0:00:54          0d  0:00:50      21540    51.7%    30.00000
+** INFO   :          16d  2:00:00         14d 22:00:00          0d  0:00:54          0d  0:00:50      21480    51.9%    30.00000
+** INFO   :          16d  3:00:00         14d 21:00:00          0d  0:00:54          0d  0:00:50      21420    52.0%    30.00000
+** INFO   :          16d  4:00:00         14d 20:00:00          0d  0:00:54          0d  0:00:50      21360    52.2%    30.00000
+** INFO   :          16d  5:00:00         14d 19:00:00          0d  0:00:54          0d  0:00:50      21300    52.3%    30.00000
+** INFO   :          16d  6:00:00         14d 18:00:00          0d  0:00:55          0d  0:00:50      21240    52.4%    30.00000
+** INFO   :          16d  7:00:00         14d 17:00:00          0d  0:00:55          0d  0:00:49      21180    52.6%    30.00000
+** INFO   :          16d  8:00:00         14d 16:00:00          0d  0:00:55          0d  0:00:49      21120    52.7%    30.00000
+** INFO   :          16d  9:00:00         14d 15:00:00          0d  0:00:55          0d  0:00:49      21060    52.8%    30.00000
+** INFO   :          16d 10:00:00         14d 14:00:00          0d  0:00:55          0d  0:00:49      21000    53.0%    30.00000
+** INFO   :          16d 11:00:00         14d 13:00:00          0d  0:00:55          0d  0:00:49      20940    53.1%    30.00000
+** INFO   :          16d 12:00:00         14d 12:00:00          0d  0:00:55          0d  0:00:49      20880    53.2%    30.00000
+** INFO   :          16d 13:00:00         14d 11:00:00          0d  0:00:56          0d  0:00:49      20820    53.4%    30.00000
+** INFO   :          16d 14:00:00         14d 10:00:00          0d  0:00:56          0d  0:00:48      20760    53.5%    30.00000
+** INFO   :          16d 15:00:00         14d  9:00:00          0d  0:00:56          0d  0:00:48      20700    53.6%    30.00000
+** INFO   :          16d 16:00:00         14d  8:00:00          0d  0:00:56          0d  0:00:48      20640    53.8%    30.00000
+** INFO   :          16d 17:00:00         14d  7:00:00          0d  0:00:56          0d  0:00:48      20580    53.9%    30.00000
+** INFO   :          16d 18:00:00         14d  6:00:00          0d  0:00:56          0d  0:00:48      20520    54.0%    30.00000
+** INFO   :          16d 19:00:00         14d  5:00:00          0d  0:00:56          0d  0:00:48      20460    54.2%    30.00000
+** INFO   :          16d 20:00:00         14d  4:00:00          0d  0:00:57          0d  0:00:48      20400    54.3%    30.00000
+** INFO   :          16d 21:00:00         14d  3:00:00          0d  0:00:57          0d  0:00:47      20340    54.4%    30.00000
+** INFO   :          16d 22:00:00         14d  2:00:00          0d  0:00:57          0d  0:00:47      20280    54.6%    30.00000
+** INFO   :          16d 23:00:00         14d  1:00:00          0d  0:00:57          0d  0:00:47      20220    54.7%    30.00000
+** INFO   :          17d  0:00:00         14d  0:00:00          0d  0:00:57          0d  0:00:47      20160    54.8%    30.00000
+** INFO   :          17d  1:00:00         13d 23:00:00          0d  0:00:57          0d  0:00:47      20100    55.0%    30.00000
+** INFO   :          17d  2:00:00         13d 22:00:00          0d  0:00:57          0d  0:00:47      20040    55.1%    30.00000
+** INFO   :          17d  3:00:00         13d 21:00:00          0d  0:00:58          0d  0:00:47      19980    55.2%    30.00000
+** INFO   :          17d  4:00:00         13d 20:00:00          0d  0:00:58          0d  0:00:47      19920    55.4%    30.00000
+** INFO   :          17d  5:00:00         13d 19:00:00          0d  0:00:58          0d  0:00:46      19860    55.5%    30.00000
+** INFO   :          17d  6:00:00         13d 18:00:00          0d  0:00:58          0d  0:00:46      19800    55.6%    30.00000
+** INFO   :          17d  7:00:00         13d 17:00:00          0d  0:00:58          0d  0:00:46      19740    55.8%    30.00000
+** INFO   :          17d  8:00:00         13d 16:00:00          0d  0:00:58          0d  0:00:46      19680    55.9%    30.00000
+** INFO   :          17d  9:00:00         13d 15:00:00          0d  0:00:58          0d  0:00:46      19620    56.0%    30.00000
+** INFO   :          17d 10:00:00         13d 14:00:00          0d  0:00:59          0d  0:00:46      19560    56.2%    30.00000
+** INFO   :          17d 11:00:00         13d 13:00:00          0d  0:00:59          0d  0:00:46      19500    56.3%    30.00000
+** INFO   :          17d 12:00:00         13d 12:00:00          0d  0:00:59          0d  0:00:45      19440    56.5%    30.00000
+** INFO   :          17d 13:00:00         13d 11:00:00          0d  0:00:59          0d  0:00:45      19380    56.6%    30.00000
+** INFO   :          17d 14:00:00         13d 10:00:00          0d  0:00:59          0d  0:00:45      19320    56.7%    30.00000
+** INFO   :          17d 15:00:00         13d  9:00:00          0d  0:00:59          0d  0:00:45      19260    56.9%    30.00000
+** INFO   :          17d 16:00:00         13d  8:00:00          0d  0:00:59          0d  0:00:45      19200    57.0%    30.00000
+** INFO   :          17d 17:00:00         13d  7:00:00          0d  0:01:00          0d  0:00:45      19140    57.1%    30.00000
+** INFO   :          17d 18:00:00         13d  6:00:00          0d  0:01:00          0d  0:00:45      19080    57.3%    30.00000
+** INFO   :          17d 19:00:00         13d  5:00:00          0d  0:01:00          0d  0:00:44      19020    57.4%    30.00000
+** INFO   :          17d 20:00:00         13d  4:00:00          0d  0:01:00          0d  0:00:44      18960    57.5%    30.00000
+** INFO   :          17d 21:00:00         13d  3:00:00          0d  0:01:00          0d  0:00:44      18900    57.7%    30.00000
+** INFO   :          17d 22:00:00         13d  2:00:00          0d  0:01:00          0d  0:00:44      18840    57.8%    30.00000
+** INFO   :          17d 23:00:00         13d  1:00:00          0d  0:01:00          0d  0:00:44      18780    57.9%    30.00000
+** INFO   :          18d  0:00:00         13d  0:00:00          0d  0:01:01          0d  0:00:44      18720    58.1%    30.00000
+** INFO   :          18d  1:00:00         12d 23:00:00          0d  0:01:01          0d  0:00:44      18660    58.2%    30.00000
+** INFO   :          18d  2:00:00         12d 22:00:00          0d  0:01:01          0d  0:00:43      18600    58.3%    30.00000
+** INFO   :          18d  3:00:00         12d 21:00:00          0d  0:01:01          0d  0:00:43      18540    58.5%    30.00000
+** INFO   :          18d  4:00:00         12d 20:00:00          0d  0:01:01          0d  0:00:43      18480    58.6%    30.00000
+** INFO   :          18d  5:00:00         12d 19:00:00          0d  0:01:01          0d  0:00:43      18420    58.7%    30.00000
+** INFO   :          18d  6:00:00         12d 18:00:00          0d  0:01:01          0d  0:00:43      18360    58.9%    30.00000
+** INFO   :          18d  7:00:00         12d 17:00:00          0d  0:01:02          0d  0:00:43      18300    59.0%    30.00000
+** INFO   :          18d  8:00:00         12d 16:00:00          0d  0:01:02          0d  0:00:43      18240    59.1%    30.00000
+** INFO   :          18d  9:00:00         12d 15:00:00          0d  0:01:02          0d  0:00:43      18180    59.3%    30.00000
+** INFO   :          18d 10:00:00         12d 14:00:00          0d  0:01:02          0d  0:00:42      18120    59.4%    30.00000
+** INFO   :          18d 11:00:00         12d 13:00:00          0d  0:01:02          0d  0:00:42      18060    59.5%    30.00000
+** INFO   :          18d 12:00:00         12d 12:00:00          0d  0:01:02          0d  0:00:42      18000    59.7%    30.00000
+** INFO   :          18d 13:00:00         12d 11:00:00          0d  0:01:02          0d  0:00:42      17940    59.8%    30.00000
+** INFO   :          18d 14:00:00         12d 10:00:00          0d  0:01:03          0d  0:00:42      17880    59.9%    30.00000
+** INFO   :          18d 15:00:00         12d  9:00:00          0d  0:01:03          0d  0:00:42      17820    60.1%    30.00000
+** INFO   :          18d 16:00:00         12d  8:00:00          0d  0:01:03          0d  0:00:42      17760    60.2%    30.00000
+** INFO   :          18d 17:00:00         12d  7:00:00          0d  0:01:03          0d  0:00:41      17700    60.4%    30.00000
+** INFO   :          18d 18:00:00         12d  6:00:00          0d  0:01:03          0d  0:00:41      17640    60.5%    30.00000
+** INFO   :          18d 19:00:00         12d  5:00:00          0d  0:01:03          0d  0:00:41      17580    60.6%    30.00000
+** INFO   :          18d 20:00:00         12d  4:00:00          0d  0:01:03          0d  0:00:41      17520    60.8%    30.00000
+** INFO   :          18d 21:00:00         12d  3:00:00          0d  0:01:04          0d  0:00:41      17460    60.9%    30.00000
+** INFO   :          18d 22:00:00         12d  2:00:00          0d  0:01:04          0d  0:00:41      17400    61.0%    30.00000
+** INFO   :          18d 23:00:00         12d  1:00:00          0d  0:01:04          0d  0:00:41      17340    61.2%    30.00000
+** INFO   :          19d  0:00:00         12d  0:00:00          0d  0:01:04          0d  0:00:40      17280    61.3%    30.00000
+** INFO   :          19d  1:00:00         11d 23:00:00          0d  0:01:04          0d  0:00:40      17220    61.4%    30.00000
+** INFO   :          19d  2:00:00         11d 22:00:00          0d  0:01:04          0d  0:00:40      17160    61.6%    30.00000
+** INFO   :          19d  3:00:00         11d 21:00:00          0d  0:01:04          0d  0:00:40      17100    61.7%    30.00000
+** INFO   :          19d  4:00:00         11d 20:00:00          0d  0:01:05          0d  0:00:40      17040    61.8%    30.00000
+** INFO   :          19d  5:00:00         11d 19:00:00          0d  0:01:05          0d  0:00:40      16980    62.0%    30.00000
+** INFO   :          19d  6:00:00         11d 18:00:00          0d  0:01:05          0d  0:00:40      16920    62.1%    30.00000
+** INFO   :          19d  7:00:00         11d 17:00:00          0d  0:01:05          0d  0:00:39      16860    62.2%    30.00000
+** INFO   :          19d  8:00:00         11d 16:00:00          0d  0:01:05          0d  0:00:39      16800    62.4%    30.00000
+** INFO   :          19d  9:00:00         11d 15:00:00          0d  0:01:05          0d  0:00:39      16740    62.5%    30.00000
+** INFO   :          19d 10:00:00         11d 14:00:00          0d  0:01:05          0d  0:00:39      16680    62.6%    30.00000
+** INFO   :          19d 11:00:00         11d 13:00:00          0d  0:01:06          0d  0:00:39      16620    62.8%    30.00000
+** INFO   :          19d 12:00:00         11d 12:00:00          0d  0:01:06          0d  0:00:39      16560    62.9%    30.00000
+** INFO   :          19d 13:00:00         11d 11:00:00          0d  0:01:06          0d  0:00:39      16500    63.0%    30.00000
+** INFO   :          19d 14:00:00         11d 10:00:00          0d  0:01:06          0d  0:00:38      16440    63.2%    30.00000
+** INFO   :          19d 15:00:00         11d  9:00:00          0d  0:01:06          0d  0:00:38      16380    63.3%    30.00000
+** INFO   :          19d 16:00:00         11d  8:00:00          0d  0:01:06          0d  0:00:38      16320    63.4%    30.00000
+** INFO   :          19d 17:00:00         11d  7:00:00          0d  0:01:06          0d  0:00:38      16260    63.6%    30.00000
+** INFO   :          19d 18:00:00         11d  6:00:00          0d  0:01:07          0d  0:00:38      16200    63.7%    30.00000
+** INFO   :          19d 19:00:00         11d  5:00:00          0d  0:01:07          0d  0:00:38      16140    63.8%    30.00000
+** INFO   :          19d 20:00:00         11d  4:00:00          0d  0:01:07          0d  0:00:38      16080    64.0%    30.00000
+** INFO   :          19d 21:00:00         11d  3:00:00          0d  0:01:07          0d  0:00:38      16020    64.1%    30.00000
+** INFO   :          19d 22:00:00         11d  2:00:00          0d  0:01:07          0d  0:00:37      15960    64.2%    30.00000
+** INFO   :          19d 23:00:00         11d  1:00:00          0d  0:01:07          0d  0:00:37      15900    64.4%    30.00000
+** INFO   :          20d  0:00:00         11d  0:00:00          0d  0:01:07          0d  0:00:37      15840    64.5%    30.00000
+** INFO   :          20d  1:00:00         10d 23:00:00          0d  0:01:08          0d  0:00:37      15780    64.7%    30.00000
+** INFO   :          20d  2:00:00         10d 22:00:00          0d  0:01:08          0d  0:00:37      15720    64.8%    30.00000
+** INFO   :          20d  3:00:00         10d 21:00:00          0d  0:01:08          0d  0:00:37      15660    64.9%    30.00000
+** INFO   :          20d  4:00:00         10d 20:00:00          0d  0:01:08          0d  0:00:37      15600    65.1%    30.00000
+** INFO   :          20d  5:00:00         10d 19:00:00          0d  0:01:08          0d  0:00:36      15540    65.2%    30.00000
+** INFO   :          20d  6:00:00         10d 18:00:00          0d  0:01:08          0d  0:00:36      15480    65.3%    30.00000
+** INFO   :          20d  7:00:00         10d 17:00:00          0d  0:01:08          0d  0:00:36      15420    65.5%    30.00000
+** INFO   :          20d  8:00:00         10d 16:00:00          0d  0:01:09          0d  0:00:36      15360    65.6%    30.00000
+** INFO   :          20d  9:00:00         10d 15:00:00          0d  0:01:09          0d  0:00:36      15300    65.7%    30.00000
+** INFO   :          20d 10:00:00         10d 14:00:00          0d  0:01:09          0d  0:00:36      15240    65.9%    30.00000
+** INFO   :          20d 11:00:00         10d 13:00:00          0d  0:01:09          0d  0:00:36      15180    66.0%    30.00000
+** INFO   :          20d 12:00:00         10d 12:00:00          0d  0:01:09          0d  0:00:35      15120    66.1%    30.00000
+** INFO   :          20d 13:00:00         10d 11:00:00          0d  0:01:09          0d  0:00:35      15060    66.3%    30.00000
+** INFO   :          20d 14:00:00         10d 10:00:00          0d  0:01:09          0d  0:00:35      15000    66.4%    30.00000
+** INFO   :          20d 15:00:00         10d  9:00:00          0d  0:01:10          0d  0:00:35      14940    66.5%    30.00000
+** INFO   :          20d 16:00:00         10d  8:00:00          0d  0:01:10          0d  0:00:35      14880    66.7%    30.00000
+** INFO   :          20d 17:00:00         10d  7:00:00          0d  0:01:10          0d  0:00:35      14820    66.8%    30.00000
+** INFO   :          20d 18:00:00         10d  6:00:00          0d  0:01:10          0d  0:00:35      14760    66.9%    30.00000
+** INFO   :          20d 19:00:00         10d  5:00:00          0d  0:01:10          0d  0:00:34      14700    67.1%    30.00000
+** INFO   :          20d 20:00:00         10d  4:00:00          0d  0:01:10          0d  0:00:34      14640    67.2%    30.00000
+** INFO   :          20d 21:00:00         10d  3:00:00          0d  0:01:10          0d  0:00:34      14580    67.3%    30.00000
+** INFO   :          20d 22:00:00         10d  2:00:00          0d  0:01:11          0d  0:00:34      14520    67.5%    30.00000
+** INFO   :          20d 23:00:00         10d  1:00:00          0d  0:01:11          0d  0:00:34      14460    67.6%    30.00000
+** INFO   :          21d  0:00:00         10d  0:00:00          0d  0:01:11          0d  0:00:34      14400    67.7%    30.00000
+** INFO   :          21d  1:00:00          9d 23:00:00          0d  0:01:11          0d  0:00:34      14340    67.9%    30.00000
+** INFO   :          21d  2:00:00          9d 22:00:00          0d  0:01:11          0d  0:00:34      14280    68.0%    30.00000
+** INFO   :          21d  3:00:00          9d 21:00:00          0d  0:01:11          0d  0:00:33      14220    68.1%    30.00000
+** INFO   :          21d  4:00:00          9d 20:00:00          0d  0:01:12          0d  0:00:33      14160    68.3%    30.00000
+** INFO   :          21d  5:00:00          9d 19:00:00          0d  0:01:12          0d  0:00:33      14100    68.4%    30.00000
+** INFO   :          21d  6:00:00          9d 18:00:00          0d  0:01:12          0d  0:00:33      14040    68.5%    30.00000
+** INFO   :          21d  7:00:00          9d 17:00:00          0d  0:01:12          0d  0:00:33      13980    68.7%    30.00000
+** INFO   :          21d  8:00:00          9d 16:00:00          0d  0:01:12          0d  0:00:33      13920    68.8%    30.00000
+** INFO   :          21d  9:00:00          9d 15:00:00          0d  0:01:12          0d  0:00:33      13860    69.0%    30.00000
+** INFO   :          21d 10:00:00          9d 14:00:00          0d  0:01:12          0d  0:00:32      13800    69.1%    30.00000
+** INFO   :          21d 11:00:00          9d 13:00:00          0d  0:01:13          0d  0:00:32      13740    69.2%    30.00000
+** INFO   :          21d 12:00:00          9d 12:00:00          0d  0:01:13          0d  0:00:32      13680    69.4%    30.00000
+** INFO   :          21d 13:00:00          9d 11:00:00          0d  0:01:13          0d  0:00:32      13620    69.5%    30.00000
+** INFO   :          21d 14:00:00          9d 10:00:00          0d  0:01:13          0d  0:00:32      13560    69.6%    30.00000
+** INFO   :          21d 15:00:00          9d  9:00:00          0d  0:01:13          0d  0:00:32      13500    69.8%    30.00000
+** INFO   :          21d 16:00:00          9d  8:00:00          0d  0:01:13          0d  0:00:32      13440    69.9%    30.00000
+** INFO   :          21d 17:00:00          9d  7:00:00          0d  0:01:13          0d  0:00:31      13380    70.0%    30.00000
+** INFO   :          21d 18:00:00          9d  6:00:00          0d  0:01:14          0d  0:00:31      13320    70.2%    30.00000
+** INFO   :          21d 19:00:00          9d  5:00:00          0d  0:01:14          0d  0:00:31      13260    70.3%    30.00000
+** INFO   :          21d 20:00:00          9d  4:00:00          0d  0:01:14          0d  0:00:31      13200    70.4%    30.00000
+** INFO   :          21d 21:00:00          9d  3:00:00          0d  0:01:14          0d  0:00:31      13140    70.6%    30.00000
+** INFO   :          21d 22:00:00          9d  2:00:00          0d  0:01:14          0d  0:00:31      13080    70.7%    30.00000
+** INFO   :          21d 23:00:00          9d  1:00:00          0d  0:01:14          0d  0:00:31      13020    70.8%    30.00000
+** INFO   :          22d  0:00:00          9d  0:00:00          0d  0:01:14          0d  0:00:30      12960    71.0%    30.00000
+** INFO   :          22d  1:00:00          8d 23:00:00          0d  0:01:15          0d  0:00:30      12900    71.1%    30.00000
+** INFO   :          22d  2:00:00          8d 22:00:00          0d  0:01:15          0d  0:00:30      12840    71.2%    30.00000
+** INFO   :          22d  3:00:00          8d 21:00:00          0d  0:01:15          0d  0:00:30      12780    71.4%    30.00000
+** INFO   :          22d  4:00:00          8d 20:00:00          0d  0:01:15          0d  0:00:30      12720    71.5%    30.00000
+** INFO   :          22d  5:00:00          8d 19:00:00          0d  0:01:15          0d  0:00:30      12660    71.6%    30.00000
+** INFO   :          22d  6:00:00          8d 18:00:00          0d  0:01:15          0d  0:00:30      12600    71.8%    30.00000
+** INFO   :          22d  7:00:00          8d 17:00:00          0d  0:01:15          0d  0:00:29      12540    71.9%    30.00000
+** INFO   :          22d  8:00:00          8d 16:00:00          0d  0:01:16          0d  0:00:29      12480    72.0%    30.00000
+** INFO   :          22d  9:00:00          8d 15:00:00          0d  0:01:16          0d  0:00:29      12420    72.2%    30.00000
+** INFO   :          22d 10:00:00          8d 14:00:00          0d  0:01:16          0d  0:00:29      12360    72.3%    30.00000
+** INFO   :          22d 11:00:00          8d 13:00:00          0d  0:01:16          0d  0:00:29      12300    72.4%    30.00000
+** INFO   :          22d 12:00:00          8d 12:00:00          0d  0:01:16          0d  0:00:29      12240    72.6%    30.00000
+** INFO   :          22d 13:00:00          8d 11:00:00          0d  0:01:16          0d  0:00:29      12180    72.7%    30.00000
+** INFO   :          22d 14:00:00          8d 10:00:00          0d  0:01:16          0d  0:00:28      12120    72.9%    30.00000
+** INFO   :          22d 15:00:00          8d  9:00:00          0d  0:01:17          0d  0:00:28      12060    73.0%    30.00000
+** INFO   :          22d 16:00:00          8d  8:00:00          0d  0:01:17          0d  0:00:28      12000    73.1%    30.00000
+** INFO   :          22d 17:00:00          8d  7:00:00          0d  0:01:17          0d  0:00:28      11940    73.3%    30.00000
+** INFO   :          22d 18:00:00          8d  6:00:00          0d  0:01:17          0d  0:00:28      11880    73.4%    30.00000
+** INFO   :          22d 19:00:00          8d  5:00:00          0d  0:01:17          0d  0:00:28      11820    73.5%    30.00000
+** INFO   :          22d 20:00:00          8d  4:00:00          0d  0:01:17          0d  0:00:28      11760    73.7%    30.00000
+** INFO   :          22d 21:00:00          8d  3:00:00          0d  0:01:17          0d  0:00:28      11700    73.8%    30.00000
+** INFO   :          22d 22:00:00          8d  2:00:00          0d  0:01:18          0d  0:00:27      11640    73.9%    30.00000
+** INFO   :          22d 23:00:00          8d  1:00:00          0d  0:01:18          0d  0:00:27      11580    74.1%    30.00000
+** INFO   :          23d  0:00:00          8d  0:00:00          0d  0:01:18          0d  0:00:27      11520    74.2%    30.00000
+** INFO   :          23d  1:00:00          7d 23:00:00          0d  0:01:18          0d  0:00:27      11460    74.3%    30.00000
+** INFO   :          23d  2:00:00          7d 22:00:00          0d  0:01:18          0d  0:00:27      11400    74.5%    30.00000
+** INFO   :          23d  3:00:00          7d 21:00:00          0d  0:01:18          0d  0:00:27      11340    74.6%    30.00000
+** INFO   :          23d  4:00:00          7d 20:00:00          0d  0:01:18          0d  0:00:27      11280    74.7%    30.00000
+** INFO   :          23d  5:00:00          7d 19:00:00          0d  0:01:19          0d  0:00:26      11220    74.9%    30.00000
+** INFO   :          23d  6:00:00          7d 18:00:00          0d  0:01:19          0d  0:00:26      11160    75.0%    30.00000
+** INFO   :          23d  7:00:00          7d 17:00:00          0d  0:01:19          0d  0:00:26      11100    75.1%    30.00000
+** INFO   :          23d  8:00:00          7d 16:00:00          0d  0:01:19          0d  0:00:26      11040    75.3%    30.00000
+** INFO   :          23d  9:00:00          7d 15:00:00          0d  0:01:19          0d  0:00:26      10980    75.4%    30.00000
+** INFO   :          23d 10:00:00          7d 14:00:00          0d  0:01:19          0d  0:00:26      10920    75.5%    30.00000
+** INFO   :          23d 11:00:00          7d 13:00:00          0d  0:01:19          0d  0:00:26      10860    75.7%    30.00000
+** INFO   :          23d 12:00:00          7d 12:00:00          0d  0:01:20          0d  0:00:25      10800    75.8%    30.00000
+** INFO   :          23d 13:00:00          7d 11:00:00          0d  0:01:20          0d  0:00:25      10740    75.9%    30.00000
+** INFO   :          23d 14:00:00          7d 10:00:00          0d  0:01:20          0d  0:00:25      10680    76.1%    30.00000
+** INFO   :          23d 15:00:00          7d  9:00:00          0d  0:01:20          0d  0:00:25      10620    76.2%    30.00000
+** INFO   :          23d 16:00:00          7d  8:00:00          0d  0:01:20          0d  0:00:25      10560    76.3%    30.00000
+** INFO   :          23d 17:00:00          7d  7:00:00          0d  0:01:20          0d  0:00:25      10500    76.5%    30.00000
+** INFO   :          23d 18:00:00          7d  6:00:00          0d  0:01:20          0d  0:00:25      10440    76.6%    30.00000
+** INFO   :          23d 19:00:00          7d  5:00:00          0d  0:01:21          0d  0:00:24      10380    76.7%    30.00000
+** INFO   :          23d 20:00:00          7d  4:00:00          0d  0:01:21          0d  0:00:24      10320    76.9%    30.00000
+** INFO   :          23d 21:00:00          7d  3:00:00          0d  0:01:21          0d  0:00:24      10260    77.0%    30.00000
+** INFO   :          23d 22:00:00          7d  2:00:00          0d  0:01:21          0d  0:00:24      10200    77.2%    30.00000
+** INFO   :          23d 23:00:00          7d  1:00:00          0d  0:01:21          0d  0:00:24      10140    77.3%    30.00000
+** INFO   :          24d  0:00:00          7d  0:00:00          0d  0:01:21          0d  0:00:24      10080    77.4%    30.00000
+** INFO   :          24d  1:00:00          6d 23:00:00          0d  0:01:22          0d  0:00:24      10020    77.6%    30.00000
+** INFO   :          24d  2:00:00          6d 22:00:00          0d  0:01:22          0d  0:00:23       9960    77.7%    30.00000
+** INFO   :          24d  3:00:00          6d 21:00:00          0d  0:01:22          0d  0:00:23       9900    77.8%    30.00000
+** INFO   :          24d  4:00:00          6d 20:00:00          0d  0:01:22          0d  0:00:23       9840    78.0%    30.00000
+** INFO   :          24d  5:00:00          6d 19:00:00          0d  0:01:22          0d  0:00:23       9780    78.1%    30.00000
+** INFO   :          24d  6:00:00          6d 18:00:00          0d  0:01:22          0d  0:00:23       9720    78.2%    30.00000
+** INFO   :          24d  7:00:00          6d 17:00:00          0d  0:01:22          0d  0:00:23       9660    78.4%    30.00000
+** INFO   :          24d  8:00:00          6d 16:00:00          0d  0:01:22          0d  0:00:23       9600    78.5%    30.00000
+** INFO   :          24d  9:00:00          6d 15:00:00          0d  0:01:23          0d  0:00:22       9540    78.6%    30.00000
+** INFO   :          24d 10:00:00          6d 14:00:00          0d  0:01:23          0d  0:00:22       9480    78.8%    30.00000
+** INFO   :          24d 11:00:00          6d 13:00:00          0d  0:01:23          0d  0:00:22       9420    78.9%    30.00000
+** INFO   :          24d 12:00:00          6d 12:00:00          0d  0:01:23          0d  0:00:22       9360    79.0%    30.00000
+** INFO   :          24d 13:00:00          6d 11:00:00          0d  0:01:23          0d  0:00:22       9300    79.2%    30.00000
+** INFO   :          24d 14:00:00          6d 10:00:00          0d  0:01:23          0d  0:00:22       9240    79.3%    30.00000
+** INFO   :          24d 15:00:00          6d  9:00:00          0d  0:01:23          0d  0:00:22       9180    79.4%    30.00000
+** INFO   :          24d 16:00:00          6d  8:00:00          0d  0:01:23          0d  0:00:21       9120    79.6%    30.00000
+** INFO   :          24d 17:00:00          6d  7:00:00          0d  0:01:24          0d  0:00:21       9060    79.7%    30.00000
+** INFO   :          24d 18:00:00          6d  6:00:00          0d  0:01:24          0d  0:00:21       9000    79.8%    30.00000
+** INFO   :          24d 19:00:00          6d  5:00:00          0d  0:01:24          0d  0:00:21       8940    80.0%    30.00000
+** INFO   :          24d 20:00:00          6d  4:00:00          0d  0:01:24          0d  0:00:21       8880    80.1%    30.00000
+** INFO   :          24d 21:00:00          6d  3:00:00          0d  0:01:24          0d  0:00:21       8820    80.2%    30.00000
+** INFO   :          24d 22:00:00          6d  2:00:00          0d  0:01:24          0d  0:00:21       8760    80.4%    30.00000
+** INFO   :          24d 23:00:00          6d  1:00:00          0d  0:01:24          0d  0:00:20       8700    80.5%    30.00000
+** INFO   :          25d  0:00:00          6d  0:00:00          0d  0:01:25          0d  0:00:20       8640    80.6%    30.00000
+** INFO   :          25d  1:00:00          5d 23:00:00          0d  0:01:25          0d  0:00:20       8580    80.8%    30.00000
+** INFO   :          25d  2:00:00          5d 22:00:00          0d  0:01:25          0d  0:00:20       8520    80.9%    30.00000
+** INFO   :          25d  3:00:00          5d 21:00:00          0d  0:01:25          0d  0:00:20       8460    81.0%    30.00000
+** INFO   :          25d  4:00:00          5d 20:00:00          0d  0:01:25          0d  0:00:20       8400    81.2%    30.00000
+** INFO   :          25d  5:00:00          5d 19:00:00          0d  0:01:25          0d  0:00:20       8340    81.3%    30.00000
+** INFO   :          25d  6:00:00          5d 18:00:00          0d  0:01:25          0d  0:00:19       8280    81.5%    30.00000
+** INFO   :          25d  7:00:00          5d 17:00:00          0d  0:01:25          0d  0:00:19       8220    81.6%    30.00000
+** INFO   :          25d  8:00:00          5d 16:00:00          0d  0:01:26          0d  0:00:19       8160    81.7%    30.00000
+** INFO   :          25d  9:00:00          5d 15:00:00          0d  0:01:26          0d  0:00:19       8100    81.9%    30.00000
+** INFO   :          25d 10:00:00          5d 14:00:00          0d  0:01:26          0d  0:00:19       8040    82.0%    30.00000
+** INFO   :          25d 11:00:00          5d 13:00:00          0d  0:01:26          0d  0:00:19       7980    82.1%    30.00000
+** INFO   :          25d 12:00:00          5d 12:00:00          0d  0:01:26          0d  0:00:19       7920    82.3%    30.00000
+** INFO   :          25d 13:00:00          5d 11:00:00          0d  0:01:26          0d  0:00:18       7860    82.4%    30.00000
+** INFO   :          25d 14:00:00          5d 10:00:00          0d  0:01:26          0d  0:00:18       7800    82.5%    30.00000
+** INFO   :          25d 15:00:00          5d  9:00:00          0d  0:01:27          0d  0:00:18       7740    82.7%    30.00000
+** INFO   :          25d 16:00:00          5d  8:00:00          0d  0:01:27          0d  0:00:18       7680    82.8%    30.00000
+** INFO   :          25d 17:00:00          5d  7:00:00          0d  0:01:27          0d  0:00:18       7620    82.9%    30.00000
+** INFO   :          25d 18:00:00          5d  6:00:00          0d  0:01:27          0d  0:00:18       7560    83.1%    30.00000
+** INFO   :          25d 19:00:00          5d  5:00:00          0d  0:01:27          0d  0:00:18       7500    83.2%    30.00000
+** INFO   :          25d 20:00:00          5d  4:00:00          0d  0:01:27          0d  0:00:17       7440    83.3%    30.00000
+** INFO   :          25d 21:00:00          5d  3:00:00          0d  0:01:27          0d  0:00:17       7380    83.5%    30.00000
+** INFO   :          25d 22:00:00          5d  2:00:00          0d  0:01:28          0d  0:00:17       7320    83.6%    30.00000
+** INFO   :          25d 23:00:00          5d  1:00:00          0d  0:01:28          0d  0:00:17       7260    83.7%    30.00000
+** INFO   :          26d  0:00:00          5d  0:00:00          0d  0:01:28          0d  0:00:17       7200    83.9%    30.00000
+** INFO   :          26d  1:00:00          4d 23:00:00          0d  0:01:28          0d  0:00:17       7140    84.0%    30.00000
+** INFO   :          26d  2:00:00          4d 22:00:00          0d  0:01:28          0d  0:00:17       7080    84.1%    30.00000
+** INFO   :          26d  3:00:00          4d 21:00:00          0d  0:01:28          0d  0:00:16       7020    84.3%    30.00000
+** INFO   :          26d  4:00:00          4d 20:00:00          0d  0:01:28          0d  0:00:16       6960    84.4%    30.00000
+** INFO   :          26d  5:00:00          4d 19:00:00          0d  0:01:28          0d  0:00:16       6900    84.5%    30.00000
+** INFO   :          26d  6:00:00          4d 18:00:00          0d  0:01:29          0d  0:00:16       6840    84.7%    30.00000
+** INFO   :          26d  7:00:00          4d 17:00:00          0d  0:01:29          0d  0:00:16       6780    84.8%    30.00000
+** INFO   :          26d  8:00:00          4d 16:00:00          0d  0:01:29          0d  0:00:16       6720    84.9%    30.00000
+** INFO   :          26d  9:00:00          4d 15:00:00          0d  0:01:29          0d  0:00:16       6660    85.1%    30.00000
+** INFO   :          26d 10:00:00          4d 14:00:00          0d  0:01:29          0d  0:00:15       6600    85.2%    30.00000
+** INFO   :          26d 11:00:00          4d 13:00:00          0d  0:01:29          0d  0:00:15       6540    85.3%    30.00000
+** INFO   :          26d 12:00:00          4d 12:00:00          0d  0:01:29          0d  0:00:15       6480    85.5%    30.00000
+** INFO   :          26d 13:00:00          4d 11:00:00          0d  0:01:30          0d  0:00:15       6420    85.6%    30.00000
+** INFO   :          26d 14:00:00          4d 10:00:00          0d  0:01:30          0d  0:00:15       6360    85.8%    30.00000
+** INFO   :          26d 15:00:00          4d  9:00:00          0d  0:01:30          0d  0:00:15       6300    85.9%    30.00000
+** INFO   :          26d 16:00:00          4d  8:00:00          0d  0:01:30          0d  0:00:15       6240    86.0%    30.00000
+** INFO   :          26d 17:00:00          4d  7:00:00          0d  0:01:30          0d  0:00:14       6180    86.2%    30.00000
+** INFO   :          26d 18:00:00          4d  6:00:00          0d  0:01:30          0d  0:00:14       6120    86.3%    30.00000
+** INFO   :          26d 19:00:00          4d  5:00:00          0d  0:01:30          0d  0:00:14       6060    86.4%    30.00000
+** INFO   :          26d 20:00:00          4d  4:00:00          0d  0:01:30          0d  0:00:14       6000    86.6%    30.00000
+** INFO   :          26d 21:00:00          4d  3:00:00          0d  0:01:31          0d  0:00:14       5940    86.7%    30.00000
+** INFO   :          26d 22:00:00          4d  2:00:00          0d  0:01:31          0d  0:00:14       5880    86.8%    30.00000
+** INFO   :          26d 23:00:00          4d  1:00:00          0d  0:01:31          0d  0:00:14       5820    87.0%    30.00000
+** INFO   :          27d  0:00:00          4d  0:00:00          0d  0:01:31          0d  0:00:13       5760    87.1%    30.00000
+** INFO   :          27d  1:00:00          3d 23:00:00          0d  0:01:31          0d  0:00:13       5700    87.2%    30.00000
+** INFO   :          27d  2:00:00          3d 22:00:00          0d  0:01:31          0d  0:00:13       5640    87.4%    30.00000
+** INFO   :          27d  3:00:00          3d 21:00:00          0d  0:01:31          0d  0:00:13       5580    87.5%    30.00000
+** INFO   :          27d  4:00:00          3d 20:00:00          0d  0:01:32          0d  0:00:13       5520    87.6%    30.00000
+** INFO   :          27d  5:00:00          3d 19:00:00          0d  0:01:32          0d  0:00:13       5460    87.8%    30.00000
+** INFO   :          27d  6:00:00          3d 18:00:00          0d  0:01:32          0d  0:00:13       5400    87.9%    30.00000
+** INFO   :          27d  7:00:00          3d 17:00:00          0d  0:01:32          0d  0:00:12       5340    88.0%    30.00000
+** INFO   :          27d  8:00:00          3d 16:00:00          0d  0:01:32          0d  0:00:12       5280    88.2%    30.00000
+** INFO   :          27d  9:00:00          3d 15:00:00          0d  0:01:32          0d  0:00:12       5220    88.3%    30.00000
+** INFO   :          27d 10:00:00          3d 14:00:00          0d  0:01:32          0d  0:00:12       5160    88.4%    30.00000
+** INFO   :          27d 11:00:00          3d 13:00:00          0d  0:01:32          0d  0:00:12       5100    88.6%    30.00000
+** INFO   :          27d 12:00:00          3d 12:00:00          0d  0:01:33          0d  0:00:12       5040    88.7%    30.00000
+** INFO   :          27d 13:00:00          3d 11:00:00          0d  0:01:33          0d  0:00:12       4980    88.8%    30.00000
+** INFO   :          27d 14:00:00          3d 10:00:00          0d  0:01:33          0d  0:00:11       4920    89.0%    30.00000
+** INFO   :          27d 15:00:00          3d  9:00:00          0d  0:01:33          0d  0:00:11       4860    89.1%    30.00000
+** INFO   :          27d 16:00:00          3d  8:00:00          0d  0:01:33          0d  0:00:11       4800    89.2%    30.00000
+** INFO   :          27d 17:00:00          3d  7:00:00          0d  0:01:33          0d  0:00:11       4740    89.4%    30.00000
+** INFO   :          27d 18:00:00          3d  6:00:00          0d  0:01:33          0d  0:00:11       4680    89.5%    30.00000
+** INFO   :          27d 19:00:00          3d  5:00:00          0d  0:01:33          0d  0:00:11       4620    89.7%    30.00000
+** INFO   :          27d 20:00:00          3d  4:00:00          0d  0:01:34          0d  0:00:11       4560    89.8%    30.00000
+** INFO   :          27d 21:00:00          3d  3:00:00          0d  0:01:34          0d  0:00:11       4500    89.9%    30.00000
+** INFO   :          27d 22:00:00          3d  2:00:00          0d  0:01:34          0d  0:00:10       4440    90.1%    30.00000
+** INFO   :          27d 23:00:00          3d  1:00:00          0d  0:01:34          0d  0:00:10       4380    90.2%    30.00000
+** INFO   :          28d  0:00:00          3d  0:00:00          0d  0:01:34          0d  0:00:10       4320    90.3%    30.00000
+** INFO   :          28d  1:00:00          2d 23:00:00          0d  0:01:34          0d  0:00:10       4260    90.5%    30.00000
+** INFO   :          28d  2:00:00          2d 22:00:00          0d  0:01:34          0d  0:00:10       4200    90.6%    30.00000
+** INFO   :          28d  3:00:00          2d 21:00:00          0d  0:01:35          0d  0:00:10       4140    90.7%    30.00000
+** INFO   :          28d  4:00:00          2d 20:00:00          0d  0:01:35          0d  0:00:10       4080    90.9%    30.00000
+** INFO   :          28d  5:00:00          2d 19:00:00          0d  0:01:35          0d  0:00:09       4020    91.0%    30.00000
+** INFO   :          28d  6:00:00          2d 18:00:00          0d  0:01:35          0d  0:00:09       3960    91.1%    30.00000
+** INFO   :          28d  7:00:00          2d 17:00:00          0d  0:01:35          0d  0:00:09       3900    91.3%    30.00000
+** INFO   :          28d  8:00:00          2d 16:00:00          0d  0:01:35          0d  0:00:09       3840    91.4%    30.00000
+** INFO   :          28d  9:00:00          2d 15:00:00          0d  0:01:35          0d  0:00:09       3780    91.5%    30.00000
+** INFO   :          28d 10:00:00          2d 14:00:00          0d  0:01:36          0d  0:00:09       3720    91.7%    30.00000
+** INFO   :          28d 11:00:00          2d 13:00:00          0d  0:01:36          0d  0:00:09       3660    91.8%    30.00000
+** INFO   :          28d 12:00:00          2d 12:00:00          0d  0:01:36          0d  0:00:08       3600    91.9%    30.00000
+** INFO   :          28d 13:00:00          2d 11:00:00          0d  0:01:36          0d  0:00:08       3540    92.1%    30.00000
+** INFO   :          28d 14:00:00          2d 10:00:00          0d  0:01:36          0d  0:00:08       3480    92.2%    30.00000
+** INFO   :          28d 15:00:00          2d  9:00:00          0d  0:01:36          0d  0:00:08       3420    92.3%    30.00000
+** INFO   :          28d 16:00:00          2d  8:00:00          0d  0:01:36          0d  0:00:08       3360    92.5%    30.00000
+** INFO   :          28d 17:00:00          2d  7:00:00          0d  0:01:36          0d  0:00:08       3300    92.6%    30.00000
+** INFO   :          28d 18:00:00          2d  6:00:00          0d  0:01:37          0d  0:00:08       3240    92.7%    30.00000
+** INFO   :          28d 19:00:00          2d  5:00:00          0d  0:01:37          0d  0:00:07       3180    92.9%    30.00000
+** INFO   :          28d 20:00:00          2d  4:00:00          0d  0:01:37          0d  0:00:07       3120    93.0%    30.00000
+** INFO   :          28d 21:00:00          2d  3:00:00          0d  0:01:37          0d  0:00:07       3060    93.1%    30.00000
+** INFO   :          28d 22:00:00          2d  2:00:00          0d  0:01:37          0d  0:00:07       3000    93.3%    30.00000
+** INFO   :          28d 23:00:00          2d  1:00:00          0d  0:01:37          0d  0:00:07       2940    93.4%    30.00000
+** INFO   :          29d  0:00:00          2d  0:00:00          0d  0:01:38          0d  0:00:07       2880    93.5%    30.00000
+** INFO   :          29d  1:00:00          1d 23:00:00          0d  0:01:38          0d  0:00:07       2820    93.7%    30.00000
+** INFO   :          29d  2:00:00          1d 22:00:00          0d  0:01:38          0d  0:00:06       2760    93.8%    30.00000
+** INFO   :          29d  3:00:00          1d 21:00:00          0d  0:01:38          0d  0:00:06       2700    94.0%    30.00000
+** INFO   :          29d  4:00:00          1d 20:00:00          0d  0:01:38          0d  0:00:06       2640    94.1%    30.00000
+** INFO   :          29d  5:00:00          1d 19:00:00          0d  0:01:38          0d  0:00:06       2580    94.2%    30.00000
+** INFO   :          29d  6:00:00          1d 18:00:00          0d  0:01:38          0d  0:00:06       2520    94.4%    30.00000
+** INFO   :          29d  7:00:00          1d 17:00:00          0d  0:01:38          0d  0:00:06       2460    94.5%    30.00000
+** INFO   :          29d  8:00:00          1d 16:00:00          0d  0:01:39          0d  0:00:06       2400    94.6%    30.00000
+** INFO   :          29d  9:00:00          1d 15:00:00          0d  0:01:39          0d  0:00:05       2340    94.8%    30.00000
+** INFO   :          29d 10:00:00          1d 14:00:00          0d  0:01:39          0d  0:00:05       2280    94.9%    30.00000
+** INFO   :          29d 11:00:00          1d 13:00:00          0d  0:01:39          0d  0:00:05       2220    95.0%    30.00000
+** INFO   :          29d 12:00:00          1d 12:00:00          0d  0:01:39          0d  0:00:05       2160    95.2%    30.00000
+** INFO   :          29d 13:00:00          1d 11:00:00          0d  0:01:39          0d  0:00:05       2100    95.3%    30.00000
+** INFO   :          29d 14:00:00          1d 10:00:00          0d  0:01:39          0d  0:00:05       2040    95.4%    30.00000
+** INFO   :          29d 15:00:00          1d  9:00:00          0d  0:01:39          0d  0:00:05       1980    95.6%    30.00000
+** INFO   :          29d 16:00:00          1d  8:00:00          0d  0:01:40          0d  0:00:04       1920    95.7%    30.00000
+** INFO   :          29d 17:00:00          1d  7:00:00          0d  0:01:40          0d  0:00:04       1860    95.8%    30.00000
+** INFO   :          29d 18:00:00          1d  6:00:00          0d  0:01:40          0d  0:00:04       1800    96.0%    30.00000
+** INFO   :          29d 19:00:00          1d  5:00:00          0d  0:01:40          0d  0:00:04       1740    96.1%    30.00000
+** INFO   :          29d 20:00:00          1d  4:00:00          0d  0:01:40          0d  0:00:04       1680    96.2%    30.00000
+** INFO   :          29d 21:00:00          1d  3:00:00          0d  0:01:40          0d  0:00:04       1620    96.4%    30.00000
+** INFO   :          29d 22:00:00          1d  2:00:00          0d  0:01:40          0d  0:00:04       1560    96.5%    30.00000
+** INFO   :          29d 23:00:00          1d  1:00:00          0d  0:01:41          0d  0:00:03       1500    96.6%    30.00000
+** INFO   :          30d  0:00:00          1d  0:00:00          0d  0:01:41          0d  0:00:03       1440    96.8%    30.00000
+** INFO   :          30d  1:00:00          0d 23:00:00          0d  0:01:41          0d  0:00:03       1380    96.9%    30.00000
+** INFO   :          30d  2:00:00          0d 22:00:00          0d  0:01:41          0d  0:00:03       1320    97.0%    30.00000
+** INFO   :          30d  3:00:00          0d 21:00:00          0d  0:01:41          0d  0:00:03       1260    97.2%    30.00000
+** INFO   :          30d  4:00:00          0d 20:00:00          0d  0:01:41          0d  0:00:03       1200    97.3%    30.00000
+** INFO   :          30d  5:00:00          0d 19:00:00          0d  0:01:41          0d  0:00:03       1140    97.4%    30.00000
+** INFO   :          30d  6:00:00          0d 18:00:00          0d  0:01:41          0d  0:00:03       1080    97.6%    30.00000
+** INFO   :          30d  7:00:00          0d 17:00:00          0d  0:01:42          0d  0:00:02       1020    97.7%    30.00000
+** INFO   :          30d  8:00:00          0d 16:00:00          0d  0:01:42          0d  0:00:02        960    97.8%    30.00000
+** INFO   :          30d  9:00:00          0d 15:00:00          0d  0:01:42          0d  0:00:02        900    98.0%    30.00000
+** INFO   :          30d 10:00:00          0d 14:00:00          0d  0:01:42          0d  0:00:02        840    98.1%    30.00000
+** INFO   :          30d 11:00:00          0d 13:00:00          0d  0:01:42          0d  0:00:02        780    98.3%    30.00000
+** INFO   :          30d 12:00:00          0d 12:00:00          0d  0:01:42          0d  0:00:02        720    98.4%    30.00000
+** INFO   :          30d 13:00:00          0d 11:00:00          0d  0:01:42          0d  0:00:02        660    98.5%    30.00000
+** INFO   :          30d 14:00:00          0d 10:00:00          0d  0:01:42          0d  0:00:01        600    98.7%    30.00000
+** INFO   :          30d 15:00:00          0d  9:00:00          0d  0:01:43          0d  0:00:01        540    98.8%    30.00000
+** INFO   :          30d 16:00:00          0d  8:00:00          0d  0:01:43          0d  0:00:01        480    98.9%    30.00000
+** INFO   :          30d 17:00:00          0d  7:00:00          0d  0:01:43          0d  0:00:01        420    99.1%    30.00000
+** INFO   :          30d 18:00:00          0d  6:00:00          0d  0:01:43          0d  0:00:01        360    99.2%    30.00000
+** INFO   :          30d 19:00:00          0d  5:00:00          0d  0:01:43          0d  0:00:01        300    99.3%    30.00000
+** INFO   :          30d 20:00:00          0d  4:00:00          0d  0:01:43          0d  0:00:01        240    99.5%    30.00000
+** INFO   :          30d 21:00:00          0d  3:00:00          0d  0:01:43          0d  0:00:00        180    99.6%    30.00000
+** INFO   :          30d 22:00:00          0d  2:00:00          0d  0:01:44          0d  0:00:00        120    99.7%    30.00000
+** INFO   :          30d 23:00:00          0d  1:00:00          0d  0:01:44          0d  0:00:00         60    99.9%    30.00000
+** INFO   :          31d  0:00:00          0d  0:00:00          0d  0:01:44          0d  0:00:00          0   100.0%    30.00000
+** INFO   : 
+** INFO   : 
+** INFO   : 
+** INFO   : extra timer:Flow geometry                                        0.0950000286
+** INFO   : extra timer:Flow init                                            0.0479998589
+** INFO   : extra timer:Set boundaries                                       1.7149946690
+** INFO   : extra timer:Sethuau                                             23.4940326214
+** INFO   : extra timer:setdt                                                1.7009966373
+** INFO   : extra timer:Compute advection term                              11.9479825497
+** INFO   : extra timer:u0u1                                                 0.3579998016
+** INFO   : extra timer:Setumod                                             22.5289974213
+** INFO   : extra timer:Set conveyance                                       1.7579979897
+** INFO   : extra timer:Set structures actual parameters                     0.0660007000
+** INFO   : extra timer:Findcells/preparecells                               0.0150001049
+** INFO   : extra timer:Renumber flownodes                                   0.0139999390
+** INFO   : extra timer:Set bedlevel from ext-file                           0.0289998055
+** INFO   : extra timer:step_reduce                                         37.1430006027
+** INFO   : extra timer:Transport                                            5.8869976997
+** INFO   : extra timer:Output                                               2.3019993305
+** INFO   : extra timer:unc_write_his                                        0.5500011444
+** INFO   : extra timer:fill_valobs                                          1.3089969158
+** INFO   : extra timer:unc_write_his obs/crs data 2                         0.0169994831
+** INFO   : extra timer:unc_write_his str write                              0.0139997005
+** INFO   : extra timer:unc_write_his time data                              0.2649998665
+** INFO   : extra timer:unc_write_his IDX data                               0.0590000153
+** INFO   : extra timer:unc_write_flowgeom_filepointer_ugrid                 0.0360000134
+** INFO   : extra timer:unc_write_map_filepointer_ugrid                      0.0879998207
+** INFO   : extra timer:unc_write_flowgeom_filepointer_ugrid INI             0.0380001068
+** INFO   : extra timer:unc_write_map_filepointer_ugrid TIME wri             0.0310008526
+** INFO   : extra timer:unc_write_map_filepointer_ugrid vars                 0.0189988613
+** INFO   : extra timer:update HIS data DtUser                               1.3389968872
+** INFO   : extra timer:call wrirst                                          0.0279996395
+** INFO   : extra timer:call wrimap                                          0.1190001965
+** INFO   : extra timer:call wriclm                                          0.0169999599
+** INFO   : extra timer:call flow_externaloutput                             0.9050030708
+** INFO   : 
+** INFO   : 
+** INFO   : 
+** INFO   : nr of timesteps        ( )  :         89347.0000000000
+** INFO   : average timestep       (s)  :            29.9771679277
+** INFO   : nr of setbacks         ( )  :             0.0000000000
+** INFO   : 
+** INFO   : 
+** INFO   : simulation period      (d)  :            31.0000000000
+** INFO   : total computation time (d)  :             0.0012347338
+** INFO   : time modelinit         (d)  :             0.0000033565
+** INFO   : time steps (+ plots)   (d)  :             0.0012313773
+** INFO   : 
+** INFO   : simulation period      (h)  :           744.0000000000
+** INFO   : total computation time (h)  :             0.0296336111
+** INFO   : time modelinit         (h)  :             0.0000805555
+** INFO   : time steps (+ plots)   (h)  :             0.0295530556
+** INFO   : 
+** INFO   : simulation period      (s)  :       2678400.0000000000
+** INFO   : total computation time (s)  :           106.6809999943
+** INFO   : time modelinit         (s)  :             0.2899999619
+** INFO   : time steps (+ plots)   (s)  :           106.3910000324
+** INFO   : 
+** INFO   : 
+** INFO   : time iniexternalforc.  (s)  :             0.0049998760
+** INFO   : 
+** INFO   : time inistep           (s)  :            65.0450019836
+** INFO   : time setumod           (s)  :            22.4179990292
+** INFO   : time furu              (s)  :             1.4959955215
+** INFO   : time solve             (s)  :             2.7239999771
+** INFO   : time gausselimination  (s)  :             0.4270000000
+** INFO   : time gausssubstitution (s)  :             0.3209999998
+** INFO   : time totalsolve        (s)  :             2.8459999996
+** INFO   : time setexternalforc.  (s)  :             0.0420007706
+** INFO   : time setexternalfbnd.  (s)  :             1.6219961643
+** INFO   : time steps             (s)  :           103.7610020638
+** INFO   : fraction solve/steps   ( )  :             0.0262526375
+** INFO   : total/(dnt*ndx)        (s)  :             0.0000001385
+** INFO   : av nr of cont. it s1it ( )  :             0.0000111922
+** INFO   : time transport [s]         :             6.1329999998
+** INFO   : time debug     [s]         :             0.0000000000
+** INFO   : 
+** INFO   : 
+** INFO   : 
+** INFO   : Computation started  at: 15:07:45, 12-03-2022
+** INFO   : Computation finished at: 15:09:32, 12-03-2022
+** INFO   : 
+** INFO   : simulation period      (h)  :           744.0000000000
+** INFO   : total time in timeloop (h)  :             0.0295530556
+** INFO   : MPI    : no.
+** INFO   : OpenMP : yes.         #threads max : 1
+** INFO   : 
+** INFO   : 
+** INFO   : 
+** INFO   : Opened file : output\FlowFM_numlimdt.xyz
+** INFO   : Closed file : output\FlowFM_numlimdt.xyz
+** INFO   : 

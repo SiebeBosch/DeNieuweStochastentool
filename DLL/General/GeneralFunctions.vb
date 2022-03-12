@@ -7923,7 +7923,7 @@ Public Class GeneralFunctions
         Return Math.Sqrt((X2 - X1) ^ 2 + (Y2 - Y1) ^ 2)
     End Function
 
-    Friend Function GetDirFromPath(ByVal path As String) As String
+    Public Function GetDirFromPath(ByVal path As String) As String
         Try
             Return path.Substring(0, path.LastIndexOf("\") + 1)
         Catch ex As Exception
@@ -13197,6 +13197,26 @@ Public Class GeneralFunctions
 
     End Function
 
+    Public Function ReplaceStringInFile(Path As String, OriginalString As String, ReplacementString As String) As Boolean
+        Try
+            Dim myContent As String
+
+            Using myReader As New StreamReader(Path)
+                myContent = myReader.ReadToEnd
+            End Using
+
+            myContent = myContent.Replace(OriginalString, ReplacementString)
+
+            Using myWriter As New StreamWriter(Path)
+                myWriter.Write(myContent)
+            End Using
+
+            Return True
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error Integer Function ReplaceStringInFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
     Public Function Bod2KleiZandVeen(ByVal EERSTE_BOD As String, ByRef SoilClass As enmSoilTypeBuisdrainagekaart) As Boolean
         Try
             Dim CapSimCode As Long
