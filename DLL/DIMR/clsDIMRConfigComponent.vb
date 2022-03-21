@@ -25,6 +25,10 @@ Public Class clsDIMRConfigComponent
         Return SubDir
     End Function
 
+    Public Function GetFullDir() As String
+        Return DIMR.ProjectDir & "\" & GetSubDir()
+    End Function
+
     Public Sub SetLibrary(myLibrary As String)
         Library = myLibrary
     End Sub

@@ -205,6 +205,9 @@
     <Compile Include="DIMR\clsDIMRScenario.vb" />
     <Compile Include="DIMR\clsDIMRScenarios.vb" />
     <Compile Include="DIMR\clsHisNCFile.vb" />
+    <Compile Include="DIMR\clsIniFile.vb" />
+    <Compile Include="DIMR\clsIniFileAttribute.vb" />
+    <Compile Include="DIMR\clsIniFileChapter.vb" />
     <Compile Include="DIMR\clsMDUFile.vb" />
     <Compile Include="DIMR\clsNetworkFile.vb" />
     <Compile Include="DIMR\clsFlowFMComponent.vb" />

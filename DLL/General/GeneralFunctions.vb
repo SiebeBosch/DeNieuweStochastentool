@@ -24,16 +24,10 @@ Public Class GeneralFunctions
         Public LOCATIONID As String
         Public PARAMETER As String
     End Structure
-    Public Enum enmDIMRFileOperation
-        replacefile = 0
-        replacesnippet = 1
-        replacevalue = 2
-    End Enum
-
-    Public Enum enmDIMRFileType
-        structuredefinitions = 0
-        boundaryconditions = 1
-        restartfile = 2
+    Public Enum enmDIMRIniFileReplacementOperation
+        bestand = 0         'replaces the entire file
+        sectie = 1      'replaces one specific section, e.g. [boundary]
+        waarde = 2        'replaces one specific value in one specific section. E.g. T0 in the section [Structure] for object with id "dambreak"
     End Enum
 
     Public Enum enmHydroModule
@@ -2456,7 +2450,7 @@ Public Class GeneralFunctions
             End If
 
             If SaveResultFile Then
-                deleteShapeFile(fixedSFPath)
+                DeleteShapeFile(fixedSFPath)
                 fixedSF.SaveAs(fixedSFPath)
             End If
             Return True
@@ -4865,6 +4859,73 @@ Public Class GeneralFunctions
         Return myList
     End Function
 
+
+    Public Function getBaseFromFilename(FileName) As String
+        For i = FileName.length To 2 Step -1
+            If Mid(FileName, i, 1) = "." Then
+                Return Left(FileName, i - 1)
+            End If
+        Next
+        Return FileName
+    End Function
+
+    Public Function ParseStringMultiDelimiter(ByRef myString As String, Delimiters As List(Of String), Optional ByVal QuoteHandlingFlag As Integer = 1, Optional ByVal ResultMustBeNumeric As Boolean = False) As String
+        'this function parses a string by accepting multiple delimiters
+        'one condition: each delimiter must consist of exactly one character
+        Dim quoteEven As Boolean
+        Dim tmpString As String = "", tmpChar As String = ""
+
+        myString = myString.Trim
+        quoteEven = True
+
+        'Quotehandlingflag: default = 1
+        '0 = items between quotes are NOT being treated as separate items (parsing also between quotes)
+        '1 = items between single quotes are being treated as separate items (no parsing between single quotes)
+        '2 = items between double quotes are being treated as separate items (no parsing between double quotes)
+
+        Dim i As Integer
+        For i = 1 To Len(myString)
+            'snoep een karakter af van de string
+            tmpChar = Left(myString, 1)
+
+            If (tmpChar = "'" And QuoteHandlingFlag = 1) Or (tmpChar = Chr(34) And QuoteHandlingFlag = 2) Then
+                If quoteEven = True Then
+                    quoteEven = False
+                    tmpString = tmpString & tmpChar
+                    myString = Right(myString, myString.Length - 1)
+                Else
+                    quoteEven = True 'dit betekent dat we klaar zijn
+                    tmpString = Right(tmpString, tmpString.Length - 1) 'laat bij het teruggeven meteen de quotes maar weg!
+                    myString = Right(myString, myString.Length - 1)
+                End If
+            ElseIf Delimiters.Contains(tmpChar) And quoteEven = True Then
+                myString = Right(myString, myString.Length - 1)
+                Return tmpString
+
+                'If Not tmpString = "" Then
+                '    myString = Right(myString, myString.Length - 1)
+                '    'Return tmpString
+                '    Exit For
+                'Else
+                '    myString = Right(myString, myString.Length - 1)
+                'End If
+            ElseIf myString <> "" Then
+                myString = Right(myString, myString.Length - 1)
+                tmpString = tmpString & tmpChar
+            End If
+        Next
+
+        If ResultMustBeNumeric AndAlso Not IsNumeric(tmpString) Then
+            myString = tmpString & Delimiters(0) & myString
+            Me.setup.Log.AddWarning("Numeric value expected after token " & tmpString & " in string " & myString & ". Value of 0 was returned.")
+            Return 0
+        Else
+            Return tmpString
+        End If
+
+
+    End Function
+
     Public Sub DataTable2CSV(ByRef dtRes As DataTable, ByRef dtRuns As DataTable, path As String, delimiter As String)
         Dim i As Integer, j As Integer, k As Integer, myStr As String, RUNID As String
 
@@ -5976,7 +6037,7 @@ Public Class GeneralFunctions
         Next
     End Sub
 
-    Public Function CopyDirectoryContent(SourcePath As String, destinationPath As String, IncludeSubdirs As Boolean) As Boolean
+    Public Function CopyDirectoryContent(SourcePath As String, destinationPath As String, IncludeSubdirs As Boolean, Optional ByVal ExcludeContenFromDir As String = "") As Boolean
         Try
             Dim sourceDirectoryInfo As New System.IO.DirectoryInfo(SourcePath)
 
@@ -5995,10 +6056,15 @@ Public Class GeneralFunctions
                     System.IO.File.Copy(fileSystemInfo.FullName, destinationFileName, True)
                 Else
                     ' Recursively call the mothod to copy all the neste folders
-                    CopyDirectoryContent(fileSystemInfo.FullName, destinationFileName, IncludeSubdirs)
+                    If Not fileSystemInfo.FullName = ExcludeContenFromDir Then
+                        CopyDirectoryContent(fileSystemInfo.FullName, destinationFileName, IncludeSubdirs, ExcludeContenFromDir)
+                    Else
+                        'create the directory without the content
+                        If Not Directory.Exists(destinationFileName) Then Directory.CreateDirectory(destinationFileName)
+                    End If
                 End If
             Next
-
+            Return True
         Catch ex As Exception
             Me.setup.Log.AddError(ex.Message)
             Return False
@@ -7925,7 +7991,7 @@ Public Class GeneralFunctions
 
     Public Function GetDirFromPath(ByVal path As String) As String
         Try
-            Return path.Substring(0, path.LastIndexOf("\") + 1)
+            Return path.Substring(0, path.LastIndexOf("\"))
         Catch ex As Exception
             Return ""
         End Try
@@ -8997,6 +9063,247 @@ Public Class GeneralFunctions
             Return True
         Catch ex As Exception
             Me.setup.Log.AddError("Error in function IdentifyCenterMostParenthesesInMathExpression while processing expression " & Expression & ": " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function ReadAttributeFromMDUFile(path As String, myAttributeName As String) As String
+        Try
+            Dim myStr As String, tmpStr As String
+            Dim isPos As Integer
+            Dim AttrPos As Integer
+            Using iniReader As New StreamReader(path)
+                While Not iniReader.EndOfStream
+                    myStr = iniReader.ReadLine
+                    AttrPos = InStr(myStr, myAttributeName, CompareMethod.Text)
+                    isPos = InStr(myStr, "=", CompareMethod.Text)
+                    If AttrPos > 0 AndAlso isPos > AttrPos Then
+                        'found!
+                        tmpStr = ParseString(myStr, "=")
+                        Return myStr.Trim
+                    End If
+                End While
+            End Using
+            Return ""
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error reading attribute " & myAttributeName & " from MDU file " & path)
+            Return ""
+        End Try
+    End Function
+
+    Public Function ReadAttributeValueFromDHydrofile(path As String, myAttributeName As String, Optional ByVal Chapter As String = "") As List(Of String)
+        'this function reads the value as assigned to a 
+        Try
+            Dim myLine As String
+            Dim myResults As New List(Of String)
+            Dim Attr As String
+            Dim CurrentChapter As String = ""
+            Using iniReader As New StreamReader(path)
+                While Not iniReader.EndOfStream
+                    myLine = iniReader.ReadLine.Trim
+                    If Left(myLine, 1) = "[" AndAlso Right(myLine, 1) = "]" Then
+                        CurrentChapter = myLine
+                    Else
+                        Attr = ParseString(myLine, "=").Trim.ToLower
+                        If Attr = myAttributeName.Trim.ToLower Then
+                            If Chapter = "" OrElse CurrentChapter.Trim.ToLower = Chapter.Trim.ToLower Then
+                                While Not myLine = ""
+                                    myResults.Add(ParseString(myLine, " "))
+                                End While
+                            End If
+                        End If
+                    End If
+                End While
+            End Using
+            Return myResults
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error reading attribute value from D-Hydro file: " & path & ", Attribute: " & myAttributeName)
+            Return Nothing
+        End Try
+
+    End Function
+
+    Public Function ReplaceSectionInDHydroFile(Path As String, SectionHeader As String, IdentifierAttribute As String, IdentifierValue As String, SectionContent As List(Of String)) As Boolean
+        Try
+            Dim myLine As String
+            Dim OldContent As New List(Of String)
+            Dim SectionWritten As Boolean = False
+            Dim CurrentChapter As String = ""
+            Dim CurrentChapterStartIdx As Integer = -1
+            Dim CurrentIdentifier As String = ""
+            Dim CurrentValue As String = ""
+            Dim ChapterStartIdx As Integer = -1
+            Dim ChapterEndIdx As Integer = -1
+
+            'read the file's content
+            Using iniReader As New StreamReader(Path)
+                While Not iniReader.EndOfStream
+                    OldContent.Add(iniReader.ReadLine.Trim)
+                End While
+            End Using
+
+            'find the start- and endindex of our desired section
+            For i = 0 To OldContent.Count - 1
+                If Left(OldContent(i), 1) = "[" AndAlso InStr(OldContent(i), "]") > 0 Then
+                    CurrentChapter = OldContent(i).Trim.ToLower        'keep track of which chapter we're in
+                    CurrentChapterStartIdx = i
+                    If ChapterStartIdx >= 0 Then
+                        ChapterEndIdx = i - 1                         'it looks like we found a new chapter. So close up!
+                        Exit For
+                    End If
+                Else
+                    'parse the line and determine the attribute we're currently in
+                    myLine = OldContent(i)
+                    Dim myStr As String = setup.GeneralFunctions.ParseString(myLine, "=")
+                    If myStr.Trim.ToLower = IdentifierAttribute.Trim.ToLower Then
+                        CurrentIdentifier = myStr.Trim.ToLower
+                    End If
+                    If CurrentChapter.Trim.ToLower = SectionHeader.Trim.ToLower AndAlso CurrentIdentifier.Trim.ToLower = IdentifierAttribute.Trim.ToLower Then
+                        CurrentValue = setup.GeneralFunctions.ParseString(myLine)
+                        If CurrentValue.Trim.ToLower = IdentifierValue.Trim.ToLower Then
+                            ChapterStartIdx = CurrentChapterStartIdx
+                        End If
+                    End If
+                End If
+            Next
+
+            'for situations where our chapter is the last one
+            If ChapterStartIdx >= 0 AndAlso ChapterEndIdx = -1 Then
+                ChapterEndIdx = OldContent.Count - 1
+            End If
+
+            If ChapterStartIdx = -1 Then
+                Throw New Exception("Fout: de gevraagde sectie met kop " & SectionHeader & " en " & IdentifierAttribute & " = " & IdentifierValue & " niet gevonden in het modelbestand " & Path)
+            End If
+
+            'and write the adjusted content back to the same file
+            Using iniWriter As New StreamWriter(Path)
+                For i = 0 To ChapterStartIdx - 1
+                    iniWriter.WriteLine(OldContent(i))
+                Next
+                For Each myLine In SectionContent
+                    iniWriter.WriteLine(myLine)
+                Next
+                For i = ChapterEndIdx + 1 To OldContent.Count - 1
+                    iniWriter.WriteLine(OldContent(i))
+                Next
+            End Using
+
+            Return True
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error in function replaceSectionInDHydroFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+
+
+    Public Function ReplaceAttributeInDHydroFile(Path As String, SectionHeader As String, IdentifierAttribute As String, IdentifierValue As String, AttributeName As String, NewValue As String) As Boolean
+        Try
+            Dim myLine As String
+            Dim myStr As String
+            Dim Content As New List(Of String)
+            Dim SectionWritten As Boolean = False
+            Dim CurrentChapter As String = ""
+            Dim CurrentIdentifierAttr As String = ""
+            Dim CurrentIdentifierValue As String = ""
+            Dim CurrentValue As String = ""
+
+            'read the file's content
+            Using iniReader As New StreamReader(Path)
+                While Not iniReader.EndOfStream
+                    Content.Add(iniReader.ReadLine.Trim)
+                End While
+            End Using
+
+            'find the start- and endindex of our desired section
+            For i = 0 To Content.Count - 1
+                If Left(Content(i), 1) = "[" AndAlso InStr(Content(i), "]") > 0 Then
+                    CurrentChapter = Content(i)
+                ElseIf CurrentChapter.Trim.ToLower = SectionHeader.Trim.ToLower Then
+                    'parse the line and determine the attribute we're currently in
+                    myLine = Content(i)
+                    myStr = setup.GeneralFunctions.ParseString(myLine, "=")
+                    If myStr.Trim.ToLower = IdentifierAttribute.Trim.ToLower Then
+                        CurrentIdentifierAttr = myStr.Trim.ToLower
+                        CurrentIdentifierValue = myLine.Trim.ToLower
+                    ElseIf myStr.Trim.ToLower = AttributeName.Trim.ToLower Then
+                        If CurrentChapter.Trim.ToLower = SectionHeader.Trim.ToLower AndAlso CurrentIdentifierValue.Trim.ToLower = IdentifierValue.Trim.ToLower Then
+                            Content(i) = AttributeName & " = " & NewValue
+                        End If
+                    End If
+                End If
+            Next
+
+            'and write the adjusted content back to the same file
+            Using iniWriter As New StreamWriter(Path)
+                For i = 0 To Content.Count - 1
+                    iniWriter.WriteLine(Content(i))
+                Next
+            End Using
+
+            Return True
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error in function ReplaceAttributeInDHydroFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+
+    Public Function ReplaceAttributeValueInDHydroFile(Path As String, OldValue As String, NewValue As String, Optional ByVal Chapter As String = "") As Boolean
+        Try
+            Dim Found As Boolean = False
+            Dim Content As New List(Of String)
+            Dim currentChapter As String = ""           'keeps track of which chapter we're in
+            Dim i As Integer
+            Using iniReader As New StreamReader(Path)
+                While Not iniReader.EndOfStream
+                    Content.Add(iniReader.ReadLine.Trim)
+                End While
+            End Using
+
+            Using iniWriter As New StreamWriter(Path)
+                For i = 0 To Content.Count - 1
+
+                    'keep track of in which chapter we are
+                    If Left(Content(i), 1) = "[" AndAlso Right(Content(i), 1) = "]" Then
+                        currentChapter = Content(i)
+                    End If
+
+                    Dim isPos As Integer = InStr(Content(i), "=")
+                    If isPos > 0 AndAlso InStr(Content(i), OldValue, CompareMethod.Text) > isPos Then
+
+                        'if we're in the right chapter (or if chapter is not relevant), replace the attribut value
+                        If (Chapter = "" OrElse Chapter.Trim.ToLower = currentChapter.Trim.ToLower) Then
+                            Found = True
+                            'we need to parse this line so we can replace the requested filename inside
+                            Dim OldLine As String = Content(i)
+                            Dim NewLine As String = ""
+                            Dim myFileName As String = ""
+                            Dim Attribute As String = ParseString(OldLine, "=")
+                            NewLine = Attribute & " = "
+                            While Not OldLine = ""
+                                'parse the attribute values by space (multiple filenames possible)
+                                myFileName = ParseString(OldLine, " ")
+                                If myFileName.Trim.ToLower = OldValue.Trim.ToLower Then
+                                    NewLine &= NewValue & " "
+                                Else
+                                    NewLine &= myFileName
+                                End If
+                            End While
+                            Content(i) = NewLine
+                        End If
+
+                    End If
+
+                    'write each line back to the file
+                    iniWriter.WriteLine(Content(i))
+
+                Next
+            End Using
+            Return Found
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error replacing attribute value in D-Hydro file: " & Path & ", Old value: " & OldValue & ", replaced by: " & NewValue)
             Return False
         End Try
     End Function

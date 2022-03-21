@@ -1,19 +1,14 @@
 ﻿Public Class clsDIMRRun
     'this class contains all the content required for a DIMR simulation
-    Public ClassName As String
-    Friend Operations As New List(Of clsDIMRFileOperation)
-    Friend Scenarios As New Dictionary(Of String, clsDIMRScenario)    'the unique combination of scenario's that make up this simulation
-    Public ResultsDir As String
-    Public DimrConfigPath As String 'each run gets its own unique dimr_config.xml
-    Public MDUFileName As String 'each run gets its own unique .mdu file
+    Public Operations As New List(Of clsDIMRFileOperation)          'all file operations required to establish this particular run
+    Public Scenarios As New Dictionary(Of String, clsDIMRScenario)  'the unique combination of scenario's that make up this simulation
+    Public InputFiles As New Dictionary(Of String, String)          'key = the original filename, value = the full path to this file as used in the run
+    Public DIMR As clsDIMR         'this object contains all information needed to run the simulation
 
-    Public Sub SetDimrconfigPath(myPath As String)
-        DimrConfigPath = myPath
+    Public Sub SetDIMRProject(ByRef DIMRProject As clsDIMR)
+        DIMR = DIMRProject
     End Sub
 
-    Public Sub SetMDUFileName(myFileName As String)
-        MDUFileName = myFileName
-    End Sub
 
     Public Function GetName() As String
         'the name of a run is made up of the names of each underying scenario
@@ -27,15 +22,11 @@
         Return Name
     End Function
 
-    Public Sub SetResultsDir(myDir As String)
-        ResultsDir = myDir
-    End Sub
-
-    Public Function Execute(BatchFilePath As String, WorkDir As String) As Boolean
+    Public Function Execute() As Boolean
         Try
             Dim myProcess As New Process
-            myProcess.StartInfo.WorkingDirectory = WorkDir
-            myProcess.StartInfo.FileName = BatchFilePath
+            myProcess.StartInfo.WorkingDirectory = DIMR.ProjectDir
+            myProcess.StartInfo.FileName = DIMR.BatchFilePath
             myProcess.StartInfo.Arguments = ""
             myProcess.Start()
 

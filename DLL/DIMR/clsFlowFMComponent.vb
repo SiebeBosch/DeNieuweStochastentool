@@ -13,21 +13,16 @@ Public Class clsFlowFMComponent
         DIMR = myDIMR
     End Sub
 
+    Public Function getOutputFullDir() As String
+        'read the MDU file
+        ReadMDU()
+        Return MDUFile.GetOutputFullDir
+    End Function
+
     Public Function getDirectory() As String
         Return DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\"
     End Function
 
-    Public Function ReadNetwork() As Boolean
-        Try
-            If Not System.IO.File.Exists(MDUFile.NetFile) Then Throw New Exception("Network topology file not found: " & Network.Path)
-            Network = New clsNetworkFile(MDUFile.NetFile, Me.Setup)
-            If Not Network.Read() Then Throw New Exception("Error reading FlowFM Network.")
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError(ex.Message)
-            Return False
-        End Try
-    End Function
 
     Public Function ReadMDU() As Boolean
         Try
@@ -35,8 +30,8 @@ Public Class clsFlowFMComponent
             'for now it just retrieves the name of our networkfile
             Dim path As String = DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\" & DIMR.DIMRConfig.Flow1D.GetInputFile
             If Not System.IO.File.Exists(path) Then Throw New Exception("Path does not exist: " & path)
-            MDUFile = New clsMDUFile(Me.Setup, DIMR, path)
-            MDUFile.Read()
+            MDUFile = New clsMDUFile(Me.Setup, DIMR, DIMR.DIMRConfig.Flow1D)
+            MDUFile.Read(path)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error reading MDU file: " & ex.Message)
@@ -75,46 +70,6 @@ Public Class clsFlowFMComponent
     Public Function GetHisResultsFileName() As String
         Dim HisResultsFileName As String = Strings.Replace(DIMR.DIMRConfig.Flow1D.GetInputFile(), ".mdu", "_his.nc")
         Return HisResultsFileName
-    End Function
-
-    Public Function ReadObservationPoints() As Boolean
-        Try
-            Dim myLoc As clsXY
-            Dim X As Double, Y As Double
-            Dim myLine As String
-            Dim ID As String, BranchID As String, Chainage As Double
-            Dim iniPath As String = DIMR.FlowFM.MDUFile.ObsFile
-
-            ObservationPoints = New Dictionary(Of String, clsXY)
-            Using iniReader As New StreamReader(iniPath)
-                While Not iniReader.EndOfStream
-                    myLine = iniReader.ReadLine()
-                    If myLine.Trim.ToLower = "[observationpoint]" Then
-
-                        myLine = iniReader.ReadLine()
-                        ID = Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
-
-                        myLine = iniReader.ReadLine()
-                        BranchID = Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
-
-                        myLine = iniReader.ReadLine()
-                        Chainage = Me.Setup.GeneralFunctions.ReadIniFileProperty(myLine)
-
-                        'since the ini file does not contain any information about the network topology we will need to deduct the x and y coords
-                        Network.GetCoordsFromChainage(BranchID, Chainage, X, Y)
-
-                        myLoc = New clsXY(ID, ID, X, Y)
-                        ObservationPoints.Add(myLoc.ID.Trim.ToUpper, myLoc)
-
-                    End If
-                End While
-            End Using
-
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError(ex.Message)
-            Return False
-        End Try
     End Function
 
 
