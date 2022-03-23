@@ -10,6 +10,8 @@ Imports System.IO
 Imports STOCHLIB.General
 Imports STOCHLIB.GeneralFunctions
 
+Imports System.Threading
+
 Module DIMR_RUNR
 
     Dim Setup As clsSetup
@@ -24,6 +26,11 @@ Module DIMR_RUNR
             Dim DimrConfigPath As String
             Dim ExcelConfigPath As String
             Dim BatchFilePath As String
+            Dim MaxThreads As Integer
+            Dim Thread1 As System.Threading.Thread = Nothing
+            Dim Thread2 As System.Threading.Thread = Nothing
+            Dim Thread3 As System.Threading.Thread = Nothing
+            Dim Thread4 As System.Threading.Thread = Nothing
 
             SpreadsheetInfo.SetLicense("EVIG-1Y89-FYME-DPUJ")
 
@@ -31,17 +38,19 @@ Module DIMR_RUNR
             Console.WriteLine("Dit programma stuurt simulaties met de Deltares Integrated Model Runner (DIMR) aan.")
             Console.WriteLine("Het configureren van de gevraagde simulaties moet worden gedaan in een Excel-bestand.")
             Console.WriteLine("Zie hiertoe het meegeleverde voorbeeld in de map DIMR_Sample.")
-            If args.Length <> 3 Then
+            If args.Length <> 4 Then
                 Console.WriteLine("Ongeldig aantal argumenten meegegeven aan de applicatie. Geef: pad naar dimr_config, pad naar excel-configuratie en pad naar de batchfile.")
             Else
 
                 DimrConfigPath = args(0)
                 ExcelConfigPath = args(1)
                 BatchFilePath = args(2)
+                MaxThreads = args(3)
 
                 Console.WriteLine("Pad naar de DIMR-configuratie: " & args(0))
                 Console.WriteLine("Pad naar de Excel-configuratie: " & args(1))
                 Console.WriteLine("Pad naar de batchfile: " & args(2))
+                Console.WriteLine("Maximum aantal parallelle simulaties: " & args(3))
 
                 If Not System.IO.File.Exists(DimrConfigPath) Then Throw New Exception("Kritieke fout: opgegeven DIMR-configuratiebestand bestaat niet: " & DimrConfigPath)
                 If Not System.IO.File.Exists(ExcelConfigPath) Then Throw New Exception("Kritieke fout: opgegeven Excel-configuratiebestand bestaat niet: " & ExcelConfigPath)
@@ -62,6 +71,8 @@ Module DIMR_RUNR
 
                 'now execute the simulations one by one
                 For Each Run As clsDIMRRun In Runs.Runs.Values
+
+
 
                     Console.WriteLine("Start uitvoering simulatie " & Run.GetName & "...")
 
@@ -202,42 +213,72 @@ Module DIMR_RUNR
                         If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
                     Next
 
-                    'Stop
-
                     'only run this simulation if there are no results present in the output dir
                     Dim OutputDir As String = Run.DIMR.FlowFM.getOutputFullDir
                     If System.IO.Directory.GetFiles(OutputDir).Length = 0 Then
                         Console.WriteLine("")
                         Console.WriteLine("Simulatie " & Run.GetName & " wordt gestart...")
-                        Run.Execute()
 
-                        'we only want to keep the files specified in the output section of the Excel configuration (saving disk space)
-                        Dim Files As New Collection
-                        Setup.GeneralFunctions.CollectAllFilesInDir(Run.DIMR.FlowFM.getOutputFullDir, False, "", Files)
-                        For Each path As String In Files
-                            Dim i As Integer
-                            Dim Keep As Boolean = False
-                            For i = 0 To OutputFiles.Count - 1
+                        'Run.ExecuteAndRemoveUnNecessaryOutputFiles()
 
-                                'here we convert the (user friendly *.extension) by the regular expression: .*\.extension
-                                Dim Pattern As String = OutputFiles(i)
-                                If Left(Pattern, 1) = "*" Then
-                                    Pattern = Right(Pattern, Pattern.Length - 1) & "$"
-                                End If
+                        'wait for a thread to become available for this run!
+                        Dim ThreadFound As Boolean = False
+                        While Not ThreadFound
+                            'wait for any of our threads to become available
+                            If Thread1 Is Nothing OrElse Thread1.ThreadState = ThreadState.Stopped Then
+                                Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 1...")
+                                Thread1 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
+                                Thread1.Start()
+                                ThreadFound = True
+                            ElseIf MaxThreads > 1 AndAlso (Thread2 Is Nothing OrElse Thread2.ThreadState = ThreadState.Stopped) Then
+                                Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 2...")
+                                Thread2 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
+                                Thread2.Start()
+                                ThreadFound = True
+                            ElseIf MaxThreads > 2 AndAlso (Thread3 Is Nothing OrElse Thread3.ThreadState = ThreadState.Stopped) Then
+                                Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 3...")
+                                Thread3 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
+                                Thread3.Start()
+                                ThreadFound = True
+                            ElseIf MaxThreads > 3 AndAlso (Thread4 Is Nothing OrElse Thread4.ThreadState = ThreadState.Stopped) Then
+                                Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 4...")
+                                Thread4 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
+                                Thread4.Start()
+                                ThreadFound = True
+                            Else
+                                Setup.GeneralFunctions.Wait(10000)   'wait 10 seconds before checking again
+                            End If
+                        End While
 
-                                If Setup.GeneralFunctions.RegExMatch(Pattern, path, True) Then
-                                    Keep = True
-                                    Exit For
-                                End If
-                            Next
-                            If Not Keep Then File.Delete(path)
-                        Next
+
+
+
+                        ''we only want to keep the files specified in the output section of the Excel configuration (saving disk space)
+                        'Dim Files As New Collection
+                        'Setup.GeneralFunctions.CollectAllFilesInDir(Run.DIMR.FlowFM.getOutputFullDir, False, "", Files)
+                        'For Each path As String In Files
+                        '    Dim i As Integer
+                        '    Dim Keep As Boolean = False
+                        '    For i = 0 To OutputFiles.Count - 1
+
+                        '        'here we convert the (user friendly *.extension) by the regular expression: .*\.extension
+                        '        Dim Pattern As String = OutputFiles(i)
+                        '        If Left(Pattern, 1) = "*" Then
+                        '            Pattern = Right(Pattern, Pattern.Length - 1) & "$"
+                        '        End If
+
+                        '        If Setup.GeneralFunctions.RegExMatch(Pattern, path, True) Then
+                        '            Keep = True
+                        '            Exit For
+                        '        End If
+                        '    Next
+                        '    If Not Keep Then File.Delete(path)
+                        'Next
                     Else
                         Console.WriteLine("Simulation " & Run.GetName & " was skipped since its ouptut directory " & OutputDir & " already contains results")
                     End If
                 Next
 
-                Stop
 
             End If
         Catch ex As Exception
@@ -416,7 +457,7 @@ Module DIMR_RUNR
                             Console.WriteLine("Configuratie gelezen voor simulatie " & Runs.Runs.Values(Runs.Runs.Count - 1).GetName)
                         End If
 
-                        Run = New clsDIMRRun()
+                        Run = New clsDIMRRun(Setup)
                         For c = 0 To SimulationHeaders.Count - 1
                             If SimulationHeaders.Item(c) = "scenario" Then
                                 Scenario = GetScenario(worksheet.Cells(r, c).Value) 'get the corresponding scenario 
@@ -462,6 +503,12 @@ Module DIMR_RUNR
 
                 End If
             Next
+
+            'assign the required outputfiles to each of the runs. This is necessary since we cannot use arguments when initializing a thread
+            For Each Run In Runs.Runs.Values
+                Run.SetOutputFIles(OutputFiles)
+            Next
+
             Console.WriteLine("Inlezen van de Excel-configuratie succesvol.")
             Return True
         Catch ex As Exception

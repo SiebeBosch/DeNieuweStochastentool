@@ -1,14 +1,25 @@
-﻿Public Class clsDIMRRun
+﻿Imports STOCHLIB.General
+Imports System.IO
+Public Class clsDIMRRun
     'this class contains all the content required for a DIMR simulation
     Public Operations As New List(Of clsDIMRFileOperation)          'all file operations required to establish this particular run
     Public Scenarios As New Dictionary(Of String, clsDIMRScenario)  'the unique combination of scenario's that make up this simulation
     Public InputFiles As New Dictionary(Of String, String)          'key = the original filename, value = the full path to this file as used in the run
+    Public OutputFiles As New List(Of String)
     Public DIMR As clsDIMR         'this object contains all information needed to run the simulation
+    Private Setup As clsSetup
+
+    Public Sub New(ByRef mySetup As clsSetup)
+        Setup = mySetup
+    End Sub
 
     Public Sub SetDIMRProject(ByRef DIMRProject As clsDIMR)
         DIMR = DIMRProject
     End Sub
 
+    Public Function SetOutputFiles(myOutputFiles As List(Of String))
+        OutputFiles = myOutputFiles
+    End Function
 
     Public Function GetName() As String
         'the name of a run is made up of the names of each underying scenario
@@ -20,6 +31,38 @@
             Next
         End If
         Return Name
+    End Function
+
+    Public Function ExecuteAndRemoveUnNecessaryOutputFiles() As Boolean
+        Try
+            If Not Execute() Then Throw New Exception("Error executing simulation " & GetName())
+
+            'we only want to keep the files specified in the output section of the Excel configuration (saving disk space)
+            Dim Files As New Collection
+            Setup.GeneralFunctions.CollectAllFilesInDir(DIMR.FlowFM.getOutputFullDir, False, "", Files)
+            For Each path As String In Files
+                Dim i As Integer
+                Dim Keep As Boolean = False
+                For i = 0 To OutputFiles.Count - 1
+
+                    'here we convert the (user friendly *.extension) by the regular expression: .*\.extension
+                    Dim Pattern As String = OutputFiles(i)
+                    If Left(Pattern, 1) = "*" Then
+                        Pattern = Right(Pattern, Pattern.Length - 1) & "$"
+                    End If
+
+                    If Setup.GeneralFunctions.RegExMatch(Pattern, path, True) Then
+                        Keep = True
+                        Exit For
+                    End If
+                Next
+                If Not Keep Then File.Delete(path)
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ExecuteAndRemoveUnNecessaryOutputFiles: " & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function Execute() As Boolean

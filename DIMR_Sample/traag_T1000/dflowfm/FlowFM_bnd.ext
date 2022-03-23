@@ -1,0 +1,29 @@
+[General]
+    fileVersion           = 2.00                
+    fileType              = extForce            
+
+
+[Boundary]
+quantity=waterlevelbnd
+locationfile=Boundary01.pli
+forcingfile=WaterLevel.bc
+
+[Boundary]
+quantity=waterlevelbnd
+locationfile=Boundary02.pli
+forcingfile=WaterLevel.bc
+
+[Boundary]
+quantity=waterlevelbnd
+locationfile=Boundary03.pli
+forcingfile=WaterLevel.bc
+
+[Boundary]
+quantity=dischargebnd
+nodeId=Node001
+forcingfile=FlowFM_boundaryconditions1d.bc
+
+[Boundary]
+quantity=qhbnd
+nodeId=Node002
+forcingfile=FlowFM_boundaryconditions1d.bc
