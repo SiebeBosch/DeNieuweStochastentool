@@ -10,11 +10,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "StochastenTool", "Stochaste
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "STOCHLIB", "..\DLL\STOCHLIB.vbproj", "{9DCE2960-835C-4462-849A-58FB0900920B}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DIMR_RUNR", "..\DIMR_RUNR\DIMR_RUNR.vbproj", "{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DCE2960-835C-4462-849A-58FB0900920B} = {9DCE2960-835C-4462-849A-58FB0900920B}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,18 +44,6 @@ Global
 		{9DCE2960-835C-4462-849A-58FB0900920B}.Release|x64.Build.0 = Release|x64
 		{9DCE2960-835C-4462-849A-58FB0900920B}.Release|x86.ActiveCfg = Release|x86
 		{9DCE2960-835C-4462-849A-58FB0900920B}.Release|x86.Build.0 = Release|x86
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Debug|x64.ActiveCfg = Debug|x64
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Debug|x64.Build.0 = Debug|x64
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Debug|x86.Build.0 = Debug|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Release|x64.ActiveCfg = Release|x64
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Release|x64.Build.0 = Release|x64
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Release|x86.ActiveCfg = Release|Any CPU
-		{751DDD57-C26F-4F84-A919-7A4FDCFB4BFF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
