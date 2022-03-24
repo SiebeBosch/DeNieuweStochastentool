@@ -1,0 +1,4 @@
+d:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Release\DIMR_RUNR.exe "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\dimr_config.xml" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\Configuratie.xlsx" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\run.bat" 4 "d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"
+
+pause
+

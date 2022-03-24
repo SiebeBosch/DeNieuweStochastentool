@@ -4,6 +4,6 @@
     <StartArguments>"d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\dimr_config.xml" "d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\03.Dijkring48.Simulaties\Configuratie.xlsx" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\run.bat"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>"d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\dimr_config.xml" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\Configuratie.xlsx" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\run.bat" 2</StartArguments>
+    <StartArguments>"d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\dimr_config.xml" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\Configuratie.xlsx" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\run.bat" 4 "d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"</StartArguments>
   </PropertyGroup>
 </Project>

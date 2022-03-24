@@ -30,11 +30,10 @@ D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmAddMeteoStation
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmAddStochast.resources
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmAddStochastenNode.resources
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyGroundWater.resources
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyGroundwaterDHydro.resources
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyTidesByStatistics.resources
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.GenerateResource.cache
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CoreCompileInputs.cache
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CopyComplete
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.xml
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyGroundwaterDHydro.resources
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbprojAssemblyReference.cache

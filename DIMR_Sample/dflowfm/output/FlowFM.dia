@@ -52,15 +52,15 @@
 ** INFO   : Closed file : FlowFM_fxw.pliz
 ** INFO   : Finding crossed flowlinks...
 ** INFO   : done
-** INFO   : fixed weirs with kdtree2, elapsed time:     0.20000E-02s.
-** INFO   : fixed weirs: read files,  elapsed time:      0.0000    s.
+** INFO   : fixed weirs with kdtree2, elapsed time:     0.40000E-02s.
+** INFO   : fixed weirs: read files,  elapsed time:     0.20000E-02s.
 ** INFO   : fixed weirs: pol_to_flowlinks, elapsed time:      0.0000    s.
 ** INFO   : fixed weirs: find_crossed_links, elapsed time:     0.20000E-02s.
 ** INFO   : fixed weirs: attributes,  elapsed time:      0.0000    s.
 ** INFO   : nogauss , nocg :           4502          4119
 ** INFO   : ** Model initialization was successful **
 ** INFO   : * Active Model definition:
-# Generated on 09:46:20, 13-03-2022
+# Generated on 10:57:50, 24-03-2022
 # Deltares, D-Flow FM Version 1.2.140.140648, Jan 20 2022, 12:02:37
 # Source:https://svn.oss.deltares.nl/repos/delft3d/trunk/
 
@@ -536,7 +536,7 @@ Wriwaqbot3Doutput                         = 0                   # Write 3D water
 VolumeDryThreshold                        = 1.d-3
 DepthDryThreshold                         = 1.d-3
 ** INFO   : **
-** INFO   : Modelinit finished   at: 09:46:20, 13-03-2022
+** INFO   : Modelinit finished   at: 10:57:50, 24-03-2022
 ** INFO   : 
 ** INFO   : 
 ** INFO   : nr of netnodes               ( )  :                     8606
@@ -571,22 +571,17 @@ DepthDryThreshold                         = 1.d-3
 ** INFO   :    Sim. time done   Sim. time left   Real time used   Real time left Steps left Complete% Interval-averaged time step
 ** INFO   :           0d  0:01:00         30d 23:59:00          0d  0:00:00     ??d ??:??:??          44639     0.0%     0.00000
 ** INFO   : Done writing initial output to file(s).
-** INFO   :           0d  1:00:00         30d 23:00:00          0d  0:00:00          0d  0:03:39      44580     0.1%     0.00000
-** INFO   :           0d  2:00:00         30d 22:00:00          0d  0:00:00          0d  0:02:44      44520     0.3%    30.00000
-** INFO   :           0d  3:00:00         30d 21:00:00          0d  0:00:01          0d  0:02:26      44460     0.4%    30.00000
-** INFO   :           0d  4:00:00         30d 20:00:00          0d  0:00:01          0d  0:02:18      44400     0.5%    30.00000
-** INFO   :           0d  5:00:00         30d 19:00:00          0d  0:00:01          0d  0:02:13      44340     0.7%    30.00000
-** INFO   :           0d  6:00:00         30d 18:00:00          0d  0:00:01          0d  0:02:10      44280     0.8%    30.00000
-** INFO   :           0d  7:00:00         30d 17:00:00          0d  0:00:01          0d  0:02:08      44220     0.9%    30.00000
-** INFO   :           0d  8:00:00         30d 16:00:00          0d  0:00:01          0d  0:02:05      44160     1.1%    30.00000
-** INFO   :           0d  9:00:00         30d 15:00:00          0d  0:00:02          0d  0:02:02      44100     1.2%    30.00000
-** INFO   :           0d 10:00:00         30d 14:00:00          0d  0:00:02          0d  0:02:01      44040     1.3%    30.00000
+** INFO   :           0d  1:00:00         30d 23:00:00          0d  0:00:00          0d  0:03:36      44580     0.1%     0.00000
+** INFO   :           0d  2:00:00         30d 22:00:00          0d  0:00:00          0d  0:02:45      44520     0.3%    30.00000
+** INFO   :           0d  3:00:00         30d 21:00:00          0d  0:00:01          0d  0:02:24      44460     0.4%    30.00000
+** INFO   :           0d  4:00:00         30d 20:00:00          0d  0:00:01          0d  0:02:13      44400     0.5%    30.00000
+** INFO   :           0d  5:00:00         30d 19:00:00          0d  0:00:01          0d  0:02:08      44340     0.7%    30.00000
+** INFO   :           0d  6:00:00         30d 18:00:00          0d  0:00:01          0d  0:02:04      44280     0.8%    30.00000
+** INFO   :           0d  7:00:00         30d 17:00:00          0d  0:00:01          0d  0:02:04      44220     0.9%    30.00000
+** INFO   :           0d  8:00:00         30d 16:00:00          0d  0:00:01          0d  0:02:02      44160     1.1%    30.00000
+** INFO   :           0d  9:00:00         30d 15:00:00          0d  0:00:01          0d  0:02:02      44100     1.2%    30.00000
+** INFO   :           0d 10:00:00         30d 14:00:00          0d  0:00:02          0d  0:02:02      44040     1.3%    30.00000
 ** INFO   :           0d 11:00:00         30d 13:00:00          0d  0:00:02          0d  0:02:00      43980     1.5%    30.00000
 ** INFO   :           0d 12:00:00         30d 12:00:00          0d  0:00:02          0d  0:01:59      43920     1.6%    30.00000
-** INFO   :           0d 13:00:00         30d 11:00:00          0d  0:00:02          0d  0:01:58      43860     1.7%    30.00000
-** INFO   :           0d 14:00:00         30d 10:00:00          0d  0:00:02          0d  0:01:57      43800     1.9%    30.00000
-** INFO   :           0d 15:00:00         30d  9:00:00          0d  0:00:02          0d  0:01:56      43740     2.0%    30.00000
-** INFO   :           0d 16:00:00         30d  8:00:00          0d  0:00:03          0d  0:01:54      43680     2.2%    30.00000
-** INFO   :           0d 17:00:00         30d  7:00:00          0d  0:00:03          0d  0:01:54      43620     2.3%    30.00000
-** INFO   :           0d 18:00:00         30d  6:00:00          0d  0:00:03          0d  0:01:53      43560     2.4%    30.00000
-** INFO   :           0d 19:00:00         30d  5:00:00          0d  0:00:03          0d  0:01:52      43500     2.6%    30.00000
+** INFO   :           0d 13:00:00         30d 11:00:00          0d  0:00:02          0d  0:01:59      43860     1.7%    30.00000
+** INFO   :           0d 14:00:00         30d 10:00:00          0d  0:00:02          0d  0:02:00      43800     1.9%    30.00000
