@@ -48,6 +48,8 @@ Public Class clsDIMR
         Try
             If Not DIMRConfig.Read() Then Throw New Exception("Error reading DIMR Config File.")
             FlowFM.ReadMDU()
+            FlowFM.ReadNetwork()
+            FlowFM.ReadObservationpoints1D()
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error reading DIMR Configuration: " & ex.Message)
@@ -68,6 +70,54 @@ Public Class clsDIMR
         End Try
     End Function
 
+    Public Function getTMaxForXYLocation(X As Double, Y As Double, MaxSnappingDistance As Double, AddShiftSeconds As Integer, ByRef TimeMaxSecondsToReference As Integer, ByRef DateTimeMax As DateTime) As Boolean
+        'this function retrieves the timestep at which the maximum waterlevel occurs near a given XY-location
+        'it does so by finding the snappingpoint to the nearest branch
+        'and then moving upstream until the first observationpoint is encountered
+        'the simulation results for that observation point are then read from the _his.nc file
+        'and the timestep where the maximum occurred is recieved
+        'IMPORTANT: the function returns TMax as the number of seconds w.r.t. the RefDate as set in the .MDU file!!!
+        Try
+            Dim Results As Double() = Nothing
+            Dim Times As Double() = Nothing             'expressed in seconds w.r.t. reference date as set in .MDU
+            Dim TsMaxIdx As Integer = -1
+            Dim SnapBranch As cls1DBranch = Nothing
+            Dim SnapChainage As Double
+            Dim SnapDistance As Double
+            Dim MeshNode As cls1DMeshNode = Nothing
+            Dim ObservationPoint As cls1DBranchObject = Nothing
+
+            Dim Found As Boolean = False
+            Dim ExcludeBranches As New List(Of String)
+            While Not Found
+                'start searching for a snap location, walk upstream and search for the nearest observation point
+                'if not found, add the snapping reach to the ExcludeBranches List and try again
+                If Not FlowFM.Network.FindSnapLocation(X, Y, MaxSnappingDistance, SnapBranch, SnapChainage, SnapDistance, ExcludeBranches) Then Exit While
+                If FlowFM.GetFirstUpstreamObservationpoint(SnapBranch.ID, SnapChainage, ObservationPoint) Then
+                    FlowFM.GetWaterlevelsForObservationpoint1D(ObservationPoint.ID, Results, Times)
+                    Found = True
+                Else
+                    ExcludeBranches.Add(SnapBranch.ID)
+                End If
+            End While
+
+
+            'get the start- and endtime of our simulation
+            Dim ReferenceDate As DateTime
+            Dim StartDate As DateTime
+            Dim EndDate As DateTime
+            FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
+
+            TsMaxIdx = Setup.GeneralFunctions.MaxIdxFromArrayOfDouble(Results)      'de tijdstapindex voor de hoogste waterstand bij het doorbraakpunt!
+            TimeMaxSecondsToReference = Times(TsMaxIdx) + AddShiftSeconds              'tijdsmoment hoogste waterstand, uitgedrukt in seconden t.o.v. reference date
+            DateTimeMax = ReferenceDate.AddSeconds(TimeMaxSecondsToReference)
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function getTMaxForXYLocation of class clsDIMR: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     Public Function CloneCaseForCommandLineRun(SimulationDir As String, Optional ByVal StartDate As Date = Nothing, Optional ByVal EndDate As Date = Nothing) As clsDIMR
         'in this function we clone our entire DIMR project/case so it can be run from the command line

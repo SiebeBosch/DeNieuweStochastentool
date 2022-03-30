@@ -6,12 +6,84 @@ Public Class clsFlowFMComponent
 
     Friend MDUFile As clsMDUFile                                    'all model settings (e.g. filenames)
     Public Network As clsNetworkFile                                'the complete topological network for our model
-    Public ObservationPoints As New Dictionary(Of String, clsXY)    'the location of observation points in our model
+    'Public ObservationPoints As New Dictionary(Of String, clsXY)    'the location of observation points in our model
+
+    Public Observationpoints1D As New Dictionary(Of String, cls1DBranchObject)
+
+    Dim HisNCFile As clsHisNCFile
+    Dim MapNCFile As clsMapNCFile
 
     Public Sub New(ByRef mySetup As clsSetup, ByRef myDIMR As clsDIMR)
         Setup = mySetup
         DIMR = myDIMR
     End Sub
+
+    Public Function ReadNetwork() As Boolean
+        Try
+            'the path to the network file must be stored in the MDU file so read it
+            If MDUFile Is Nothing Then Throw New Exception("Could not read network since the MDU File has not yet been read.")
+            Dim filename As String = MDUFile.getAttributeValue("[geometry]", "NetFile")
+            Dim path As String = getDirectory() & "\" & filename
+
+            Network = New clsNetworkFile(path, Setup, Me)
+            If Not Network.Read() Then Throw New Exception("Error reading FlowFM Network")
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ReadNetwork of class clsFlowFMComponent: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function GetSimulationPeriod(ByRef ReferenceDate As DateTime, ByRef StartDate As DateTime, ByRef EndDate As DateTime) As Boolean
+        Try
+            If MDUFile Is Nothing Then ReadMDU()
+            Return MDUFile.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error Integer Function GetSimulationPeriod of class clsFlowFMComponent: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function ReadObservationpoints1D() As Boolean
+        Try
+            'the path to the network file must be stored in the MDU file so read it
+            If MDUFile Is Nothing Then Throw New Exception("Could not read network since the MDU File has not yet been read.")
+            Dim filenames As New List(Of String)
+            filenames = MDUFile.getAttributeValues("[output]", "ObsFile")
+
+            For Each FileName As String In filenames
+                Dim path As String = getDirectory() & "\" & FileName
+                If Strings.Right(FileName.Trim.ToLower, 3) = "obs" OrElse Strings.Right(FileName.Trim.ToLower, 3) = "ini" Then
+                    'we are dealing with 1D observation points
+                    Dim obsFile As New clsIniFile(Me.Setup)
+                    obsFile.Read(path)
+                    For Each myChapter As clsIniFileChapter In obsFile.Chapters.Values
+                        If myChapter.Name.Trim.ToLower = "[observationpoint]" Then
+                            Dim myObs As New cls1DBranchObject(Me.Network)
+                            For Each Attribute As clsIniFileAttribute In myChapter.Attributes.Values
+                                If Attribute.Name.Trim.ToUpper = "NAME" Then
+                                    myObs.ID = Attribute.GetValue
+                                ElseIf Attribute.Name.Trim.ToUpper = "BRANCHID" Then
+                                    myObs.SetBranchByID(Attribute.GetValue)
+                                ElseIf Attribute.Name.Trim.ToUpper = "CHAINAGE" Then
+                                    myObs.SetChainage(Attribute.GetValueAsDouble)
+                                End If
+                            Next
+                            Observationpoints1D.Add(myObs.ID.Trim.ToUpper, myObs)
+                        End If
+                    Next
+
+                ElseIf Strings.Right(FileName.Trim.ToLower, 3) = "xyn" Then
+                    'we are dealing with 2D observation points
+                End If
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ReadNetwork of class clsFlowFMComponent: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
 
     Public Function getOutputFullDir() As String
         'read the MDU file
@@ -20,7 +92,7 @@ Public Class clsFlowFMComponent
     End Function
 
     Public Function getDirectory() As String
-        Return DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir & "\"
+        Return DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir
     End Function
 
 
@@ -67,10 +139,106 @@ Public Class clsFlowFMComponent
         End Try
     End Function
 
+
+    Public Function GetFirstUpstreamObservationpoint(BranchID As String, Chainage As Double, ByRef Observationpoint As cls1DBranchObject) As Boolean
+        Try
+            Dim MinDist As Double = 9.0E+99
+            Dim Found As Boolean = False
+            Dim ProcessedBranchIDs As New List(Of String)
+
+            Observationpoint = Nothing
+
+            'we create a stack of branches, walking upward until we find no more new branches
+            'start with the current branch and check if we have an upstream observation point if so, we're done
+            Dim myBranch As cls1DBranch = Network.Branches.Item(BranchID.Trim.ToUpper)
+            ProcessedBranchIDs.Add(myBranch.ID)        'add this branch to the list of already processed branches
+
+            Found = myBranch.getFirstUpstreamObservationPoint(Chainage, Observationpoint)
+            'if not found we'll start building a stack of upstream branches
+
+            While Not Found
+                Dim upBranches As New List(Of cls1DBranch)
+                'retrieve the next upstream branch and check if it has an observation point
+                If Network.GetUpstreamBranches(myBranch, ProcessedBranchIDs, upBranches) Then
+                    If upBranches.Count = 0 Then Exit While
+                    For Each myBranch In upBranches
+                        Found = myBranch.getFirstUpstreamObservationPoint(myBranch.calculateLength, Observationpoint)
+                    Next
+                End If
+
+            End While
+
+
+
+
+
+            Return Found
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetFirstUpstreamObservationpoint of class clsNetworkFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+
     Public Function GetHisResultsFileName() As String
         Dim HisResultsFileName As String = Strings.Replace(DIMR.DIMRConfig.Flow1D.GetInputFile(), ".mdu", "_his.nc")
         Return HisResultsFileName
     End Function
+
+    Public Function GetMapResultsFileName() As String
+        Dim MapResultsFileName As String = Strings.Replace(DIMR.DIMRConfig.Flow1D.GetInputFile(), ".mdu", "_map.nc")
+        Return MapResultsFileName
+    End Function
+
+    Public Function GetWaterlevelsForObservationpoint1D(NodeID As String, ByRef Results As Double(), ByRef Times As Double()) As Boolean
+        Try
+            Dim IDList As String() = Nothing
+            Dim Waterlevels As Double(,) = Nothing
+            Results = Nothing
+            Dim idx As Integer
+            Dim ts As Integer
+            'these results reside only in the _his.nc file
+            If HisNCFile Is Nothing Then
+                Dim path As String = GetHisResultsFileName()
+                path = getOutputFullDir() & "\" & path
+                HisNCFile = New clsHisNCFile(path, Setup)
+                HisNCFile.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList)
+
+                For idx = 0 To IDList.Count - 1
+                    If IDList(idx).Trim.ToUpper = NodeID.Trim.ToUpper Then
+                        ReDim Results(0 To UBound(Waterlevels, 1))
+                        For ts = 0 To UBound(Waterlevels, 1)
+                            Results(ts) = Waterlevels(ts, idx)
+                        Next
+                        Return True
+                    End If
+                Next
+            End If
+            Throw New Exception("Results for observation point " & NodeID & " not found in _his.nc file.")
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetWaterlevelsForObservationpoint1D of class clsFlowFMComponent: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function GetWaterlevelsForMeshNode(NodeID As String, ByRef Results As Double()) As Boolean
+        Try
+            'these results reside only in the _map.nc file unforunately
+            If MapNCFile Is Nothing Then
+                Dim path As String = GetMapResultsFileName()
+                path = getOutputFullDir() & "\" & path
+                MapNCFile = New clsMapNCFile(path, Setup)
+                MapNCFile.GetWaterlevelsForMeshNode(NodeID, Results)
+            End If
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetWaterlevelsForMeshNode: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
 
 
 

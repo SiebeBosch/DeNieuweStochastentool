@@ -4,10 +4,11 @@ Imports STOCHLIB.General
 
 Public Class clsNetworkFile
     Private Setup As clsSetup
+    Private FlowFM As clsFlowFMComponent
     Friend Path As String
 
-    Dim Branches As New Dictionary(Of String, cls1DBranch)
-    Dim Nodes As New Dictionary(Of String, cls1DNode)
+    Friend Branches As New Dictionary(Of String, cls1DBranch)
+    Friend Nodes As New Dictionary(Of String, cls1DNode)
 
     'all variables describing the network file's content
 
@@ -39,9 +40,10 @@ Public Class clsNetworkFile
 
 
 
-    Public Sub New(myPath As String, ByRef mySetup As clsSetup)
+    Public Sub New(myPath As String, ByRef mySetup As clsSetup, ByRef myFlowFM As clsFlowFMComponent)
         Path = myPath
         Setup = mySetup
+        FlowFM = myFlowFM
     End Sub
 
     Public Function Read() As Boolean
@@ -247,10 +249,77 @@ Public Class clsNetworkFile
             mesh1d_edge_nodes = DataSet.GetData(Of Int32(,))(mesh1d_edge_nodesIdx)
             mesh1d_node_long_name = DataSet.GetData(Of Byte(,))(mesh1d_node_long_nameIdx)
             mesh1d_node_id = DataSet.GetData(Of Byte(,))(mesh1d_node_idIdx)
-            mesh1d = DataSet.GetData(Of Int32)(Mesh1DIdx)
+            mesh1d = DataSet.GetData(Of Int32)(mesh1dIdx)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 
+            If Not ReadReachNodes() Then Throw New Exception("Error reading the network's reach nodes (network1d_node).")
+            If Not ReadReaches() Then Throw New Exception("Error reading the network's reaches")
+            If Not ReadMeshNodes() Then Throw New Exception("Error reading the network's mesh nodes")
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error reading network file: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Public Function ReadMeshNodes() As Boolean
+        Try
+            Dim IDArray As Byte()
+            Dim ID As String
+            Dim BranchIdx As Integer
+            Dim Offset As Double
+
+            If Branches Is Nothing OrElse Branches.Count = 0 Then Throw New Exception("Unable to read mesh before reading branches.")
+
+            Dim LastIdx As Integer = -1
+
+            For i = 0 To UBound(mesh1d_node_id)
+                IDArray = Setup.GeneralFunctions.GetRowFrom2DArrayOfByte(mesh1d_node_id, i)
+                ID = Setup.GeneralFunctions.CharCodeBytesToString(IDArray, True)
+                BranchIdx = mesh1d_node_branch(i)
+                If BranchIdx > Branches.Count - 1 Then Throw New Exception("Invalid network: index number " & BranchIdx & " for branch associated with mesh node " & ID & " is not present in the collection.")
+                Dim Branch As cls1DBranch = Branches.Values(BranchIdx)
+
+                If Branch Is Nothing Then
+                    Me.Setup.Log.AddError("Error assigning mesh node " & i & " to a branch. Associated branch with index " & BranchIdx & " not found.")
+                Else
+                    'now that we have our branch, figure out our chainage and XY coordinate and add our meshnode to the reach
+                    Offset = mesh1d_node_offset(i)
+                    Dim MeshNode As New cls1DMeshNode(ID, Offset)
+                    Branch.AddMeshNode(MeshNode)
+                End If
+
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in fucntion ReadMeshNodes of class clsNetworkFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function GetUpstreamBranches(refBranch As cls1DBranch, ByRef ProcessedBranchIDs As List(Of String), ByRef UpstreamBranches As List(Of cls1DBranch)) As Boolean
+        Try
+            'this function retrieves a list of all DIRECTLY upstream connected branches to a given the reference branch
+            'provided the branch found is not yet present in the processedBranches dictionary
+            UpstreamBranches = New List(Of cls1DBranch)
+            For i = 0 To Branches.Count - 1
+                If Not ProcessedBranchIDs.Contains(Branches.Values(i).ID) Then
+                    If Branches.Values(i).en.ID.Trim.ToUpper = refBranch.bn.ID.Trim.ToUpper Then
+                        UpstreamBranches.Add(Branches.Values(i))
+                    End If
+                End If
+            Next
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function ReadReachNodes() As Boolean
+        Try
             Dim IDArray As Byte()
             Dim ID As String
             Dim X As Double, Y As Double
@@ -267,24 +336,38 @@ Public Class clsNetworkFile
                 myNode.Y = Y
                 Nodes.Add(myNode.ID.Trim.ToUpper, myNode)
             Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ReadReachNodes of class clsNetworkFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function ReadReaches() As Boolean
+        Try
+            Dim IDArray As Byte()
+            Dim ID As String
 
             'every ID is constructed from 40 bytes. Transform this array to an actual ID here
             Dim vpstartidx As Integer = 0 'for every reach keep track of the starting position
             Dim vpidx As Integer = 0
             Dim prevChainage As Double, curChainage As Double
 
-
-            For i = 0 To UBound(network1d_branch_id, 1) - 1
+            'proceed with reading the reaches
+            For i = 0 To UBound(network1d_branch_id, 1)
 
                 IDArray = Setup.GeneralFunctions.GetRowFrom2DArrayOfByte(network1d_branch_id, i)
                 ID = Setup.GeneralFunctions.CharCodeBytesToString(IDArray, True)
 
-                Dim myBranch As New cls1DBranch(Me.Setup, ID)
+                Dim myBranch As New cls1DBranch(Me.Setup, FlowFM, ID)
                 myBranch.RouteNumber = network1d_branch_order(i)
 
                 'let op: de array network1d_edge_nodes lijkt alleen cijfers > 0 te bevatten. Dit suggereert dat hij niet 0-based is maar 1-based
-                myBranch.bn = Nodes.Values(network1d_edge_nodes(i, 0) - 1)  '-1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
-                myBranch.en = Nodes.Values(network1d_edge_nodes(i, 1) - 1)  '-1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                myBranch.bn = Nodes.Values(network1d_edge_nodes(i, 0))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                myBranch.en = Nodes.Values(network1d_edge_nodes(i, 1))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+
+                If myBranch.en Is Nothing Then Stop
+                If myBranch.bn Is Nothing Then Stop
 
                 'add the starting point as a vector
                 prevChainage = 0
@@ -301,16 +384,13 @@ Public Class clsNetworkFile
                 'make sure for the next branch we start at the correct vectorpoint index
                 vpstartidx += network1d_geom_node_count(i)
 
-                'and finally add the branch
                 Branches.Add(myBranch.ID.Trim.ToUpper, myBranch)
             Next
-
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error reading network file: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function ReadReaches of class clsNetworkFile: " & ex.Message)
             Return False
         End Try
-
     End Function
 
 
@@ -324,6 +404,80 @@ Public Class clsNetworkFile
         Catch ex As Exception
             Me.Setup.Log.AddError("Error computing X and Y coordinate for a given branch and chainage: " & BranchID & ", " & Chainage & ":" & ex.Message)
             Return False
+        End Try
+    End Function
+
+
+
+
+    Public Function GetFirstUpstreamMeshNode(BranchID As String, Chainage As Double, ByRef MeshNode As cls1DMeshNode) As Boolean
+        Try
+            Dim Branch As cls1DBranch
+            Dim MinDist As Double = 9.0E+99
+            Dim Found As Boolean = False
+            MeshNode = Nothing  'initialize our byref node to be nothing
+            If Not Branches.ContainsKey(BranchID.Trim.ToUpper) Then Throw New Exception("Branch not found: " & BranchID)
+            Branch = Branches.Item(BranchID.Trim.ToLower)
+            For Each myNode As cls1DMeshNode In Branch.MeshNodes.Values
+                If myNode.Chainage <= Chainage Then
+                    If (Chainage - myNode.Chainage) < MinDist Then
+                        Found = True
+                        MinDist = Chainage - myNode.Chainage
+                        MeshNode = myNode
+                    End If
+                End If
+            Next
+            If Not Found Then Return False Else Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetFirstUpstreamMeshNode of class clsNetworkFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function FindSnapLocation(ByVal X As Double, ByVal Y As Double, ByVal SearchRadius As Double, ByRef snapBranch As cls1DBranch, ByRef snapChainage As Double, ByRef snapDistance As Double, ExcludeBranches As List(Of String)) As Boolean
+        Try
+            Dim nearestDist As Double = 9.9E+100
+            Dim reachSnapDist As Double = 9.9E+100, reachSnapChainage As Double
+            Dim DistToBoundingBox As Double
+            Dim Found As Boolean = False
+
+            For Each myBranch As cls1DBranch In Branches.Values
+                If Not ExcludeBranches.Contains(myBranch.ID) Then
+
+                    'calculate the bounding box for our current reach
+                    If myBranch.BoundingBox Is Nothing Then myBranch.calcBoundingBox()
+
+                    If X >= myBranch.BoundingBox.XLL - SearchRadius AndAlso X <= myBranch.BoundingBox.XUR + SearchRadius AndAlso Y >= myBranch.BoundingBox.YLL - SearchRadius AndAlso Y <= myBranch.BoundingBox.YUR + SearchRadius Then
+                        'ok, we've found a reach that matches the criteria, but is it worth to actually find the snapping point? 
+                        'only if the distance to the extent is smaller than the nearest distance found so far!
+                        DistToBoundingBox = myBranch.BoundingBox.calcDistance(X, Y)
+                        If DistToBoundingBox <= nearestDist Then 'important: this MUST be <=, not < because any point INSIDE the bounding box gets value 0 and must be tried anyhow
+                            If myBranch.CalcSnapLocation(X, Y, SearchRadius, reachSnapChainage, reachSnapDist) Then
+                                If reachSnapDist <= SearchRadius AndAlso reachSnapDist < nearestDist Then
+                                    Found = True
+                                    nearestDist = reachSnapDist
+                                    snapDistance = reachSnapDist
+                                    snapChainage = reachSnapChainage
+                                    snapBranch = myBranch
+                                End If
+                            End If
+                        End If
+                    End If
+                End If
+            Next
+            Return Found
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error snapping location to branches.")
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function FindSnappingPoint(X As Double, Y As Double, MaxSnappingDistance As Double, ByRef SnappedBranch As cls1DBranch, ByRef SnappedChainage As Double, ByRef SnappedDistance As Double) As Boolean
+        Try
+
+        Catch ex As Exception
+
         End Try
     End Function
 

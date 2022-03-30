@@ -190,6 +190,8 @@
     <Compile Include="DHYDRO\clsDHydroDIMRProject.vb" />
     <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
     <Compile Include="DIMR\cls1DBranch.vb" />
+    <Compile Include="DIMR\cls1DBranchObject.vb" />
+    <Compile Include="DIMR\cls1DMeshNode.vb" />
     <Compile Include="DIMR\cls1DNode.vb" />
     <Compile Include="DIMR\clsBoundariesBC.vb" />
     <Compile Include="DIMR\clsBoundaryCondition.vb" />
@@ -208,6 +210,7 @@
     <Compile Include="DIMR\clsIniFile.vb" />
     <Compile Include="DIMR\clsIniFileAttribute.vb" />
     <Compile Include="DIMR\clsIniFileChapter.vb" />
+    <Compile Include="DIMR\clsMapNCFile.vb" />
     <Compile Include="DIMR\clsMDUFile.vb" />
     <Compile Include="DIMR\clsNetworkFile.vb" />
     <Compile Include="DIMR\clsFlowFMComponent.vb" />

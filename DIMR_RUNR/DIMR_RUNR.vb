@@ -88,8 +88,17 @@ Module DIMR_RUNR
             'first we will read our DIMR configuration
             Dim DIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DimrConfigPath))
             DIMR.readConfiguration()
-
             Console.WriteLine("DIMR-configuratiebestand met succes gelezen.")
+
+            '#######################################################################################################
+            ' voor demo-doeleinden
+            '#######################################################################################################
+            Dim TMax As Integer
+            Dim DateMax As DateTime     '
+            DIMR.getTMaxForXYLocation(233568.248, 410166.048, 2000, 0, TMax, DateMax)   '
+
+            'DIMR.getBestFitRestartfile(233568.248, 410166.048, 2000, 0, RstRelativePath)
+            '#######################################################################################################
 
             'next, read our Excel-file containg information about the required simulations and their input data
             If Not ReadExcelConfiguration(ExcelConfigPath) Then Throw New Exception("Kritieke fout: uitlezen van het Excel-configuratiebestand is niet geslaagd.")
@@ -98,12 +107,7 @@ Module DIMR_RUNR
             'now execute the simulations one by one
             For Each Run As clsDIMRRun In Runs.Runs.Values
 
-
-
                 Console.WriteLine("Start uitvoering simulatie " & Run.GetName & "...")
-
-                '20220319: na goede pogingen met het aanpassen van bestanden ipv hele model kopieren moet ik constateren dat dit te foutgevoelig is
-                'daarom nu toch het hele model kopieren, met uitzondering van de output-directory
 
                 Dim RunDir As String = DIMR.ProjectDir & "\" & Run.GetName
                 If Not Directory.Exists(RunDir) Then Directory.CreateDirectory(RunDir)
@@ -260,11 +264,53 @@ Module DIMR_RUNR
                 Dim Value As String = Operation.getValue
                 Console.WriteLine("Waarde in bronbestand vervangen t.b.v. simulatie " & Run.GetName & ": " & Operation.getFileName & " met kop " & Operation.getHeader & " en " & Operation.getIdentifierAttributeName & " = " & Operation.getIdentifierAttributeValue & " vervangen door " & Operation.getValue)
                 Console.WriteLine("")
-                If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, Operation.getValue) Then
-                    Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
+
+                'hier deteceteren we of de waarde middels een functie moet worden opgevraagd of dat het rechtstreeks kan
+                If IsNumeric(Value) Then
+                    If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, Operation.getValue) Then
+                        Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
+                    End If
+                Else
+                    'we are dealing with more complex matters. It might be a function call inside the DIMR class
+                    If Strings.Left(Value, 4) = "DIMR" Then
+
+                        'strip down and identify the function, its arguments and the reference case
+                        Dim myStr As String
+                        Dim Args As New List(Of String)
+                        myStr = Setup.GeneralFunctions.ParseString(Value, "(") 'start by stripping 'DIMR' off
+                        Dim DimrConfigpath As String = Setup.GeneralFunctions.ParseString(Value, ")")
+                        myStr = Setup.GeneralFunctions.ParseString(Value, ":")
+                        Dim FunctionName As String = Setup.GeneralFunctions.ParseString(Value, "(")
+                        Value = Strings.Left(Value, Value.Length - 1) 'stripping the ) off too
+                        While Not Value = ""
+                            Args.Add(Setup.GeneralFunctions.ParseString(Value, ":"))
+                        End While
+
+                        If FunctionName.Trim.ToUpper = "GETTMAXFORXYLOCATION" Then
+                            'parse the arguments required for this function
+                            Dim X As Double = Convert.ToDouble(Args(0))
+                            Dim Y As Double = Convert.ToDouble(Args(1))
+                            Dim MaxSearchRadius As Double = Convert.ToDouble(Args(2))
+                            Dim AddShiftSeconds As Double = Convert.ToDouble(Args(3))
+
+                            'and execute the function 
+                            Dim TMax As Integer
+                            Dim DateMax As DateTime
+
+                            'for this we will first read our reference DIMR configuration
+                            Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DimrConfigpath))
+                            refDIMR.readConfiguration()
+                            refDIMR.getTMaxForXYLocation(X, Y, MaxSearchRadius, 0, TMax, DateMax)   '
+
+                        End If
+
+
+                    End If
                 End If
 
-            End If
+
+
+                End If
             Return True
         Catch ex As Exception
             Setup.Log.AddError("Fout bij het implementeren van de bewerking: " & ex.Message)
@@ -323,8 +369,10 @@ Module DIMR_RUNR
                                 Console.WriteLine("Leest configuratie voor scenario " & Scenario.Name & "...")
                             ElseIf ScenarioHeaders.Item(c) = "vervangen" Then
                                 Operation = New clsDIMRFileOperation(Setup)              'create a new operation
-                                Operation.SetAction(worksheet.Cells(r, c).Value)
-                            ElseIf ScenarioHeaders.Item(c) = "module" Then
+                                If Not Operation.SetAction(worksheet.Cells(r, c).Value) Then
+                                    'the scenario has been added, but the operation/action is empty, so we'll just leave it 'as is'
+                                End If
+                            ElseIf ScenarioHeaders.Item(c) = "subdir" Then
                                 Operation.setModuleName(worksheet.Cells(r, c).Value)
                             ElseIf ScenarioHeaders.Item(c) = "bestand" Then
                                 Operation.setFileName(worksheet.Cells(r, c).Value)
@@ -371,11 +419,13 @@ Module DIMR_RUNR
                         For c = 0 To SimulationHeaders.Count - 1
                             If SimulationHeaders.Item(c) = "scenario" Then
                                 Scenario = GetScenario(worksheet.Cells(r, c).Value) 'get the corresponding scenario 
-                                Run.AddScenario(Scenario)
+                                If Scenario IsNot Nothing Then Run.AddScenario(Scenario)
                             ElseIf SimulationHeaders.Item(c) = "vervangen" Then
                                 Operation = New clsDIMRFileOperation(Setup)              'create a new operation
-                                Operation.SetAction(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "module" Then
+                                If Not Operation.SetAction(worksheet.Cells(r, c).Value) Then
+                                    'the simulation has been added, but it has no additional operations involved so we'll just leave it 'as is'
+                                End If
+                            ElseIf SimulationHeaders.Item(c) = "subdir" Then
                                 Operation.setModuleName(worksheet.Cells(r, c).Value)
                             ElseIf SimulationHeaders.Item(c) = "bestand" Then
                                 Operation.setFileName(worksheet.Cells(r, c).Value)
@@ -430,6 +480,7 @@ Module DIMR_RUNR
 
     Public Function GetScenario(ScenarioName As String) As clsDIMRScenario
         Dim i As Integer
+        If ScenarioName Is Nothing Then Return Nothing
         For i = 0 To ScenarioClasses.Values.Count - 1
             If ScenarioClasses.Values(i).Scenarios.ContainsKey(ScenarioName.Trim.ToUpper) Then
                 Return ScenarioClasses.Values(i).Scenarios.Item(ScenarioName.Trim.ToUpper)

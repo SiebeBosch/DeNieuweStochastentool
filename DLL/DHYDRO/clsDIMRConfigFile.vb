@@ -26,6 +26,11 @@ Public Class clsDIMRConfigFile
         Try
             Dim xml As New XmlDocument
             Dim node As XmlNode
+
+            Dim library As String = ""
+            Dim workingDir As String = ""
+            Dim inputFile As String = ""
+
             xml.Load(DIMR.ProjectDir & "\" & FileName)
 
             For Each node In xml.ChildNodes
@@ -34,38 +39,32 @@ Public Class clsDIMRConfigFile
                         If cNode.Name = "component" Then
                             If cNode.Attributes.ItemOf("name") IsNot Nothing Then
                                 Dim myName As String = cNode.Attributes.GetNamedItem("name").InnerText
-                                Select Case myName
-                                    Case Is = "Rainfall Runoff"
-                                        DIMR.RR = New clsRRComponent(Me.Setup, DIMR)
-                                        RR.InUse = True
-                                        For Each dNode As XmlNode In cNode.ChildNodes
-                                            If dNode.Name = "library" Then RR.SetLibrary(dNode.InnerText)
-                                            If dNode.Name = "workingDir" Then RR.SetSubDir(dNode.InnerText)
-                                            If dNode.Name = "inputFile" Then
-                                                RR.SetInputFile(dNode.InnerText)
-                                                RR.Read()
-                                            End If
-                                        Next
-                                    Case Is = "Real-Time Control"
-                                        DIMR.RTC = New clsRTCComponent(Me.Setup, DIMR)
-                                        RTC.InUse = True
-                                        For Each dNode As XmlNode In cNode.ChildNodes
-                                            If dNode.Name = "library" Then RTC.SetLibrary(dNode.InnerText)
-                                            If dNode.Name = "workingDir" Then RTC.SetSubDir(dNode.InnerText)
-                                            If dNode.Name = "inputFile" Then
-                                                RTC.SetInputFile(dNode.InnerText)
-                                            End If
-                                        Next
-                                    Case Is = "Flow1D", "FlowFM"
+                                For Each dNode As XmlNode In cNode.ChildNodes
+                                    If dNode.Name = "library" Then library = dNode.InnerText
+                                    If dNode.Name = "workingDir" Then workingDir = dNode.InnerText
+                                    If dNode.Name = "inputFile" Then inputfile = dNode.InnerText
+                                Next
+
+                                Select Case library.Trim.ToLower
+                                    Case Is = "dflowfm"
                                         DIMR.FlowFM = New clsFlowFMComponent(Me.Setup, DIMR)
                                         Flow1D.InUse = True
-                                        For Each dNode As XmlNode In cNode.ChildNodes
-                                            If dNode.Name = "library" Then Flow1D.SetLibrary(dNode.InnerText)
-                                            If dNode.Name = "workingDir" Then Flow1D.SetSubDir(dNode.InnerText)
-                                            If dNode.Name = "inputFile" Then
-                                                Flow1D.SetInputFile(dNode.InnerText)
-                                            End If
-                                        Next
+                                        Flow1D.SetLibrary(library)
+                                        Flow1D.SetSubDir(workingDir)
+                                        Flow1D.SetInputFile(inputFile)
+                                    Case Is = "rr_dll"
+                                        DIMR.RR = New clsRRComponent(Me.Setup, DIMR)
+                                        RR.InUse = True
+                                        RR.SetLibrary(library)
+                                        RR.SetSubDir(workingDir)
+                                        RR.SetInputFile(inputFile)
+                                        RR.Read()
+                                    Case Is = "fbctools_bmi"
+                                        DIMR.RTC = New clsRTCComponent(Me.Setup, DIMR)
+                                        RTC.InUse = True
+                                        RTC.SetLibrary(library)
+                                        RTC.SetSubDir(workingDir)
+                                        RTC.SetInputFile(inputFile)
                                 End Select
                             End If
                         End If

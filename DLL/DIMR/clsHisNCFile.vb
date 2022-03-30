@@ -44,7 +44,7 @@ Public Class clsHisNCFile
         Setup = mySetup
     End Sub
 
-    Public Function ReadWaterLevelsAtObservationPoints(ByRef Waterlevels As Double(,), ByRef IDList As String()) As Boolean
+    Public Function ReadWaterLevelsAtObservationPoints(ByRef Waterlevels As Double(,), ByRef Times As Double(), ByRef IDList As String()) As Boolean
         Try
             'we use the microsoft scientific dataset library to read this netcdf-file
             'returns byref the results:
@@ -53,6 +53,7 @@ Public Class clsHisNCFile
 
             Dim WaterLevelID As Integer
             Dim TimestepID As Integer
+            Dim TimeID As Integer
             Dim StationID As Integer
             Dim i As Integer
 
@@ -65,11 +66,14 @@ Public Class clsHisNCFile
                 If dataset.Variables.Item(i).Name = "waterlevel" Then WaterLevelID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name = "timestep" Then TimestepID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name = "station_id" Then StationID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "timestep" Then TimestepID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "time" Then TimeID = dataset.Variables.Item(i).ID
             Next
 
             Waterlevels = dataset.GetData(Of Double(,))(WaterLevelID)
             Dim ObservationPointIDs As Byte(,) = dataset.GetData(Of Byte(,))(StationID)
             Dim TimeStamps As Double() = dataset.GetData(Of Double())(TimestepID)
+            Times = dataset.GetData(Of Double())(TimeID)                'times are expressed in seconds w.r.t. the reference date as stated in the .MDU file
 
             'de id's zijn samengesteld uit een array van bytes
             Dim IDArray As Byte()

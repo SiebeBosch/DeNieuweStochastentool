@@ -798,8 +798,9 @@ Public Class clsStochastenAnalyse
                                     '  writing the results for this run & parameter to the database
                                     '--------------------------------------------------------------------------------------------------------------------------------------------
                                     Dim Waterlevels As Double(,) = Nothing
+                                    Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
                                     Dim IDList As String() = Nothing
-                                    If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
+                                    If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
 
                                     If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
                                     Using myCmd As New SQLite.SQLiteCommand

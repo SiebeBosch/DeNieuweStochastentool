@@ -15,6 +15,24 @@ Public Class clsMDUFile
         DIMRConfigComponent = myConfigComponent
     End Sub
 
+    Public Function GetSimulationPeriod(ByRef ReferenceDate As DateTime, ByRef StartDate As DateTime, ByRef EndDate As DateTime) As Boolean
+        Try
+            'the start and enddates of our FlowFM simulation are stored in the .mdu file under [time]
+            Dim RefDate As String = getAttributeValue("[time]", "RefDate")
+            Dim TStart As String = getAttributeValue("[time]", "TStart")
+            Dim TStop As String = getAttributeValue("[time]", "TStop")
+
+            ReferenceDate = New DateTime(Strings.Left(RefDate, 4), Strings.Mid(RefDate, 5, 2), Strings.Right(RefDate, 2))
+            StartDate = ReferenceDate.AddSeconds(Convert.ToInt32(TStart))
+            EndDate = ReferenceDate.AddSeconds(Convert.ToInt32(TStop))
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetSimulationPeriod of class clsMDUFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
     Public Function getPath() As String
         Return DIMRConfigComponent.GetFullDir & "\" & DIMRConfigComponent.GetInputFile
     End Function

@@ -6892,6 +6892,19 @@ Public Class GeneralFunctions
         Return True
     End Function
 
+    Public Function MaxIdxFromArrayOfDouble(ByRef myArray As Double()) As Integer
+        'returns the index number of the highest value in an array of doubles
+        Dim MaxIdx As Integer = -1
+        Dim MaxVal As Double = -9.0E+99
+        For i = 0 To myArray.Count - 1
+            If myArray(i) > MaxVal Then
+                MaxIdx = i
+                MaxVal = myArray(i)
+            End If
+        Next
+        Return MaxIdx
+    End Function
+
     Public Function MeteorologischHalfJaar(ByRef myDate As DateTime) As enmSeason
         If Month(myDate) <= 3 OrElse Month(myDate) >= 10 Then
             Return enmSeason.meteowinterhalfyear
