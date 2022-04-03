@@ -9240,7 +9240,9 @@ Public Class GeneralFunctions
                     If myStr.Trim.ToLower = IdentifierAttribute.Trim.ToLower Then
                         CurrentIdentifierAttr = myStr.Trim.ToLower
                         CurrentIdentifierValue = myLine.Trim.ToLower
-                    ElseIf myStr.Trim.ToLower = AttributeName.Trim.ToLower Then
+                    End If
+                    'notice that the identifier attribute and the attribute to be adjusted might be the same. So no ElseIf here!
+                    If myStr.Trim.ToLower = AttributeName.Trim.ToLower Then
                         If CurrentChapter.Trim.ToLower = SectionHeader.Trim.ToLower AndAlso CurrentIdentifierValue.Trim.ToLower = IdentifierValue.Trim.ToLower Then
                             Content(i) = AttributeName & " = " & NewValue
                         End If

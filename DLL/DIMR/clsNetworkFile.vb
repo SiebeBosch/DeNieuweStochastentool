@@ -13,6 +13,7 @@ Public Class clsNetworkFile
     'all variables describing the network file's content
 
     'this block reads all variables concerning our 1D network from the file
+    Dim Links As Int32(,)
     Dim network1d_geom_y As Double()
     Dim network1d_geom_x As Double()
     Dim network1d_geom_node_count As Int32()
@@ -37,6 +38,9 @@ Public Class clsNetworkFile
     Dim mesh1d_node_long_name As Byte(,)
     Dim mesh1d_node_id As Byte(,)
     Dim mesh1d As Int32
+
+    Dim mesh2d_face_x As Double()
+    Dim mesh2d_face_y As Double()
 
 
 
@@ -250,6 +254,13 @@ Public Class clsNetworkFile
             mesh1d_node_long_name = DataSet.GetData(Of Byte(,))(mesh1d_node_long_nameIdx)
             mesh1d_node_id = DataSet.GetData(Of Byte(,))(mesh1d_node_idIdx)
             mesh1d = DataSet.GetData(Of Int32)(mesh1dIdx)
+
+            'read the 2D network
+            mesh2d_face_x = DataSet.GetData(Of Double())(Mesh2d_face_xIdx)
+            mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yIdx)
+
+            'read all 1D2D links
+            Links = DataSet.GetData(Of Int32(,))(linksIdx)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 

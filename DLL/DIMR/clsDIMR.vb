@@ -70,6 +70,61 @@ Public Class clsDIMR
         End Try
     End Function
 
+    Public Function FindBestMatchingRestartfile(TStart As DateTime, ByRef RestartFilePath As String) As Boolean
+        'this function retrieves a restart file from these simulation's results, matching a given start time as close as possible
+        Try
+            'so first thing to do is create a list of all .rst files in our output dir
+            Dim RstList As New Collection
+            Setup.GeneralFunctions.CollectAllFilesInDir(FlowFM.getOutputFullDir, False, "rst.nc", RstList)
+            Dim BestMatch As String = ""
+            Dim BestDiff As Long = Long.MaxValue
+            Dim CurDiff As Integer
+            Dim Found As Boolean = False
+
+            For Each Path As String In RstList
+
+                Dim myDate As New DateTime
+                GetDateFromRestartFilename(Path, myDate)
+
+                'calculate the time difference with our TStart
+                CurDiff = TStart.Subtract(myDate).TotalSeconds
+                If CurDiff > 0 AndAlso CurDiff < BestDiff Then
+                    BestMatch = Path
+                    BestDiff = CurDiff
+                    Found = True
+                End If
+            Next
+
+            RestartFilePath = BestMatch
+            Return Found
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function FindBestMatchingRestartfile of class clsDIMR: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Public Function GetDateFromRestartFilename(path As String, ByRef myDate As DateTime) As Boolean
+        Try
+            'this function retrieves the date from a restart file (_rst.nc)
+            'assuming the naming format is: modelname_yyyymmdd_hhmmss_rst.nc
+            Dim Filename As String = Me.Setup.GeneralFunctions.FileNameFromPath(path)
+            Dim tmpStr As String
+            Dim dateStr As String
+            Dim timeStr As String
+            tmpStr = Me.Setup.GeneralFunctions.ParseString(Filename, "_") 'first is the domain name
+            dateStr = Me.Setup.GeneralFunctions.ParseString(Filename, "_")  'this is the date string, formatted yyyymmdd
+            timeStr = Me.Setup.GeneralFunctions.ParseString(Filename, "_")  'this is the time string, formatted hhmmss
+            myDate = New DateTime(Strings.Left(dateStr, 4), Strings.Mid(dateStr, 5, 2), Strings.Right(dateStr, 2), Strings.Left(timeStr, 2), Strings.Mid(timeStr, 3, 2), Strings.Right(timeStr, 2))
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetDateFromRestartFilename of class clsDIMR: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+
     Public Function getTMaxForXYLocation(X As Double, Y As Double, MaxSnappingDistance As Double, AddShiftSeconds As Integer, ByRef TimeMaxSecondsToReference As Integer, ByRef DateTimeMax As DateTime) As Boolean
         'this function retrieves the timestep at which the maximum waterlevel occurs near a given XY-location
         'it does so by finding the snappingpoint to the nearest branch

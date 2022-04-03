@@ -90,15 +90,23 @@ Module DIMR_RUNR
             DIMR.readConfiguration()
             Console.WriteLine("DIMR-configuratiebestand met succes gelezen.")
 
-            '#######################################################################################################
-            ' voor demo-doeleinden
-            '#######################################################################################################
-            Dim TMax As Integer
-            Dim DateMax As DateTime     '
-            DIMR.getTMaxForXYLocation(233568.248, 410166.048, 2000, 0, TMax, DateMax)   '
+            ''#######################################################################################################
+            '' voor demo-doeleinden
+            ''#######################################################################################################
+            'Dim TMax As Integer
+            'Dim DateMax As DateTime     '
+            'DIMR.getTMaxForXYLocation(233568.248, 410166.048, 2000, 0, TMax, DateMax)   '
 
-            'DIMR.getBestFitRestartfile(233568.248, 410166.048, 2000, 0, RstRelativePath)
-            '#######################################################################################################
+            'Dim RstRelativePath As String
+
+
+            ''get the start- and endtime of our simulation
+            'Dim ReferenceDate As DateTime
+            'Dim StartDate As DateTime
+            'Dim EndDate As DateTime
+            'DIMR.FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
+            'DIMR.FindBestMatchingRestartfile(StartDate, RstRelativePath)
+            ''#######################################################################################################
 
             'next, read our Excel-file containg information about the required simulations and their input data
             If Not ReadExcelConfiguration(ExcelConfigPath) Then Throw New Exception("Kritieke fout: uitlezen van het Excel-configuratiebestand is niet geslaagd.")
@@ -138,6 +146,7 @@ Module DIMR_RUNR
                         Run.InputFiles.Add(Operation.getFileName.Trim.ToUpper, Operation.getFileName)
                     End If
                 Next
+                '--------------------------------------------------------------------------------------------------------------------------------------------
 
 
                 '--------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,8 +163,11 @@ Module DIMR_RUNR
                 For Each Operation As clsDIMRFileOperation In Run.Operations
                     If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
                 Next
+                '--------------------------------------------------------------------------------------------------------------------------------------------
 
-                'only run this simulation if there are no results present in the output dir
+
+                '--------------------------------------------------------------------------------------------------------------------------------------------
+                'only execute this simulation if there are no results present in the output dir
                 Dim OutputDir As String = Run.DIMR.FlowFM.getOutputFullDir
                 If System.IO.Directory.GetFiles(OutputDir).Length = 0 Then
                     Console.WriteLine("")
@@ -193,6 +205,9 @@ Module DIMR_RUNR
                 Else
                     Console.WriteLine("Simulatie " & Run.GetName & " werd overgeslagen omdat de uitvoermap " & OutputDir & " al resultaten bevat")
                 End If
+                '--------------------------------------------------------------------------------------------------------------------------------------------
+
+
             Next
 
         Catch ex As Exception
@@ -230,12 +245,15 @@ Module DIMR_RUNR
 
                 'this action overwrites our entire input file with the given file
                 'the target file is the file we have previously copied and renamed so it contains the current Run Name
-                Dim SourcePath As String = DIMR.ProjectDir & "\" & Operation.getValue
-                If Not File.Exists(SourcePath) Then Throw New Exception("bronbestand voor een bewerking van het type " & Operation.getReplacementAction.ToString & " t.b.v. simulatie " & Run.GetName & " bestaat niet: " & SourcePath)
+                Dim value As String = DIMR.ProjectDir & "\" & Operation.getValue
 
-                Console.WriteLine("Bronbestand vervangen t.b.v. simulatie " & Run.GetName & ": " & TargetPath & " door " & SourcePath)
+                'this is a simple file copy operation
+                If Not File.Exists(value) Then Throw New Exception("bronbestand voor een bewerking van het type " & Operation.getReplacementAction.ToString & " t.b.v. simulatie " & Run.GetName & " bestaat niet: " & value)
+
+                Console.WriteLine("Bronbestand vervangen t.b.v. simulatie " & Run.GetName & ": " & TargetPath & " door " & value)
                 Console.WriteLine("")
-                File.Copy(SourcePath, TargetPath, True)
+                File.Copy(value, TargetPath, True)
+
 
             ElseIf Operation.GetAction = enmDIMRIniFileReplacementOperation.sectie Then
                 Dim SourcePath As String = DIMR.ProjectDir & "\" & Operation.getValue
@@ -270,54 +288,99 @@ Module DIMR_RUNR
                     If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, Operation.getValue) Then
                         Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
                     End If
-                Else
+                ElseIf Strings.Left(Value, 4) = "DIMR" Then
+
                     'we are dealing with more complex matters. It might be a function call inside the DIMR class
-                    If Strings.Left(Value, 4) = "DIMR" Then
 
-                        'strip down and identify the function, its arguments and the reference case
-                        Dim myStr As String
-                        Dim Args As New List(Of String)
-                        myStr = Setup.GeneralFunctions.ParseString(Value, "(") 'start by stripping 'DIMR' off
-                        Dim DimrConfigpath As String = Setup.GeneralFunctions.ParseString(Value, ")")
-                        myStr = Setup.GeneralFunctions.ParseString(Value, ":")
-                        Dim FunctionName As String = Setup.GeneralFunctions.ParseString(Value, "(")
-                        Value = Strings.Left(Value, Value.Length - 1) 'stripping the ) off too
-                        While Not Value = ""
-                            Args.Add(Setup.GeneralFunctions.ParseString(Value, ":"))
-                        End While
+                    Dim FunctionName As String = ""
+                    Dim DIMRConfigPath As String = ""
+                    Dim Args As New List(Of String)
+                    ParseDIMRFunctionAndArgumentsFromString(Value, DIMRConfigPath, FunctionName, Args)
 
-                        If FunctionName.Trim.ToUpper = "GETTMAXFORXYLOCATION" Then
-                            'parse the arguments required for this function
-                            Dim X As Double = Convert.ToDouble(Args(0))
-                            Dim Y As Double = Convert.ToDouble(Args(1))
-                            Dim MaxSearchRadius As Double = Convert.ToDouble(Args(2))
-                            Dim AddShiftSeconds As Double = Convert.ToDouble(Args(3))
+                    If FunctionName.Trim.ToUpper = "GETTMAXFORXYLOCATION" Then
 
-                            'and execute the function 
-                            Dim TMax As Integer
-                            Dim DateMax As DateTime
+                        Console.WriteLine("Bijbehorende TMax zoeken voor opgegeven breslocatie.")
+                        Console.WriteLine("")
 
-                            'for this we will first read our reference DIMR configuration
-                            Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DimrConfigpath))
-                            refDIMR.readConfiguration()
-                            refDIMR.getTMaxForXYLocation(X, Y, MaxSearchRadius, 0, TMax, DateMax)   '
+                        'parse the arguments required for this function
+                        Dim X As Double = Convert.ToDouble(Args(0))
+                        Dim Y As Double = Convert.ToDouble(Args(1))
+                        Dim MaxSearchRadius As Double = Convert.ToDouble(Args(2))
+                        Dim AddShiftSeconds As Double = Convert.ToDouble(Args(3))
 
+                        'and execute the function 
+                        Dim TMaxRef As Integer
+                        Dim DateMaxRef As DateTime
+
+                        'for this we will first read our reference DIMR configuration
+                        Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DIMRConfigPath))
+                        refDIMR.readConfiguration()
+                        refDIMR.getTMaxForXYLocation(X, Y, MaxSearchRadius, 0, TMaxRef, DateMaxRef)
+
+                        'now we must translate our date-time of the maximum waterlevel back to the corresponding reference time in our model-to run
+                        Dim RefDate As DateTime
+                        Dim StartDate As DateTime
+                        Dim EndDate As DateTime
+                        DIMR.FlowFM.GetSimulationPeriod(RefDate, StartDate, EndDate)
+                        Dim T0 As Integer = DateMaxRef.Subtract(RefDate).TotalSeconds
+
+                        'finally write this value to the appropriate chapter in the appropriate file
+                        If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, T0) Then
+                            Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
                         End If
 
+                    ElseIf FunctionName.Trim.ToUpper = "FINDBESTMATCHINGRESTARTFILE" Then
 
+                        Console.WriteLine("Bijbehorende Restart-file zoeken voor opgegeven afvoergolf en start simulatie.")
+                        Console.WriteLine("")
+
+                        'get the start- and endtime of our simulation
+                        Dim RstFilePath As String = ""
+                        Dim rstFilePathRelative As String = ""
+                        Dim ReferenceDate As DateTime
+                        Dim StartDate As DateTime
+                        Dim EndDate As DateTime
+                        If Not DIMR.FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate) Then Throw New Exception("Kon simulatieperiode niet bepalen voor simulatie " & Run.GetName)
+
+                        Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DIMRConfigPath))
+                        If Not refDIMR.FindBestMatchingRestartfile(StartDate, RstFilePath) Then Throw New Exception("Error finding matching restart file for simulation " & Run.GetName)
+
+                        'now that we have a restart file we  must make it a relative path w.r.t. the flow directory of our simulation and write it to our input file
+                        If Not Setup.GeneralFunctions.AbsoluteToRelativePath(Run.DIMR.FlowFM.getDirectory, RstFilePath, rstFilePathRelative) Then Throw New Exception("Kon restart-file niet vinden bij simulatie " & Run.GetName)
+                        If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, rstFilePathRelative) Then
+                                Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
+                            End If
+                        End If
                     End If
-                End If
 
-
-
-                End If
+            End If
             Return True
         Catch ex As Exception
             Setup.Log.AddError("Fout bij het implementeren van de bewerking: " & ex.Message)
+            Console.WriteLine("Fout bij het implementeren van de bewerking: " & ex.Message)
             Return False
         End Try
     End Function
 
+    Public Function ParseDIMRFunctionAndArgumentsFromString(Value As String, ByRef DIMRConfigPath As String, ByRef FunctionName As String, ByRef Args As List(Of String)) As Boolean
+        'this function parses a DIMR function call as specified in the Excel configuration file
+        Try
+            'strip down and identify the function, its arguments and the reference case
+            Dim myStr As String
+            Args = New List(Of String)
+            myStr = Setup.GeneralFunctions.ParseString(Value, "(") 'start by stripping 'DIMR' off
+            DIMRConfigPath = Setup.GeneralFunctions.ParseString(Value, ")").Replace("""", "")
+            myStr = Setup.GeneralFunctions.ParseString(Value, ":")
+            FunctionName = Setup.GeneralFunctions.ParseString(Value, "(")
+            Value = Strings.Left(Value, Value.Length - 1) 'stripping the ) off too
+            While Not Value = ""
+                Args.Add(Setup.GeneralFunctions.ParseString(Value, ";"))
+            End While
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
 
     Public Function ReadExcelConfiguration(Path As String) As Boolean
         Try
