@@ -167,3 +167,5 @@ D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ScientificDataSet.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.frmClassifyGroundwaterDHydro.resources
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\GemBox.Spreadsheet.WinFormsUtilities.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\GemBox.Spreadsheet.WinFormsUtilities.xml
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbprojAssemblyReference.cache
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.CoreCompileInputs.cache

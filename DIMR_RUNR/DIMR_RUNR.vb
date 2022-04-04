@@ -90,24 +90,6 @@ Module DIMR_RUNR
             DIMR.readConfiguration()
             Console.WriteLine("DIMR-configuratiebestand met succes gelezen.")
 
-            ''#######################################################################################################
-            '' voor demo-doeleinden
-            ''#######################################################################################################
-            'Dim TMax As Integer
-            'Dim DateMax As DateTime     '
-            'DIMR.getTMaxForXYLocation(233568.248, 410166.048, 2000, 0, TMax, DateMax)   '
-
-            'Dim RstRelativePath As String
-
-
-            ''get the start- and endtime of our simulation
-            'Dim ReferenceDate As DateTime
-            'Dim StartDate As DateTime
-            'Dim EndDate As DateTime
-            'DIMR.FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
-            'DIMR.FindBestMatchingRestartfile(StartDate, RstRelativePath)
-            ''#######################################################################################################
-
             'next, read our Excel-file containg information about the required simulations and their input data
             If Not ReadExcelConfiguration(ExcelConfigPath) Then Throw New Exception("Kritieke fout: uitlezen van het Excel-configuratiebestand is niet geslaagd.")
             Console.WriteLine("Excel-configuratiebestand met succes gelezen.")
