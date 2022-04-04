@@ -125,7 +125,7 @@ Public Class clsDIMR
     End Function
 
 
-    Public Function getTMaxForXYLocation(X As Double, Y As Double, MaxSnappingDistance As Double, AddShiftSeconds As Integer, ByRef TimeMaxSecondsToReference As Integer, ByRef DateTimeMax As DateTime) As Boolean
+    Public Function getTMaxFrom1DFor2DXYLocation(X As Double, Y As Double, MaxSnappingDistance As Double, AddShiftSeconds As Integer, ByRef TimeMaxSecondsToReference As Integer, ByRef DateTimeMax As DateTime) As Boolean
         'this function retrieves the timestep at which the maximum waterlevel occurs near a given XY-location
         'it does so by finding the snappingpoint to the nearest branch
         'and then moving upstream until the first observationpoint is encountered
@@ -142,20 +142,10 @@ Public Class clsDIMR
             Dim MeshNode As cls1DMeshNode = Nothing
             Dim ObservationPoint As cls1DBranchObject = Nothing
 
-            Dim Found As Boolean = False
-            Dim ExcludeBranches As New List(Of String)
-            While Not Found
-                'start searching for a snap location, walk upstream and search for the nearest observation point
-                'if not found, add the snapping reach to the ExcludeBranches List and try again
-                If Not FlowFM.Network.FindSnapLocation(X, Y, MaxSnappingDistance, SnapBranch, SnapChainage, SnapDistance, ExcludeBranches) Then Exit While
-                If FlowFM.GetFirstUpstreamObservationpoint(SnapBranch.ID, SnapChainage, ObservationPoint) Then
-                    FlowFM.GetWaterlevelsForObservationpoint1D(ObservationPoint.ID, Results, Times)
-                    Found = True
-                Else
-                    ExcludeBranches.Add(SnapBranch.ID)
-                End If
-            End While
-
+            'start searching for a snap location, walk upstream and search for the nearest observation point
+            If Not FlowFM.Network.Find1DSnapLocationVia1D2DLinks(X, Y, MaxSnappingDistance, SnapBranch, SnapChainage, SnapDistance) Then Throw New Exception("Kan snapping point op 1D netwerk niet vinden vanuit de breslocatie " & X & ", " & Y)
+            If Not FlowFM.GetFirstUpstreamObservationpoint(SnapBranch.ID, SnapChainage, ObservationPoint) Then Throw New Exception("Kan bovenstrooms observationpoint niet vinden.")
+            FlowFM.GetWaterlevelsForObservationpoint1D(ObservationPoint.ID, Results, Times)
 
             'get the start- and endtime of our simulation
             Dim ReferenceDate As DateTime
@@ -173,6 +163,8 @@ Public Class clsDIMR
             Return False
         End Try
     End Function
+
+
 
     Public Function CloneCaseForCommandLineRun(SimulationDir As String, Optional ByVal StartDate As Date = Nothing, Optional ByVal EndDate As Date = Nothing) As clsDIMR
         'in this function we clone our entire DIMR project/case so it can be run from the command line

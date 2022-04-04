@@ -315,7 +315,7 @@ Module DIMR_RUNR
                         'for this we will first read our reference DIMR configuration
                         Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DIMRConfigPath))
                         refDIMR.readConfiguration()
-                        refDIMR.getTMaxForXYLocation(X, Y, MaxSearchRadius, 0, TMaxRef, DateMaxRef)
+                        refDIMR.getTMaxFrom1DFor2DXYLocation(X, Y, MaxSearchRadius, 0, TMaxRef, DateMaxRef)
 
                         'now we must translate our date-time of the maximum waterlevel back to the corresponding reference time in our model-to run
                         Dim RefDate As DateTime

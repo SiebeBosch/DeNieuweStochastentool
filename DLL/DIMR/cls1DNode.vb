@@ -2,6 +2,7 @@
 Public Class cls1DNode
     Private Setup As clsSetup
     Friend ID As String
+    Friend Idx As Integer
     Friend X As Double
     Friend Y As Double
     Public Sub New(ByRef mySetup As clsSetup, myID As String)

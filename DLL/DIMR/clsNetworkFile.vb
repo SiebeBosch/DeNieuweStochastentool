@@ -8,12 +8,14 @@ Public Class clsNetworkFile
     Friend Path As String
 
     Friend Branches As New Dictionary(Of String, cls1DBranch)
-    Friend Nodes As New Dictionary(Of String, cls1DNode)
+    Friend Nodes1D As New Dictionary(Of String, cls1DNode)
+    Friend CellCenters2D As New Dictionary(Of Integer, clsXY)         'a low memory storage facility for 2D cell centerpoints.
+    Friend Links1D2D As New List(Of cls1D2DLink)
 
     'all variables describing the network file's content
 
     'this block reads all variables concerning our 1D network from the file
-    Dim Links As Int32(,)
+    Dim links As Int32(,)
     Dim network1d_geom_y As Double()
     Dim network1d_geom_x As Double()
     Dim network1d_geom_node_count As Int32()
@@ -260,13 +262,15 @@ Public Class clsNetworkFile
             mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yIdx)
 
             'read all 1D2D links
-            Links = DataSet.GetData(Of Int32(,))(linksIdx)
+            links = DataSet.GetData(Of Int32(,))(linksIdx)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 
             If Not ReadReachNodes() Then Throw New Exception("Error reading the network's reach nodes (network1d_node).")
             If Not ReadReaches() Then Throw New Exception("Error reading the network's reaches")
             If Not ReadMeshNodes() Then Throw New Exception("Error reading the network's mesh nodes")
+            If Not Read2DCellCenters() Then Throw New Exception("Error reading the network's 2D Cells")
+            If Not Read1D2DLinks() Then Throw New Exception("Error reading the network's 1D2D links")
 
             Return True
         Catch ex As Exception
@@ -274,6 +278,21 @@ Public Class clsNetworkFile
             Return False
         End Try
 
+    End Function
+
+    Public Function Read2DCellCenters() As Boolean
+        'this function simply reads the cell center points (X, Y) for each 2D cell
+        Try
+            Dim myCellCenter As clsXY
+            For i = 0 To mesh2d_face_x.Count - 1
+                myCellCenter = New clsXY(mesh2d_face_x(i), mesh2d_face_y(i))
+                CellCenters2D.Add(i, myCellCenter)
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function Read2DCellCenters: " & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function ReadMeshNodes() As Boolean
@@ -299,7 +318,7 @@ Public Class clsNetworkFile
                 Else
                     'now that we have our branch, figure out our chainage and XY coordinate and add our meshnode to the reach
                     Offset = mesh1d_node_offset(i)
-                    Dim MeshNode As New cls1DMeshNode(ID, Offset)
+                    Dim MeshNode As New cls1DMeshNode(ID, i, Offset, Branch)
                     Branch.AddMeshNode(MeshNode)
                 End If
 
@@ -345,11 +364,54 @@ Public Class clsNetworkFile
                 Dim myNode As New cls1DNode(Me.Setup, ID)
                 myNode.X = X
                 myNode.Y = Y
-                Nodes.Add(myNode.ID.Trim.ToUpper, myNode)
+                myNode.Idx = i
+                Nodes1D.Add(myNode.ID.Trim.ToUpper, myNode)
             Next
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ReadReachNodes of class clsNetworkFile: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function Read1D2DLinks() As Boolean
+        Try
+            'array has two dimensions:
+            'dimension 1 = each link
+            'dimension 2 = resp. 2D cell and 1D node index
+            Dim myLink As cls1D2DLink
+            Dim MeshNodeFound As Boolean = False
+
+            For i = 0 To UBound(links, 1)
+                myLink = New cls1D2DLink(Me.Setup)
+                myLink.MeshNode1DIdx = links(i, 0)
+                myLink.Cell2DIdx = links(i, 1)
+                MeshNodeFound = False
+
+                'assign the actual 1D node to our link
+                For Each myBranch As cls1DBranch In Branches.Values
+                    For Each myMeshNode As cls1DMeshNode In myBranch.MeshNodes.Values
+                        If myMeshNode.Idx = myLink.MeshNode1DIdx Then
+                            myLink.MeshNode1D = myMeshNode
+                            MeshNodeFound = True
+                            Exit For
+                        End If
+                        If MeshNodeFound Then Exit For
+                    Next
+                Next
+
+                If CellCenters2D.ContainsKey(myLink.Cell2DIdx) Then
+                    myLink.CellCenter2D = CellCenters2D.Item(myLink.Cell2DIdx)
+                Else
+                    Stop
+                End If
+
+
+                Links1D2D.Add(myLink)
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function Read1D2DLinks of clss clsNetworkFile: " & ex.Message)
             Return False
         End Try
     End Function
@@ -374,8 +436,8 @@ Public Class clsNetworkFile
                 myBranch.RouteNumber = network1d_branch_order(i)
 
                 'let op: de array network1d_edge_nodes lijkt alleen cijfers > 0 te bevatten. Dit suggereert dat hij niet 0-based is maar 1-based
-                myBranch.bn = Nodes.Values(network1d_edge_nodes(i, 0))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
-                myBranch.en = Nodes.Values(network1d_edge_nodes(i, 1))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                myBranch.bn = Nodes1D.Values(network1d_edge_nodes(i, 0))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                myBranch.en = Nodes1D.Values(network1d_edge_nodes(i, 1))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
 
                 If myBranch.en Is Nothing Then Stop
                 If myBranch.bn Is Nothing Then Stop
@@ -445,7 +507,7 @@ Public Class clsNetworkFile
         End Try
     End Function
 
-    Public Function FindSnapLocation(ByVal X As Double, ByVal Y As Double, ByVal SearchRadius As Double, ByRef snapBranch As cls1DBranch, ByRef snapChainage As Double, ByRef snapDistance As Double, ExcludeBranches As List(Of String)) As Boolean
+    Public Function Find1DSnapLocation(ByVal X As Double, ByVal Y As Double, ByVal SearchRadius As Double, ByRef snapBranch As cls1DBranch, ByRef snapChainage As Double, ByRef snapDistance As Double, ExcludeBranches As List(Of String)) As Boolean
         Try
             Dim nearestDist As Double = 9.9E+100
             Dim reachSnapDist As Double = 9.9E+100, reachSnapChainage As Double
@@ -484,11 +546,37 @@ Public Class clsNetworkFile
         End Try
     End Function
 
-    Public Function FindSnappingPoint(X As Double, Y As Double, MaxSnappingDistance As Double, ByRef SnappedBranch As cls1DBranch, ByRef SnappedChainage As Double, ByRef SnappedDistance As Double) As Boolean
+
+
+    Public Function Find1DSnapLocationVia1D2DLinks(ByVal X As Double, ByVal Y As Double, ByVal SearchRadius As Double, ByRef snapBranch As cls1DBranch, ByRef snapChainage As Double, ByRef snapDistance As Double) As Boolean
+        'this function finds the snappingpoint on 1D from a given start position X, Y
+        'it does so by following the 1D2D links
         Try
+            Dim nearestDist As Double = 9.9E+100
+            Dim CurDist As Double
+            Dim CurLink As cls1D2DLink = Nothing
+            Dim Found As Boolean = False
 
+            For Each myLink As cls1D2DLink In Links1D2D
+                CurDist = Me.Setup.GeneralFunctions.Pythagoras(myLink.CellCenter2D.X, myLink.CellCenter2D.Y, X, Y)
+                If CurDist < SearchRadius AndAlso CurDist < nearestDist Then
+                    nearestDist = CurDist
+                    CurLink = myLink
+                    Found = True
+                End If
+            Next
+
+            'now that we found our nearest link, figure out the branch and chainage of the meshnode
+            If Found Then
+                snapChainage = CurLink.MeshNode1D.Chainage
+                snapBranch = CurLink.MeshNode1D.Branch
+            End If
+
+            Return Found
         Catch ex As Exception
-
+            Me.Setup.Log.AddError("Error snapping location to branches.")
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
         End Try
     End Function
 
