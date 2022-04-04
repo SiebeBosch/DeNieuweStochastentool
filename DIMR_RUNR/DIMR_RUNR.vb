@@ -324,6 +324,8 @@ Module DIMR_RUNR
                         DIMR.FlowFM.GetSimulationPeriod(RefDate, StartDate, EndDate)
                         Dim T0 As Integer = DateMaxRef.Subtract(RefDate).TotalSeconds
 
+                        Run.BreachDateTime = DateMaxRef     'we store the date we found as a property in our run so we won't have to recompute in other operations
+
                         'finally write this value to the appropriate chapter in the appropriate file
                         If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, T0) Then
                             Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
@@ -331,30 +333,42 @@ Module DIMR_RUNR
 
                     ElseIf FunctionName.Trim.ToUpper = "FINDBESTMATCHINGRESTARTFILE" Then
 
-                        Console.WriteLine("Bijbehorende Restart-file zoeken voor opgegeven afvoergolf en start simulatie.")
-                        Console.WriteLine("")
+                        'Console.WriteLine("Zoekt de eerste restartfile voorafgaand aan het bresmoment ...")
+                        'Console.WriteLine("")
 
-                        'get the start- and endtime of our simulation
-                        Dim RstFilePath As String = ""
-                        Dim rstFilePathRelative As String = ""
-                        Dim ReferenceDate As DateTime
-                        Dim StartDate As DateTime
-                        Dim EndDate As DateTime
-                        If Not DIMR.FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate) Then Throw New Exception("Kon simulatieperiode niet bepalen voor simulatie " & Run.GetName)
+                        'Dim HoursPreceeding As Double = Convert.ToDouble(Args(0))
 
-                        Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DIMRConfigPath))
-                        If Not refDIMR.FindBestMatchingRestartfile(StartDate, RstFilePath) Then Throw New Exception("Error finding matching restart file for simulation " & Run.GetName)
+                        ''check if we already have TBreach at our disposal. If not, recompute
+                        'If Run.BreachDateTime = Nothing Then
+                        'End If
 
-                        'now that we have a restart file we  must make it a relative path w.r.t. the flow directory of our simulation and write it to our input file
-                        If Not Setup.GeneralFunctions.AbsoluteToRelativePath(Run.DIMR.FlowFM.getDirectory, RstFilePath, rstFilePathRelative) Then Throw New Exception("Kon restart-file niet vinden bij simulatie " & Run.GetName)
-                        If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, rstFilePathRelative) Then
-                                Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
-                            End If
-                        End If
+
+                        ''get the start- and endtime of our simulation
+                        'Dim RstFilePath As String = ""
+                        'Dim rstFilePathRelative As String = ""
+                        'Dim ReferenceDate As DateTime
+                        'Dim StartDate As DateTime
+                        'Dim EndDate As DateTime
+                        'If Not DIMR.FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate) Then Throw New Exception("Kon simulatieperiode niet bepalen voor simulatie " & Run.GetName)
+
+                        'Dim refDIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DIMRConfigPath))
+                        'If Not refDIMR.FindBestMatchingRestartfile(StartDate, RstFilePath) Then Throw New Exception("Error finding matching restart file for simulation " & Run.GetName)
+
+                        ''now that we have a restart file we  must make it a relative path w.r.t. the flow directory of our simulation and write it to our input file
+                        'If Not Setup.GeneralFunctions.AbsoluteToRelativePath(Run.DIMR.FlowFM.getDirectory, RstFilePath, rstFilePathRelative) Then Throw New Exception("Kon restart-file niet vinden bij simulatie " & Run.GetName)
+                        'If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, rstFilePathRelative) Then
+                        '        Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
+                        '    End If
+                        'End If
+                    End If
+                Else
+                    'replacement value is not numeric
+                    If Not Setup.GeneralFunctions.ReplaceAttributeInDHydroFile(TargetPath, Operation.getHeader, Operation.getIdentifierAttributeName, Operation.getIdentifierAttributeValue, Operation.getAttributeName, Operation.getValue) Then
+                        Throw New Exception("kon attribuutwaarde voor " & Operation.getIdentifierAttributeName & " t.b.v. simulatie " & Run.GetName & " niet vervangen in het doelbestand: " & TargetPath)
                     End If
 
-            End If
-            Return True
+                End If
+                Return True
         Catch ex As Exception
             Setup.Log.AddError("Fout bij het implementeren van de bewerking: " & ex.Message)
             Console.WriteLine("Fout bij het implementeren van de bewerking: " & ex.Message)

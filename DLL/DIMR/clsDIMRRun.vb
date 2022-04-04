@@ -6,6 +6,12 @@ Public Class clsDIMRRun
     Public Scenarios As New Dictionary(Of String, clsDIMRScenario)  'the unique combination of scenario's that make up this simulation
     Public InputFiles As New Dictionary(Of String, String)          'key = the original filename, value = the full path to this file as used in the run
     Public OutputFiles As New List(Of String)
+
+    'to prevent certain properties to be recomputed multiple times (multiple operations) we store them here
+    Public BreachDateTime As DateTime = Nothing         'the actual moment of the dambreak
+    Public RestartFilePath As String        'the restartfile right before T0 - 24 hours
+    Public TStart As DateTime = Nothing     'the start of the simulation, matching our restart file
+
     Public DIMR As clsDIMR         'this object contains all information needed to run the simulation
     Private Setup As clsSetup
 
