@@ -368,7 +368,8 @@ Module DIMR_RUNR
                     End If
 
                 End If
-                Return True
+            End If
+            Return True
         Catch ex As Exception
             Setup.Log.AddError("Fout bij het implementeren van de bewerking: " & ex.Message)
             Console.WriteLine("Fout bij het implementeren van de bewerking: " & ex.Message)
