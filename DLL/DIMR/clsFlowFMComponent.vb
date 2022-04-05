@@ -87,12 +87,21 @@ Public Class clsFlowFMComponent
 
     Public Function getOutputFullDir() As String
         'read the MDU file
-        ReadMDU()
+        If MDUFile Is Nothing Then ReadMDU()
         Return MDUFile.GetOutputFullDir
+    End Function
+
+    Public Function getOutputSubDir() As String
+        If MDUFile Is Nothing Then ReadMDU()
+        Return MDUFile.GetOutputSubDir
     End Function
 
     Public Function getDirectory() As String
         Return DIMR.ProjectDir & "\" & DIMR.DIMRConfig.Flow1D.SubDir
+    End Function
+
+    Public Function getSubDirectory() As String
+        Return DIMR.DIMRConfig.Flow1D.SubDir
     End Function
 
 

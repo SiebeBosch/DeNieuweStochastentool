@@ -71,11 +71,17 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicInterop, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\DynamicInterop.0.9.1\lib\netstandard2.0\DynamicInterop.dll</HintPath>
+    </Reference>
     <Reference Include="GemBox.Spreadsheet">
       <HintPath>..\References\Gembox\GemBox.Spreadsheet.dll</HintPath>
     </Reference>
     <Reference Include="GemBox.Spreadsheet.WinFormsUtilities">
       <HintPath>..\References\Gembox\GemBox.Spreadsheet.WinFormsUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\SDSLite.2.0.3\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

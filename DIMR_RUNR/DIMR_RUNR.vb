@@ -97,63 +97,62 @@ Module DIMR_RUNR
             'now execute the simulations one by one
             For Each Run As clsDIMRRun In Runs.Runs.Values
 
-                Console.WriteLine("Start uitvoering simulatie " & Run.GetName & "...")
+                'only execute this simulation if there are no results present in the output dir
+                Dim OutputDir As String = ModelDir & "\" & Run.GetName & "\" & DIMR.FlowFM.getSubDirectory & "\" & DIMR.FlowFM.getOutputSubDir  '  Run.DIMR.FlowFM.getOutputFullDir
+                If Not Directory.Exists(OutputDir) OrElse Directory.GetFiles(OutputDir).Length = 0 Then
+                    Console.WriteLine("")
+                    Console.WriteLine("Simulatie " & Run.GetName & " wordt voorbereid...")
 
-                Dim RunDir As String = DIMR.ProjectDir & "\" & Run.GetName
-                If Not Directory.Exists(RunDir) Then Directory.CreateDirectory(RunDir)
-                Console.WriteLine("Directory creëren voor de simulatie: " & RunDir & "...")
+                    Dim RunDir As String = DIMR.ProjectDir & "\" & Run.GetName
+                    If Not Directory.Exists(RunDir) Then Directory.CreateDirectory(RunDir)
+                    Console.WriteLine("Directory creëren voor de simulatie: " & RunDir & "...")
 
-                Dim RunDIMR As clsDIMR
-                Console.WriteLine("Modelschematisatie kopiëren, uitgezonderd de resultatenmap...")
-                RunDIMR = DIMR.CloneCaseForCommandLineRun(RunDir)
+                    Dim RunDIMR As clsDIMR
+                    Console.WriteLine("Modelschematisatie kopiëren, uitgezonderd de resultatenmap...")
+                    RunDIMR = DIMR.CloneCaseForCommandLineRun(RunDir)
 
-                'finally assign the newly created DIMR instance to our run and read the DIMR configuration
-                Run.SetDIMRProject(RunDIMR)
-                Run.DIMR.readConfiguration()
+                    'finally assign the newly created DIMR instance to our run and read the DIMR configuration
+                    Run.SetDIMRProject(RunDIMR)
+                    Run.DIMR.readConfiguration()
 
-                '--------------------------------------------------------------------------------------------------------------------------------------------
-                'for each file that must be altered or replaced in this run we must add it to the list of input files
-                '--------------------------------------------------------------------------------------------------------------------------------------------
-                Console.WriteLine("Lijst samenstellen van alle aan te passen invoerbestanden voor simulatie " & Run.GetName & "...")
-                Console.WriteLine("")
-                For Each Scenario As clsDIMRScenario In Run.Scenarios.Values
-                    For Each Operation As clsDIMRFileOperation In Scenario.Operations
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
+                    'for each file that must be altered or replaced in this run we must add it to the list of input files
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
+                    Console.WriteLine("Lijst samenstellen van alle aan te passen invoerbestanden voor simulatie " & Run.GetName & "...")
+                    Console.WriteLine("")
+                    For Each Scenario As clsDIMRScenario In Run.Scenarios.Values
+                        For Each Operation As clsDIMRFileOperation In Scenario.Operations
+                            If Not Run.InputFiles.ContainsKey(Operation.getFileName.Trim.ToUpper) Then
+                                Run.InputFiles.Add(Operation.getFileName.Trim.ToUpper, Operation.getFileName)
+                            End If
+                        Next
+                    Next
+                    For Each Operation As clsDIMRFileOperation In Run.Operations
                         If Not Run.InputFiles.ContainsKey(Operation.getFileName.Trim.ToUpper) Then
                             Run.InputFiles.Add(Operation.getFileName.Trim.ToUpper, Operation.getFileName)
                         End If
                     Next
-                Next
-                For Each Operation As clsDIMRFileOperation In Run.Operations
-                    If Not Run.InputFiles.ContainsKey(Operation.getFileName.Trim.ToUpper) Then
-                        Run.InputFiles.Add(Operation.getFileName.Trim.ToUpper, Operation.getFileName)
-                    End If
-                Next
-                '--------------------------------------------------------------------------------------------------------------------------------------------
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
 
 
-                '--------------------------------------------------------------------------------------------------------------------------------------------
-                'now execute all operations for this run
-                'notice that we will use the copied files to make adjustments to!
-                'first execute all operations that take place on the level of each individual scenario
-                '--------------------------------------------------------------------------------------------------------------------------------------------
-                For Each Scenario As clsDIMRScenario In Run.Scenarios.Values
-                    For Each Operation As clsDIMRFileOperation In Scenario.Operations
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
+                    'now execute all operations for this run
+                    'notice that we will use the copied files to make adjustments to!
+                    'first execute all operations that take place on the level of each individual scenario
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
+                    For Each Scenario As clsDIMRScenario In Run.Scenarios.Values
+                        For Each Operation As clsDIMRFileOperation In Scenario.Operations
+                            If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
+                        Next
+                    Next
+
+                    For Each Operation As clsDIMRFileOperation In Run.Operations
                         If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
                     Next
-                Next
-
-                For Each Operation As clsDIMRFileOperation In Run.Operations
-                    If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
-                Next
-                '--------------------------------------------------------------------------------------------------------------------------------------------
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
 
 
-                '--------------------------------------------------------------------------------------------------------------------------------------------
-                'only execute this simulation if there are no results present in the output dir
-                Dim OutputDir As String = Run.DIMR.FlowFM.getOutputFullDir
-                If System.IO.Directory.GetFiles(OutputDir).Length = 0 Then
-                    Console.WriteLine("")
-                    Console.WriteLine("Simulatie " & Run.GetName & " wordt gestart...")
+                    '--------------------------------------------------------------------------------------------------------------------------------------------
 
                     'wait for a thread to become available for this run!
                     Dim ThreadFound As Boolean = False
