@@ -121,10 +121,11 @@ D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.IO.Packaging.xml
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.pdb
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.xml
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\Newtonsoft.Json.xml
-D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbprojAssemblyReference.cache
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.exe.config
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.Resources.resources
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.GenerateResource.cache
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.CopyComplete
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.exe
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.xml
+D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.AssemblyReference.cache
+D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.CoreCompileInputs.cache

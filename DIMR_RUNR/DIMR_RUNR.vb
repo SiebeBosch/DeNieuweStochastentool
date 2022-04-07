@@ -503,6 +503,7 @@ Module DIMR_RUNR
                                 End If
                             End If
                         Next
+                        If Runs.Runs.ContainsKey(Run.GetName.Trim.ToUpper) Then Throw New Exception("Fout: een simulatie met hetzelfde ID bestaat meerdere keren. Controleer de scenarioklassen en scenario's: " & Run.GetName)
                         Runs.Runs.Add(Run.GetName.Trim.ToUpper, Run)
                     End While
 
