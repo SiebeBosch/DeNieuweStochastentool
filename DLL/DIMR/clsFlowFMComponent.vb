@@ -172,6 +172,7 @@ Public Class clsFlowFMComponent
                     If upBranches.Count = 0 Then Exit While
                     For Each myBranch In upBranches
                         Found = myBranch.getFirstUpstreamObservationPoint(myBranch.calculateLength, Observationpoint)
+                        If Found Then Exit While
                     Next
                 End If
 
