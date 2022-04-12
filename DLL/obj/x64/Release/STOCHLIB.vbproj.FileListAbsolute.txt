@@ -37,3 +37,4 @@ D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CoreCompile
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CopyComplete
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.xml
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbprojAssemblyReference.cache
