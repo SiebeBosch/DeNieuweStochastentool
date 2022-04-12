@@ -5,6 +5,8 @@ Example/*
 hydamo_shp/*
 hydamo_model/*
 boezemmodel/*
+bin/*
+DIMR_RUNR/bin/*
 <<<<<<< HEAD
 =======
 catchment_builder_output/*
