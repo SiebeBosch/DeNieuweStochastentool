@@ -175,4 +175,4 @@ D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.dll
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.xml
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.pdb
 D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.CoreCompileInputs.cache
-D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbprojAssemblyReference.cache
+D:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.AssemblyReference.cache
