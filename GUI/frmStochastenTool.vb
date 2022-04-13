@@ -1,4 +1,5 @@
-﻿Imports STOCHLIB.General
+﻿Imports STOCHLIB
+Imports STOCHLIB.General
 Imports STOCHLIB.GeneralFunctions
 Imports System.IO
 Imports System.Xml
@@ -4436,6 +4437,14 @@ Public Class frmStochasten
     Private Sub DHydroToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DHydroToolStripMenuItem.Click
         Dim myForm As New STOCHLIB.frmClassifyGroundwaterDHydro(Me.Setup)
         myForm.Show()
+    End Sub
+
+    Private Sub LeesFOUFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LeesFOUFileToolStripMenuItem.Click
+        Dim FouFile As New clsFouFile("d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\Oude_IJssel_T=1000\dflowfm\output\dr48_fou.nc", Me.Setup)
+
+        FouFile.Read()
+
+
     End Sub
 
     Private Sub BtnViewer_Click(sender As Object, e As EventArgs) Handles btnViewer.Click

@@ -150,8 +150,10 @@ Public Class frmImportOutputlocations
                             Me.Setup.Log.AddMessage("Reading observation points.")
 
                             j = 0
-                            Dim n As Integer = Setup.DIMRData.FlowFM.ObservationPoints.Count
-                            For Each ObsPoint As STOCHLIB.clsXY In Setup.DIMRData.FlowFM.ObservationPoints.Values
+                            Dim n As Integer = Setup.DIMRData.FlowFM.Observationpoints1D.Count
+                            For Each ObsPoint As STOCHLIB.cls1DBranchObject In Setup.DIMRData.FlowFM.Observationpoints1D.Values
+
+
 
                                 j += 1
                                 Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
@@ -159,7 +161,7 @@ Public Class frmImportOutputlocations
                                 'apply the selection by ID
                                 If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, ObsPoint.ID, True) Then
                                     'compute the map coordinates of our point
-                                    Setup.GeneralFunctions.RD2WGS84(ObsPoint.X, ObsPoint.Y, Lat, Lon)
+                                    Setup.GeneralFunctions.RD2WGS84(ObsPoint.x, ObsPoint.Y, Lat, Lon)
 
                                     'retrieve the target levels from our subcatchments shapefile
                                     Dim ShapeIdx As Integer, WP As Double, ZP As Double

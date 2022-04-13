@@ -6,7 +6,6 @@ Public Class clsMapNCFile
     Private Setup As clsSetup
     Friend Path As String
 
-
     Dim Branches As New Dictionary(Of String, cls1DBranch)
     Dim Nodes As New Dictionary(Of String, cls1DNode)
 

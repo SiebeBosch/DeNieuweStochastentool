@@ -256,6 +256,8 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
+        Me.BetafunctiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LeesFOUFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -326,7 +328,7 @@ Partial Class frmStochasten
         'mnuMenu
         '
         Me.mnuMenu.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.mnuMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.ModelsToolStripMenuItem, Me.MappenBeherenToolStripMenuItem, Me.KaartToolStripMenuItem, Me.GrafiekenToolStripMenuItem, Me.DatabaseToolStripMenuItem1, Me.AboutToolStripMenuItem})
+        Me.mnuMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.ModelsToolStripMenuItem, Me.MappenBeherenToolStripMenuItem, Me.KaartToolStripMenuItem, Me.GrafiekenToolStripMenuItem, Me.DatabaseToolStripMenuItem1, Me.AboutToolStripMenuItem, Me.BetafunctiesToolStripMenuItem})
         Me.mnuMenu.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenu.Name = "mnuMenu"
         Me.mnuMenu.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
@@ -344,19 +346,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -2629,6 +2631,19 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1700, 28)
         Me.prProgress.TabIndex = 24
         '
+        'BetafunctiesToolStripMenuItem
+        '
+        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesFOUFileToolStripMenuItem})
+        Me.BetafunctiesToolStripMenuItem.Name = "BetafunctiesToolStripMenuItem"
+        Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(104, 24)
+        Me.BetafunctiesToolStripMenuItem.Text = "Betafuncties"
+        '
+        'LeesFOUFileToolStripMenuItem
+        '
+        Me.LeesFOUFileToolStripMenuItem.Name = "LeesFOUFileToolStripMenuItem"
+        Me.LeesFOUFileToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.LeesFOUFileToolStripMenuItem.Text = "Lees FOU file"
+        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -2964,4 +2979,6 @@ Partial Class frmStochasten
     Friend WithEvents RandvoorwaardenUitCSVToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SOBEKToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DHydroToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BetafunctiesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents LeesFOUFileToolStripMenuItem As ToolStripMenuItem
 End Class

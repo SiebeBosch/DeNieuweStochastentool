@@ -220,6 +220,7 @@
     <Compile Include="DIMR\clsDIMRRuns.vb" />
     <Compile Include="DIMR\clsDIMRScenario.vb" />
     <Compile Include="DIMR\clsDIMRScenarios.vb" />
+    <Compile Include="DIMR\clsFouFile.vb" />
     <Compile Include="DIMR\clsHisNCFile.vb" />
     <Compile Include="DIMR\clsIniFile.vb" />
     <Compile Include="DIMR\clsIniFileAttribute.vb" />

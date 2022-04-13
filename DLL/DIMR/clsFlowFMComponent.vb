@@ -6,7 +6,6 @@ Public Class clsFlowFMComponent
 
     Friend MDUFile As clsMDUFile                                    'all model settings (e.g. filenames)
     Public Network As clsNetworkFile                                'the complete topological network for our model
-    'Public ObservationPoints As New Dictionary(Of String, clsXY)    'the location of observation points in our model
 
     Public Observationpoints1D As New Dictionary(Of String, cls1DBranchObject)
 
@@ -59,7 +58,7 @@ Public Class clsFlowFMComponent
                     obsFile.Read(path)
                     For Each myChapter As clsIniFileChapter In obsFile.Chapters.Values
                         If myChapter.Name.Trim.ToLower = "[observationpoint]" Then
-                            Dim myObs As New cls1DBranchObject(Me.Network)
+                            Dim myObs As New cls1DBranchObject(Me.Setup, Me.Network)
                             For Each Attribute As clsIniFileAttribute In myChapter.Attributes.Values
                                 If Attribute.Name.Trim.ToUpper = "NAME" Then
                                     myObs.ID = Attribute.GetValue
