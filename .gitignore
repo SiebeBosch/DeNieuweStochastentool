@@ -8,6 +8,8 @@ boezemmodel/*
 bin/*
 DIMR_RUNR/bin/*
 DIMR_RUNR/.vs/*
+bin/*
+DLL/bin/*
 <<<<<<< HEAD
 =======
 catchment_builder_output/*
