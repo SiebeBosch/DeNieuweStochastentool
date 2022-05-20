@@ -702,29 +702,39 @@ Public Class frmStochasten
                         Pars(4) = n_node.Attributes.GetNamedItem("modeldir").Value
                         Pars(5) = n_node.Attributes.GetNamedItem("casename").Value
                         Pars(6) = Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.Attributes.GetNamedItem("tempworkdir").Value, RootDir)
-                        Pars(7) = n_node.Attributes.GetNamedItem("resultsfiles_rr").Value
-                        Pars(8) = n_node.Attributes.GetNamedItem("resultsfiles_flow").Value
+                        Dim tmpNode As XmlNode = n_node.Attributes.GetNamedItem("resultsfiles_rr")
+                        If tmpNode IsNot Nothing Then
+                            Pars(7) = n_node.Attributes.GetNamedItem("resultsfiles_rr").Value
+                        Else
+                            Pars(7) = ""
+                        End If
+                        tmpNode = n_node.Attributes.GetNamedItem("resultsfiles_flow")
+                        If tmpNode IsNot Nothing Then
+                            Pars(8) = n_node.Attributes.GetNamedItem("resultsfiles_flow").Value
+                        Else
+                            Pars(8) = ""
+                        End If
                         query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & Pars(0) & "','" & Pars(1) & "','" & Pars(2) & "','" & Pars(3) & "','" & Pars(4) & "','" & Pars(5) & "','" & Pars(6) & "','" & Pars(7) & "','" & Pars(8) & "');"
                         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
-                        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                        Using cmd As New SQLite.SQLiteCommand
-                            cmd.Connection = Me.Setup.SqliteCon
-                            Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                            Using cmd As New SQLite.SQLiteCommand
+                                cmd.Connection = Me.Setup.SqliteCon
+                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                                'now repopulate the results files and locations
-                                For Each o_node In n_node.ChildNodes
-                                    If o_node.Name.Trim.ToLower = "uitvoer" Then
-                                        ReDim Output(6)
-                                        Output(0) = Pars(0) 'equal to the model id we're currently in
-                                        Output(1) = o_node.Attributes.GetNamedItem("bestandsnaam").Value
-                                        Output(2) = o_node.Attributes.GetNamedItem("parameter").Value
-                                    End If
-                                Next
-                                transaction.Commit() 'this is where the bulk insert is finally executed.
+                                    'now repopulate the results files and locations
+                                    For Each o_node In n_node.ChildNodes
+                                        If o_node.Name.Trim.ToLower = "uitvoer" Then
+                                            ReDim Output(6)
+                                            Output(0) = Pars(0) 'equal to the model id we're currently in
+                                            Output(1) = o_node.Attributes.GetNamedItem("bestandsnaam").Value
+                                            Output(2) = o_node.Attributes.GetNamedItem("parameter").Value
+                                        End If
+                                    Next
+                                    transaction.Commit() 'this is where the bulk insert is finally executed.
+                                End Using
                             End Using
-                        End Using
-                    End If
+                        End If
                 Next
             Next
 
@@ -4468,19 +4478,17 @@ Public Class frmStochasten
 
             If Debugger.IsAttached Then
                 'in debug mode we will retrieve the zip file from our GITHUB directory
-                ZipPath = "d:\GITHUB\DeNieuweStochastentool\InnoSetup\Stochastenviewer.zip"
+                ZipPath = "c:\GITHUB\DeNieuweStochastentool\InnoSetup\Stochastenviewer.zip"
+                If Not System.IO.File.Exists(ZipPath) Then Throw New Exception("Error: could not find Stochastenviewer.zip in debug directory " & ZipPath)
             Else
                 'in release mode we will retrieve the zip file from within our application directory
                 ZipPath = My.Application.Info.DirectoryPath & "\viewer\Stochastenviewer.zip"
+                If Not System.IO.File.Exists(ZipPath) Then Throw New Exception("Error: could not find Stochastenviewer.zip in application directory " & My.Application.Info.DirectoryPath)
             End If
 
             'in our exe dir there should be a zip-file containing our viewer's source
             Dim Zip As New ZipFile(ZipPath)
-            If System.IO.File.Exists(ZipPath) Then
-                Zip.ExtractAll(ExtractDir, ExtractExistingFileAction.OverwriteSilently)
-            Else
-                Throw New Exception("Error: could not find Stochastenviewer.zip in application directory " & My.Application.Info.DirectoryPath)
-            End If
+            Zip.ExtractAll(ExtractDir, ExtractExistingFileAction.OverwriteSilently)
 
             'write the locations and all results to the JSON files
             Call WriteStochastsJSON(ViewerDir & "\js\stochasts.js")

@@ -19,7 +19,7 @@ Public Class clsExcelBook
 
         If Debugger.IsAttached Then
             'in debug mode we will retrieve the zip file from our GITHUB directory
-            LicensePath = "d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"
+            LicensePath = "c:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"
             Console.WriteLine("Path to external licenses set to: " & LicensePath)
         Else
             'in release mode we will retrieve the zip file from within our application directory
