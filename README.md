@@ -27,6 +27,9 @@ Verder zijn er nog diverse NuGET-packages geconfigureerd, maar dit zal zich vanz
 
 Gebruikers die wel gebruik willen maken van De Nieuwe Stochastentool maar die niet het gedoe willen van downloaden en inladen van de broncode, compileren, licenties van componenten organiseren etc. kunnen contact opnemen met ondergetekende voor een onderhoudscontract.
 
+##compilen en builden setup
+inbegrepen bij de ze Git is een Inno setup script. Dit script kan, na compileren in Visual Studio, worden gebruikt om een installatiebestand voor De Nieuwe Stochastentool te vervaardigen. Download en installeer daartoe Inno Setup https://jrsoftware.org/ alsmede Inno Script Studio https://www.kymoto.org/products/inno-script-studio. Stel in Inno Script Studio het pad naar Inno Setup in. Open dan het .iss bestand en draai het script.
+
 Den Haag, 1 september 2021
 
 Siebe Bosch
