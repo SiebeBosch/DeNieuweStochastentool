@@ -2,12 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Stochastentool"
-#define MyAppVersion "2.204"
+#define MyAppVersion "2.210"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
-#define SetupLocation "d:\GITHUB\DeNieuweStochastentool\InnoSetup"
-#define LicensesLocation "d:\GITHUB\DeNieuweStochastentool\licenses"
-#define BinLocation "d:\GITHUB\DeNieuweStochastentool\bin"
+#define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"
+#define LicensesLocation "c:\GITHUB\DeNieuweStochastentool\licenses"
+#define BinLocation "c:\GITHUB\DeNieuweStochastentool\bin"
 ;;hieronder wisselen tussen 32bit en 64bit. 32bit is uitcommentarieren van de regel hieronder
 #define x64BitVersion
 ;;#define VsVersion = "2015" 
@@ -122,7 +122,7 @@ Filename: "{app}\{#vcredist}"; Parameters: "/quiet"; Flags: waituntilterminated;
 #endif
 ;also install MapWinGIS and NetCDF
 Filename: "{app}\{#mapwingis}"; Parameters: "/verysilent /norestart /DIR=..\MapWinGIS"; Flags: waituntilterminated
-Filename: "{app}\{#netCDF}"; Parameters: "/verysilent /norestart /DIR=..\NetCDF"; Flags: waituntilterminated
+Filename: "{app}\{#netCDF}"; Parameters: "/silent /norestart /DIR=..\NetCDF"; Flags: waituntilterminated
 ;And (optionally) Stochastentool itself:
 Filename: "{app}\Stochastentool.exe"; Flags: shellexec runasoriginaluser postinstall nowait skipifsilent; Description: "Start De Nieuwe Stochastentool?"
 
