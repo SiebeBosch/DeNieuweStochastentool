@@ -20,7 +20,7 @@ Public Class clsSimulationModel
         Setup = mySetup
     End Sub
 
-    Public Sub New(ByRef mySetup As clsSetup, ByVal myId As String, ByVal myType As String, ByVal myExec As String, ByVal myArgs As String, ByVal myModelDir As String, ByVal myCaseName As String, ByVal myTempWorkDir As String, RRResultsFiles As String, FlowResultsFiles As String)
+    Public Sub New(ByRef mySetup As clsSetup, ByVal myId As Integer, ByVal myType As String, ByVal myExec As String, ByVal myArgs As String, ByVal myModelDir As String, ByVal myCaseName As String, ByVal myTempWorkDir As String, RRResultsFiles As String, FlowResultsFiles As String)
         Dim myFile As String
         Setup = mySetup
         Id = myId

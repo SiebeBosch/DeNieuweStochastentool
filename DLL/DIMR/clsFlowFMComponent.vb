@@ -6,16 +6,21 @@ Public Class clsFlowFMComponent
 
     Friend MDUFile As clsMDUFile                                    'all model settings (e.g. filenames)
     Public Network As clsNetworkFile                                'the complete topological network for our model
+    Public FouConfig As clsFouConfigFile
 
     Public Observationpoints1D As New Dictionary(Of String, cls1DBranchObject)
+    Public CellCenterpoints2D As New List(Of clsXY)  'key = cell index number
 
     Dim HisNCFile As clsHisNCFile
     Dim MapNCFile As clsMapNCFile
+    Dim FouNCFile As clsFouNCFile
 
     Public Sub New(ByRef mySetup As clsSetup, ByRef myDIMR As clsDIMR)
         Setup = mySetup
         DIMR = myDIMR
     End Sub
+
+
 
     Public Function ReadNetwork() As Boolean
         Try
@@ -39,6 +44,26 @@ Public Class clsFlowFMComponent
             Return MDUFile.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
         Catch ex As Exception
             Me.Setup.Log.AddError("Error Integer Function GetSimulationPeriod of class clsFlowFMComponent: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function ReadCellCentersFromFouFile() As Boolean
+        Try
+            If MDUFile Is Nothing Then Throw New Exception("Could not read fourier (fou) file since the MDU File has not yet been read.")
+            Dim Path As String = getOutputFullDir() & "\" & GetFouResultsFileName()
+
+            If Not System.IO.File.Exists(Path) Then Throw New Exception("Fourier file Not found: " & Path)
+            Dim FouFile As New clsFouNCFile(Path, Me.Setup)
+            If Not FouFile.Read() Then Throw New Exception("Error reading Fou file: True" & Path)
+
+            For i = 0 To FouFile.Mesh2d_face_x.Count - 1
+                CellCenterpoints2D.Add(New clsXY(FouFile.Mesh2d_face_x(i), FouFile.Mesh2d_face_y(i)))
+            Next
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetCellCentersFromFouFile: " & ex.Message)
             Return False
         End Try
     End Function
@@ -102,7 +127,6 @@ Public Class clsFlowFMComponent
     Public Function getSubDirectory() As String
         Return DIMR.DIMRConfig.Flow1D.SubDir
     End Function
-
 
     Public Function ReadMDU() As Boolean
         Try
@@ -189,7 +213,10 @@ Public Class clsFlowFMComponent
         End Try
     End Function
 
-
+    Public Function GetFouResultsFileName() As String
+        Dim FouResultsFileName As String = Strings.Replace(DIMR.DIMRConfig.Flow1D.GetInputFile(), ".mdu", "_fou.nc")
+        Return FouResultsFileName
+    End Function
     Public Function GetHisResultsFileName() As String
         Dim HisResultsFileName As String = Strings.Replace(DIMR.DIMRConfig.Flow1D.GetInputFile(), ".mdu", "_his.nc")
         Return HisResultsFileName
@@ -198,6 +225,22 @@ Public Class clsFlowFMComponent
     Public Function GetMapResultsFileName() As String
         Dim MapResultsFileName As String = Strings.Replace(DIMR.DIMRConfig.Flow1D.GetInputFile(), ".mdu", "_map.nc")
         Return MapResultsFileName
+    End Function
+
+    Public Function ReadFouConfigFile() As Boolean
+        Try
+            'this function reads the file containing our Fou File's configuration, usually named Maxima.fou
+            Dim FileName As String = MDUFile.GetFouConfigFileName()
+
+            FouConfig = New clsFouConfigFile(Me.Setup, Me, FileName)
+            If Not FouConfig.Read() Then Throw New Exception("Error reading Fourier Configuation File.")
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ReadFouConfigFile: " & ex.Message)
+            Return False
+        End Try
+
     End Function
 
     Public Function GetWaterlevelsForObservationpoint1D(NodeID As String, ByRef Results As Double(), ByRef Times As Double()) As Boolean

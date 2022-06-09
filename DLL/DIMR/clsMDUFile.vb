@@ -37,6 +37,10 @@ Public Class clsMDUFile
         Return DIMRConfigComponent.GetFullDir & "\" & DIMRConfigComponent.GetInputFile
     End Function
 
+    Public Function GetFouConfigFileName() As String
+        Return getAttributeValue("[Output]", "FouFile", 0, "Maxima.fou")
+    End Function
+
     Public Function GetOutputSubDir() As String
         Return getAttributeValue("[Output]", "outputdir", 0, "output")
     End Function

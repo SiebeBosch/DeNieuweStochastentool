@@ -41,12 +41,15 @@ Public Class frmImportOutputlocations
             Me.Setup.GeneralFunctions.UpdateProgressBar("Uitvoerlocaties importeren...", 0, 10, True)
             Me.Setup.Log.AddMessage("Starting import of output locations.")
 
-            Dim i As Integer, j As Integer
+            Dim i As Integer, j As Integer, n As Integer
             Dim ModelID As String
             Dim ModelDir As String
             Dim ModelType As String
             Dim CaseName As String
             Dim query As String
+            Dim WPFieldIdx As Integer
+            Dim ZPFieldIdx As Integer
+            Dim WP As Double, ZP As Double
 
             Dim IDPatterns As New List(Of String)
             Dim TmpStr As String = txtIDFilter.Text
@@ -81,12 +84,15 @@ Public Class frmImportOutputlocations
                     Dim dtLocations As New DataTable
                     Dim Lat As Double, Lon As Double
 
-                    'read the subcatchment's shapefile and set the 'beginpointinshapefile' property to allow quick search of target levels
-                    Dim SubcatchmentsSF As New STOCHLIB.clsShapeFile(Me.Setup, SubcatchmentShapefile)
-                    If Not SubcatchmentsSF.Open() Then Throw New Exception("Error: could not open subcatchments shapefile: " & SubcatchmentsSF.Path)
-                    Dim WPFieldIdx As Integer = SubcatchmentsSF.GetFieldIdx(WPField)
-                    Dim ZPFieldIdx As Integer = SubcatchmentsSF.GetFieldIdx(ZPField)
-                    SubcatchmentsSF.sf.BeginPointInShapefile()
+                    Dim SubcatchmentsSF As STOCHLIB.clsShapeFile = Nothing
+                    If System.IO.File.Exists(SubcatchmentShapefile) Then
+                        'read the subcatchment's shapefile and set the 'beginpointinshapefile' property to allow quick search of target levels
+                        SubcatchmentsSF = New STOCHLIB.clsShapeFile(Me.Setup, SubcatchmentShapefile)
+                        If Not SubcatchmentsSF.Open() Then Throw New Exception("Error: could not open subcatchments shapefile: " & SubcatchmentsSF.Path)
+                        WPFieldIdx = SubcatchmentsSF.GetFieldIdx(WPField)
+                        ZPFieldIdx = SubcatchmentsSF.GetFieldIdx(ZPField)
+                        SubcatchmentsSF.sf.BeginPointInShapefile()
+                    End If
 
                     If dtModels.Rows(i)("MODELTYPE") = "SOBEK" Then
 
@@ -120,8 +126,9 @@ Public Class frmImportOutputlocations
                                     Setup.GeneralFunctions.RD2WGS84(WLPoint.X, WLPoint.Y, Lat, Lon)
 
                                     'retrieve the target levels from our subcatchments shapefile
-                                    Dim ShapeIdx As Integer, WP As Double, ZP As Double
-                                    ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(WLPoint.X, WLPoint.Y)
+                                    'v2.2.2 removed the compulsory existence of a subcatchments shapefile
+                                    Dim ShapeIdx As Integer = -1
+                                    If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(WLPoint.X, WLPoint.Y)
                                     If ShapeIdx >= 0 Then
                                         'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
                                         WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
@@ -151,10 +158,8 @@ Public Class frmImportOutputlocations
                             Me.Setup.Log.AddMessage("Reading observation points.")
 
                             j = 0
-                            Dim n As Integer = Setup.DIMRData.FlowFM.Observationpoints1D.Count
+                            n = Setup.DIMRData.FlowFM.Observationpoints1D.Count
                             For Each ObsPoint As STOCHLIB.cls1DBranchObject In Setup.DIMRData.FlowFM.Observationpoints1D.Values
-
-
 
                                 j += 1
                                 Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
@@ -164,9 +169,8 @@ Public Class frmImportOutputlocations
                                     'compute the map coordinates of our point
                                     Setup.GeneralFunctions.RD2WGS84(ObsPoint.x, ObsPoint.Y, Lat, Lon)
 
-                                    'retrieve the target levels from our subcatchments shapefile
-                                    Dim ShapeIdx As Integer, WP As Double, ZP As Double
-                                    ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(ObsPoint.X, ObsPoint.Y)
+                                    Dim ShapeIdx As Integer = -1
+                                    If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(ObsPoint.X, ObsPoint.Y)
                                     If ShapeIdx > 0 Then
                                         'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
                                         WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
@@ -183,19 +187,52 @@ Public Class frmImportOutputlocations
                             Next
                         End If
 
-                        If chkObservationPoints2D.Checked Then
-                            'here we'll read the 2D observation points as used for our mesh results
+                        If chkFouFiles.Checked Then
 
+                            'we will retrieve our results statistics from the Fourier files
+                            Setup.DIMRData.FlowFM.ReadCellCentersFromFouFile()
+
+                            Using cmd As New SQLite.SQLiteCommand
+                                cmd.Connection = Me.Setup.SqliteCon
+                                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
+
+                                    n = Setup.DIMRData.FlowFM.CellCenterpoints2D.Count
+                                    For j = 0 To Setup.DIMRData.FlowFM.CellCenterpoints2D.Count - 1
+                                        Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+                                        Dim X As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).X
+                                        Dim Y As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).Y
+
+                                        'compute the map coordinates of our point
+                                        Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
+
+                                        'retrieve the target levels from our subcatchments shapefile
+                                        Dim ShapeIdx As Integer = -1
+                                        If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(X, Y)
+                                        If ShapeIdx > 0 Then
+                                            'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                                            WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                                            ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW'," & "'water level" & "','" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                                            cmd.ExecuteNonQuery()
+                                        Else
+                                            'could not find target levels. Only write the location and parameters
+                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW'," & "'water level" & "','" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
+                                            cmd.ExecuteNonQuery()
+                                        End If
+                                    Next
+                                    transaction.Commit() 'this is where the bulk insert is finally executed.
+                                End Using
+                            End Using
                         End If
-
-
                     End If
 
-                    SubcatchmentsSF.sf.EndPointInShapefile()
-                    SubcatchmentsSF.Close()
+                    If SubcatchmentsSF IsNot Nothing Then
+                        SubcatchmentsSF.sf.EndPointInShapefile()
+                        SubcatchmentsSF.Close()
+                    End If
 
                     'now that we have read all output locations, refresh the datagridview containing our output locations
-
                     Me.Setup.SqliteCon.Close()
                     Me.Setup.Log.write(Setup.Settings.RootDir & "\logfile.txt", True)
                     Me.Setup.Log.Clear()

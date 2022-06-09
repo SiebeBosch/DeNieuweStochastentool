@@ -245,11 +245,23 @@ Public Class clsStochastenAnalyse
 
     Public Function WriteModelsToDB(ByRef con As SQLite.SQLiteConnection) As Boolean
         Dim myQuery As String
+        Dim RRFiles As String = "", FLOWFiles As String = ""
         myQuery = "DELETE FROM SIMULATIONMODELS"
         Setup.GeneralFunctions.SQLiteNoQuery(con, myQuery, False)
 
         For Each myModel As clsSimulationModel In Models.Values
-            myQuery = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR) VALUES ('" & myModel.Id & "','" & myModel.ModelType.ToString & "','" & myModel.Exec & "','" & myModel.Args & "','" & myModel.ModelDir & "','" & myModel.CaseName & "','" & myModel.TempWorkDir & "');"
+
+            For i = 0 To myModel.ResultsFiles.Files.Count - 1
+                If myModel.ResultsFiles.Files(i).HydroModule = GeneralFunctions.enmHydroModule.RR Then
+                    If RRFiles.Length > 0 Then RRFiles = RRFiles & ";"
+                    RRFiles &= myModel.ResultsFiles.Files(i).FileName
+                ElseIf myModel.ResultsFiles.Files(i).HydroModule = GeneralFunctions.enmHydroModule.FLOW Then
+                    If FLOWFiles.Length > 0 Then FLOWFiles = FLOWFiles & ";"
+                    FLOWFiles &= myModel.ResultsFiles.Files(i).FileName
+                End If
+            Next
+
+            myQuery = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & myModel.Id & "','" & myModel.ModelType.ToString & "','" & myModel.Exec & "','" & myModel.Args & "','" & myModel.ModelDir & "','" & myModel.CaseName & "','" & myModel.TempWorkDir & "','" & RRFiles & "','" & FLOWFiles & "');"
             Setup.GeneralFunctions.SQLiteNoQuery(con, myQuery, False)
         Next
         con.Close()
@@ -269,7 +281,7 @@ Public Class clsStochastenAnalyse
         Dim mySeason As clsStochasticSeasonClass
 
         dtSeasons = New DataTable
-        myQuery = "SELECT * FROM SEIZOENEN"
+        myQuery = "Select * FROM SEIZOENEN"
         Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtSeasons)
 
         Seasons = New Dictionary(Of String, clsStochasticSeasonClass)
@@ -282,7 +294,7 @@ Public Class clsStochastenAnalyse
 
                 'add the volumes that are in use
                 dtStoch = New DataTable
-                myQuery = "SELECT VOLUME, KANS WHERE DUUR = " & Duration & " And SEIZOEN = '" & .Name & "' AND USE=-1;"
+                myQuery = "Select VOLUME, KANS WHERE DUUR = " & Duration & " And SEIZOEN = '" & .Name & "' AND USE=-1;"
                 Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtStoch)
                 For j = 0 To dtStoch.Rows.Count - 1
                     .GetAddVolumeClass(dtStoch.Rows(j)(0), dtStoch.Rows(j)(1))
@@ -784,6 +796,61 @@ Public Class clsStochastenAnalyse
                                     End If
                                 Next
                             End Using
+
+                        ElseIf Right(myfile.FileName, 7).ToLower = "_fou.nc" Then
+
+                            'this is a D-Hydro Fourier file!
+                            Dim path As String = myRun.Dir & "\" & myFile.FileName
+                            Dim myFouNC As New clsFouNCFile(path, Me.Setup)
+                            If Not System.IO.File.Exists(path) Then Throw New Exception("Fourier file does not exist: " & path)
+                            If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
+
+                            'retrieve the maximum water levels from our Fourier file
+                            Dim Maxima As Double() = myFouNC.get2DMaximumWaterLevels()
+
+                            For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+                                If myPar.Locations.Count = 0 Then
+                                    Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
+                                Else
+                                    '--------------------------------------------------------------------------------------------------------------------------------------------
+                                    '  writing the results for this run & parameter to the database
+                                    '--------------------------------------------------------------------------------------------------------------------------------------------
+                                    'Dim Waterlevels As Double(,) = Nothing
+                                    'Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
+                                    'Dim IDList As String() = Nothing
+                                    'If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
+
+                                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                    Using myCmd As New SQLite.SQLiteCommand
+                                        myCmd.Connection = Me.Setup.SqliteCon
+                                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+
+                                            For i = 0 To Maxima.Count - 1
+                                                Dim ID As String = i.ToString       'the index number of each cell is also considered its ID
+
+                                                If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
+                                                    'v2.2.2: support for maxima from Fourier files added. Other params not yet
+                                                    Max = Maxima(i)
+                                                    Min = 0
+                                                    Avg = 0
+
+                                                    'add the outcome of this run to the dictionary of results
+                                                    myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                                    myCmd.ExecuteNonQuery()
+
+                                                End If
+                                            Next
+
+                                            'insert the resulta for all locations at once
+                                            transaction.Commit() 'this is where the bulk insert is finally executed.
+                                        End Using
+                                    End Using
+
+                                End If
+                            Next
+
+
+
                         ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
                             If Not System.IO.File.Exists(myRun.Dir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.Dir & "\" & myFile.FileName)
                             Dim myHisNC As New clsHisNCFile(myRun.Dir & "\" & myFile.FileName, Me.Setup)

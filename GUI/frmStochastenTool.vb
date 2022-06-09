@@ -464,6 +464,8 @@ Public Class frmStochasten
                         grModels.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = dlgFolder.SelectedPath
                     End If
                 End Sub
+
+
             Console.WriteLine("Stochastentool launched successfully.")
             Debug.Print("Stochastentool launched successfully.")
         Catch ex As Exception
@@ -556,7 +558,12 @@ Public Class frmStochasten
                 tabStochastentool.Enabled = True
                 btnPopulateRuns.Enabled = True
 
+                If cmbDuration.Text = "" Then
+                    cmbDuration.SelectedIndex = 0
+                End If
+
                 'stochastic settings
+                'v2.2.2: enforcing a valid numerical value for duration
                 Setup.StochastenAnalyse.Duration = cmbDuration.Text
                 Setup.StochastenAnalyse.DurationAdd = txtUitloop.Text
 
@@ -576,7 +583,7 @@ Public Class frmStochasten
             End If
 
             'configure the popup-form showing the current pattern
-            frmPattern = New frmPatroon(Me.Setup, cmbDuration.Text)
+            frmPattern = New frmPatroon(Me.Setup, Setup.StochastenAnalyse.Duration)
         End If
 
         Me.Cursor = Cursors.Default
@@ -680,67 +687,71 @@ Public Class frmStochasten
             'update the database structure
             '------------------------------------------------------------------------------------
 
-            '------------------------------------------------------------------------------------
-            'Get the list of models to run 
-            '------------------------------------------------------------------------------------
-            m_nodelist = m_xmld.SelectNodes("/stochastentool/modellen")
-            query = "DELETE FROM SIMULATIONMODELS;"
-            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
-            For Each m_node In m_nodelist
-                'Loop through the nodes
-                For Each n_node In m_node.ChildNodes
-                    If n_node.Name.Trim.ToLower = "model" Then
-                        ReDim Pars(8)
-                        If Not IsNumeric(n_node.Attributes.GetNamedItem("id").Value) Then Throw New Exception("Model ID in XML-file moet een geheel getal zijn.")
+            'v2.2.2: removed the entire specification of models in the XML and instead introduced adding models in the GUI
+            ''------------------------------------------------------------------------------------
+            ''Get the list of models to run 
+            ''------------------------------------------------------------------------------------
+            'm_nodelist = m_xmld.SelectNodes("/stochastentool/modellen")
+            'query = "DELETE FROM SIMULATIONMODELS;"
+            'Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
-                        'add the model found to the database
-                        Pars(0) = n_node.Attributes.GetNamedItem("id").Value
-                        Pars(1) = n_node.Attributes.GetNamedItem("type").Value
-                        Pars(2) = n_node.Attributes.GetNamedItem("executable").Value
-                        Pars(3) = n_node.Attributes.GetNamedItem("arguments").Value
-                        Pars(4) = n_node.Attributes.GetNamedItem("modeldir").Value
-                        Pars(5) = n_node.Attributes.GetNamedItem("casename").Value
-                        Pars(6) = Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.Attributes.GetNamedItem("tempworkdir").Value, RootDir)
-                        Dim tmpNode As XmlNode = n_node.Attributes.GetNamedItem("resultsfiles_rr")
-                        If tmpNode IsNot Nothing Then
-                            Pars(7) = n_node.Attributes.GetNamedItem("resultsfiles_rr").Value
-                        Else
-                            Pars(7) = ""
-                        End If
-                        tmpNode = n_node.Attributes.GetNamedItem("resultsfiles_flow")
-                        If tmpNode IsNot Nothing Then
-                            Pars(8) = n_node.Attributes.GetNamedItem("resultsfiles_flow").Value
-                        Else
-                            Pars(8) = ""
-                        End If
-                        query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & Pars(0) & "','" & Pars(1) & "','" & Pars(2) & "','" & Pars(3) & "','" & Pars(4) & "','" & Pars(5) & "','" & Pars(6) & "','" & Pars(7) & "','" & Pars(8) & "');"
-                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+            'For Each m_node In m_nodelist
+            '    'Loop through the nodes
+            '    For Each n_node In m_node.ChildNodes
+            '        If n_node.Name.Trim.ToLower = "model" Then
+            '            ReDim Pars(8)
+            '            If Not IsNumeric(n_node.Attributes.GetNamedItem("id").Value) Then Throw New Exception("Model ID in XML-file moet een geheel getal zijn.")
 
-                            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                            Using cmd As New SQLite.SQLiteCommand
-                                cmd.Connection = Me.Setup.SqliteCon
-                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
+            '            'add the model found to the database
+            '            Pars(0) = n_node.Attributes.GetNamedItem("id").Value
+            '            Pars(1) = n_node.Attributes.GetNamedItem("type").Value
+            '            Pars(2) = n_node.Attributes.GetNamedItem("executable").Value
+            '            Pars(3) = n_node.Attributes.GetNamedItem("arguments").Value
+            '            Pars(4) = n_node.Attributes.GetNamedItem("modeldir").Value
+            '            Pars(5) = n_node.Attributes.GetNamedItem("casename").Value
+            '            Pars(6) = Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.Attributes.GetNamedItem("tempworkdir").Value, RootDir)
+            '            Dim tmpNode As XmlNode = n_node.Attributes.GetNamedItem("resultsfiles_rr")
+            '            If tmpNode IsNot Nothing Then
+            '                Pars(7) = n_node.Attributes.GetNamedItem("resultsfiles_rr").Value
+            '            Else
+            '                Pars(7) = ""
+            '            End If
+            '            tmpNode = n_node.Attributes.GetNamedItem("resultsfiles_flow")
+            '            If tmpNode IsNot Nothing Then
+            '                Pars(8) = n_node.Attributes.GetNamedItem("resultsfiles_flow").Value
+            '            Else
+            '                Pars(8) = ""
+            '            End If
+            '            query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & Pars(0) & "','" & Pars(1) & "','" & Pars(2) & "','" & Pars(3) & "','" & Pars(4) & "','" & Pars(5) & "','" & Pars(6) & "','" & Pars(7) & "','" & Pars(8) & "');"
+            '            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
-                                    'now repopulate the results files and locations
-                                    For Each o_node In n_node.ChildNodes
-                                        If o_node.Name.Trim.ToLower = "uitvoer" Then
-                                            ReDim Output(6)
-                                            Output(0) = Pars(0) 'equal to the model id we're currently in
-                                            Output(1) = o_node.Attributes.GetNamedItem("bestandsnaam").Value
-                                            Output(2) = o_node.Attributes.GetNamedItem("parameter").Value
-                                        End If
-                                    Next
-                                    transaction.Commit() 'this is where the bulk insert is finally executed.
-                                End Using
-                            End Using
-                        End If
-                Next
-            Next
+            '                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+            '                Using cmd As New SQLite.SQLiteCommand
+            '                    cmd.Connection = Me.Setup.SqliteCon
+            '                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-            query = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW FROM SIMULATIONMODELS;"
-            If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
-            grModels.DataSource = dtModels
+            '                        'now repopulate the results files and locations
+            '                        For Each o_node In n_node.ChildNodes
+            '                            If o_node.Name.Trim.ToLower = "uitvoer" Then
+            '                                ReDim Output(6)
+            '                                Output(0) = Pars(0) 'equal to the model id we're currently in
+            '                                Output(1) = o_node.Attributes.GetNamedItem("bestandsnaam").Value
+            '                                Output(2) = o_node.Attributes.GetNamedItem("parameter").Value
+            '                            End If
+            '                        Next
+            '                        transaction.Commit() 'this is where the bulk insert is finally executed.
+            '                    End Using
+            '                End Using
+            '            End If
+            '    Next
+            'Next
+
+            'query = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW FROM SIMULATIONMODELS;"
+            'If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
+            'grModels.DataSource = dtModels
+
+            PopulateSimulationModelsGrid()
 
             'now repopulate the datagridview based on the output locations
             query = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, ZP, WP FROM OUTPUTLOCATIONS;"
@@ -762,6 +773,18 @@ Public Class frmStochasten
 
     End Function
 
+    Public Sub PopulateSimulationModelsGrid()
+        Dim query As String = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW FROM SIMULATIONMODELS;"
+        If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
+        grModels.DataSource = dtModels
+
+
+        'v2.2.2 make sure to resize all columns
+        For Each Col As DataGridViewColumn In grModels.Columns
+            Col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+        Next
+
+    End Sub
 
     Public Sub PopulateSubCatchmentComboBoxes()
         'populate the comboboxes
@@ -1118,6 +1141,8 @@ Public Class frmStochasten
         End If
 
     End Function
+
+
 
     Public Sub RefreshPatternsGrids()
         Dim query As [String]
@@ -2496,7 +2521,7 @@ Public Class frmStochasten
         '--------------------------------------------------------------------------------------------
         'deze routine werkt een neerslagstation bij in de database
         '--------------------------------------------------------------------------------------------
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
+        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
             If grMeteoStations.Rows.Count > 0 Then
                 Dim Naam As String = grMeteoStations.Rows(e.RowIndex).Cells(0).Value
                 Dim Type As String = grMeteoStations.Rows(e.RowIndex).Cells(1).Value.ToString.ToLower
@@ -2526,7 +2551,7 @@ Public Class frmStochasten
     End Sub
 
     Private Sub BtnAddMeteoStation_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddMeteoStation.Click
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
+        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
             Dim myForm As New STOCHLIB.frmAddMeteoStation
             myForm.ShowDialog()
             If myForm.DialogResult = Windows.Forms.DialogResult.OK Then
@@ -2567,7 +2592,7 @@ Public Class frmStochasten
 
     Public Sub RebuildAllGrids()
         'this routine can only be executed when all data has been read and in place
-        If Not Setup.SqliteCon Is Nothing AndAlso Not Setup.SqliteCon.ConnectionString = "" AndAlso cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" Then
+        If Setup.SqliteCon IsNot Nothing AndAlso Not Setup.SqliteCon.ConnectionString = "" AndAlso cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" Then
             Me.Setup.GeneralFunctions.UpdateProgressBar("Building Output locations...", 0, 20, True)
             PopulateOutputLocationsGrid()
             Me.Setup.GeneralFunctions.UpdateProgressBar("Building Meteostations controls...", 1, 20, True)
@@ -3408,6 +3433,35 @@ Public Class frmStochasten
         End If
     End Sub
 
+    Public Function CreateModelFromDatagridRow(ByRef Row As DataGridViewRow) As STOCHLIB.clsSimulationModel
+
+        'this function creates an instance of clsSimulationModel, based on a row in the grSimulationModels datagrid
+        Dim RRResultsFiles As String = ""
+        Dim FlowResultsFiles As String = ""
+        Dim ID As Integer
+        Dim ModelType As String = ""
+        Dim Exec As String = ""
+        Dim Args As String = ""
+        Dim ModelDir As String = ""
+        Dim Casename As String = ""
+        Dim TempWorkDir As String = ""
+
+
+        If Not IsDBNull(Row.Cells(0).Value) Then ID = Row.Cells(0).Value
+        If Not IsDBNull(Row.Cells(1).Value) Then ModelType = Row.Cells(1).Value
+        If Not IsDBNull(Row.Cells(2).Value) Then Exec = Row.Cells(2).Value
+        If Not IsDBNull(Row.Cells(3).Value) Then Args = Row.Cells(3).Value
+        If Not IsDBNull(Row.Cells(4).Value) Then ModelDir = Row.Cells(4).Value
+        If Not IsDBNull(Row.Cells(5).Value) Then Casename = Row.Cells(5).Value
+        If Not IsDBNull(Row.Cells(5).Value) Then TempWorkDir = Row.Cells(6).Value
+        If Not IsDBNull(Row.Cells(7).Value) Then RRResultsFiles = Row.Cells(7).Value
+        If Not IsDBNull(Row.Cells(8).Value) Then FlowResultsFiles = Row.Cells(8).Value
+
+        Dim myModel As New STOCHLIB.clsSimulationModel(Me.Setup, ID, ModelType, Exec, Args, ModelDir, Casename, TempWorkDir, RRResultsFiles, FlowResultsFiles) ', myRow.Cells(6).Value)
+        Return myModel
+
+    End Function
+
     Private Sub BtnPopulateRuns_Click(sender As Object, e As EventArgs) Handles btnPopulateRuns.Click
         Try
             'sluit de databaseconnectie
@@ -3434,7 +3488,9 @@ Public Class frmStochasten
             For Each myRow As DataGridViewRow In grModels.Rows
                 i += 1
                 Setup.GeneralFunctions.UpdateProgressBar("Reading results from simulation model ", i, grModels.Rows.Count, True)
-                myModel = New STOCHLIB.clsSimulationModel(Me.Setup, myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value, myRow.Cells(3).Value, myRow.Cells(4).Value, myRow.Cells(5).Value, myRow.Cells(6).Value, myRow.Cells(7).Value, myRow.Cells(8).Value) ', myRow.Cells(6).Value)
+
+                myModel = CreateModelFromDatagridRow(myRow)
+
                 Dim iLoc As Integer = 0, nLoc As Integer = grOutputLocations.Rows.Count
                 For Each locRow As DataGridViewRow In grOutputLocations.Rows
                     Setup.GeneralFunctions.UpdateProgressBar("", iLoc, nLoc)
@@ -3461,7 +3517,6 @@ Public Class frmStochasten
                     End If
                 Next
                 Call Setup.StochastenAnalyse.Models.Add(i, myModel)
-                Setup.StochastenAnalyse.WriteModelsToDB(Me.Setup.SqliteCon)
             Next
 
             'close the database
@@ -4234,43 +4289,44 @@ Public Class frmStochasten
             Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "volumesalsfrequenties", "TRUE", 4)
             Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "bestaanderesultatenvervangen", "FALSE", 4)
             xmlWriter.WriteLine("  </instellingen>")
-            xmlWriter.WriteLine("  <modellen>")
-            xmlWriter.WriteLine("		<!--ondersteuning voor modeltypen SOBEK, DIMR, DHYDROSERVER en Custom-->")
+            'v2.2.2 removed storing model data in the XML
+            'xmlWriter.WriteLine("  <modellen>")
+            'xmlWriter.WriteLine("		<!--ondersteuning voor modeltypen SOBEK, DIMR, DHYDROSERVER en Custom-->")
 
-            attrList = New List(Of String)
-            attrList.Add("id")
-            attrList.Add("type")
-            attrList.Add("executable")
-            attrList.Add("arguments")
-            attrList.Add("modeldir")
-            attrList.Add("casename")
-            attrList.Add("tempworkdir")
-            attrList.Add("resultsfiles_rr")
-            attrList.Add("resultsfiles_flow")
-            For Each myRow As DataGridViewRow In grModels.Rows
-                valsList = New List(Of String)
-                valsList.Add(myRow.Cells(0).Value)
-                valsList.Add(myRow.Cells(1).Value)
-                valsList.Add(myRow.Cells(2).Value)
-                valsList.Add(myRow.Cells(3).Value)
-                valsList.Add(myRow.Cells(4).Value)
-                valsList.Add(myRow.Cells(5).Value)
-                valsList.Add(myRow.Cells(6).Value)
-                valsList.Add(myRow.Cells(7).Value)
-                valsList.Add(myRow.Cells(8).Value)
-                Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "model", 4, attrList, valsList)
+            'attrList = New List(Of String)
+            'attrList.Add("id")
+            'attrList.Add("type")
+            'attrList.Add("executable")
+            'attrList.Add("arguments")
+            'attrList.Add("modeldir")
+            'attrList.Add("casename")
+            'attrList.Add("tempworkdir")
+            'attrList.Add("resultsfiles_rr")
+            'attrList.Add("resultsfiles_flow")
+            'For Each myRow As DataGridViewRow In grModels.Rows
+            '    valsList = New List(Of String)
+            '    valsList.Add(myRow.Cells(0).Value)
+            '    valsList.Add(myRow.Cells(1).Value)
+            '    valsList.Add(myRow.Cells(2).Value)
+            '    valsList.Add(myRow.Cells(3).Value)
+            '    valsList.Add(myRow.Cells(4).Value)
+            '    valsList.Add(myRow.Cells(5).Value)
+            '    valsList.Add(myRow.Cells(6).Value)
+            '    valsList.Add(myRow.Cells(7).Value)
+            '    valsList.Add(myRow.Cells(8).Value)
+            '    Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "model", 4, attrList, valsList)
 
-                attrList = New List(Of String)
-                attrList.Add("bestandsnaam")
-                attrList.Add("parameter")
-                For Each outRow As DataGridViewRow In grOutputLocations.Rows
-                    valsList = New List(Of String)
-                    valsList.Add(outRow.Cells(0).Value)
-                    valsList.Add(outRow.Cells(1).Value)
-                Next
+            '    attrList = New List(Of String)
+            '    attrList.Add("bestandsnaam")
+            '    attrList.Add("parameter")
+            '    For Each outRow As DataGridViewRow In grOutputLocations.Rows
+            '        valsList = New List(Of String)
+            '        valsList.Add(outRow.Cells(0).Value)
+            '        valsList.Add(outRow.Cells(1).Value)
+            '    Next
 
-            Next
-            xmlWriter.WriteLine("  </modellen>")
+            'Next
+            'xmlWriter.WriteLine("  </modellen>")
             xmlWriter.WriteLine("</stochastentool>")
         End Using
     End Sub
@@ -4450,11 +4506,41 @@ Public Class frmStochasten
     End Sub
 
     Private Sub LeesFOUFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LeesFOUFileToolStripMenuItem.Click
-        Dim FouFile As New clsFouFile("d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\Oude_IJssel_T=1000\dflowfm\output\dr48_fou.nc", Me.Setup)
+        Dim path As String = "c:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\Altrhein_T=10000\dflowfm\output\dr48_fou.nc"
+        Dim FouFile As New clsFouNCFile(path, Me.Setup)
+        If System.IO.File.Exists(path) Then
+            FouFile.Read()
+        End If
 
-        FouFile.Read()
+    End Sub
 
+    Private Sub btnAddModel_Click(sender As Object, e As EventArgs) Handles btnAddModel.Click
+        Dim myForm As New frmAddModel(Me.Setup)
+        myForm.ShowDialog()
+        Dim Result As DialogResult = myForm.DialogResult
+        If Result = DialogResult.OK Then
+            PopulateSimulationModelsGrid()
+        End If
+    End Sub
 
+    Private Sub btnDeleteModel_Click(sender As Object, e As EventArgs) Handles btnDeleteModel.Click
+        For i = grModels.Rows.Count - 1 To 0 Step -1
+            If grModels.Rows(i).Selected Then
+                Dim query As String = "DELETE FROM SIMULATIONMODELS WHERE MODELID = " & grModels.Rows(i).Cells(0).Value & ";"
+                Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+                grModels.Rows.RemoveAt(i)
+            End If
+        Next
+        PopulateSimulationModelsGrid()
+    End Sub
+
+    Private Sub ModelToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ModelToevoegenToolStripMenuItem.Click
+        Dim myForm As New frmAddModel(Me.Setup)
+        myForm.ShowDialog()
+        Dim Result As DialogResult = myForm.DialogResult
+        If Result = DialogResult.OK Then
+            PopulateSimulationModelsGrid()
+        End If
     End Sub
 
     Private Sub BtnViewer_Click(sender As Object, e As EventArgs) Handles btnViewer.Click
@@ -4857,30 +4943,30 @@ Public Class frmStochasten
     End Function
 
 
-    Private Sub grModels_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellValueChanged
+    'Private Sub grModels_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellValueChanged
 
-        'if all cells of the current row have been filled in, clear the existing table and rebuild it, based on the current grid content
-        Dim query As String
-        Dim r As Integer, c As Integer
+    '    'if all cells of the current row have been filled in, clear the existing table and rebuild it, based on the current grid content
+    '    Dim query As String
+    '    Dim r As Integer, c As Integer
 
-        'check if all cells of the row have been filled in
-        Dim InputComplete As Boolean = True
-        For c = 0 To grModels.Columns.GetColumnCount(DataGridViewElementStates.Displayed) - 1
-            If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(c).Value) Then InputComplete = False
-        Next
+    '    'check if all cells of the row have been filled in
+    '    Dim InputComplete As Boolean = True
+    '    For c = 0 To grModels.Columns.GetColumnCount(DataGridViewElementStates.Displayed) - 1
+    '        If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(c).Value) Then InputComplete = False
+    '    Next
 
-        'if the row is complete, write it to the database
-        If InputComplete Then
-            'clear the old data
-            query = "DELETE FROM SIMULATIONMODELS;"
-            Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
-            For r = 0 To grModels.Rows.Count - 1
-                query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR) VALUES ('" & grModels.Rows(r).Cells(0).Value & "','" & grModels.Rows(r).Cells(1).Value & "','" & grModels.Rows(r).Cells(2).Value & "','" & grModels.Rows(r).Cells(3).Value & "','" & grModels.Rows(r).Cells(4).Value & "','" & grModels.Rows(r).Cells(5).Value & "','" & grModels.Rows(r).Cells(6).Value & "');"
-                Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-            Next
-        End If
+    '    'if the row is complete, write it to the database
+    '    If InputComplete Then
+    '        'clear the old data
+    '        query = "DELETE FROM SIMULATIONMODELS;"
+    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+    '        For r = 0 To grModels.Rows.Count - 1
+    '            query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR) VALUES ('" & grModels.Rows(r).Cells(0).Value & "','" & grModels.Rows(r).Cells(1).Value & "','" & grModels.Rows(r).Cells(2).Value & "','" & grModels.Rows(r).Cells(3).Value & "','" & grModels.Rows(r).Cells(4).Value & "','" & grModels.Rows(r).Cells(5).Value & "','" & grModels.Rows(r).Cells(6).Value & "');"
+    '            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+    '        Next
+    '    End If
 
-    End Sub
+    'End Sub
 
     Private Sub cmbClimate_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbClimate.SelectedValueChanged
         'refresh the volumes grids in order to load the new frequency associated with each volume
