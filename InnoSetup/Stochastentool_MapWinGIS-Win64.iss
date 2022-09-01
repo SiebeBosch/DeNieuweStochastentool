@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Stochastentool"
-#define MyAppVersion "2.210"
+#define MyAppVersion "2.310"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"
@@ -122,7 +122,7 @@ Filename: "{app}\{#vcredist}"; Parameters: "/quiet"; Flags: waituntilterminated;
 #endif
 ;also install MapWinGIS and NetCDF
 Filename: "{app}\{#mapwingis}"; Parameters: "/verysilent /norestart /DIR=..\MapWinGIS"; Flags: waituntilterminated
-Filename: "{app}\{#netCDF}"; Parameters: "/silent /norestart /DIR=..\NetCDF"; Flags: waituntilterminated
+Filename: "{app}\{#netCDF}"; Parameters: "/SILENT /SUPPRESSMSGBOXES /norestart /DIR=..\NetCDF"; Flags: waituntilterminated
 ;And (optionally) Stochastentool itself:
 Filename: "{app}\Stochastentool.exe"; Flags: shellexec runasoriginaluser postinstall nowait skipifsilent; Description: "Start De Nieuwe Stochastentool?"
 
@@ -143,6 +143,7 @@ Filename: "{app}\Stochastentool.exe"; Flags: shellexec runasoriginaluser postins
 #ELSE
   #DEFINE AW "A"
 #ENDIF
+
 type
   INSTALLSTATE = Longint;
 const

@@ -38,6 +38,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\Interop.MapWinGIS.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.ResolveComReference.cache
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmAbout.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmAddLevelsFromShapefile.resources
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmAddModel.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmCopySettingsFromClimateScenario.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmDirRename.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmEraseYesNo.resources

@@ -349,19 +349,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(216, 34)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -375,7 +375,7 @@ Partial Class frmStochasten
         '
         Me.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
         Me.PasteToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.V), System.Windows.Forms.Keys)
-        Me.PasteToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.PasteToolStripMenuItem.Size = New System.Drawing.Size(236, 34)
         Me.PasteToolStripMenuItem.Text = "Plakken"
         '
         'ModelsToolStripMenuItem

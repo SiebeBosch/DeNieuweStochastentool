@@ -6,4 +6,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <StartArguments>"d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\dimr_config.xml" "d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\Configuratie.xlsx" "d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\run.bat" 4 "d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"</StartArguments>
   </PropertyGroup>
+  <PropertyGroup>
+    <PublishUrlHistory>publish\</PublishUrlHistory>
+    <InstallUrlHistory />
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
 </Project>

@@ -5,9 +5,9 @@
 #define MyAppVersion "1.000"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
-#define SetupLocation "d:\GITHUB\DeNieuweStochastentool\InnoSetup"
-#define LicensesLocation "d:\GITHUB\DeNieuweStochastentool\licenses"
-#define BinLocation "d:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Release\"
+#define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"
+#define LicensesLocation "c:\GITHUB\DeNieuweStochastentool\licenses"
+#define BinLocation "c:\GITHUB\DeNieuweStochastentool\bin"
 ;;hieronder wisselen tussen 32bit en 64bit. 32bit is uitcommentarieren van de regel hieronder
 #define x64BitVersion
 ;;#define VsVersion = "2015" 

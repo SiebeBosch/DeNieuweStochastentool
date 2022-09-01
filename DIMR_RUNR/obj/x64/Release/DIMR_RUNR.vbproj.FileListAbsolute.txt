@@ -132,3 +132,17 @@ D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Release\System.Xml.XmlDocumen
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Release\System.Xml.XmlSerializer.dll
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Release\System.Xml.XPath.dll
 D:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Release\System.Xml.XPath.XDocument.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\DIMR_RUNR.exe.config
+C:\GITHUB\DeNieuweStochastentool\bin\x64\DIMR_RUNR.exe
+C:\GITHUB\DeNieuweStochastentool\bin\x64\DIMR_RUNR.pdb
+C:\GITHUB\DeNieuweStochastentool\bin\x64\DIMR_RUNR.xml
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.vbproj.AssemblyReference.cache
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.vbproj.SuggestedBindingRedirects.cache
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.exe.config
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.Resources.resources
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.vbproj.GenerateResource.cache
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.vbproj.CoreCompileInputs.cache
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.vbproj.CopyComplete
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.exe
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.xml
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Release\DIMR_RUNR.pdb

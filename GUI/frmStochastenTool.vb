@@ -32,6 +32,8 @@ Public Class frmStochasten
     Dim ActiveRunRef As String 'the currently selected reference run, according to the sliders
     Dim ActiveRunVGL As String 'the currently selected comparison run, according to the sliders
 
+    Dim ActiveExtraGrid As DataGridView 'the currently active datagrid in the Extra category
+
     'temporary datatables to store the available values for stochasts
     Dim dtSeizoen As DataTable, dtVolume As DataTable, dtPattern As DataTable, dtGW As DataTable
     Dim dtBoundary As DataTable, dtWind As DataTable
@@ -457,7 +459,7 @@ Public Class frmStochasten
                     ElseIf grModels.Columns(eventargs2.ColumnIndex).Name = "MODELDIR" Then
                         Dim dlgFolder As New FolderBrowserDialog
                         dlgFolder.ShowDialog()
-                        grModels.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = Me.Setup.GeneralFunctions.removetrailingbackslashFromDir(dlgFolder.SelectedPath)
+                        grModels.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = Me.Setup.GeneralFunctions.RemovetrailingbackslashFromDir(dlgFolder.SelectedPath)
                     ElseIf grModels.Columns(eventargs2.ColumnIndex).Name = "TEMPWORKDIR" Then
                         Dim dlgFolder As New FolderBrowserDialog
                         dlgFolder.ShowDialog()
@@ -502,8 +504,10 @@ Public Class frmStochasten
             End If
         ElseIf ActiveControl.Name = grWaterLevelClasses.Name Then
             Call Me.Setup.GeneralFunctions.PasteClipBoardToDataGridView(ActiveControl)
-            Call UpdateBounds()
-        Else
+        ElseIf ActiveControl.Name = grModels.Name Then
+            Call Me.Setup.GeneralFunctions.PasteClipBoardToDataGridView(ActiveControl)
+        ElseIf ActiveControl.GetType() = GetType(DataGridView) Then
+            'v2.3.2 bugfix: only if the active control is of the type datagridview will we paste to a datagridview
             'for all other objects we will not activate a routine that updates the database. 
             'here we will need to implement that inside the control's event listener
             Call Me.Setup.GeneralFunctions.PasteClipBoardToDataGridView(ActiveControl)
@@ -2208,8 +2212,8 @@ Public Class frmStochasten
     End Sub
 
     Function RowHeaderClicked(sender2, eventargs2)
-
-        MsgBox("row clicked: " & sender2.selectedrows.count)
+        ActiveExtraGrid = sender2
+        'MsgBox("rows selected: " & sender2.selectedrows.count)
         'SelectedRows = New List(Of Integer)
         'For i = 0 To sender2.rows.Count - 1
         '    If sender2.rows(i).selected Then SelectedRows.Add(i)
@@ -2225,6 +2229,7 @@ Public Class frmStochasten
         Dim query As [String]
         Dim GridIdx As Integer = -1
         Dim myList As New List(Of DataGridView)
+
 
         'this routine refreshes all datagridview instances that me.Setup.contain stochasts with their selection
         If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso System.IO.File.Exists(Me.Setup.StochastenAnalyse.StochastsConfigFile) Then
@@ -2306,16 +2311,15 @@ Public Class frmStochasten
 
                         AddHandler myExtraGrid.RowHeaderMouseClick, AddressOf RowHeaderClicked
 
-
-
-
                         AddHandler myExtraGrid.CellValueChanged,
                             Sub(sender2, eventargs2)
+                                ActiveExtraGrid = sender2
                                 Call UpdateExtra(myExtraGrid, ExtraNum, mySeason, cmbClimate.Text)
                             End Sub
 
                         AddHandler myExtraGrid.CellDoubleClick,
                             Sub(sender2, eventargs2)
+                                ActiveExtraGrid = sender2
                                 If myExtraGrid.Columns(eventargs2.ColumnIndex).Name = "BESTAND" Then
                                     Dim dlgOpen As New OpenFileDialog With {
                                     .Multiselect = True, 'we will allow the user to select multiple files within one class!
@@ -2352,10 +2356,9 @@ Public Class frmStochasten
                                 '    MsgBox("Selecteer eerst de te verwijderen rij in het gegevensgrid.")
                                 'End If
 
-                                If SelectedRows.Count > 0 Then
-                                    For i = 0 To SelectedRows.Count - 1
-                                        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & myExtraGrid.Rows(SelectedRows(i)).Cells("NAAM").Value & "';"
-                                        MsgBox("executing query " & query)
+                                If ActiveExtraGrid.SelectedRows.Count > 0 Then
+                                    For i = 0 To ActiveExtraGrid.SelectedRows.Count - 1
+                                        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & ActiveExtraGrid.SelectedRows(i).Cells("NAAM").Value & "';"
                                         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
                                     Next
                                 Else
@@ -4543,6 +4546,10 @@ Public Class frmStochasten
         End If
     End Sub
 
+    Private Sub grModels_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellContentClick
+
+    End Sub
+
     Private Sub BtnViewer_Click(sender As Object, e As EventArgs) Handles btnViewer.Click
 
         Try
@@ -4943,35 +4950,52 @@ Public Class frmStochasten
     End Function
 
 
-    'Private Sub grModels_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellValueChanged
+    Private Sub grModels_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellValueChanged
+        Try
 
-    '    'if all cells of the current row have been filled in, clear the existing table and rebuild it, based on the current grid content
-    '    Dim query As String
-    '    Dim r As Integer, c As Integer
+            'v2.3.2: restored the functionality to update the database when editing in the grid
+            'if all cells of the current row have been filled in, clear the existing table and rebuild it, based on the current grid content
+            Dim query As String, Args As String = String.Empty, CaseName As String = String.Empty
+            Dim Resultsfiles_RR As String = String.Empty, Resultsfiles_Flow As String = String.Empty
+            Dim r As Integer, c As Integer
 
-    '    'check if all cells of the row have been filled in
-    '    Dim InputComplete As Boolean = True
-    '    For c = 0 To grModels.Columns.GetColumnCount(DataGridViewElementStates.Displayed) - 1
-    '        If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(c).Value) Then InputComplete = False
-    '    Next
+            'v2.3.2. changed the IsDBNUll checks.
+            If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(0).Value) Then Throw New Exception("Specify a Model ID.")
+            If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(1).Value) Then Throw New Exception("Specify the Model type: SOBEK or DIMR.")
+            If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(2).Value) Then Throw New Exception("Specify the path to the model's executable (.bat or .exe)")
+            If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(3).Value) Then Args = grModels.Rows.Item(e.RowIndex).Cells(3).Value
+            If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(4).Value) Then Throw New Exception("Specify a Model ID.")
+            If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(5).Value) Then CaseName = grModels.Rows.Item(e.RowIndex).Cells(5).Value
+            If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(6).Value) Then Throw New Exception("Specify a temporary work directory for the model.")
+            If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(7).Value) Then Resultsfiles_RR = grModels.Rows.Item(e.RowIndex).Cells(7).Value
+            If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(8).Value) Then Resultsfiles_Flow = grModels.Rows.Item(e.RowIndex).Cells(8).Value
 
-    '    'if the row is complete, write it to the database
-    '    If InputComplete Then
-    '        'clear the old data
-    '        query = "DELETE FROM SIMULATIONMODELS;"
-    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
-    '        For r = 0 To grModels.Rows.Count - 1
-    '            query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR) VALUES ('" & grModels.Rows(r).Cells(0).Value & "','" & grModels.Rows(r).Cells(1).Value & "','" & grModels.Rows(r).Cells(2).Value & "','" & grModels.Rows(r).Cells(3).Value & "','" & grModels.Rows(r).Cells(4).Value & "','" & grModels.Rows(r).Cells(5).Value & "','" & grModels.Rows(r).Cells(6).Value & "');"
-    '            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-    '        Next
-    '    End If
+            'clear the old data
+            query = "DELETE FROM SIMULATIONMODELS;"
+            Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+            For r = 0 To grModels.Rows.Count - 1
+                query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & grModels.Rows(r).Cells(0).Value & "','" & grModels.Rows(r).Cells(1).Value & "','" & grModels.Rows(r).Cells(2).Value & "','" & Args & "','" & grModels.Rows(r).Cells(4).Value & "','" & CaseName & "','" & grModels.Rows(r).Cells(6).Value & "','" & Resultsfiles_RR & "','" & Resultsfiles_Flow & "');"
+                If Not Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False) Then Throw New Exception("Error writing model information to the database.")
+            Next
 
-    'End Sub
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        Finally
+            Me.Setup.SqliteCon.Close()
+        End Try
+
+
+
+    End Sub
 
     Private Sub cmbClimate_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbClimate.SelectedValueChanged
         'refresh the volumes grids in order to load the new frequency associated with each volume
         Setup.StochastenAnalyse.KlimaatScenario = DirectCast([Enum].Parse(GetType(STOCHLIB.GeneralFunctions.enmKlimaatScenario), cmbClimate.Text), STOCHLIB.GeneralFunctions.enmKlimaatScenario)
         Call RebuildAllGrids()
+    End Sub
+
+    Private Sub grModels_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellEndEdit
+
     End Sub
 End Class
 
