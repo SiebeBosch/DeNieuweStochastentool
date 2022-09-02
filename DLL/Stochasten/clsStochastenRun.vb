@@ -218,34 +218,42 @@ Public Class clsStochastenRun
                         '--------------------------------------------------------------------------------------------------------------------
 
                         '--------------------------------------------------------------------------------------------------------------------
-                        'copy the file for the extra1 stochast
-                        If Extra1Class IsNot Nothing AndAlso Extra1Class.FileName <> "" Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
-                            If Not CopyExtraFiles(myModel, 1) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                        'copy the RR files for the extra1 stochast
+                        If Extra1Class IsNot Nothing Then
+                            Setup.GeneralFunctions.UpdateProgressBar("Copying Files for stochast extra1.", 0, 10, True)
+                            If Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 1, Extra1Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+                            If Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 1, Extra1Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                            If Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 1, Extra1Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra1 stochast.")
                         End If
                         '--------------------------------------------------------------------------------------------------------------------
 
                         '--------------------------------------------------------------------------------------------------------------------
                         'copy the file for the extra2 stochast
-                        If Not Extra2Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                        If Extra2Class IsNot Nothing Then
                             Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
-                            If Not CopyExtraFiles(myModel, 2) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                            If Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 2, Extra2Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+                            If Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 2, Extra2Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                            If Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 2, Extra2Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra2 stochast.")
                         End If
                         '--------------------------------------------------------------------------------------------------------------------
 
                         '--------------------------------------------------------------------------------------------------------------------
                         'copy the file for the extra3 stochast
-                        If Not Extra3Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                        If Extra3Class IsNot Nothing Then
                             Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
-                            If Not CopyExtraFiles(myModel, 3) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                            If Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 3, Extra3Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+                            If Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 3, Extra3Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                            If Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 3, Extra3Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra3 stochast.")
                         End If
                         '--------------------------------------------------------------------------------------------------------------------
 
                         '--------------------------------------------------------------------------------------------------------------------
                         'copy the file for the extra4 stochast
-                        If Not Extra4Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                        If Extra4Class IsNot Nothing Then
                             Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
-                            If Not CopyExtraFiles(myModel, 4) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                            If Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 4, Extra4Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+                            If Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 4, Extra4Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                            If Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 4, Extra4Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra4 stochast.")
                         End If
                         '--------------------------------------------------------------------------------------------------------------------
 
@@ -352,33 +360,41 @@ Public Class clsStochastenRun
 
                     '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra1 stochast
-                    If Not Extra1Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                    If Extra1Class IsNot Nothing Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
-                        If Not CopyExtraFiles(myModel, 1) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                        If Not Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 1, Extra1Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+                        If Not Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 1, Extra1Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                        If Not Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 1, Extra1Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
                     End If
                     '--------------------------------------------------------------------------------------------------------------------
 
                     '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra2 stochast
-                    If Not Extra2Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                    If Extra2Class IsNot Nothing Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
-                        If Not CopyExtraFiles(myModel, 2) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                        If Not Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 2, Extra2Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+                        If Not Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 2, Extra2Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                        If Not Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 2, Extra2Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
                     End If
                     '--------------------------------------------------------------------------------------------------------------------
 
                     '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra3 stochast
-                    If Not Extra3Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                    If Extra3Class IsNot Nothing Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
-                        If Not CopyExtraFiles(myModel, 3) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                        If Not Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 3, Extra3Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+                        If Not Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 3, Extra3Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                        If Not Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 3, Extra3Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
                     End If
                     '--------------------------------------------------------------------------------------------------------------------
 
                     '--------------------------------------------------------------------------------------------------------------------
                     'copy the file for the extra4 stochast
-                    If Not Extra4Class Is Nothing AndAlso Extra1Class.FileName <> "" Then
+                    If Extra4Class IsNot Nothing Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
-                        If Not CopyExtraFiles(myModel, 4) Then Throw New Exception("Fout bij het kopieren van het bestand voor de extra stochast.")
+                        If Not Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, 4, Extra4Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+                        If Not Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, 4, Extra4Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                        If Not Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, 4, Extra4Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
                     End If
                     '--------------------------------------------------------------------------------------------------------------------
 
@@ -537,7 +553,7 @@ Public Class clsStochastenRun
 
     End Function
 
-    Public Function CopyExtraFiles(ByRef myModel As clsSimulationModel, ExtraNum As Integer) As Boolean
+    Public Function CopyExtraFiles(ByRef myModel As clsSimulationModel, ExtraNum As Integer, ExtraFiles As String, ModelSubdir As String) As Boolean
         Dim fromFile As String, toFile As String, toStochastDir As String
         Dim ExtraClass As clsStochasticExtraClass = Nothing
 
@@ -554,16 +570,14 @@ Public Class clsStochastenRun
                     ExtraClass = Extra4Class
             End Select
 
-            Dim fromFiles As String = ExtraClass.FileName
-
-            While Not fromFiles = ""
-                fromFile = Setup.GeneralFunctions.ParseString(fromFiles, ";")
+            While Not ExtraFiles = ""
+                fromFile = Setup.GeneralFunctions.ParseString(ExtraFiles, ";")
                 fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(fromFile, Me.Setup.Settings.RootDir)
 
                 If myModel.ModelType = enmSimulationModel.SOBEK Then
                     toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
-                    toFile = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+                    toFile = myModel.TempWorkDir & "\" & ModelSubdir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 Else
                     Throw New Exception("Kan invoerbestand " & fromFile & " niet naar het doelmodel kopieren omdat het modeltype niet wordt ondersteund voor de onderhavige stochast: " & myModel.ModelType.ToString)
                 End If
@@ -577,28 +591,6 @@ Public Class clsStochastenRun
                 End If
 
             End While
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError(ex.Message)
-            Return False
-        End Try
-
-    End Function
-
-
-    Public Function CopyExtraAFile(ByRef myModel As clsSimulationModel) As Boolean
-        Dim fromFile As String, toFile As String, toStochastDir As String
-
-        Try
-            fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(Extra4Class.FileName, Me.Setup.Settings.RootDir)
-            toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(Extra4Class.FileName)
-            toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(Extra4Class.FileName)
-            If File.Exists(fromFile) Then
-                FileCopy(fromFile, toFile)
-                FileCopy(fromFile, toStochastDir)
-            Else
-                Throw New Exception("Fout: bestand voor extra stochast niet gevonden niet: " & fromFile)
-            End If
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)

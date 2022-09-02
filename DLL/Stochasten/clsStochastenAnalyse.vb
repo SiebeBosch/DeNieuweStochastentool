@@ -452,7 +452,7 @@ Public Class clsStochastenAnalyse
                             Dim Extra1Grid As DataGridView = Extra1Grids.Item(i)
                             For Each extra1Row As DataGridViewRow In Extra1Grid.Rows
                                 If extra1Row.Cells("USE").Value = 1 Then
-                                    Extra1 = New clsStochasticExtraClass(extra1Row.Cells("NAAM").Value, extra1Row.Cells("KANS").Value, extra1Row.Cells("BESTAND").Value)
+                                    Extra1 = New clsStochasticExtraClass(extra1Row.Cells("NAAM").Value, extra1Row.Cells("KANS").Value, extra1Row.Cells("RRFILES").Value, extra1Row.Cells("FLOWFILES").Value, extra1Row.Cells("RTCFILES").Value)
                                     mySeason.Extra1.Add(Extra1.ID, Extra1)
                                     mySeason.Extra1Use = True
                                 End If
@@ -463,7 +463,7 @@ Public Class clsStochastenAnalyse
                             Dim Extra2Grid As DataGridView = Extra2Grids.Item(i)
                             For Each extra2Row As DataGridViewRow In Extra2Grid.Rows
                                 If extra2Row.Cells("USE").Value = 1 Then
-                                    Extra2 = New clsStochasticExtraClass(extra2Row.Cells("NAAM").Value, extra2Row.Cells("KANS").Value, extra2Row.Cells("BESTAND").Value)
+                                    Extra2 = New clsStochasticExtraClass(extra2Row.Cells("NAAM").Value, extra2Row.Cells("KANS").Value, extra2Row.Cells("RRFILES").Value, extra2Row.Cells("FLOWFILES").Value, extra2Row.Cells("RTCFILES").Value)
                                     mySeason.Extra2.Add(Extra2.ID, Extra2)
                                     mySeason.Extra2Use = True
                                 End If
@@ -474,7 +474,7 @@ Public Class clsStochastenAnalyse
                             Dim Extra3Grid As DataGridView = Extra3Grids.Item(i)
                             For Each extra3Row As DataGridViewRow In Extra3Grid.Rows
                                 If extra3Row.Cells("USE").Value = 1 Then
-                                    Extra3 = New clsStochasticExtraClass(extra3Row.Cells("NAAM").Value, extra3Row.Cells("KANS").Value, extra3Row.Cells("BESTAND").Value)
+                                    Extra3 = New clsStochasticExtraClass(extra3Row.Cells("NAAM").Value, extra3Row.Cells("KANS").Value, extra3Row.Cells("RRFILES").Value, extra3Row.Cells("FLOWFILES").Value, extra3Row.Cells("RTCFILES").Value)
                                     mySeason.Extra3.Add(Extra3.ID, Extra3)
                                     mySeason.Extra3Use = True
                                 End If
@@ -485,7 +485,7 @@ Public Class clsStochastenAnalyse
                             Dim Extra4Grid As DataGridView = Extra4Grids.Item(i)
                             For Each Extra4Row As DataGridViewRow In Extra4Grid.Rows
                                 If Extra4Row.Cells("USE").Value = 1 Then
-                                    Extra4 = New clsStochasticExtraClass(Extra4Row.Cells("NAAM").Value, Extra4Row.Cells("KANS").Value, Extra4Row.Cells("BESTAND").Value)
+                                    Extra4 = New clsStochasticExtraClass(Extra4Row.Cells("NAAM").Value, Extra4Row.Cells("KANS").Value, Extra4Row.Cells("RRFILES").Value, Extra4Row.Cells("FLOWFILES").Value, Extra4Row.Cells("RTCFILES").Value)
                                     mySeason.Extra4.Add(Extra4.ID, Extra4)
                                     mySeason.Extra4Use = True
                                 End If

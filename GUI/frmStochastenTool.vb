@@ -314,10 +314,10 @@ Public Class frmStochasten
                     End If
 
                 End If
-                If myRun.Extra1Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra1Class.FileName, "\", "\\") & "%}"
-                If myRun.Extra2Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra2Class.FileName, "\", "\\") & "%}"
-                If myRun.Extra3Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra3Class.FileName, "\", "\\") & "%}"
-                If myRun.Extra4Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra4Class.FileName, "\", "\\") & "%}"
+                If myRun.Extra1Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra1Class.RRFiles, "\", "\\") & "%}"
+                If myRun.Extra2Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra2Class.RRFiles, "\", "\\") & "%}"
+                If myRun.Extra3Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra3Class.RRFiles, "\", "\\") & "%}"
+                If myRun.Extra4Class IsNot Nothing Then myJSON &= "," & vbCrLf & vbTab & vbTab & vbTab & vbTab & "{%path%:%" & Strings.Replace(myRun.Extra4Class.RRFiles, "\", "\\") & "%}"
                 myJSON &= vbCrLf
                 myJSON &= vbTab & vbTab & vbTab & "]" & vbCrLf
                 myJSON &= vbTab & vbTab & "}"
@@ -2320,7 +2320,7 @@ Public Class frmStochasten
                         AddHandler myExtraGrid.CellDoubleClick,
                             Sub(sender2, eventargs2)
                                 ActiveExtraGrid = sender2
-                                If myExtraGrid.Columns(eventargs2.ColumnIndex).Name = "BESTAND" Then
+                                If myExtraGrid.Columns(eventargs2.ColumnIndex).Name = "RRFILES" OrElse myExtraGrid.Columns(eventargs2.ColumnIndex).Name = "FLOWFILES" OrElse myExtraGrid.Columns(eventargs2.ColumnIndex).Name = "RTCFILES" Then
                                     Dim dlgOpen As New OpenFileDialog With {
                                     .Multiselect = True, 'we will allow the user to select multiple files within one class!
                                     .InitialDirectory = Setup.Settings.RootDir
@@ -2334,13 +2334,14 @@ Public Class frmStochasten
                                             myExtraGrid.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value &= ";" & ExtraPath
                                         Next
                                     End If
+
                                 End If
                             End Sub
 
                         AddHandler addButton.Click,
                             Sub(sender2, eventargs2)
-                                query = "INSERT INTO EXTRA" & ExtraNum & " (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, BESTAND, KANS) VALUES ('" & cmbClimate.Text & "','" & mySeason & "',''," & False & ",'',0);"
-                                Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+                                query = "INSERT INTO EXTRA" & ExtraNum & " (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, KANS, RRFILES, FLOWFILES, RTCFILES) VALUES ('" & cmbClimate.Text & "','" & mySeason & "',''," & False & ",0,'','','');"
+                                If Not Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query) Then Throw New Exception("Could not execute query to insert stochastic class in database: " & query)
                                 BuildExtraGrids(ExtraNum) 'rebuild our extra grid so our changes become visible
                             End Sub
 
@@ -2382,12 +2383,14 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 'with this option we will copy the settings from another climate scenario to our current one
                                 Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
-                                myFields.Add("BESTAND", New STOCHLIB.clsDataField("BESTAND", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("KANS", New STOCHLIB.clsDataField("KANS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEREAL))
                                 myFields.Add("KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("NAAM", New STOCHLIB.clsDataField("NAAM", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("USE", New STOCHLIB.clsDataField("USE", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITEINT))
+                                myFields.Add("RRFILES", New STOCHLIB.clsDataField("RRFILES", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("FLOWFILES", New STOCHLIB.clsDataField("FLOWFILES", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
+                                myFields.Add("RTCFILES", New STOCHLIB.clsDataField("RTCFILES", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 Dim myForm As New frmCopySettingsFromClimateScenario(Me.Setup, "EXTRA" & ExtraNum, myFields, cmbClimate.Text)
                                 myForm.ShowDialog()
                                 If myForm.DialogResult = DialogResult.OK Then
@@ -2438,7 +2441,7 @@ Public Class frmStochasten
         Try
             Dim query As String
             dt.Clear()
-            query = "SELECT NAAM,BESTAND,USE,KANS FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & Season & "';"
+            query = "SELECT NAAM,USE,KANS,RRFILES,FLOWFILES,RTCFILES FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & Season & "';"
             Dim da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
         Catch ex As Exception
@@ -2463,7 +2466,7 @@ Public Class frmStochasten
             Checksum = 0
             For Each myRow As DataGridViewRow In ExtraGrid.Rows
                 Checksum += myRow.Cells("KANS").Value
-                query = "INSERT INTO EXTRA" & ExtraNum.ToString.Trim & " (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, BESTAND, KANS) VALUES ('" & KlimaatScenario & "','" & Season & "','" & myRow.Cells("NAAM").Value & "'," & myRow.Cells("USE").Value & ",'" & myRow.Cells("BESTAND").Value & "'," & myRow.Cells("KANS").Value & ");"
+                query = "INSERT INTO EXTRA" & ExtraNum.ToString.Trim & " (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, KANS, RRFILES, FLOWFILES, RTCFILES) VALUES ('" & KlimaatScenario & "','" & Season & "','" & myRow.Cells("NAAM").Value & "'," & myRow.Cells("USE").Value & "," & myRow.Cells("KANS").Value & ",'" & myRow.Cells("RRFILES").Value & "','" & myRow.Cells("FLOWFILES").Value & "','" & myRow.Cells("RTCFILES").Value & "');"
                 Dim newCommand = New SQLite.SQLiteCommand(query, Me.Setup.SqliteCon)
                 nAffected = newCommand.ExecuteNonQuery()
             Next
@@ -3111,115 +3114,6 @@ Public Class frmStochasten
 
     End Sub
 
-    'Public Sub UpdatePatternValues(ByRef con As SQLite.SQLiteConnection, TableName As String, ClimateScenarioColumn As String)
-    '    Dim query As String = "SELECT " & ClimateScenarioColumn & ", SEIZOEN, DUUR, PATROON, USE, KANS " & "FROM " & TableName & ";"
-    '    Dim Kans As Double, KansCorr As Double
-    '    Dim i As Integer
-    '    Dim nAffected As Integer
-
-    '    'read these records to a datatable
-    '    Dim dt As New DataTable
-    '    Me.Setup.GeneralFunctions.SQLiteQuery(con, query, dt)
-
-    '    'remove the old records that involve the current climate scenario
-    '    query = "DELETE FROM " & TableName & " WHERE " & ClimateScenarioColumn & ">0;"
-    '    Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False)
-
-    '    'drop the column
-    '    Me.Setup.GeneralFunctions.SQLiteDropColumn(con, TableName, ClimateScenarioColumn)
-
-    '    'finally insert the selected records back into the database, in the updated forat
-    '    For i = 0 To dt.Rows.Count - 1
-    '        'insert the record in the new format
-    '        If IsDBNull(dt.Rows(i)(5)) Then KansCorr = 0 Else KansCorr = dt.Rows(i)(5)
-    '        If IsDBNull(dt.Rows(i)(0)) Then Kans = KansCorr Else Kans = dt.Rows(i)(0)
-    '        query = "INSERT INTO " & TableName & " (KLIMAATSCENARIO, SEIZOEN, DUUR, PATROON, USE, KANS, KANSCORR) VALUES ('" & ClimateScenarioColumn & "','" & dt.Rows(i)(1) & "'," & dt.Rows(i)(2) & ",'" & dt.Rows(i)(3) & "'," & dt.Rows(i)(4) & "," & Kans & "," & KansCorr & ");"
-    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False,, nAffected)
-    '    Next
-
-    'End Sub
-
-    'Public Sub UpdateBoundaryValues(ByRef con As SQLite.SQLiteConnection, TableName As String, ClimateScenarioColumn As String)
-    '    Dim query As String = "SELECT " & ClimateScenarioColumn & ", NAAM, DUUR, USE" & " FROM " & TableName & ";"
-    '    Dim Kans As Double
-    '    Dim i As Integer
-    '    Dim nAffected As Integer
-
-    '    'read these records to a datatable
-    '    Dim dt As New DataTable
-    '    Me.Setup.GeneralFunctions.SQLiteQuery(con, query, dt)
-
-    '    'remove the old records that involve the current climate scenario
-    '    query = "DELETE FROM " & TableName & " WHERE " & ClimateScenarioColumn & ">=0;"
-    '    Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False,, nAffected)
-
-    '    'drop the column
-    '    Me.Setup.GeneralFunctions.SQLiteDropColumn(con, TableName, ClimateScenarioColumn)
-
-    '    'finally insert the selected records back into the database, in the updated forat
-    '    For i = 0 To dt.Rows.Count - 1
-    '        'insert the record in the new format
-    '        If IsDBNull(dt.Rows(i)(0)) Then Kans = 0 Else Kans = dt.Rows(i)(0)
-    '        query = "INSERT INTO " & TableName & " (KLIMAATSCENARIO, NAAM, DUUR, USE, KANS) VALUES ('" & ClimateScenarioColumn & "','" & dt.Rows(i)(1) & "'," & dt.Rows(i)(2) & "," & dt.Rows(i)(3) & "," & Kans & ");"
-    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False,, nAffected)
-    '    Next
-
-    'End Sub
-
-
-    'Public Sub UpdateGroundwaterValues(ByRef con As SQLite.SQLiteConnection, TableName As String, ClimateScenarioColumn As String)
-    '    Dim query As String = "SELECT " & ClimateScenarioColumn & ", SEIZOEN, NAAM, BESTAND, USE " & "FROM " & TableName & ";"
-    '    Dim Kans As Double
-    '    Dim i As Integer
-    '    Dim nAffected As Integer
-
-    '    'read these records to a datatable
-    '    Dim dt As New DataTable
-    '    Me.Setup.GeneralFunctions.SQLiteQuery(con, query, dt)
-
-    '    'remove the old records that involve the current climate scenario
-    '    query = "DELETE FROM " & TableName & " WHERE " & ClimateScenarioColumn & ">0;"
-    '    Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False)
-
-    '    'drop the column
-    '    Me.Setup.GeneralFunctions.SQLiteDropColumn(con, TableName, ClimateScenarioColumn)
-
-    '    'finally insert the selected records back into the database, in the updated forat
-    '    For i = 0 To dt.Rows.Count - 1
-    '        'insert the record in the new format
-    '        If IsDBNull(dt.Rows(i)(0)) Then Kans = 0 Else Kans = dt.Rows(i)(0)
-    '        query = "INSERT INTO " & TableName & " (KLIMAATSCENARIO, SEIZOEN, NAAM, BESTAND, USE, KANS) VALUES ('" & ClimateScenarioColumn & "','" & dt.Rows(i)(1) & "','" & dt.Rows(i)(2) & "','" & dt.Rows(i)(3) & "'," & dt.Rows(i)(4) & "," & Kans & ");"
-    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False,, nAffected)
-    '    Next
-    'End Sub
-
-
-    'Public Sub UpdateExtraValues(ByRef con As SQLite.SQLiteConnection, TableName As String, ClimateScenarioColumn As String)
-    '    Dim query As String = "SELECT " & ClimateScenarioColumn & ", SEIZOEN, NAAM, BESTAND, USE " & "FROM " & TableName & ";"
-    '    Dim Kans As Double
-    '    Dim i As Integer
-    '    Dim nAffected As Integer
-
-    '    'read these records to a datatable
-    '    Dim dt As New DataTable
-    '    Me.Setup.GeneralFunctions.SQLiteQuery(con, query, dt)
-
-    '    'remove the old records that involve the current climate scenario
-    '    query = "DELETE FROM " & TableName & " WHERE " & ClimateScenarioColumn & ">=0;"
-    '    Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False)
-
-    '    'drop the column
-    '    Me.Setup.GeneralFunctions.SQLiteDropColumn(con, TableName, ClimateScenarioColumn)
-
-    '    'finally insert the selected records back into the database, in the updated forat
-    '    For i = 0 To dt.Rows.Count - 1
-    '        'insert the record in the new format
-    '        If IsDBNull(dt.Rows(i)(0)) Then Kans = 0 Else Kans = dt.Rows(i)(0)
-    '        query = "INSERT INTO " & TableName & " (KLIMAATSCENARIO, SEIZOEN, NAAM, BESTAND, USE, KANS) VALUES ('" & ClimateScenarioColumn & "','" & dt.Rows(i)(1) & "','" & dt.Rows(i)(2) & "','" & dt.Rows(i)(3) & "'," & dt.Rows(i)(4) & "," & Kans & ");"
-    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False,, nAffected)
-    '    Next
-    'End Sub
-
 
     Public Sub UpdatePatternsTable()
         '------------------------------------------------------------------------------------
@@ -3323,27 +3217,44 @@ Public Class frmStochasten
     End Sub
 
     Public Sub UpdateExtraTables()
-        '------------------------------------------------------------------------------------
-        '               tabellen EXTRA1, 2, 3 en 4
-        '------------------------------------------------------------------------------------
-        Dim TableName As String, i As Integer
-        For i = 1 To 4
-            TableName = "EXTRA" & i.ToString.Trim
-            Setup.GeneralFunctions.UpdateProgressBar("Updating tables EXTRA" & i, 8 + i, 15, True)
-            If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
-            If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "EXTRA" & i & "_KLIMAATSCENARIOIDX")
-            If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "SEIZOEN") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "SEIZOEN", enmSQLiteDataType.SQLITETEXT, "EXTRA" & i & "_SEIZOENIDX")
-            If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "NAAM", enmSQLiteDataType.SQLITETEXT)
-            If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "USE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "USE", enmSQLiteDataType.SQLITEINT)
-            If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "BESTAND") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "BESTAND", enmSQLiteDataType.SQLITETEXT)
-            If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "KANS") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "KANS", enmSQLiteDataType.SQLITEREAL)
+        Try
+            '------------------------------------------------------------------------------------
+            '               tabellen EXTRA1, 2, 3 en 4
+            '------------------------------------------------------------------------------------
+            Dim TableName As String, i As Integer
+            Dim query As String
+            For i = 1 To 4
+                TableName = "EXTRA" & i.ToString.Trim
+                Setup.GeneralFunctions.UpdateProgressBar("Updating tables EXTRA" & i, 8 + i, 15, True)
+                If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "EXTRA" & i & "_KLIMAATSCENARIOIDX")
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "SEIZOEN") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "SEIZOEN", enmSQLiteDataType.SQLITETEXT, "EXTRA" & i & "_SEIZOENIDX")
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "NAAM", enmSQLiteDataType.SQLITETEXT)
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "USE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "USE", enmSQLiteDataType.SQLITEINT)
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "KANS") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "KANS", enmSQLiteDataType.SQLITEREAL)
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "RRFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "RRFILES", enmSQLiteDataType.SQLITETEXT)
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "FLOWFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "FLOWFILES", enmSQLiteDataType.SQLITETEXT)
+                If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "RTCFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, TableName, "RTCFILES", enmSQLiteDataType.SQLITETEXT)
 
-            'upgrade all old climate scenario names
-            Setup.GeneralFunctions.UpgradeClimateScenarioInTables("EXTRA" & i, "KLIMAATSCENARIO")
+
+                If Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, TableName, "BESTAND") Then
+                    'v2.3.2
+                    'old structure (pre 2.3.2) detected. Copy all values from 'BESTAND' to 'FLOWFILES'
+                    query = "UPDATE " & TableName & " SET FLOWFILES = BESTAND;"
+                    Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                    Me.Setup.GeneralFunctions.SQLiteDropColumn(Me.Setup.SqliteCon, TableName, "BESTAND")             'now drop the old column 'BESTAND'
+                End If
+
+                'upgrade all old climate scenario names
+                Setup.GeneralFunctions.UpgradeClimateScenarioInTables(TableName, "KLIMAATSCENARIO")
 
 
-        Next
-        '------------------------------------------------------------------------------------
+            Next
+            '------------------------------------------------------------------------------------
+        Catch ex As Exception
+            MsgBox(ex.Message)
+        End Try
+
     End Sub
 
 

@@ -1,12 +1,16 @@
 ﻿Public Class clsStochasticExtraClass
     Public ID As String
     Public p As Double
-    Public FileName As String
+    Public RRFiles As String
+    Public FlowFiles As String
+    Public RTCFiles As String
 
-    Public Sub New(ByVal myID As String, ByVal myP As Double, ByVal myFile As String)
+    Public Sub New(ByVal myID As String, ByVal myP As Double, ByVal myRRFiles As String, myFlowFiles As String, myRTCFiles As String)
         ID = myID
         p = myP
-        FileName = myFile
+        RRFiles = myRRFiles
+        FlowFiles = myFlowFiles
+        RTCFiles = myRTCFiles
     End Sub
 
     Public Sub New(ByVal myID As String, ByVal myP As Double)
