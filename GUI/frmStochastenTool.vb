@@ -580,7 +580,8 @@ Public Class frmStochasten
                 GrafiekenToolStripMenuItem.Enabled = True
 
                 Setup.StochastenAnalyse.ResultsDir = Setup.GeneralFunctions.RelativeToAbsolutePath(txtResultatenDir.Text & "\" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "\" & Setup.StochastenAnalyse.Duration.ToString & "H", Setup.Settings.RootDir)
-                Setup.StochastenAnalyse.StochastenDir = Setup.GeneralFunctions.RelativeToAbsolutePath(txtStochastenDir.Text, Setup.Settings.RootDir)
+                Setup.StochastenAnalyse.InputFilesDir = Setup.GeneralFunctions.RelativeToAbsolutePath(txtInputDir.Text, Setup.Settings.RootDir)
+                Setup.StochastenAnalyse.OutputFilesDir = Setup.GeneralFunctions.RelativeToAbsolutePath(txtOutputDir.Text, Setup.Settings.RootDir)
 
                 Call RebuildAllGrids()
 
@@ -642,7 +643,14 @@ Public Class frmStochasten
                 'Loop through the nodes
                 For Each n_node In m_node.ChildNodes
                     If n_node.Name.Trim.ToLower = "stochastenmap" Then
-                        txtStochastenDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                        'depricated. From now on we distinguish two folders: one for input files and one for output files
+                        'this code is for backwards compatibility
+                        txtInputDir.Text = n_node.InnerText
+                        txtOutputDir.Text = n_node.InnerText
+                    ElseIf n_node.Name.Trim.ToLower = "invoermap" Then
+                        txtInputDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                    ElseIf n_node.Name.Trim.ToLower = "uitvoermap" Then
+                        txtOutputDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "resultatenmap" Then
                         txtResultatenDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "maxparallel" Then
@@ -3274,12 +3282,7 @@ Public Class frmStochasten
 
     Private Sub StochastendirectoriesHernoemenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StochastendirectoriesHernoemenToolStripMenuItem.Click
         Dim myForm As New frmDirRename(Me.Setup)
-        myForm.lblRootDir.Text = Setup.StochastenAnalyse.StochastenDir
-        myForm.Show()
-    End Sub
-
-    Private Sub MappenVerwijderenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MappenVerwijderenToolStripMenuItem.Click
-        Dim myForm As New frmRemoveFolder(Setup)
+        myForm.lblRootDir.Text = Setup.StochastenAnalyse.InputFilesDir
         myForm.Show()
     End Sub
 
@@ -4182,7 +4185,8 @@ Public Class frmStochasten
             xmlWriter.WriteLine("  <!--************************************************************************************************-->")
             xmlWriter.WriteLine("  <instellingen>")
             xmlWriter.WriteLine("	<!--directory voor de resultaten en maximum aantal parallelle berekeningen-->")
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "stochastenmap", txtStochastenDir.Text, 4)
+            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", txtInputDir.Text, 4)
+            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", txtOutputDir.Text, 4)
             Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", txtResultatenDir.Text, 4)
             Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)
             Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "klimaatscenario", cmbClimate.Text, 4)
@@ -4276,9 +4280,9 @@ Public Class frmStochasten
         txtResultatenDir.Text = dlgFolder.SelectedPath
     End Sub
 
-    Private Sub btnStochastenDir_Click(sender As Object, e As EventArgs) Handles btnStochastenDir.Click
+    Private Sub btnStochastenDir_Click(sender As Object, e As EventArgs) Handles btnInputDir.Click
         dlgFolder.ShowDialog()
-        txtStochastenDir.Text = dlgFolder.SelectedPath
+        txtInputDir.Text = dlgFolder.SelectedPath
     End Sub
 
     Private Sub btnUitlezen_Click(sender As Object, e As EventArgs) Handles btnUitlezen.Click

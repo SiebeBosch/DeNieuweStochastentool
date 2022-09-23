@@ -2905,9 +2905,9 @@ Public Class GeneralFunctions
         End Try
     End Function
 
-    Public Function ListFilesInDir(Dir As String, RegExSelection As String) As IO.FileInfo()
+    Public Function ListFilesInDir(FilesDir As String, RegExSelection As String) As IO.FileInfo()
         Dim strFileSize As String = ""
-        Dim di As New IO.DirectoryInfo(Dir)
+        Dim di As New IO.DirectoryInfo(FilesDir)
         Dim aryFi As IO.FileInfo() = di.GetFiles(RegExSelection)
         Return aryFi
 

@@ -100,7 +100,8 @@ Public Class clsStochastenRuns
                 myRun = New clsStochastenRun(Setup, Me.StochastenAnalyse)
                 myRun.ID = dt.Rows(i)("RUNID")
                 myRun.RelativeDir = dt.Rows(i)("RELATIVEDIR")
-                myRun.Dir = Setup.StochastenAnalyse.StochastenDir & "\" & myRun.RelativeDir
+                myRun.InputFilesDir = Setup.StochastenAnalyse.InputFilesDir & "\" & myRun.RelativeDir
+                myRun.OutputFilesDir = Setup.StochastenAnalyse.OutputFilesDir & "\" & myRun.RelativeDir
 
                 'start by retrieving the season class. Each instance of this class contains all other classes
                 myRun.SeasonClass = StochastenAnalyse.GetAddSeasonClass(dt.Rows(i)("SEIZOEN"), dt.Rows(i)("SEIZOEN_P"), True)
@@ -369,8 +370,11 @@ Public Class clsStochastenRuns
                                 cmd.CommandText &= ",'',1"
                             End If
 
-                            myRun.Dir = StochastenAnalyse.StochastenDir & "\" & myRun.RelativeDir
-                            If Not Directory.Exists(myRun.Dir) Then Directory.CreateDirectory(myRun.Dir)
+                            myRun.InputFilesDir = StochastenAnalyse.InputFilesDir & "\" & myRun.RelativeDir
+                            myRun.OutputFilesDir = StochastenAnalyse.OutputFilesDir & "\" & myRun.RelativeDir
+
+                            If Not Directory.Exists(myRun.InputFilesDir) Then Directory.CreateDirectory(myRun.InputFilesDir)
+                            If Not Directory.Exists(myRun.OutputFilesDir) Then Directory.CreateDirectory(myRun.OutputFilesDir)
 
                             cmd.CommandText &= "," & myRun.P & ",'" & myRun.RelativeDir & "','" & myRun.ID & "');"
 
@@ -427,7 +431,7 @@ Public Class clsStochastenRuns
                 'clear the directory
                 ID = myrow.Cells("ID").Value
                 myRun = Runs.Item(ID.Trim.ToUpper)
-                System.IO.Directory.Delete(myRun.Dir, True)
+                System.IO.Directory.Delete(myRun.OutputFilesDir, True)
 
             Next
             Return True
@@ -559,7 +563,7 @@ Public Class clsStochastenRuns
                     Done = True
                     For Each myModel In StochastenAnalyse.Models.Values
                         For Each myFile In myModel.ResultsFiles.Files.Values
-                            If Not File.Exists(myRun.Dir & myFile.FileName) Then
+                            If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
                                 Done = False
                             End If
                         Next

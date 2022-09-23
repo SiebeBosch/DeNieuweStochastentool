@@ -145,7 +145,6 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmEraseYesNo.
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmImportOutputlocations.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmOudeResultatenVervangen.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmPatroon.resources
-C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmRemoveFolder.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmStochasten.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.Resources.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.vbproj.GenerateResource.cache

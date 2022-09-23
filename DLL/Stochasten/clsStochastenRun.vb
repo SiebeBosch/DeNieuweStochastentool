@@ -16,8 +16,10 @@ Public Class clsStochastenRun
     Public P As Double  'the resulting probability of all underlying stochastic classes
 
     Public IDexceptVolume As String
-    Public Dir As String            'directory for all input files and results files
-    Public RelativeDir As String    'Dame directory, but relative to the Stochastenanalyse root dir
+    Public InputFilesDir As String              'directory for all input files
+    Public OutputFilesDir As String             'directory for all output files
+    Public RelativeDir As String           'same directory, but relative to the Stochastenanalyse root dir
+    Public RelativeOutputDir As String          'same directory, but relative to the Stochastenanalyse root dir
     Public SeasonClass As clsStochasticSeasonClass
     Public VolumeClass As clsStochasticVolumeClass
     Public PatternClass As clsStochasticPatternClass
@@ -125,7 +127,7 @@ Public Class clsStochastenRun
         'date: 16-8-2014
         'this routine actually kicks off a model run!
         '------------------------------------------------------------------------
-        Dim fromFile As String, fromFile2 As String
+        Dim fromFile As String = String.Empty, fromFile2 As String = String.Empty
         Dim toFile As String, toFile2 As String
         Dim LockFile As String = Me.Setup.StochastenAnalyse.StochastsConfigFile & ".lock"
 
@@ -175,8 +177,8 @@ Public Class clsStochastenRun
                         myBui.Write(BuiFile, 3)
 
                         'copy the precipitation file to the unique directory for our desired run
-                        If Not System.IO.Directory.Exists(Dir) Then System.IO.Directory.CreateDirectory(Dir)
-                        File.Copy(BuiFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+                        If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
+                        File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
 
                         'write the evaporation file for now we'll assume zero evaporation
                         Dim myEvp As New clsEvpFile(Me.Setup)
@@ -184,7 +186,7 @@ Public Class clsStochastenRun
                         Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
                         myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
                         myEvp.Write(EvpFile)
-                        File.Copy(EvpFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+                        File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
 
                         '--------------------------------------------------------------------------------------------------------------------
                         'copy the groundwater file(s)
@@ -269,10 +271,13 @@ Public Class clsStochastenRun
                     'update the progress bar
                     Me.Setup.GeneralFunctions.UpdateProgressBar("Running simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
 
+                    Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
+                    If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
+
                     Dim myProcess As New Process
                     myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
-                    myProcess.StartInfo.FileName = myModel.Exec
-                    myProcess.StartInfo.Arguments = myModel.Args
+                    myProcess.StartInfo.FileName = Exec
+                    myProcess.StartInfo.Arguments = ""
                     myProcess.Start()
 
                     While Not myProcess.HasExited
@@ -280,15 +285,61 @@ Public Class clsStochastenRun
                         Call Setup.GeneralFunctions.Wait(2000)
                     End While
 
+
+
+
+                    ''v2.3.3 some models requre running a batchfile from the copied model dir. Other require a call to an exe file with a given path.
+                    ''therefore we will try to find a local file copy first
+                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
+                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
+
+
+                    ''Dim info As New System.Diagnostics.ProcessStartInfo
+                    ''info.FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\sample.exe"
+                    ''info.Arguments = "/s /v/qn"
+                    ''Dim process As New System.Diagnostics.Process
+                    ''process.StartInfo = info
+                    ''process.Start()
+                    ''MessageBox.Show(info.Arguments.ToString())
+                    ''process.Close()
+                    'Dim myProcess As System.Diagnostics.Process
+                    'Dim info As System.Diagnostics.ProcessStartInfo
+
+                    'Directory.SetCurrentDirectory(Path.GetDirectoryName(myModel.TempWorkDir))
+                    'info = New System.Diagnostics.ProcessStartInfo
+                    'info.UseShellExecute = True
+                    'info.WorkingDirectory = myModel.TempWorkDir
+                    'info.FileName = Exec
+                    ''info.Arguments = myModel.TempWorkDir & "\" & myModel.Args
+                    'info.Arguments = ""
+
+                    'myProcess = New System.Diagnostics.Process
+                    'myProcess.StartInfo = info
+                    'myProcess.Start()
+
+                    While Not myProcess.HasExited
+                        'waiting for the process to finish before starting the next (note: to be replaced with multithreading in the long term)
+                        Call Setup.GeneralFunctions.Wait(2000)
+                    End While
+
+                    myProcess.Close()
+
                     'If logStr = "0" OrElse StochastenAnalyse.AllowCrashedResults Then
+                    'v2.3.2: from dir was incorrect. Replaced myproject.projectdir by myModel.tempWorkdir
                     For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
-                        If myFile.HydroModule = enmHydroModule.RR Then
-                            fromFile = myProject.ProjectDir & "\" & myProject.DIMRConfig.RR.SubDir & "\output\" & myFile.FileName
-                        ElseIf myFile.HydroModule = enmHydroModule.FLOW Then
-                            fromFile = myProject.ProjectDir & "\" & myProject.DIMRConfig.Flow1D.SubDir & "\output\" & myFile.FileName
+                        If myModel.ModelType = enmSimulationModel.SOBEK Then
+                            fromFile = myModel.TempWorkDir & "\WORK\" & myFile.FileName
+                        ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
+                            If myFile.HydroModule = enmHydroModule.RR Then
+                                fromFile = myModel.TempWorkDir & "\" & myProject.DIMRConfig.RR.SubDir & "\" & myFile.FileName
+                            ElseIf myFile.HydroModule = enmHydroModule.FLOW Then
+                                fromFile = myModel.TempWorkDir & "\" & myProject.DIMRConfig.Flow1D.SubDir & "\output\" & myFile.FileName
+                            End If
+                        Else
+                            fromFile = myModel.TempWorkDir & "\" & myFile.FileName
                         End If
 
-                        toFile = Dir & "\" & myFile.FileName
+                        toFile = OutputFilesDir & "\" & myFile.FileName
 
                         If File.Exists(fromFile) Then
                             Call FileCopy(fromFile, toFile)
@@ -415,7 +466,7 @@ Public Class clsStochastenRun
                     myBui.Write(BuiFile, 3)
 
                     'copy the meteo file to the unique directory for our desired run
-                    If Not System.IO.Directory.Exists(Dir) Then System.IO.Directory.CreateDirectory(Dir)
+                    If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
                     File.Copy(BuiFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
 
                     'write the evaporation file for now we'll assume zero evaporation

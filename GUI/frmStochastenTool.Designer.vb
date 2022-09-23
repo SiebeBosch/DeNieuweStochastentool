@@ -90,7 +90,7 @@ Partial Class frmStochasten
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtMaxParallel = New System.Windows.Forms.TextBox()
         Me.grBestanden = New System.Windows.Forms.GroupBox()
-        Me.btnStochastenDir = New System.Windows.Forms.Button()
+        Me.btnInputDir = New System.Windows.Forms.Button()
         Me.btnResultsDir = New System.Windows.Forms.Button()
         Me.btnDatabase = New System.Windows.Forms.Button()
         Me.btnShapefile = New System.Windows.Forms.Button()
@@ -103,7 +103,7 @@ Partial Class frmStochasten
         Me.txtResultatenDir = New System.Windows.Forms.TextBox()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.txtStochastenDir = New System.Windows.Forms.TextBox()
+        Me.txtInputDir = New System.Windows.Forms.TextBox()
         Me.txtDatabase = New System.Windows.Forms.TextBox()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.tabSobek = New System.Windows.Forms.TabPage()
@@ -261,6 +261,9 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
+        Me.btnOutputDir = New System.Windows.Forms.Button()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.txtOutputDir = New System.Windows.Forms.TextBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -349,19 +352,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(216, 34)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -866,7 +869,10 @@ Partial Class frmStochasten
         '
         Me.grBestanden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.grBestanden.Controls.Add(Me.btnStochastenDir)
+        Me.grBestanden.Controls.Add(Me.btnOutputDir)
+        Me.grBestanden.Controls.Add(Me.Label15)
+        Me.grBestanden.Controls.Add(Me.txtOutputDir)
+        Me.grBestanden.Controls.Add(Me.btnInputDir)
         Me.grBestanden.Controls.Add(Me.btnResultsDir)
         Me.grBestanden.Controls.Add(Me.btnDatabase)
         Me.grBestanden.Controls.Add(Me.btnShapefile)
@@ -879,7 +885,7 @@ Partial Class frmStochasten
         Me.grBestanden.Controls.Add(Me.txtResultatenDir)
         Me.grBestanden.Controls.Add(Me.Label11)
         Me.grBestanden.Controls.Add(Me.Label5)
-        Me.grBestanden.Controls.Add(Me.txtStochastenDir)
+        Me.grBestanden.Controls.Add(Me.txtInputDir)
         Me.grBestanden.Controls.Add(Me.txtDatabase)
         Me.grBestanden.Controls.Add(Me.Label7)
         Me.grBestanden.Location = New System.Drawing.Point(9, 12)
@@ -891,21 +897,21 @@ Partial Class frmStochasten
         Me.grBestanden.TabStop = False
         Me.grBestanden.Text = "Bestanden en Mappen"
         '
-        'btnStochastenDir
+        'btnInputDir
         '
-        Me.btnStochastenDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnStochastenDir.Location = New System.Drawing.Point(1855, 42)
-        Me.btnStochastenDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.btnStochastenDir.Name = "btnStochastenDir"
-        Me.btnStochastenDir.Size = New System.Drawing.Size(32, 29)
-        Me.btnStochastenDir.TabIndex = 48
-        Me.btnStochastenDir.Text = ".."
-        Me.btnStochastenDir.UseVisualStyleBackColor = True
+        Me.btnInputDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnInputDir.Location = New System.Drawing.Point(1855, 42)
+        Me.btnInputDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnInputDir.Name = "btnInputDir"
+        Me.btnInputDir.Size = New System.Drawing.Size(32, 29)
+        Me.btnInputDir.TabIndex = 48
+        Me.btnInputDir.Text = ".."
+        Me.btnInputDir.UseVisualStyleBackColor = True
         '
         'btnResultsDir
         '
         Me.btnResultsDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnResultsDir.Location = New System.Drawing.Point(1855, 81)
+        Me.btnResultsDir.Location = New System.Drawing.Point(1855, 119)
         Me.btnResultsDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnResultsDir.Name = "btnResultsDir"
         Me.btnResultsDir.Size = New System.Drawing.Size(32, 29)
@@ -916,7 +922,7 @@ Partial Class frmStochasten
         'btnDatabase
         '
         Me.btnDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnDatabase.Location = New System.Drawing.Point(1855, 120)
+        Me.btnDatabase.Location = New System.Drawing.Point(1855, 158)
         Me.btnDatabase.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnDatabase.Name = "btnDatabase"
         Me.btnDatabase.Size = New System.Drawing.Size(32, 29)
@@ -927,7 +933,7 @@ Partial Class frmStochasten
         'btnShapefile
         '
         Me.btnShapefile.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnShapefile.Location = New System.Drawing.Point(1855, 160)
+        Me.btnShapefile.Location = New System.Drawing.Point(1855, 198)
         Me.btnShapefile.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnShapefile.Name = "btnShapefile"
         Me.btnShapefile.Size = New System.Drawing.Size(32, 29)
@@ -938,7 +944,7 @@ Partial Class frmStochasten
         'Label37
         '
         Me.Label37.AutoSize = True
-        Me.Label37.Location = New System.Drawing.Point(15, 240)
+        Me.Label37.Location = New System.Drawing.Point(15, 278)
         Me.Label37.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label37.Name = "Label37"
         Me.Label37.Size = New System.Drawing.Size(113, 20)
@@ -948,7 +954,7 @@ Partial Class frmStochasten
         'Label36
         '
         Me.Label36.AutoSize = True
-        Me.Label36.Location = New System.Drawing.Point(15, 201)
+        Me.Label36.Location = New System.Drawing.Point(15, 239)
         Me.Label36.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label36.Name = "Label36"
         Me.Label36.Size = New System.Drawing.Size(111, 20)
@@ -958,7 +964,7 @@ Partial Class frmStochasten
         'cmbZomerpeil
         '
         Me.cmbZomerpeil.FormattingEnabled = True
-        Me.cmbZomerpeil.Location = New System.Drawing.Point(266, 239)
+        Me.cmbZomerpeil.Location = New System.Drawing.Point(266, 277)
         Me.cmbZomerpeil.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmbZomerpeil.Name = "cmbZomerpeil"
         Me.cmbZomerpeil.Size = New System.Drawing.Size(242, 28)
@@ -967,7 +973,7 @@ Partial Class frmStochasten
         'cmbWinterpeil
         '
         Me.cmbWinterpeil.FormattingEnabled = True
-        Me.cmbWinterpeil.Location = New System.Drawing.Point(266, 198)
+        Me.cmbWinterpeil.Location = New System.Drawing.Point(266, 236)
         Me.cmbWinterpeil.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmbWinterpeil.Name = "cmbWinterpeil"
         Me.cmbWinterpeil.Size = New System.Drawing.Size(242, 28)
@@ -977,7 +983,7 @@ Partial Class frmStochasten
         '
         Me.txtPeilgebieden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPeilgebieden.Location = New System.Drawing.Point(266, 159)
+        Me.txtPeilgebieden.Location = New System.Drawing.Point(266, 197)
         Me.txtPeilgebieden.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtPeilgebieden.Name = "txtPeilgebieden"
         Me.txtPeilgebieden.Size = New System.Drawing.Size(1580, 26)
@@ -986,7 +992,7 @@ Partial Class frmStochasten
         'Label35
         '
         Me.Label35.AutoSize = True
-        Me.Label35.Location = New System.Drawing.Point(15, 162)
+        Me.Label35.Location = New System.Drawing.Point(15, 200)
         Me.Label35.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label35.Name = "Label35"
         Me.Label35.Size = New System.Drawing.Size(170, 20)
@@ -997,7 +1003,7 @@ Partial Class frmStochasten
         '
         Me.txtResultatenDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtResultatenDir.Location = New System.Drawing.Point(266, 81)
+        Me.txtResultatenDir.Location = New System.Drawing.Point(266, 119)
         Me.txtResultatenDir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtResultatenDir.Name = "txtResultatenDir"
         Me.txtResultatenDir.Size = New System.Drawing.Size(1580, 26)
@@ -1006,7 +1012,7 @@ Partial Class frmStochasten
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(15, 85)
+        Me.Label11.Location = New System.Drawing.Point(15, 123)
         Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(118, 20)
@@ -1019,25 +1025,25 @@ Partial Class frmStochasten
         Me.Label5.Location = New System.Drawing.Point(15, 46)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(122, 20)
+        Me.Label5.Size = New System.Drawing.Size(84, 20)
         Me.Label5.TabIndex = 26
-        Me.Label5.Text = "Stochastenmap"
+        Me.Label5.Text = "Invoermap"
         '
-        'txtStochastenDir
+        'txtInputDir
         '
-        Me.txtStochastenDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.txtInputDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtStochastenDir.Location = New System.Drawing.Point(266, 42)
-        Me.txtStochastenDir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtStochastenDir.Name = "txtStochastenDir"
-        Me.txtStochastenDir.Size = New System.Drawing.Size(1580, 26)
-        Me.txtStochastenDir.TabIndex = 25
+        Me.txtInputDir.Location = New System.Drawing.Point(266, 42)
+        Me.txtInputDir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtInputDir.Name = "txtInputDir"
+        Me.txtInputDir.Size = New System.Drawing.Size(1580, 26)
+        Me.txtInputDir.TabIndex = 25
         '
         'txtDatabase
         '
         Me.txtDatabase.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtDatabase.Location = New System.Drawing.Point(266, 120)
+        Me.txtDatabase.Location = New System.Drawing.Point(266, 158)
         Me.txtDatabase.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.txtDatabase.Name = "txtDatabase"
         Me.txtDatabase.Size = New System.Drawing.Size(1580, 26)
@@ -1046,7 +1052,7 @@ Partial Class frmStochasten
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(15, 122)
+        Me.Label7.Location = New System.Drawing.Point(15, 160)
         Me.Label7.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(79, 20)
@@ -2679,6 +2685,37 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
         '
+        'btnOutputDir
+        '
+        Me.btnOutputDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnOutputDir.Location = New System.Drawing.Point(1855, 79)
+        Me.btnOutputDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnOutputDir.Name = "btnOutputDir"
+        Me.btnOutputDir.Size = New System.Drawing.Size(32, 29)
+        Me.btnOutputDir.TabIndex = 51
+        Me.btnOutputDir.Text = ".."
+        Me.btnOutputDir.UseVisualStyleBackColor = True
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(14, 82)
+        Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(90, 20)
+        Me.Label15.TabIndex = 50
+        Me.Label15.Text = "Uitvoermap"
+        '
+        'txtOutputDir
+        '
+        Me.txtOutputDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtOutputDir.Location = New System.Drawing.Point(266, 82)
+        Me.txtOutputDir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtOutputDir.Name = "txtOutputDir"
+        Me.txtOutputDir.Size = New System.Drawing.Size(1580, 26)
+        Me.txtOutputDir.TabIndex = 49
+        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -2795,7 +2832,7 @@ Partial Class frmStochasten
     Friend WithEvents txtUitloop As System.Windows.Forms.TextBox
     Friend WithEvents txtMaxParallel As System.Windows.Forms.TextBox
     Friend WithEvents Label5 As System.Windows.Forms.Label
-    Friend WithEvents txtStochastenDir As System.Windows.Forms.TextBox
+    Friend WithEvents txtInputDir As System.Windows.Forms.TextBox
     Friend WithEvents grModels As System.Windows.Forms.DataGridView
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents txtDatabase As System.Windows.Forms.TextBox
@@ -3001,7 +3038,7 @@ Partial Class frmStochasten
     Friend WithEvents SaveXMLToolStripMenuItem1 As ToolStripMenuItem
     Friend WithEvents btnDatabase As Button
     Friend WithEvents btnResultsDir As Button
-    Friend WithEvents btnStochastenDir As Button
+    Friend WithEvents btnInputDir As Button
     Friend WithEvents btnUitlezen As Button
     Friend WithEvents VerwijderenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents VolumesSTOWA2014ToolStripMenuItem As ToolStripMenuItem
@@ -3019,4 +3056,7 @@ Partial Class frmStochasten
     Friend WithEvents ModelToevoegenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnDeleteModel As Button
     Friend WithEvents btnAddModel As Button
+    Friend WithEvents btnOutputDir As Button
+    Friend WithEvents Label15 As Label
+    Friend WithEvents txtOutputDir As TextBox
 End Class

@@ -7,8 +7,9 @@ Imports System.IO
 Public Class clsStochastenAnalyse
 
     'Directories
-    Public ResultsDir As String    'directory for the results
-    Public StochastenDir As String 'directory where all stochastic combinations are written
+    Public ResultsDir As String     'directory for the results
+    Public InputFilesDir As String  'directory where all stochastic combinations are written
+    Public OutputFilesDir As String 'directory where all results files are written
 
     'Simulation settings
     Public MaxParallel As Integer
@@ -752,8 +753,8 @@ Public Class clsStochastenAnalyse
                 For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
                     For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
                         If Right(myFile.FileName, 4).ToLower = ".his" Then                      'this is a Deltares HIS-file. Read it using the corresponding reader
-                            If Not System.IO.File.Exists(myRun.Dir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.Dir & "\" & myFile.FileName)
-                            Using myHisReader As New clsHisFileBinaryReader(myRun.Dir & "\" & myFile.FileName, Setup)
+                            If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+                            Using myHisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
                                 If myFile.Parameters.Count = 0 Then Throw New Exception("Error: no parameters specified for output file " & myFile.FileName & ".")
                                 For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
                                     If myPar.Locations.Count = 0 Then
@@ -800,7 +801,7 @@ Public Class clsStochastenAnalyse
                         ElseIf Right(myfile.FileName, 7).ToLower = "_fou.nc" Then
 
                             'this is a D-Hydro Fourier file!
-                            Dim path As String = myRun.Dir & "\" & myFile.FileName
+                            Dim path As String = myRun.OutputFilesDir & "\" & myFile.FileName
                             Dim myFouNC As New clsFouNCFile(path, Me.Setup)
                             If Not System.IO.File.Exists(path) Then Throw New Exception("Fourier file does not exist: " & path)
                             If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
@@ -852,8 +853,8 @@ Public Class clsStochastenAnalyse
 
 
                         ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
-                            If Not System.IO.File.Exists(myRun.Dir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.Dir & "\" & myFile.FileName)
-                            Dim myHisNC As New clsHisNCFile(myRun.Dir & "\" & myFile.FileName, Me.Setup)
+                            If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+                            Dim myHisNC As New clsHisNCFile(myRun.OutputFilesDir & "\" & myFile.FileName, Me.Setup)
 
                             If myFile.Parameters.Count = 0 Then Throw New Exception("Error: no parameters specified for output file " & myFile.FileName & ".")
 
@@ -1193,7 +1194,7 @@ Public Class clsStochastenAnalyse
             Done = True
             For Each myModel In Models.Values
                 For Each myFile In myModel.ResultsFiles.Files.Values
-                    If Not File.Exists(myRun.Dir & "\" & myFile.FileName) Then
+                    If Not File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then
                         Done = False
                         AllComplete = False
                         Exit For

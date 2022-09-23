@@ -225,12 +225,6 @@
     <Compile Include="frmPatroon.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmRemoveFolder.Designer.vb">
-      <DependentUpon>frmRemoveFolder.vb</DependentUpon>
-    </Compile>
-    <Compile Include="frmRemoveFolder.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="frmStochastenTool.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -284,9 +278,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmPatroon.resx">
       <DependentUpon>frmPatroon.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmRemoveFolder.resx">
-      <DependentUpon>frmRemoveFolder.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmStochastenTool.resx">
       <DependentUpon>frmStochastenTool.vb</DependentUpon>
