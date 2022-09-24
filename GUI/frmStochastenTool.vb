@@ -4292,7 +4292,7 @@ Public Class frmStochasten
         Me.Cursor = Cursors.WaitCursor
 
         'settings regarding postprocessing
-        Setup.StochastenAnalyse.ResultsStartPercentage = txtResultsStartPercentage.Text
+        Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
         Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon)
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
@@ -4424,10 +4424,14 @@ Public Class frmStochasten
     End Sub
 
     Private Sub LeesFOUFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LeesFOUFileToolStripMenuItem.Click
-        Dim path As String = "c:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\02.Dijkring48.AlleScenarios2\Altrhein_T=10000\dflowfm\output\dr48_fou.nc"
-        Dim FouFile As New clsFouNCFile(path, Me.Setup)
-        If System.IO.File.Exists(path) Then
-            FouFile.Read()
+        Dim path As String = "c:\temp\BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_fou.nc"
+        If Not System.IO.File.Exists(path) Then
+            MsgBox("File does not exist: " & path)
+        Else
+            Dim FouFile As New clsFouNCFile(path, Me.Setup)
+            If System.IO.File.Exists(path) Then
+                FouFile.Read()
+            End If
         End If
 
     End Sub

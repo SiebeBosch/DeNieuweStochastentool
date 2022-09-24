@@ -1,4 +1,5 @@
-﻿Imports Microsoft.Research
+﻿Option Explicit On
+Imports Microsoft.Research
 Imports sds = Microsoft.Research.Science.Data
 Imports Microsoft.Research.Science.Data.Imperative
 Imports STOCHLIB.General
@@ -8,8 +9,8 @@ Public Class clsFouNCFile
     Private Setup As clsSetup
     Friend Path As String
 
-    Dim Variables As sds.ReadOnlyVariableCollection
 
+    Dim Variables As sds.ReadOnlyVariableCollection
 
     Dim Mesh2d_fourier001_maxID As Integer = -1
     Dim Mesh1d_fourier001_maxID As Integer = -1
@@ -57,33 +58,34 @@ Public Class clsFouNCFile
             Dim myDimensions As sds.ReadOnlyDimensionList = dataset.Dimensions
             Variables = dataset.Variables
 
+
             'set the names for all variables
-            For i = 0 To dataset.Variables.Count - 1
-                Debug.Print(dataset.Variables.Item(i).Name)
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_y" Then Mesh2d_face_yID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_x" Then Mesh1d_node_xID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_y" Then Mesh1d_node_yID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_id" Then Mesh1d_node_idID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_long_name" Then Mesh1d_node_long_nameID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
+            For i = 0 To DataSet.Variables.Count - 1
+                Debug.Print(DataSet.Variables.Item(i).Name)
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_y" Then Mesh2d_face_yID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_x" Then Mesh1d_node_xID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_y" Then Mesh1d_node_yID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_id" Then Mesh1d_node_idID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_long_name" Then Mesh1d_node_long_nameID = DataSet.Variables.Item(i).ID
+                If DataSet.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = DataSet.Variables.Item(i).ID
             Next
 
             'and read the fourier file's content!
-            If Mesh2d_fourier001_maxID >= 0 Then Mesh2d_fourier001_max = dataset.GetData(Of Double())(Mesh2d_fourier001_maxID)
-            If Mesh1d_fourier001_maxID >= 0 Then Mesh1d_fourier001_max = dataset.GetData(Of Double())(Mesh1d_fourier001_maxID)
-            If Mesh2d_fourier002_maxID >= 0 Then Mesh2d_fourier002_max = dataset.GetData(Of Double())(Mesh2d_fourier002_maxID)
-            If Mesh1d_fourier002_maxID >= 0 Then Mesh1d_fourier002_max = dataset.GetData(Of Double())(Mesh1d_fourier002_maxID)
-            If Mesh2d_face_xID >= 0 Then Mesh2d_face_x = dataset.GetData(Of Double())(Mesh2d_face_xID)
-            If Mesh2d_face_yID >= 0 Then Mesh2d_face_y = dataset.GetData(Of Double())(Mesh2d_face_yID)
-            If Mesh1d_node_xID >= 0 Then Mesh1d_node_x = dataset.GetData(Of Double())(Mesh1d_node_xID)
-            If Mesh1d_node_yID >= 0 Then Mesh1d_node_y = dataset.GetData(Of Double())(Mesh1d_node_yID)
-            If Mesh1d_node_idID >= 0 Then Mesh1d_node_id = dataset.GetData(Of Byte(,))(Mesh1d_node_idID)
-            If Mesh1d_node_long_nameID >= 0 Then Mesh1d_node_long_name = dataset.GetData(Of Byte(,))(Mesh1d_node_long_nameID)
+            If Mesh2d_fourier001_maxID >= 0 Then Mesh2d_fourier001_max = DataSet.GetData(Of Double())(Mesh2d_fourier001_maxID)
+            If Mesh1d_fourier001_maxID >= 0 Then Mesh1d_fourier001_max = DataSet.GetData(Of Double())(Mesh1d_fourier001_maxID)
+            If Mesh2d_fourier002_maxID >= 0 Then Mesh2d_fourier002_max = DataSet.GetData(Of Double())(Mesh2d_fourier002_maxID)
+            If Mesh1d_fourier002_maxID >= 0 Then Mesh1d_fourier002_max = DataSet.GetData(Of Double())(Mesh1d_fourier002_maxID)
+            If Mesh2d_face_xID >= 0 Then Mesh2d_face_x = DataSet.GetData(Of Double())(Mesh2d_face_xID)
+            If Mesh2d_face_yID >= 0 Then Mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yID)
+            If Mesh1d_node_xID >= 0 Then Mesh1d_node_x = DataSet.GetData(Of Double())(Mesh1d_node_xID)
+            If Mesh1d_node_yID >= 0 Then Mesh1d_node_y = DataSet.GetData(Of Double())(Mesh1d_node_yID)
+            If Mesh1d_node_idID >= 0 Then Mesh1d_node_id = DataSet.GetData(Of Byte(,))(Mesh1d_node_idID)
+            If Mesh1d_node_long_nameID >= 0 Then Mesh1d_node_long_name = DataSet.GetData(Of Byte(,))(Mesh1d_node_long_nameID)
 
             'de id's zijn samengesteld uit een array van bytes
             Dim IDArray As Byte()

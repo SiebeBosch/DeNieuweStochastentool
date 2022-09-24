@@ -755,47 +755,51 @@ Public Class clsStochastenAnalyse
                         If Right(myFile.FileName, 4).ToLower = ".his" Then                      'this is a Deltares HIS-file. Read it using the corresponding reader
                             If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
                             Using myHisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
-                                If myFile.Parameters.Count = 0 Then Throw New Exception("Error: no parameters specified for output file " & myFile.FileName & ".")
-                                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-                                    If myPar.Locations.Count = 0 Then
-                                        Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-                                    Else
-                                        '--------------------------------------------------------------------------------------------------------------------------------------------
-                                        '  writing the results for this run to the database
-                                        '  start by reading the entire file to memory. This is supposed to be MUCH faster than reading from file every time
-                                        '--------------------------------------------------------------------------------------------------------------------------------------------
+                                If myFile.Parameters.Count = 0 Then
+                                    Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
+                                Else
+                                    For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+                                        If myPar.Locations.Count = 0 Then
+                                            Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
+                                        Else
+                                            '--------------------------------------------------------------------------------------------------------------------------------------------
+                                            '  writing the results for this run to the database
+                                            '  start by reading the entire file to memory. This is supposed to be MUCH faster than reading from file every time
+                                            '--------------------------------------------------------------------------------------------------------------------------------------------
 
-                                        'database needs to be populated or refreshed for this run. read the hisfile to memory
-                                        myHisReader.ReadToMemory()
-                                        Using hisReader As New BinaryReader(myHisReader.ms)
+                                            'database needs to be populated or refreshed for this run. read the hisfile to memory
+                                            myHisReader.ReadToMemory()
+                                            Using hisReader As New BinaryReader(myHisReader.ms)
 
-                                            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                            Using myCmd As New SQLite.SQLiteCommand
-                                                myCmd.Connection = Me.Setup.SqliteCon
-                                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                                                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                                Using myCmd As New SQLite.SQLiteCommand
+                                                    myCmd.Connection = Me.Setup.SqliteCon
+                                                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                                                    'walk through each location and retreive the stochastic results
-                                                    For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
-                                                        If Not myHisReader.ReadStochasticResultsFromMemoryStream(hisReader, myLoc.ID, myPar.Name, MaxInLastTimeStep, Min, tsMin, Max, tsMax, Avg, ResultsStartPercentage) Then
-                                                            Me.Setup.Log.AddError("Could not read results for location " & myLoc.ID & " and parameter " & myPar.Name & ".")
-                                                        Else
-                                                            'add the outcome of this run to the dictionary of results
-                                                            myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                            myCmd.ExecuteNonQuery()
-                                                            If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
-                                                        End If
-                                                    Next
+                                                        'walk through each location and retreive the stochastic results
+                                                        For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
+                                                            If Not myHisReader.ReadStochasticResultsFromMemoryStream(hisReader, myLoc.ID, myPar.Name, MaxInLastTimeStep, Min, tsMin, Max, tsMax, Avg, ResultsStartPercentage) Then
+                                                                Me.Setup.Log.AddError("Could not read results for location " & myLoc.ID & " and parameter " & myPar.Name & ".")
+                                                            Else
+                                                                'add the outcome of this run to the dictionary of results
+                                                                myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                                                myCmd.ExecuteNonQuery()
+                                                                If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
+                                                            End If
+                                                        Next
 
-                                                    'insert the results for all locations at once
-                                                    transaction.Commit() 'this is where the bulk insert is finally executed.
+                                                        'insert the results for all locations at once
+                                                        transaction.Commit() 'this is where the bulk insert is finally executed.
+                                                    End Using
                                                 End Using
+
                                             End Using
+                                            myHisReader.Close()
 
-                                        End Using
-                                        myHisReader.Close()
+                                        End If
+                                    Next
+                                End If
 
-                                    End If
-                                Next
                             End Using
 
                         ElseIf Right(myfile.FileName, 7).ToLower = "_fou.nc" Then
@@ -921,6 +925,7 @@ Public Class clsStochastenAnalyse
                     Next
                 Next
             Next
+
 
             If Me.Setup.Log.Errors.Count > 0 Then
                 Me.Setup.Log.AddMessage("Reading simulation complete, but with errors! Please check.")
