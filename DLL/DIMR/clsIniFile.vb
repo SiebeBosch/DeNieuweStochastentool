@@ -13,6 +13,10 @@ Public Class clsIniFile
 
     Public Function Read(path As String) As Boolean
         Try
+            'v2.3.4: reading .MDU resulted in wrong path to _his.nc file when no space between filename and command:
+            'NetFile                           = BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_net.nc# Unstructured grid file *_net.nc
+            'this has been fixed by first removing the string starting with # and then parsing
+
             'this function reads an INI file from a D-Hydro modelschematization.
             'it simply reads the generic structure of this file type. The iterpretation is handled by a separate class for each ini file that inherits this class.
             If Not System.IO.File.Exists(path) Then Throw New Exception("File does not exist: " & path)
@@ -22,6 +26,7 @@ Public Class clsIniFile
             Dim myChapter As clsIniFileChapter = Nothing
             Dim myAttribute As clsIniFileAttribute = Nothing
             Dim myAttr As String
+            Dim PoundPos As Integer
 
             'we noticed that the values can be separated by space or tab
             Dim Delimiters As New List(Of String)
@@ -36,6 +41,10 @@ Public Class clsIniFile
                     If Strings.Left(myStr, 1) = "#" OrElse Strings.Left(myStr, 1) = "*" Then
                         'these are comments. No action
                     Else
+                        'v2.3.4: remove the comment first
+                        PoundPos = InStr(myStr, "#")
+                        If PoundPos > 0 Then myStr = Strings.Left(myStr, PoundPos - 1)
+
                         While Not myStr = ""
                             'parse the string until nothing left
                             myItem = Me.Setup.GeneralFunctions.ParseString(myStr, "=").Trim

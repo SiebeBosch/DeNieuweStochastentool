@@ -133,8 +133,8 @@ Public Class clsNetworkFile
 
             For i = 0 To DataSet.Variables.Count - 1
                 Debug.Print(DataSet.Variables(i).Name)
-                Select Case DataSet(i).Name
-                    Case Is = "Mesh2d_face_z"
+                Select Case DataSet(i).Name.Trim.ToLower
+                    Case Is = "mesh2d_face_z"
                         Mesh2d_face_zIdx = DataSet(i).ID
                     Case Is = "links_contact_type"
                         links_contact_typeIdx = DataSet(i).ID
@@ -144,33 +144,33 @@ Public Class clsNetworkFile
                         links_contact_idIdx = DataSet(i).ID
                     Case Is = "links"
                         linksIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_interface_sigma"
+                    Case Is = "mesh2d_interface_sigma"
                         Mesh2d_interface_sigmaIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_layer_sigma"
+                    Case Is = "mesh2d_layer_sigma"
                         Mesh2d_layer_sigmaIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_face_y_bnd"
+                    Case Is = "mesh2d_face_y_bnd"
                         Mesh2d_face_y_bndIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_face_x_bnd"
+                    Case Is = "mesh2d_face_x_bnd"
                         Mesh2d_face_x_bndIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_face_y"
+                    Case Is = "mesh2d_face_y"
                         Mesh2d_face_yIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_face_x"
+                    Case Is = "mesh2d_face_x"
                         Mesh2d_face_xIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_face_nodes"
+                    Case Is = "mesh2d_face_nodes"
                         Mesh2d_face_nodesIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_edge_nodes"
+                    Case Is = "mesh2d_edge_nodes"
                         Mesh2d_edge_nodesIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_edge_y"
+                    Case Is = "mesh2d_edge_y"
                         Mesh2d_edge_yIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_edge_x"
+                    Case Is = "mesh2d_edge_x"
                         Mesh2d_edge_xIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_node_z"
+                    Case Is = "mesh2d_node_z"
                         Mesh2d_node_zIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_node_y"
+                    Case Is = "mesh2d_node_y"
                         Mesh2d_node_yIdx = DataSet(i).ID
-                    Case Is = "Mesh2d_node_x"
+                    Case Is = "mesh2d_node_x"
                         Mesh2d_node_xIdx = DataSet(i).ID
-                    Case Is = "Mesh2d"
+                    Case Is = "mesh2d"
                         Mesh2dIdx = DataSet(i).ID
                     Case Is = "projected_coordinate_system"
                         projected_coordinate_systemIdx = DataSet(i).ID
@@ -198,71 +198,72 @@ Public Class clsNetworkFile
                         mesh1d_node_branchIdx = DataSet(i).ID
                     Case Is = "mesh1d"
                         mesh1dIdx = DataSet(i).ID
-                    Case Is = "network_branch_type"
+                    Case Is = "network1d_branch_type"
                         network_branch_typeIdx = DataSet(i).ID
-                    Case Is = "network_branch_order"
+                    Case Is = "network1d_branch_order"
                         network_branch_orderIdx = DataSet(i).ID
-                    Case Is = "network_geom_y"
+                    Case Is = "network1d_geom_y"
                         network_geom_yIdx = DataSet(i).ID
-                    Case Is = "network_geom_x"
+                    Case Is = "network1d_geom_x"
                         network_geom_xIdx = DataSet(i).ID
-                    Case Is = "network_geom_node_count"
+                    Case Is = "network1d_geom_node_count"
                         network_geom_node_countIdx = DataSet(i).ID
-                    Case Is = "network_geometry"
+                    Case Is = "network1d_geometry"
                         network_geometryIdx = DataSet(i).ID
-                    Case Is = "network_node_y"
+                    Case Is = "network1d_node_y"
                         network_node_yIdx = DataSet(i).ID
-                    Case Is = "network_node_x"
+                    Case Is = "network1d_node_x"
                         network_node_xIdx = DataSet(i).ID
-                    Case Is = "network_node_long_name"
+                    Case Is = "network1d_node_long_name"
                         network_node_long_nameIdx = DataSet(i).ID
-                    Case Is = "network_node_id"
+                    Case Is = "network1d_node_id"
                         network_node_idIdx = DataSet(i).ID
-                    Case Is = "network_edge_length"
+                    Case Is = "network1d_edge_length"
                         network_edge_lengthIdx = DataSet(i).ID
-                    Case Is = "network_branch_long_name"
+                    Case Is = "network1d_branch_long_name"
                         network_branch_long_nameIdx = DataSet(i).ID
-                    Case Is = "network_branch_id"
+                    Case Is = "network1d_branch_id"
                         network_branch_idIdx = DataSet(i).ID
-                    Case Is = "network_edge_nodes"
+                    Case Is = "network1d_edge_nodes"
                         network_edge_nodesIdx = DataSet(i).ID
-                    Case Is = "network"
+                    Case Is = "network1d"
                         networkIdx = DataSet(i).ID
                 End Select
             Next
 
             'read all variables describing our 1D network from the file
-            network1d_geom_y = DataSet.GetData(Of Double())(network_geom_yIdx)
-            network1d_geom_x = DataSet.GetData(Of Double())(network_geom_xIdx)
-            network1d_geom_node_count = DataSet.GetData(Of Int32())(network_geom_node_countIdx)
-            network1d_geometry = DataSet.GetData(Of Int32)(network_geometryIdx)
-            network1d_edge_nodes = DataSet.GetData(Of Int32(,))(network_edge_nodesIdx)
-            network1d_branch_order = DataSet.GetData(Of Int32())(network_branch_orderIdx)
-            network1d_edge_length = DataSet.GetData(Of Double())(network_edge_lengthIdx)
-            network1d_branch_long_name = DataSet.GetData(Of Byte(,))(network_branch_long_nameIdx)
-            network1d_branch_id = DataSet.GetData(Of Byte(,))(network_branch_idIdx)
-            network1d_node_y = DataSet.GetData(Of Double())(network_node_yIdx)
-            network1d_node_x = DataSet.GetData(Of Double())(network_node_xIdx)
-            network1d_node_long_name = DataSet.GetData(Of Byte(,))(network_node_long_nameIdx)
-            network1d_node_id = DataSet.GetData(Of Byte(,))(network_node_idIdx)
-            network1d = DataSet.GetData(Of Int32)(networkIdx)
-            mesh1d_node_offset = DataSet.GetData(Of Double())(mesh1d_node_offsetIdx)
-            mesh1d_node_branch = DataSet.GetData(Of Int32())(mesh1d_node_branchIdx)
-            mesh1d_edge_y = DataSet.GetData(Of Double())(mesh1d_edge_yIdx)
-            mesh1d_edge_x = DataSet.GetData(Of Double())(mesh1d_edge_xIdx)
-            mesh1d_edge_offset = DataSet.GetData(Of Double())(mesh1d_edge_offsetIdx)
-            mesh1d_edge_branch = DataSet.GetData(Of Int32())(mesh1d_edge_branchIdx)
-            mesh1d_edge_nodes = DataSet.GetData(Of Int32(,))(mesh1d_edge_nodesIdx)
-            mesh1d_node_long_name = DataSet.GetData(Of Byte(,))(mesh1d_node_long_nameIdx)
-            mesh1d_node_id = DataSet.GetData(Of Byte(,))(mesh1d_node_idIdx)
+            'v2.3.4: added all the idx >= 0 clauses to prevent a crash when one of the datasets is not present
+            If network_geom_yIdx >= 0 Then network1d_geom_y = DataSet.GetData(Of Double())(network_geom_yIdx)
+            If network_geom_xIdx >= 0 Then network1d_geom_x = DataSet.GetData(Of Double())(network_geom_xIdx)
+            If network_geom_node_countIdx >= 0 Then network1d_geom_node_count = DataSet.GetData(Of Int32())(network_geom_node_countIdx)
+            If network_geometryIdx >= 0 Then network1d_geometry = DataSet.GetData(Of Int32)(network_geometryIdx)
+            If network_edge_nodesIdx >= 0 Then network1d_edge_nodes = DataSet.GetData(Of Int32(,))(network_edge_nodesIdx)
+            If network_branch_orderIdx >= 0 Then network1d_branch_order = DataSet.GetData(Of Int32())(network_branch_orderIdx)
+            If network_edge_lengthIdx >= 0 Then network1d_edge_length = DataSet.GetData(Of Double())(network_edge_lengthIdx)
+            If network_branch_long_nameIdx >= 0 Then network1d_branch_long_name = DataSet.GetData(Of Byte(,))(network_branch_long_nameIdx)
+            If network_branch_idIdx >= 0 Then network1d_branch_id = DataSet.GetData(Of Byte(,))(network_branch_idIdx)
+            If network_node_yIdx >= 0 Then network1d_node_y = DataSet.GetData(Of Double())(network_node_yIdx)
+            If network_node_xIdx >= 0 Then network1d_node_x = DataSet.GetData(Of Double())(network_node_xIdx)
+            If network_node_long_nameIdx >= 0 Then network1d_node_long_name = DataSet.GetData(Of Byte(,))(network_node_long_nameIdx)
+            If network_node_idIdx >= 0 Then network1d_node_id = DataSet.GetData(Of Byte(,))(network_node_idIdx)
+            If networkIdx >= 0 Then network1d = DataSet.GetData(Of Int32)(networkIdx)
+            If mesh1d_node_offsetIdx >= 0 Then mesh1d_node_offset = DataSet.GetData(Of Double())(mesh1d_node_offsetIdx)
+            If mesh1d_node_branchIdx >= 0 Then mesh1d_node_branch = DataSet.GetData(Of Int32())(mesh1d_node_branchIdx)
+            If mesh1d_edge_yIdx >= 0 Then mesh1d_edge_y = DataSet.GetData(Of Double())(mesh1d_edge_yIdx)
+            If mesh1d_edge_xIdx >= 0 Then mesh1d_edge_x = DataSet.GetData(Of Double())(mesh1d_edge_xIdx)
+            If mesh1d_edge_offsetIdx >= 0 Then mesh1d_edge_offset = DataSet.GetData(Of Double())(mesh1d_edge_offsetIdx)
+            If mesh1d_edge_branchIdx >= 0 Then mesh1d_edge_branch = DataSet.GetData(Of Int32())(mesh1d_edge_branchIdx)
+            If mesh1d_edge_nodesIdx >= 0 Then mesh1d_edge_nodes = DataSet.GetData(Of Int32(,))(mesh1d_edge_nodesIdx)
+            If mesh1d_node_long_nameIdx >= 0 Then mesh1d_node_long_name = DataSet.GetData(Of Byte(,))(mesh1d_node_long_nameIdx)
+            If mesh1d_node_idIdx >= 0 Then mesh1d_node_id = DataSet.GetData(Of Byte(,))(mesh1d_node_idIdx)
             mesh1d = DataSet.GetData(Of Int32)(mesh1dIdx)
 
             'read the 2D network
-            mesh2d_face_x = DataSet.GetData(Of Double())(Mesh2d_face_xIdx)
-            mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yIdx)
+            If Mesh2d_face_xIdx >= 0 Then mesh2d_face_x = DataSet.GetData(Of Double())(Mesh2d_face_xIdx)
+            If Mesh2d_face_xIdx >= 0 Then mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yIdx)
 
             'read all 1D2D links
-            links = DataSet.GetData(Of Int32(,))(linksIdx)
+            If linksIdx >= 0 Then links = DataSet.GetData(Of Int32(,))(linksIdx)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 
@@ -270,7 +271,7 @@ Public Class clsNetworkFile
             If Not ReadReaches() Then Throw New Exception("Error reading the network's reaches")
             If Not ReadMeshNodes() Then Throw New Exception("Error reading the network's mesh nodes")
             If Not Read2DCellCenters() Then Throw New Exception("Error reading the network's 2D Cells")
-            If Not Read1D2DLinks() Then Throw New Exception("Error reading the network's 1D2D links")
+            'If Not Read1D2DLinks() Then Throw New Exception("Error reading the network's 1D2D links")
 
             Return True
         Catch ex As Exception
@@ -299,7 +300,7 @@ Public Class clsNetworkFile
         Try
             Dim IDArray As Byte()
             Dim ID As String
-            Dim BranchIdx As Integer
+            Dim BranchNumber As Integer
             Dim Offset As Double
 
             If Branches Is Nothing OrElse Branches.Count = 0 Then Throw New Exception("Unable to read mesh before reading branches.")
@@ -309,12 +310,15 @@ Public Class clsNetworkFile
             For i = 0 To UBound(mesh1d_node_id)
                 IDArray = Setup.GeneralFunctions.GetRowFrom2DArrayOfByte(mesh1d_node_id, i)
                 ID = Setup.GeneralFunctions.CharCodeBytesToString(IDArray, True)
-                BranchIdx = mesh1d_node_branch(i)
-                If BranchIdx > Branches.Count - 1 Then Throw New Exception("Invalid network: index number " & BranchIdx & " for branch associated with mesh node " & ID & " is not present in the collection.")
-                Dim Branch As cls1DBranch = Branches.Values(BranchIdx)
+
+                'v2.3.4: it looks like mesh1d_node_branch does not contain branch index numbers (0 based) but branch numbers (1 based)
+                'so re retrieve the actual branch via branhces.values(number -1) from now on
+                BranchNumber = mesh1d_node_branch(i)
+                If BranchNumber > Branches.Count Then Throw New Exception("Invalid network: number " & BranchNumber & " for branch associated with mesh node " & ID & " is not present in the collection.")
+                Dim Branch As cls1DBranch = Branches.Values(BranchNumber - 1)
 
                 If Branch Is Nothing Then
-                    Me.Setup.Log.AddError("Error assigning mesh node " & i & " to a branch. Associated branch with index " & BranchIdx & " not found.")
+                    Me.Setup.Log.AddError("Error assigning mesh node " & i & " to a branch. Associated branch with number " & BranchNumber & " not found.")
                 Else
                     'now that we have our branch, figure out our chainage and XY coordinate and add our meshnode to the reach
                     Offset = mesh1d_node_offset(i)
@@ -325,7 +329,7 @@ Public Class clsNetworkFile
             Next
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in fucntion ReadMeshNodes of class clsNetworkFile: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function ReadMeshNodes of class clsNetworkFile: " & ex.Message)
             Return False
         End Try
     End Function
@@ -383,6 +387,8 @@ Public Class clsNetworkFile
             Dim MeshNodeFound As Boolean = False
 
             For i = 0 To UBound(links, 1)
+                Debug.Print("i is " & i)
+
                 myLink = New cls1D2DLink(Me.Setup)
                 myLink.MeshNode1DIdx = links(i, 0)
                 myLink.Cell2DIdx = links(i, 1)
@@ -436,8 +442,8 @@ Public Class clsNetworkFile
                 myBranch.RouteNumber = network1d_branch_order(i)
 
                 'let op: de array network1d_edge_nodes lijkt alleen cijfers > 0 te bevatten. Dit suggereert dat hij niet 0-based is maar 1-based
-                myBranch.bn = Nodes1D.Values(network1d_edge_nodes(i, 0))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
-                myBranch.en = Nodes1D.Values(network1d_edge_nodes(i, 1))  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                myBranch.bn = Nodes1D.Values(network1d_edge_nodes(i, 0) - 1)  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                myBranch.en = Nodes1D.Values(network1d_edge_nodes(i, 1) - 1)  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
 
                 If myBranch.en Is Nothing Then Stop
                 If myBranch.bn Is Nothing Then Stop

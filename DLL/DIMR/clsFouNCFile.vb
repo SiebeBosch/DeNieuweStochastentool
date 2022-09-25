@@ -47,11 +47,20 @@ Public Class clsFouNCFile
 
     Public Function get2DMaximumWaterLevels() As Double()
         'returns the maximum water level per 2D cell
-        Return Mesh2d_fourier001_max
+        Return Mesh2d_fourier002_max
     End Function
 
     Public Function Read() As Boolean
         Try
+            'note: which variable is stored wehre in the fourier file is specified in the fm-folder in the .fou file
+            'e.g.:
+            '*var tsrts   sstop   numcyc  knfac   v0plu   layno   elp    
+            ' wl  21600 - 1      0       1.0     0.0             min    
+            ' wl  21600 - 1      0       1.0     0.0             max    
+            ' uc  21600 - 1      0       1.0     0.0     1.0     max    
+            ' in this example it's the second layer (mesh2d_fourier002_max) that contains the maximum waterlevels
+            ' to do: implement a functionality to read this file and select the correct variable from our Fou.nc file.
+
 
             Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
             Dim myDataset As sds.DataSet() = dataset.GetLinkedDataSets

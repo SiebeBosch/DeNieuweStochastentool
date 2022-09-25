@@ -813,114 +813,117 @@ Public Class clsStochastenAnalyse
                             'retrieve the maximum water levels from our Fourier file
                             Dim Maxima As Double() = myFouNC.get2DMaximumWaterLevels()
 
-                            For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-                                If myPar.Locations.Count = 0 Then
-                                    Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-                                Else
-                                    '--------------------------------------------------------------------------------------------------------------------------------------------
-                                    '  writing the results for this run & parameter to the database
-                                    '--------------------------------------------------------------------------------------------------------------------------------------------
-                                    'Dim Waterlevels As Double(,) = Nothing
-                                    'Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
-                                    'Dim IDList As String() = Nothing
-                                    'If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
+                            If myFile.Parameters.Values.Count = 0 Then
+                                Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
+                            Else
+                                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+                                    If myPar.Locations.Count = 0 Then
+                                        Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
+                                    Else
+                                        '--------------------------------------------------------------------------------------------------------------------------------------------
+                                        '  writing the results for this run & parameter to the database
+                                        '--------------------------------------------------------------------------------------------------------------------------------------------
+                                        'Dim Waterlevels As Double(,) = Nothing
+                                        'Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
+                                        'Dim IDList As String() = Nothing
+                                        'If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
 
-                                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                    Using myCmd As New SQLite.SQLiteCommand
-                                        myCmd.Connection = Me.Setup.SqliteCon
-                                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                                        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                        Using myCmd As New SQLite.SQLiteCommand
+                                            myCmd.Connection = Me.Setup.SqliteCon
+                                            Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                                            For i = 0 To Maxima.Count - 1
-                                                Dim ID As String = i.ToString       'the index number of each cell is also considered its ID
+                                                For i = 0 To Maxima.Count - 1
+                                                    Dim ID As String = i.ToString       'the index number of each cell is also considered its ID
 
-                                                If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
-                                                    'v2.2.2: support for maxima from Fourier files added. Other params not yet
-                                                    Max = Maxima(i)
-                                                    Min = 0
-                                                    Avg = 0
+                                                    If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
+                                                        'v2.2.2: support for maxima from Fourier files added. Other params not yet
+                                                        Max = Maxima(i)
+                                                        Min = 0
+                                                        Avg = 0
 
-                                                    'add the outcome of this run to the dictionary of results
-                                                    myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                    myCmd.ExecuteNonQuery()
+                                                        'add the outcome of this run to the dictionary of results
+                                                        myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                                        myCmd.ExecuteNonQuery()
 
-                                                End If
-                                            Next
+                                                    End If
+                                                Next
 
-                                            'insert the resulta for all locations at once
-                                            transaction.Commit() 'this is where the bulk insert is finally executed.
+                                                'insert the resulta for all locations at once
+                                                transaction.Commit() 'this is where the bulk insert is finally executed.
+                                            End Using
                                         End Using
-                                    End Using
 
-                                End If
-                            Next
-
-
+                                    End If
+                                Next
+                            End If
 
                         ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
                             If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
                             Dim myHisNC As New clsHisNCFile(myRun.OutputFilesDir & "\" & myFile.FileName, Me.Setup)
 
-                            If myFile.Parameters.Count = 0 Then Throw New Exception("Error: no parameters specified for output file " & myFile.FileName & ".")
+                            If myFile.Parameters.Count = 0 Then
+                                Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
+                            Else
+                                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+                                    If myPar.Locations.Count = 0 Then
+                                        Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
+                                    Else
+                                        '--------------------------------------------------------------------------------------------------------------------------------------------
+                                        '  writing the results for this run & parameter to the database
+                                        '--------------------------------------------------------------------------------------------------------------------------------------------
+                                        Dim Waterlevels As Double(,) = Nothing
+                                        Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
+                                        Dim IDList As String() = Nothing
+                                        If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
 
-                            For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-                                If myPar.Locations.Count = 0 Then
-                                    Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-                                Else
-                                    '--------------------------------------------------------------------------------------------------------------------------------------------
-                                    '  writing the results for this run & parameter to the database
-                                    '--------------------------------------------------------------------------------------------------------------------------------------------
-                                    Dim Waterlevels As Double(,) = Nothing
-                                    Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
-                                    Dim IDList As String() = Nothing
-                                    If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
+                                        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                        Using myCmd As New SQLite.SQLiteCommand
+                                            myCmd.Connection = Me.Setup.SqliteCon
+                                            Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                    Using myCmd As New SQLite.SQLiteCommand
-                                        myCmd.Connection = Me.Setup.SqliteCon
-                                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                                                For i = 0 To IDList.Count - 1
+                                                    Dim ID As String = IDList(i)
 
-                                            For i = 0 To IDList.Count - 1
-                                                Dim ID As String = IDList(i)
+                                                    If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
+                                                        Max = -9.0E+99
+                                                        Min = 9.0E+99
+                                                        mySum = 0
+                                                        n = 0
 
-                                                If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
-                                                    Max = -9.0E+99
-                                                    Min = 9.0E+99
-                                                    mySum = 0
-                                                    n = 0
-
-                                                    For j = 0 To UBound(Waterlevels, 1)
-                                                        If (j + 1) / (UBound(Waterlevels, 1) + 1) * 100 >= ResultsStartPercentage Then
-                                                            n += 1
-                                                            mySum += Waterlevels(j, i)
-                                                            If Waterlevels(j, i) > Max Then
-                                                                Max = Waterlevels(j, i)
-                                                                tsMax = j
-                                                                If j = UBound(Waterlevels, 1) Then MaxInLastTimeStep = True
+                                                        For j = 0 To UBound(Waterlevels, 1)
+                                                            If (j + 1) / (UBound(Waterlevels, 1) + 1) * 100 >= ResultsStartPercentage Then
+                                                                n += 1
+                                                                mySum += Waterlevels(j, i)
+                                                                If Waterlevels(j, i) > Max Then
+                                                                    Max = Waterlevels(j, i)
+                                                                    tsMax = j
+                                                                    If j = UBound(Waterlevels, 1) Then MaxInLastTimeStep = True
+                                                                End If
+                                                                If Waterlevels(j, i) < Min Then
+                                                                    Min = Waterlevels(j, i)
+                                                                    tsMin = j
+                                                                End If
                                                             End If
-                                                            If Waterlevels(j, i) < Min Then
-                                                                Min = Waterlevels(j, i)
-                                                                tsMin = j
-                                                            End If
-                                                        End If
-                                                    Next
-                                                    Avg = mySum / n
+                                                        Next
+                                                        Avg = mySum / n
 
-                                                    'add the outcome of this run to the dictionary of results
-                                                    myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                    myCmd.ExecuteNonQuery()
-                                                    If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myPar.Locations.Item(ID.Trim.ToUpper).ID)
+                                                        'add the outcome of this run to the dictionary of results
+                                                        myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                                        myCmd.ExecuteNonQuery()
+                                                        If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myPar.Locations.Item(ID.Trim.ToUpper).ID)
 
-                                                End If
-                                            Next
+                                                    End If
+                                                Next
 
-                                            'insert the resulta for all locations at once
-                                            transaction.Commit() 'this is where the bulk insert is finally executed.
+                                                'insert the resulta for all locations at once
+                                                transaction.Commit() 'this is where the bulk insert is finally executed.
+                                            End Using
                                         End Using
-                                    End Using
 
-                                End If
-                            Next
-
+                                    End If
+                                Next
+                            End If
                         End If
                     Next
                 Next

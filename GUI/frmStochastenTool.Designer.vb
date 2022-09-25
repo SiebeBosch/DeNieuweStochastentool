@@ -34,8 +34,6 @@ Partial Class frmStochasten
         Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ModelsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ModelToevoegenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GrondwatersClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SOBEKToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -90,6 +88,9 @@ Partial Class frmStochasten
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtMaxParallel = New System.Windows.Forms.TextBox()
         Me.grBestanden = New System.Windows.Forms.GroupBox()
+        Me.btnOutputDir = New System.Windows.Forms.Button()
+        Me.Label15 = New System.Windows.Forms.Label()
+        Me.txtOutputDir = New System.Windows.Forms.TextBox()
         Me.btnInputDir = New System.Windows.Forms.Button()
         Me.btnResultsDir = New System.Windows.Forms.Button()
         Me.btnDatabase = New System.Windows.Forms.Button()
@@ -261,9 +262,11 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.btnOutputDir = New System.Windows.Forms.Button()
-        Me.Label15 = New System.Windows.Forms.Label()
-        Me.txtOutputDir = New System.Windows.Forms.TextBox()
+        Me.UitvoerlocatiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImporterenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlleVerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ModelToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToevoegenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -352,19 +355,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(216, 34)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -383,22 +386,10 @@ Partial Class frmStochasten
         '
         'ModelsToolStripMenuItem
         '
-        Me.ModelsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UitvoerlocatiesImporterenToolStripMenuItem2, Me.ModelToevoegenToolStripMenuItem})
+        Me.ModelsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ModelToolStripMenuItem, Me.UitvoerlocatiesToolStripMenuItem})
         Me.ModelsToolStripMenuItem.Name = "ModelsToolStripMenuItem"
         Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(102, 29)
         Me.ModelsToolStripMenuItem.Text = "Modellen"
-        '
-        'UitvoerlocatiesImporterenToolStripMenuItem2
-        '
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Name = "UitvoerlocatiesImporterenToolStripMenuItem2"
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Size = New System.Drawing.Size(323, 34)
-        Me.UitvoerlocatiesImporterenToolStripMenuItem2.Text = "Uitvoerlocaties importeren"
-        '
-        'ModelToevoegenToolStripMenuItem
-        '
-        Me.ModelToevoegenToolStripMenuItem.Name = "ModelToevoegenToolStripMenuItem"
-        Me.ModelToevoegenToolStripMenuItem.Size = New System.Drawing.Size(323, 34)
-        Me.ModelToevoegenToolStripMenuItem.Text = "Model toevoegen"
         '
         'ToolsToolStripMenuItem
         '
@@ -896,6 +887,37 @@ Partial Class frmStochasten
         Me.grBestanden.TabIndex = 37
         Me.grBestanden.TabStop = False
         Me.grBestanden.Text = "Bestanden en Mappen"
+        '
+        'btnOutputDir
+        '
+        Me.btnOutputDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnOutputDir.Location = New System.Drawing.Point(1855, 79)
+        Me.btnOutputDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnOutputDir.Name = "btnOutputDir"
+        Me.btnOutputDir.Size = New System.Drawing.Size(32, 29)
+        Me.btnOutputDir.TabIndex = 51
+        Me.btnOutputDir.Text = ".."
+        Me.btnOutputDir.UseVisualStyleBackColor = True
+        '
+        'Label15
+        '
+        Me.Label15.AutoSize = True
+        Me.Label15.Location = New System.Drawing.Point(14, 82)
+        Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label15.Name = "Label15"
+        Me.Label15.Size = New System.Drawing.Size(90, 20)
+        Me.Label15.TabIndex = 50
+        Me.Label15.Text = "Uitvoermap"
+        '
+        'txtOutputDir
+        '
+        Me.txtOutputDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtOutputDir.Location = New System.Drawing.Point(266, 82)
+        Me.txtOutputDir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.txtOutputDir.Name = "txtOutputDir"
+        Me.txtOutputDir.Size = New System.Drawing.Size(1580, 26)
+        Me.txtOutputDir.TabIndex = 49
         '
         'btnInputDir
         '
@@ -2685,36 +2707,37 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
         '
-        'btnOutputDir
+        'UitvoerlocatiesToolStripMenuItem
         '
-        Me.btnOutputDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOutputDir.Location = New System.Drawing.Point(1855, 79)
-        Me.btnOutputDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.btnOutputDir.Name = "btnOutputDir"
-        Me.btnOutputDir.Size = New System.Drawing.Size(32, 29)
-        Me.btnOutputDir.TabIndex = 51
-        Me.btnOutputDir.Text = ".."
-        Me.btnOutputDir.UseVisualStyleBackColor = True
+        Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
+        Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
+        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
         '
-        'Label15
+        'ImporterenToolStripMenuItem1
         '
-        Me.Label15.AutoSize = True
-        Me.Label15.Location = New System.Drawing.Point(14, 82)
-        Me.Label15.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label15.Name = "Label15"
-        Me.Label15.Size = New System.Drawing.Size(90, 20)
-        Me.Label15.TabIndex = 50
-        Me.Label15.Text = "Uitvoermap"
+        Me.ImporterenToolStripMenuItem1.Name = "ImporterenToolStripMenuItem1"
+        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
+        Me.ImporterenToolStripMenuItem1.Text = "Importeren"
         '
-        'txtOutputDir
+        'AlleVerwijderenToolStripMenuItem
         '
-        Me.txtOutputDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtOutputDir.Location = New System.Drawing.Point(266, 82)
-        Me.txtOutputDir.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtOutputDir.Name = "txtOutputDir"
-        Me.txtOutputDir.Size = New System.Drawing.Size(1580, 26)
-        Me.txtOutputDir.TabIndex = 49
+        Me.AlleVerwijderenToolStripMenuItem.Name = "AlleVerwijderenToolStripMenuItem"
+        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.AlleVerwijderenToolStripMenuItem.Text = "Verwijderen"
+        '
+        'ModelToolStripMenuItem
+        '
+        Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
+        Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
+        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.ModelToolStripMenuItem.Text = "Model"
+        '
+        'ToevoegenToolStripMenuItem
+        '
+        Me.ToevoegenToolStripMenuItem.Name = "ToevoegenToolStripMenuItem"
+        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.ToevoegenToolStripMenuItem.Text = "Toevoegen"
         '
         'frmStochasten
         '
@@ -3047,16 +3070,19 @@ Partial Class frmStochasten
     Friend WithEvents btnWindCopy As Button
     Friend WithEvents lblProgress As Label
     Friend WithEvents prProgress As ProgressBar
-    Friend WithEvents UitvoerlocatiesImporterenToolStripMenuItem2 As ToolStripMenuItem
     Friend WithEvents RandvoorwaardenUitCSVToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SOBEKToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DHydroToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BetafunctiesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LeesFOUFileToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ModelToevoegenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnDeleteModel As Button
     Friend WithEvents btnAddModel As Button
     Friend WithEvents btnOutputDir As Button
     Friend WithEvents Label15 As Label
     Friend WithEvents txtOutputDir As TextBox
+    Friend WithEvents UitvoerlocatiesToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ImporterenToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents AlleVerwijderenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ModelToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToevoegenToolStripMenuItem As ToolStripMenuItem
 End Class

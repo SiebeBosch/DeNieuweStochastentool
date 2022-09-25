@@ -4291,6 +4291,9 @@ Public Class frmStochasten
         Me.Setup.GeneralFunctions.UpdateProgressBar("Simulatieresultaten uitlezen...", 0, 10, True)
         Me.Cursor = Cursors.WaitCursor
 
+        'first populate our list of models & assoaciated results
+        'Setup.StochastenAnalyse.PopulateModelsAndLocationsFromDB(Me.Setup.SqliteCon)
+
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
         Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon)
@@ -4390,10 +4393,7 @@ Public Class frmStochasten
 
     End Sub
 
-    Private Sub UitvoerlocatiesImporterenToolStripMenuItem2_Click(sender As Object, e As EventArgs) Handles UitvoerlocatiesImporterenToolStripMenuItem2.Click
-        Dim frmImport As New frmImportOutputlocations(Me.Setup, txtPeilgebieden.Text, cmbWinterpeil.Text, cmbZomerpeil.Text)
-        frmImport.ShowDialog()
-        PopulateOutputLocationsGrid()
+    Private Sub UitvoerlocatiesImporterenToolStripMenuItem2_Click(sender As Object, e As EventArgs)
     End Sub
 
     Private Sub grWaterLevelClasses_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grWaterLevelClasses.CellContentClick
@@ -4456,13 +4456,7 @@ Public Class frmStochasten
         PopulateSimulationModelsGrid()
     End Sub
 
-    Private Sub ModelToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ModelToevoegenToolStripMenuItem.Click
-        Dim myForm As New frmAddModel(Me.Setup)
-        myForm.ShowDialog()
-        Dim Result As DialogResult = myForm.DialogResult
-        If Result = DialogResult.OK Then
-            PopulateSimulationModelsGrid()
-        End If
+    Private Sub ModelToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs)
     End Sub
 
     Private Sub grModels_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellContentClick
@@ -4520,6 +4514,27 @@ Public Class frmStochasten
             MsgBox(ex.Message)
         End Try
 
+    End Sub
+
+    Private Sub ImporterenToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles ImporterenToolStripMenuItem1.Click
+        Dim frmImport As New frmImportOutputlocations(Me.Setup, txtPeilgebieden.Text, cmbWinterpeil.Text, cmbZomerpeil.Text)
+        frmImport.ShowDialog()
+        PopulateOutputLocationsGrid()
+    End Sub
+
+    Private Sub AlleVerwijderenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleVerwijderenToolStripMenuItem.Click
+        Dim query As String = "DELETE FROM OUTPUTLOCATIONS;"
+        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+        MsgBox("Alle uitvoerlocaties zijn verwijderd.")
+    End Sub
+
+    Private Sub ToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToevoegenToolStripMenuItem.Click
+        Dim myForm As New frmAddModel(Me.Setup)
+        myForm.ShowDialog()
+        Dim Result As DialogResult = myForm.DialogResult
+        If Result = DialogResult.OK Then
+            PopulateSimulationModelsGrid()
+        End If
     End Sub
 
     Public Function WriteSubcatchmentsJSON(path As String) As Boolean

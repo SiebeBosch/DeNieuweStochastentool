@@ -4,7 +4,7 @@
   <description asmv2:iconFile="HYDRO_ICO_DEF.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="StochastenTool" version="2.3.3.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="StochastenTool" version="2.3.4.0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="StochastenTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -186,26 +186,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="661504">
-      <assemblyIdentity name="StochastenTool" version="2.3.3.0" language="neutral" processorArchitecture="amd64" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="663040">
+      <assemblyIdentity name="StochastenTool" version="2.3.4.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>iztlr5tfCOMwm/5dXzstImSvz2E6WJGnqVCBANamQyc=</dsig:DigestValue>
+        <dsig:DigestValue>90yAwyE70w86Rt6oidArw+36dVKuYA2PACtiMWEjuqY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3107328">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3107840">
       <assemblyIdentity name="STOCHLIB" version="2.3.3.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>M1nU0HWneIkuhvHJZnME3kjlHxCKzeSUeSGvh14r2FU=</dsig:DigestValue>
+        <dsig:DigestValue>RrICU8KLHmtrU9mdIkqCHi13DZyMI0ij2SX6WYjOEnY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
