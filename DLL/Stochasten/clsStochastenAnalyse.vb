@@ -1190,6 +1190,8 @@ Public Class clsStochastenAnalyse
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("Simulatieresultaten inventariseren.", 0, 10, True)
 
+        'v2.3.5: auto-fill the first column
+        myGrid.Columns(0).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill 'in the first column we display the run's unique ID so fill
         myGrid.Columns(ColIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.None 'temporarily set the autosize mode for our column to none. This speeds up the routine below
         AllComplete = True
         For Each myRow In myGrid.Rows

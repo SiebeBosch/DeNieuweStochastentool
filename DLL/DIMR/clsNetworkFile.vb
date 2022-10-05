@@ -45,6 +45,11 @@ Public Class clsNetworkFile
     Dim mesh2d_face_y As Double()
 
 
+    'opm Arthur van Dam d.d. 5-10-2022:
+    'of het 0- of 1-based is staat gespecificeerd:
+    'Default Is 0, en met attribuut :start_index kan de file specificeren dat het bijvoorbeeld 1 Is, zie
+    Dim Base1 As Boolean = False
+
 
     Public Sub New(myPath As String, ByRef mySetup As clsSetup, ByRef myFlowFM As clsFlowFMComponent)
         Path = myPath
@@ -79,6 +84,9 @@ Public Class clsNetworkFile
             Me.Setup.Log.AddMessage("Number of variables found in network file: " & myVariables.Count & ".")
 
             Dim i As Integer
+
+            'determine whether our data is 1-based or 0-based
+            Dim start_index As Integer = 0
 
             '20220309: naming is now consistent with the variable names themselves
             Dim Mesh2d_face_zIdx As Integer = -1
@@ -130,6 +138,8 @@ Public Class clsNetworkFile
             Dim network_branch_idIdx As Integer = -1
             Dim network_edge_nodesIdx As Integer = -1
             Dim networkIdx As Integer = -1
+
+            'network1d_node_id
 
             For i = 0 To DataSet.Variables.Count - 1
                 Debug.Print(DataSet.Variables(i).Name)
@@ -198,35 +208,35 @@ Public Class clsNetworkFile
                         mesh1d_node_branchIdx = DataSet(i).ID
                     Case Is = "mesh1d"
                         mesh1dIdx = DataSet(i).ID
-                    Case Is = "network1d_branch_type"
+                    Case Is = "network1d_branch_type", "network_branch_type"
                         network_branch_typeIdx = DataSet(i).ID
-                    Case Is = "network1d_branch_order"
+                    Case Is = "network1d_branch_order", "network_branch_order"
                         network_branch_orderIdx = DataSet(i).ID
-                    Case Is = "network1d_geom_y"
+                    Case Is = "network1d_geom_y", "network_geom_y"
                         network_geom_yIdx = DataSet(i).ID
-                    Case Is = "network1d_geom_x"
+                    Case Is = "network1d_geom_x", "network_geom_x"
                         network_geom_xIdx = DataSet(i).ID
-                    Case Is = "network1d_geom_node_count"
+                    Case Is = "network1d_geom_node_count", "network_geom_node_count"
                         network_geom_node_countIdx = DataSet(i).ID
-                    Case Is = "network1d_geometry"
+                    Case Is = "network1d_geometry", "network_geometry"
                         network_geometryIdx = DataSet(i).ID
-                    Case Is = "network1d_node_y"
+                    Case Is = "network1d_node_y", "network_node_y"
                         network_node_yIdx = DataSet(i).ID
-                    Case Is = "network1d_node_x"
+                    Case Is = "network1d_node_x", "network_node_x"
                         network_node_xIdx = DataSet(i).ID
-                    Case Is = "network1d_node_long_name"
+                    Case Is = "network1d_node_long_name", "network_node_long_name"
                         network_node_long_nameIdx = DataSet(i).ID
-                    Case Is = "network1d_node_id"
+                    Case Is = "network1d_node_id", "network_node_id"
                         network_node_idIdx = DataSet(i).ID
-                    Case Is = "network1d_edge_length"
+                    Case Is = "network1d_edge_length", "network_edge_length"
                         network_edge_lengthIdx = DataSet(i).ID
-                    Case Is = "network1d_branch_long_name"
+                    Case Is = "network1d_branch_long_name", "network_branch_long_name"
                         network_branch_long_nameIdx = DataSet(i).ID
-                    Case Is = "network1d_branch_id"
+                    Case Is = "network1d_branch_id", "network_branch_id"
                         network_branch_idIdx = DataSet(i).ID
-                    Case Is = "network1d_edge_nodes"
+                    Case Is = "network1d_edge_nodes", "network_edge_nodes"
                         network_edge_nodesIdx = DataSet(i).ID
-                    Case Is = "network1d"
+                    Case Is = "network1d", "network"
                         networkIdx = DataSet(i).ID
                 End Select
             Next
@@ -285,6 +295,7 @@ Public Class clsNetworkFile
         'this function simply reads the cell center points (X, Y) for each 2D cell
         Try
             Dim myCellCenter As clsXY
+            If mesh2d_face_x Is Nothing Then Return True
             For i = 0 To mesh2d_face_x.Count - 1
                 myCellCenter = New clsXY(mesh2d_face_x(i), mesh2d_face_y(i))
                 CellCenters2D.Add(i, myCellCenter)
@@ -314,8 +325,13 @@ Public Class clsNetworkFile
                 'v2.3.4: it looks like mesh1d_node_branch does not contain branch index numbers (0 based) but branch numbers (1 based)
                 'so re retrieve the actual branch via branhces.values(number -1) from now on
                 BranchNumber = mesh1d_node_branch(i)
-                If BranchNumber > Branches.Count Then Throw New Exception("Invalid network: number " & BranchNumber & " for branch associated with mesh node " & ID & " is not present in the collection.")
-                Dim Branch As cls1DBranch = Branches.Values(BranchNumber - 1)
+
+                'v2.3.5: determine whether the array containing edge_nodes is 1-based or 0-based !!!!!!!!!!!
+                'in order to find the correct branch we must first determine a correction in case the index = 1
+                Dim BaseCorrection As Integer = 0
+                BaseCorrection = start_index_correction(network1d_edge_nodes)
+
+                Dim Branch As cls1DBranch = Branches.Values(BranchNumber + BaseCorrection)
 
                 If Branch Is Nothing Then
                     Me.Setup.Log.AddError("Error assigning mesh node " & i & " to a branch. Associated branch with number " & BranchNumber & " not found.")
@@ -422,6 +438,24 @@ Public Class clsNetworkFile
         End Try
     End Function
 
+    Public Function start_index_correction(ByRef myArray As Integer(,)) As Integer
+        'applies a correction value for 2D-arrays where our array is 1-based instead of 0-based
+        Try
+            Dim j As Integer, k As Integer
+            Dim start_index As Integer = 999
+            For j = 0 To UBound(network1d_edge_nodes, 1)
+                For k = 0 To UBound(network1d_edge_nodes, 2)
+                    If network1d_edge_nodes(j, k) < start_index Then start_index = network1d_edge_nodes(j, k)
+                Next
+            Next
+            Return -start_index
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function start_index_correction: " & ex.Message)
+            Return 0
+        End Try
+    End Function
+
+
     Public Function ReadReaches() As Boolean
         Try
             Dim IDArray As Byte()
@@ -441,12 +475,16 @@ Public Class clsNetworkFile
                 Dim myBranch As New cls1DBranch(Me.Setup, FlowFM, ID)
                 myBranch.RouteNumber = network1d_branch_order(i)
 
-                'let op: de array network1d_edge_nodes lijkt alleen cijfers > 0 te bevatten. Dit suggereert dat hij niet 0-based is maar 1-based
-                myBranch.bn = Nodes1D.Values(network1d_edge_nodes(i, 0) - 1)  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
-                myBranch.en = Nodes1D.Values(network1d_edge_nodes(i, 1) - 1)  '+1 is needed because network1d_edge_nodes refers to node numbers, not index numbers
+                'v2.3.5: determine whether the array containing edge_node numbers is 1-based or 0-based
+                'and set the appropriate correction for our internal 0-based implementation!!!!!!!!!!!
+                Dim BaseCorrection As Integer = 0
+                BaseCorrection = start_index_correction(network1d_edge_nodes)
 
-                If myBranch.en Is Nothing Then Stop
-                If myBranch.bn Is Nothing Then Stop
+                myBranch.bn = Nodes1D.Values(network1d_edge_nodes(i, 0) + BaseCorrection)
+                myBranch.en = Nodes1D.Values(network1d_edge_nodes(i, 1) + BaseCorrection)
+
+                If myBranch.en Is Nothing Then Me.Setup.Log.AddError("Error determining end node for branch " & myBranch.ID)
+                If myBranch.bn Is Nothing Then Me.Setup.Log.AddError("Error determining begin node for reach " & myBranch.ID)
 
                 'add the starting point as a vector
                 prevChainage = 0

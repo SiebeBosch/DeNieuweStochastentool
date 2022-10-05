@@ -388,6 +388,14 @@ Public Class frmStochasten
             da.Fill(dt)
             grOutputLocations.DataSource = dt
 
+            'v2.3.5: auto resize column for locationID
+            For colIdx As Integer = 0 To dt.Columns.Count - 1
+                If dt.Columns(colIdx).ColumnName = "LOCATIEID" Then
+                    grOutputLocations.Columns(colIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill 'ID of outputlocation
+                End If
+            Next
+
+
             Me.Setup.SqliteCon.Close()
 
         Catch fail As Exception
