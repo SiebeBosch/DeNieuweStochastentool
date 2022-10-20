@@ -9,6 +9,7 @@ Imports System.IO.Packaging
 Imports System.IO
 Imports STOCHLIB.General
 Imports STOCHLIB.GeneralFunctions
+Imports System.Reflection
 
 Imports System.Threading
 
@@ -33,26 +34,31 @@ Module DIMR_RUNR
             Dim Thread2 As System.Threading.Thread = Nothing
             Dim Thread3 As System.Threading.Thread = Nothing
             Dim Thread4 As System.Threading.Thread = Nothing
+            Dim execAssembly As Assembly = Assembly.GetCallingAssembly()
+            Dim name As AssemblyName = execAssembly.GetName()
 
-            Console.WriteLine("Welkom bij DIMR_RUNR!")
-            Console.WriteLine("Dit programma stuurt simulaties met de Deltares Integrated Model Runner (DIMR) aan.")
-            Console.WriteLine("Het configureren van de gevraagde simulaties moet worden gedaan in een Excel-bestand.")
-            Console.WriteLine("Zie hiertoe het meegeleverde voorbeeld in de map DIMR_Sample.")
+            Console.WriteLine("Welcome to DIMR_RUNR!")
+            'Console.WriteLine(String.Format("{0}{1} {2:0}.{3:0} for .Net ({4}){0}", Environment.NewLine, name.Name, name.Version.Major.ToString(), name.Version.Minor.ToString(), execAssembly.ImageRuntimeVersion))
+            Console.WriteLine(String.Format("{0}{1} {2:0}.{3:0} for .Net ({4}){0}", Environment.NewLine, name.Name, name.Version.Major.ToString(), name.Version.Minor.ToString(), execAssembly.ImageRuntimeVersion))
+            Console.WriteLine()
+            Console.WriteLine("This program controls simulations with the Deltares Integrated Model Runner (DIMR).")
+            Console.WriteLine("Configuration of the required simulations must be done in an een Excel-document.")
+            Console.WriteLine("See the examle in the DIMR_Sample folder.")
 
             If args.Length = 0 Then
-                Console.WriteLine("Voer het pad naar DIMR_Config.xml in")
+                Console.WriteLine("Enter the path to DIMR_Config.xml")
                 DimrConfigPath = Console.ReadLine
 
-                Console.WriteLine("Voer het pad naar de Excel-configuratie in")
+                Console.WriteLine("Enter the path to the Excel-configuration file")
                 ExcelConfigPath = Console.ReadLine
 
-                Console.WriteLine("Voer het pad naar de batchfile in")
+                Console.WriteLine("Enter the path to the batchfile")
                 BatchFilePath = Console.ReadLine
 
-                Console.WriteLine("Geef het maximum aantal gelijktijdige simulaties op")
+                Console.WriteLine("Enter the maximum number of simultaneous simulations")
                 MaxThreads = Setup.GeneralFunctions.ForceNumeric(Console.ReadLine, "maxThreads", 1)
 
-                Console.WriteLine("Geef het pad naar de Gembox Spreadsheets licentie")
+                Console.WriteLine("Enter the path to the text file containing your Gembox Spreadsheets licentie")
                 GemboxLicensePath = Console.ReadLine
 
             ElseIf args.Length = 5 Then
@@ -63,19 +69,19 @@ Module DIMR_RUNR
                 MaxThreads = args(3)
                 GemboxLicensePath = args(4)
 
-                Console.WriteLine("Pad naar de DIMR-configuratie: " & DimrConfigPath)
-                Console.WriteLine("Pad naar de Excel-configuratie: " & ExcelConfigPath)
-                Console.WriteLine("Pad naar de batchfile: " & BatchFilePath)
-                Console.WriteLine("Maximum aantal simultane berekeningen: " & MaxThreads)
-                Console.WriteLine("Pad naar Gembox Spreadsheets licentie: " & GemboxLicensePath)
+                Console.WriteLine("Path to the DIMR-configuratie: " & DimrConfigPath)
+                Console.WriteLine("Path to the de Excel-configuratie: " & ExcelConfigPath)
+                Console.WriteLine("Path to the batchfile: " & BatchFilePath)
+                Console.WriteLine("Maximum number of simultane berekeningen: " & MaxThreads)
+                Console.WriteLine("Path to the Gembox Spreadsheets license: " & GemboxLicensePath)
             Else
-                Throw New Exception("Ongeldig aantal argumenten meegegeven. Vereist zijn: pad naar dimr_config, pad naar Excel-configuratie, pad naar batchfile, aantal simultane berekeningen en pad naar Gembox Spreadsheets license.")
+                Throw New Exception("Invalid number of arguments. Required are: path to dimr_config, path to Excel-configuration, path to batchfile, number of simultaneous simulations and path to Gembox Spreadsheets license.")
             End If
 
-            If Not System.IO.File.Exists(DimrConfigPath) Then Throw New Exception("Kritieke fout: opgegeven DIMR-configuratiebestand bestaat niet: " & DimrConfigPath)
-            If Not System.IO.File.Exists(ExcelConfigPath) Then Throw New Exception("Kritieke fout: opgegeven Excel-configuratiebestand bestaat niet: " & ExcelConfigPath)
-            If Not System.IO.File.Exists(BatchFilePath) Then Throw New Exception("Kritieke fout: opgegeven batchfile bestaat niet: " & BatchFilePath)
-            If Not System.IO.File.Exists(GemboxLicensePath) Then Throw New Exception("Kritieke fout: opgegeven pad naar licentie voor Gembox License bestaat niet: " & GemboxLicensePath)
+            If Not System.IO.File.Exists(DimrConfigPath) Then Throw New Exception("Critical error: specified DIMR-configuration file does not exist: " & DimrConfigPath)
+            If Not System.IO.File.Exists(ExcelConfigPath) Then Throw New Exception("Critical error: specified Excel-configuration file does not exist: " & ExcelConfigPath)
+            If Not System.IO.File.Exists(BatchFilePath) Then Throw New Exception("Critical error: specified batchfile does not exist: " & BatchFilePath)
+            If Not System.IO.File.Exists(GemboxLicensePath) Then Throw New Exception("Critical error: secified path to licentie voor Gembox License does not exist: " & GemboxLicensePath)
 
             Using licReader As New StreamReader(GemboxLicensePath)
                 GemboxKey = licReader.ReadToEnd
@@ -83,32 +89,33 @@ Module DIMR_RUNR
             SpreadsheetInfo.SetLicense(GemboxKey)
 
             Dim ModelDir As String = Path.GetDirectoryName(DimrConfigPath)
-            Console.WriteLine("Modelmap afgeleid uit locatie DIMR-configuratiebestand: " & ModelDir)
+            Console.WriteLine("Model directory as derived from location of DIMR-configuration file: " & ModelDir)
 
             'first we will read our DIMR configuration
             Dim DIMR As New clsDIMR(Setup, Setup.GeneralFunctions.GetDirFromPath(DimrConfigPath))
             DIMR.readConfiguration()
-            Console.WriteLine("DIMR-configuratiebestand met succes gelezen.")
+            Console.WriteLine("DIMR-configuration file successfully read.")
 
             'next, read our Excel-file containg information about the required simulations and their input data
-            If Not ReadExcelConfiguration(ExcelConfigPath) Then Throw New Exception("Kritieke fout: uitlezen van het Excel-configuratiebestand is niet geslaagd.")
-            Console.WriteLine("Excel-configuratiebestand met succes gelezen.")
+            If Not ReadExcelConfiguration(ExcelConfigPath) Then Throw New Exception("Critical error: reading the Excel-configuration file not successful.")
+            Console.WriteLine("Excel-configuration file successfully read.")
 
             'now execute the simulations one by one
             For Each Run As clsDIMRRun In Runs.Runs.Values
 
                 'only execute this simulation if there are no results present in the output dir
                 Dim OutputDir As String = ModelDir & "\" & Run.GetName & "\" & DIMR.FlowFM.getSubDirectory & "\" & DIMR.FlowFM.getOutputSubDir  '  Run.DIMR.FlowFM.getOutputFullDir
+                Console.WriteLine("Outputdir has been set to " & OutputDir)
                 If Not Directory.Exists(OutputDir) OrElse Directory.GetFiles(OutputDir).Length = 0 Then
                     Console.WriteLine("")
                     Console.WriteLine("Simulatie " & Run.GetName & " wordt voorbereid...")
 
                     Dim RunDir As String = DIMR.ProjectDir & "\" & Run.GetName
                     If Not Directory.Exists(RunDir) Then Directory.CreateDirectory(RunDir)
-                    Console.WriteLine("Directory creëren voor de simulatie: " & RunDir & "...")
+                    Console.WriteLine("Creating directory for simulation: " & RunDir & "...")
 
                     Dim RunDIMR As clsDIMR
-                    Console.WriteLine("Modelschematisatie kopiëren, uitgezonderd de resultatenmap...")
+                    Console.WriteLine("Copying model schematization, except for results dir...")
                     RunDIMR = DIMR.CloneCaseForCommandLineRun(RunDir)
 
                     'finally assign the newly created DIMR instance to our run and read the DIMR configuration
@@ -118,7 +125,7 @@ Module DIMR_RUNR
                     '--------------------------------------------------------------------------------------------------------------------------------------------
                     'for each file that must be altered or replaced in this run we must add it to the list of input files
                     '--------------------------------------------------------------------------------------------------------------------------------------------
-                    Console.WriteLine("Lijst samenstellen van alle aan te passen invoerbestanden voor simulatie " & Run.GetName & "...")
+                    Console.WriteLine("Populating list of all input files that need adjustment before simulating " & Run.GetName & "...")
                     Console.WriteLine("")
                     For Each Scenario As clsDIMRScenario In Run.Scenarios.Values
                         For Each Operation As clsDIMRFileOperation In Scenario.Operations
@@ -142,12 +149,12 @@ Module DIMR_RUNR
                     '--------------------------------------------------------------------------------------------------------------------------------------------
                     For Each Scenario As clsDIMRScenario In Run.Scenarios.Values
                         For Each Operation As clsDIMRFileOperation In Scenario.Operations
-                            If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
+                            If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Unable to implement action " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " for simulation " & Run.GetName & " in the source file")
                         Next
                     Next
 
                     For Each Operation As clsDIMRFileOperation In Run.Operations
-                        If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Kon bewerking " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " voor simulatie " & Run.GetName & " niet implementeren in het bronbestand bronbestanden")
+                        If Not ImplementOperation(DIMR, Run, Operation) Then Throw New Exception("Unable to implement operation " & Operation.getReplacementAction.ToString & ": " & Operation.getValue & " for simulatie " & Run.GetName & " in the source file")
                     Next
                     '--------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -159,22 +166,22 @@ Module DIMR_RUNR
                     While Not ThreadFound
                         'wait for any of our threads to become available
                         If Thread1 Is Nothing OrElse Thread1.ThreadState = ThreadState.Stopped Then
-                            Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 1...")
+                            Console.WriteLine("Simulation " & Run.GetName() & " starting on thread 1...")
                             Thread1 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
                             Thread1.Start()
                             ThreadFound = True
                         ElseIf MaxThreads > 1 AndAlso (Thread2 Is Nothing OrElse Thread2.ThreadState = ThreadState.Stopped) Then
-                            Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 2...")
+                            Console.WriteLine("Simulation " & Run.GetName() & " starting on thread 2...")
                             Thread2 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
                             Thread2.Start()
                             ThreadFound = True
                         ElseIf MaxThreads > 2 AndAlso (Thread3 Is Nothing OrElse Thread3.ThreadState = ThreadState.Stopped) Then
-                            Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 3...")
+                            Console.WriteLine("Simulation " & Run.GetName() & " starting on thread 3...")
                             Thread3 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
                             Thread3.Start()
                             ThreadFound = True
                         ElseIf MaxThreads > 3 AndAlso (Thread4 Is Nothing OrElse Thread4.ThreadState = ThreadState.Stopped) Then
-                            Console.WriteLine("Simulatie " & Run.GetName() & " start op thread 4...")
+                            Console.WriteLine("Simulation " & Run.GetName() & " starting on thread 4...")
                             Thread4 = New Thread(AddressOf Run.ExecuteAndRemoveUnNecessaryOutputFiles)
                             Thread4.Start()
                             ThreadFound = True
@@ -184,15 +191,13 @@ Module DIMR_RUNR
                     End While
 
                 Else
-                    Console.WriteLine("Simulatie " & Run.GetName & " werd overgeslagen omdat de uitvoermap " & OutputDir & " al resultaten bevat")
+                    Console.WriteLine("Simulation " & Run.GetName & " was skipped since the output folder " & OutputDir & " already contains results")
                 End If
                 '--------------------------------------------------------------------------------------------------------------------------------------------
-
-
             Next
 
         Catch ex As Exception
-            Console.WriteLine("Fout bij het uitvoeren van de simulaties: " & ex.Message)
+            Console.WriteLine("Error executing simulation: " & ex.Message)
         End Try
 
     End Sub
@@ -469,42 +474,44 @@ Module DIMR_RUNR
                     While Not worksheet.Cells(r + 1, 0).Value = ""
                         r += 1
 
-                        If Runs.Runs.Count > 0 Then
-                            'write the previous run to the console
-                            Console.WriteLine("Configuratie gelezen voor simulatie " & Runs.Runs.Values(Runs.Runs.Count - 1).GetName)
-                        End If
-
                         Run = New clsDIMRRun(Setup)
                         For c = 0 To SimulationHeaders.Count - 1
-                            If SimulationHeaders.Item(c) = "scenario" Then
+                            If SimulationHeaders.Item(c).Trim.ToLower = "simulation name" Then
+                                'new in v2.4: user can specify his own name for each simulation
+                                Run.setName(worksheet.Cells(r, c).Value)
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "scenario" Then
                                 Scenario = GetScenario(worksheet.Cells(r, c).Value) 'get the corresponding scenario 
                                 If Scenario IsNot Nothing Then Run.AddScenario(Scenario)
-                            ElseIf SimulationHeaders.Item(c) = "vervangen" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "vervangen" Then
                                 Operation = New clsDIMRFileOperation(Setup)              'create a new operation
                                 If Not Operation.SetAction(worksheet.Cells(r, c).Value) Then
                                     'the simulation has been added, but it has no additional operations involved so we'll just leave it 'as is'
                                 End If
-                            ElseIf SimulationHeaders.Item(c) = "subdir" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "subdir" Then
                                 Operation.setModuleName(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "bestand" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "bestand" Then
                                 Operation.setFileName(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "sectiekop" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "sectiekop" Then
                                 Operation.setHeader(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "selectie-attribuut" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "selectie-attribuut" Then
                                 Operation.setIdentifierAttributeName(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "selectie-waarde" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "selectie-waarde" Then
                                 Operation.setIdentifierAttributeValue(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "vervangingsattribuut" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "vervangingsattribuut" Then
                                 Operation.setAttributeName(worksheet.Cells(r, c).Value)
-                            ElseIf SimulationHeaders.Item(c) = "vervangingswaarde" Then
+                            ElseIf SimulationHeaders.Item(c).Trim.ToLower = "vervangingswaarde" Then
                                 Operation.setValue(worksheet.Cells(r, c).Value)
                                 If Operation.getFileName IsNot Nothing AndAlso Operation.getFileName <> "" Then
                                     Run.AddOperation(Operation)                    'finalize this operation by adding it to the collection
                                 End If
                             End If
                         Next
-                        If Runs.Runs.ContainsKey(Run.GetName.Trim.ToUpper) Then Throw New Exception("Fout: een simulatie met hetzelfde ID bestaat meerdere keren. Controleer de scenarioklassen en scenario's: " & Run.GetName)
-                        Runs.Runs.Add(Run.GetName.Trim.ToUpper, Run)
+
+                        Dim RunName As String = Run.GetOrCreateName() 'if no name given, create one based on the underlying scenario's
+                        If Runs.Runs.ContainsKey(RunName.Trim.ToUpper) Then Throw New Exception("Fout: een simulatie met hetzelfde ID bestaat meerdere keren. Controleer de scenarioklassen en scenario's: " & Run.GetName)
+                        Runs.Runs.Add(RunName.Trim.ToUpper, Run)
+                        Console.WriteLine("Configuratie gelezen voor simulatie " & RunName)
+
                     End While
 
                 ElseIf worksheet.Name.Trim.ToLower = "output" Then

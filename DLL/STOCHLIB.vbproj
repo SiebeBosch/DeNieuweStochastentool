@@ -228,6 +228,7 @@
     <Compile Include="Databases\clsDataGridViewDatabaseConnection.vb" />
     <Compile Include="DHYDRO\clsDHydroDIMRProject.vb" />
     <Compile Include="DHYDRO\clsDIMRConfigFile.vb" />
+    <Compile Include="DHYDRO\clsNetCDFParameter.vb" />
     <Compile Include="DIMR\cls1D2DLink.vb" />
     <Compile Include="DIMR\cls1DBranch.vb" />
     <Compile Include="DIMR\cls1DBranchObject.vb" />

@@ -88,14 +88,22 @@ Public Class clsNetworkFile
             'determine whether our data is 1-based or 0-based
             Dim start_index As Integer = 0
 
+            Dim Mesh2d_face_z As New clsNetCDFParameter(Me.Setup)
+            Dim links_contact_type As New clsNetCDFParameter(Me.Setup)
+            Dim links_contact_long_name As New clsNetCDFParameter(Me.Setup)
+            Dim links_contact_id As New clsNetCDFParameter(Me.Setup)
+            Dim links As New clsNetCDFParameter(Me.Setup)
+            Dim Mesh2d_interface_sigma As New clsNetCDFParameter(Me.Setup)
+            Dim Mesh2d_layer_sigma As New clsNetCDFParameter(Me.Setup)
+
             '20220309: naming is now consistent with the variable names themselves
-            Dim Mesh2d_face_zIdx As Integer = -1
-            Dim links_contact_typeIdx As Integer = -1
-            Dim links_contact_long_nameIdx As Integer = -1
-            Dim links_contact_idIdx As Integer = -1
-            Dim linksIdx As Integer = -1
-            Dim Mesh2d_interface_sigmaIdx As Integer = -1
-            Dim Mesh2d_layer_sigmaIdx As Integer = -1
+            'Dim Mesh2d_face_zIdx As Integer = -1
+            'Dim links_contact_typeIdx As Integer = -1
+            'Dim links_contact_long_nameIdx As Integer = -1
+            'Dim links_contact_idIdx As Integer = -1
+            'Dim linksIdx As Integer = -1
+            'Dim Mesh2d_interface_sigmaIdx As Integer = -1
+            'Dim Mesh2d_layer_sigmaIdx As Integer = -1
             Dim Mesh2d_face_y_bndIdx As Integer = -1
             Dim Mesh2d_face_x_bndIdx As Integer = -1
             Dim Mesh2d_face_yIdx As Integer = -1
@@ -145,19 +153,26 @@ Public Class clsNetworkFile
                 Debug.Print(DataSet.Variables(i).Name)
                 Select Case DataSet(i).Name.Trim.ToLower
                     Case Is = "mesh2d_face_z"
-                        Mesh2d_face_zIdx = DataSet(i).ID
+                        Mesh2d_face_z.setIdx(DataSet(i).ID)
+                        Mesh2d_face_z.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links_contact_type"
-                        links_contact_typeIdx = DataSet(i).ID
+                        links_contact_type.setIdx(DataSet(i).ID)
+                        links_contact_type.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links_contact_long_name"
-                        links_contact_long_nameIdx = DataSet(i).ID
+                        links_contact_long_name.setIdx(DataSet(i).ID)
+                        links_contact_long_name.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links_contact_id"
-                        links_contact_idIdx = DataSet(i).ID
+                        links_contact_id.setIdx(DataSet(i).ID)
+                        links_contact_id.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links"
-                        linksIdx = DataSet(i).ID
+                        links.setIdx(DataSet(i).ID)
+                        links.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "mesh2d_interface_sigma"
-                        Mesh2d_interface_sigmaIdx = DataSet(i).ID
+                        Mesh2d_interface_sigma.setIdx(DataSet(i).ID)
+                        Mesh2d_interface_sigma.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "mesh2d_layer_sigma"
-                        Mesh2d_layer_sigmaIdx = DataSet(i).ID
+                        Mesh2d_layer_sigma.setIdx(DataSet(i).ID)
+                        Mesh2d_layer_sigma.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "mesh2d_face_y_bnd"
                         Mesh2d_face_y_bndIdx = DataSet(i).ID
                     Case Is = "mesh2d_face_x_bnd"
@@ -168,6 +183,7 @@ Public Class clsNetworkFile
                         Mesh2d_face_xIdx = DataSet(i).ID
                     Case Is = "mesh2d_face_nodes"
                         Mesh2d_face_nodesIdx = DataSet(i).ID
+                        Debug.Print("Start index is " & DataSet(i).Metadata.Item("start_index").ToString)
                     Case Is = "mesh2d_edge_nodes"
                         Mesh2d_edge_nodesIdx = DataSet(i).ID
                     Case Is = "mesh2d_edge_y"
@@ -198,6 +214,7 @@ Public Class clsNetworkFile
                         mesh1d_edge_offsetIdx = DataSet(i).ID
                     Case Is = "mesh1d_edge_branch"
                         mesh1d_edge_branchIdx = DataSet(i).ID
+                        Debug.Print("Start index is " & DataSet(i).Metadata.Item("start_index").ToString)
                     Case Is = "mesh1d_node_y"
                         mesh1d_node_yIdx = DataSet(i).ID
                     Case Is = "mesh1d_node_x"
@@ -273,7 +290,7 @@ Public Class clsNetworkFile
             If Mesh2d_face_xIdx >= 0 Then mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yIdx)
 
             'read all 1D2D links
-            If linksIdx >= 0 Then links = DataSet.GetData(Of Int32(,))(linksIdx)
+            'If linksIdx >= 0 Then links = DataSet.GetData(Of Int32(,))(linksIdx)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 

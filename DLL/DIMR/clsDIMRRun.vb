@@ -12,6 +12,8 @@ Public Class clsDIMRRun
     Public RestartFilePath As String        'the restartfile right before T0 - 24 hours
     Public TStart As DateTime = Nothing     'the start of the simulation, matching our restart file
 
+    Public Name As String
+
     Public DIMR As clsDIMR         'this object contains all information needed to run the simulation
     Private Setup As clsSetup
 
@@ -28,16 +30,27 @@ Public Class clsDIMRRun
     End Function
 
     Public Function GetName() As String
-        'the name of a run is made up of the names of each underying scenario
-        Dim Name As String = String.Empty
-        If Scenarios.Count > 0 Then
-            Name = Scenarios.Values(0).Name
-            For i = 1 To Scenarios.Values.Count - 1
-                Name &= "_" & Scenarios.Values(i).Name
-            Next
+        Console.WriteLine("Simulation name is " & Name)
+        Return Name
+    End Function
+
+    Public Function GetOrCreateName() As String
+        If Name = String.Empty Then
+            'if no name present, generate a new name based on the scenario's
+            'the name of a run is made up of the names of each underying scenario
+            If Scenarios.Count > 0 Then
+                Name = Scenarios.Values(0).Name
+                For i = 1 To Scenarios.Values.Count - 1
+                    Name &= "_" & Scenarios.Values(i).Name
+                Next
+            End If
         End If
         Return Name
     End Function
+
+    Public Sub SetName(myName As String)
+        Name = myName
+    End Sub
 
     Public Function ExecuteAndRemoveUnNecessaryOutputFiles() As Boolean
         Try
