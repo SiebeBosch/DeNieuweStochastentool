@@ -56,3 +56,4 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.CopyC
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.pdb
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.SuggestedBindingRedirects.cache

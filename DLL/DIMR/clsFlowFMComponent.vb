@@ -250,23 +250,31 @@ Public Class clsFlowFMComponent
             Results = Nothing
             Dim idx As Integer
             Dim ts As Integer
+
             'these results reside only in the _his.nc file
             If HisNCFile Is Nothing Then
+                'this file has never been created or read
                 Dim path As String = GetHisResultsFileName()
                 path = getOutputFullDir() & "\" & path
                 HisNCFile = New clsHisNCFile(path, Setup)
                 HisNCFile.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList)
-
-                For idx = 0 To IDList.Count - 1
-                    If IDList(idx).Trim.ToUpper = NodeID.Trim.ToUpper Then
-                        ReDim Results(0 To UBound(Waterlevels, 1))
-                        For ts = 0 To UBound(Waterlevels, 1)
-                            Results(ts) = Waterlevels(ts, idx)
-                        Next
-                        Return True
-                    End If
-                Next
+            Else
+                'this file has already been read so just read it
+                HisNCFile.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList)
             End If
+
+            'find the timeseries for our requested ID and return it
+            For idx = 0 To IDList.Count - 1
+                If IDList(idx).Trim.ToUpper = NodeID.Trim.ToUpper Then
+                    ReDim Results(0 To UBound(Waterlevels, 1))
+                    For ts = 0 To UBound(Waterlevels, 1)
+                        Results(ts) = Waterlevels(ts, idx)
+                    Next
+                    Return True
+                End If
+            Next
+
+
             Throw New Exception("Results for observation point " & NodeID & " not found in _his.nc file.")
 
         Catch ex As Exception

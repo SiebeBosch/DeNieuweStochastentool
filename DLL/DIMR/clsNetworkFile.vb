@@ -92,7 +92,7 @@ Public Class clsNetworkFile
             Dim links_contact_type As New clsNetCDFParameter(Me.Setup)
             Dim links_contact_long_name As New clsNetCDFParameter(Me.Setup)
             Dim links_contact_id As New clsNetCDFParameter(Me.Setup)
-            Dim links As New clsNetCDFParameter(Me.Setup)
+            Dim linksPar As New clsNetCDFParameter(Me.Setup)
             Dim Mesh2d_interface_sigma As New clsNetCDFParameter(Me.Setup)
             Dim Mesh2d_layer_sigma As New clsNetCDFParameter(Me.Setup)
 
@@ -154,25 +154,25 @@ Public Class clsNetworkFile
                 Select Case DataSet(i).Name.Trim.ToLower
                     Case Is = "mesh2d_face_z"
                         Mesh2d_face_z.setIdx(DataSet(i).ID)
-                        Mesh2d_face_z.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then Mesh2d_face_z.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links_contact_type"
                         links_contact_type.setIdx(DataSet(i).ID)
-                        links_contact_type.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then links_contact_type.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links_contact_long_name"
                         links_contact_long_name.setIdx(DataSet(i).ID)
-                        links_contact_long_name.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then links_contact_long_name.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links_contact_id"
                         links_contact_id.setIdx(DataSet(i).ID)
-                        links_contact_id.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then links_contact_id.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "links"
-                        links.setIdx(DataSet(i).ID)
-                        links.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        linksPar.setIdx(DataSet(i).ID)
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then linksPar.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "mesh2d_interface_sigma"
                         Mesh2d_interface_sigma.setIdx(DataSet(i).ID)
-                        Mesh2d_interface_sigma.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then Mesh2d_interface_sigma.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "mesh2d_layer_sigma"
                         Mesh2d_layer_sigma.setIdx(DataSet(i).ID)
-                        Mesh2d_layer_sigma.setStartIndex(DataSet(i).Metadata.Item("start_index"))
+                        If DataSet(i).Metadata.ContainsKey("start_index") Then Mesh2d_layer_sigma.setStartIndex(DataSet(i).Metadata.Item("start_index"))
                     Case Is = "mesh2d_face_y_bnd"
                         Mesh2d_face_y_bndIdx = DataSet(i).ID
                     Case Is = "mesh2d_face_x_bnd"
@@ -290,7 +290,7 @@ Public Class clsNetworkFile
             If Mesh2d_face_xIdx >= 0 Then mesh2d_face_y = DataSet.GetData(Of Double())(Mesh2d_face_yIdx)
 
             'read all 1D2D links
-            'If linksIdx >= 0 Then links = DataSet.GetData(Of Int32(,))(linksIdx)
+            If linksPar.GetIdx >= 0 Then links = DataSet.GetData(Of Int32(,))(linksPar.GetIdx)
 
             Me.Setup.Log.AddMessage("Networkfile successfully read: " & Path)
 
@@ -298,7 +298,7 @@ Public Class clsNetworkFile
             If Not ReadReaches() Then Throw New Exception("Error reading the network's reaches")
             If Not ReadMeshNodes() Then Throw New Exception("Error reading the network's mesh nodes")
             If Not Read2DCellCenters() Then Throw New Exception("Error reading the network's 2D Cells")
-            'If Not Read1D2DLinks() Then Throw New Exception("Error reading the network's 1D2D links")
+            If Not Read1D2DLinks() Then Throw New Exception("Error reading the network's 1D2D links")
 
             Return True
         Catch ex As Exception

@@ -154,8 +154,8 @@ Public Class clsDIMR
             Dim EndDate As DateTime
             FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
 
-            TsMaxIdx = Setup.GeneralFunctions.MaxIdxFromArrayOfDouble(Results)      'de tijdstapindex voor de hoogste waterstand bij het doorbraakpunt!
-            TimeMaxSecondsToReference = Times(TsMaxIdx) + AddShiftSeconds              'tijdsmoment hoogste waterstand, uitgedrukt in seconden t.o.v. reference date
+            TsMaxIdx = Setup.GeneralFunctions.MaxIdxFromArrayOfDouble(Results)                      'de tijdstapindex voor de hoogste waterstand bij het doorbraakpunt!
+            TimeMaxSecondsToReference = Math.Max(0, Times(TsMaxIdx) + AddShiftSeconds)              'tijdsmoment hoogste waterstand, uitgedrukt in seconden t.o.v. reference date
             DateTimeMax = ReferenceDate.AddSeconds(TimeMaxSecondsToReference)
 
             Return True
