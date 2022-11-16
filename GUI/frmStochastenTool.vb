@@ -628,6 +628,7 @@ Public Class frmStochasten
 
     Public Function ReadXML(ByVal path As String, ByVal RootDir As String) As Boolean
         Try
+            'v2.3.7: all path references are relative from now on; relative to the location of the XML
             Dim m_xmld As XmlDocument
             Dim m_nodelist As XmlNodeList
             Dim m_node As XmlNode
@@ -656,11 +657,11 @@ Public Class frmStochasten
                         txtInputDir.Text = n_node.InnerText
                         txtOutputDir.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "invoermap" Then
-                        txtInputDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                        txtInputDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "uitvoermap" Then
-                        txtOutputDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                        txtOutputDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "resultatenmap" Then
-                        txtResultatenDir.Text = n_node.InnerText ' RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                        txtResultatenDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "maxparallel" Then
                         txtMaxParallel.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "klimaatscenario" Then
@@ -670,8 +671,8 @@ Public Class frmStochasten
                     ElseIf n_node.Name.Trim.ToLower = "uitloop" Then
                         txtUitloop.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "stochastenconfigfile" Then
-                        txtDatabase.Text = n_node.InnerText 'RelativeToAbsolutePath(n_node.InnerText, RootDir)
-                        Setup.StochastenAnalyse.StochastsConfigFile = Setup.GeneralFunctions.RelativeToAbsolutePath(txtDatabase.Text, Setup.Settings.RootDir)
+                        txtDatabase.Text = Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, Setup.Settings.RootDir)
+                        Setup.StochastenAnalyse.StochastsConfigFile = txtDatabase.Text
                     ElseIf n_node.Name.Trim.ToLower = "peilgebieden" Then
                         If Setup.GeneralFunctions.readXMLAttribute(n_node, "pad", path) Then
                             Setup.StochastenAnalyse.SubcatchmentShapefile = Setup.GeneralFunctions.RelativeToAbsolutePath(path, RootDir)
@@ -4181,80 +4182,105 @@ Public Class frmStochasten
         Dim attrList As New List(Of String)
         Dim valsList As New List(Of String)
 
+        Dim InputPathRelative As String = ""
+        Dim OutputPathRelative As String = ""
+        Dim ResultsPathRelative As String = ""
+        Dim DatabasePathRelative As String = ""
+        Dim SubcatchmentsPathRelative As String = ""
+        Dim RootDir As String
+
+
         dlgSaveFile.Filter = "XML file|*.xml"
-        dlgSaveFile.ShowDialog()
-        Using xmlWriter As New StreamWriter(dlgSaveFile.FileName)
-            xmlWriter.WriteLine("<stochastentool>")
-            xmlWriter.WriteLine("  <!--************************************************************************************************-->")
-            xmlWriter.WriteLine("  <!--In dit xml-bestand configureert u de stochastentool van Hydroconsult.***************************-->")
-            xmlWriter.WriteLine("  <!--Copyright Hydroconsult, 2014********************************************************************-->")
-            xmlWriter.WriteLine("  <!--Enkele algemene wenken:geef bij voorkeur relatieve paden op. Paden zijn t.o.v. dit xml document -->")
-            xmlWriter.WriteLine("  <!--Dit maakt het makkelijke om sommen over verschillende machines te verdelen**********************-->")
-            xmlWriter.WriteLine("  <!--************************************************************************************************-->")
-            xmlWriter.WriteLine("  <instellingen>")
-            xmlWriter.WriteLine("	<!--directory voor de resultaten en maximum aantal parallelle berekeningen-->")
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", txtInputDir.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", txtOutputDir.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", txtResultatenDir.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "klimaatscenario", cmbClimate.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "duur", cmbDuration.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitloop", txtUitloop.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "stochastenconfigfile", txtDatabase.Text, 4)
-            Dim myList As New List(Of String)
-            Dim myVals As New List(Of String)
-            myList.Add("pad")
-            myList.Add("winterpeilveld")
-            myList.Add("zomerpeilveld")
-            myVals.Add(txtPeilgebieden.Text)
-            myVals.Add(cmbWinterpeil.Text)
-            myVals.Add(cmbZomerpeil.Text)
-            Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "peilgebieden", 4, myList, myVals)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatengecrashtesommentoestaan", chkUseCrashedResults.Checked, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "leesresultatenvanafpercentage", txtResultsStartPercentage.Text, 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "volumesalsfrequenties", "TRUE", 4)
-            Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "bestaanderesultatenvervangen", "FALSE", 4)
-            xmlWriter.WriteLine("  </instellingen>")
-            'v2.2.2 removed storing model data in the XML
-            'xmlWriter.WriteLine("  <modellen>")
-            'xmlWriter.WriteLine("		<!--ondersteuning voor modeltypen SOBEK, DIMR, DHYDROSERVER en Custom-->")
 
-            'attrList = New List(Of String)
-            'attrList.Add("id")
-            'attrList.Add("type")
-            'attrList.Add("executable")
-            'attrList.Add("arguments")
-            'attrList.Add("modeldir")
-            'attrList.Add("casename")
-            'attrList.Add("tempworkdir")
-            'attrList.Add("resultsfiles_rr")
-            'attrList.Add("resultsfiles_flow")
-            'For Each myRow As DataGridViewRow In grModels.Rows
-            '    valsList = New List(Of String)
-            '    valsList.Add(myRow.Cells(0).Value)
-            '    valsList.Add(myRow.Cells(1).Value)
-            '    valsList.Add(myRow.Cells(2).Value)
-            '    valsList.Add(myRow.Cells(3).Value)
-            '    valsList.Add(myRow.Cells(4).Value)
-            '    valsList.Add(myRow.Cells(5).Value)
-            '    valsList.Add(myRow.Cells(6).Value)
-            '    valsList.Add(myRow.Cells(7).Value)
-            '    valsList.Add(myRow.Cells(8).Value)
-            '    Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "model", 4, attrList, valsList)
 
-            '    attrList = New List(Of String)
-            '    attrList.Add("bestandsnaam")
-            '    attrList.Add("parameter")
-            '    For Each outRow As DataGridViewRow In grOutputLocations.Rows
-            '        valsList = New List(Of String)
-            '        valsList.Add(outRow.Cells(0).Value)
-            '        valsList.Add(outRow.Cells(1).Value)
-            '    Next
+        Dim Result As DialogResult = dlgSaveFile.ShowDialog()
+        If Result = DialogResult.OK Then
 
-            'Next
-            'xmlWriter.WriteLine("  </modellen>")
-            xmlWriter.WriteLine("</stochastentool>")
-        End Using
+            'write all paths as relative to the XML
+            RootDir = Me.Setup.GeneralFunctions.DirFromFileName(dlgSaveFile.FileName)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtInputDir.Text, InputPathRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtOutputDir.Text, OutputPathRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtResultatenDir.Text, ResultsPathRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtDatabase.Text, DatabasePathRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtPeilgebieden.Text, SubcatchmentsPathRelative)
+
+            Using xmlWriter As New StreamWriter(dlgSaveFile.FileName)
+                xmlWriter.WriteLine("<stochastentool>")
+                xmlWriter.WriteLine("  <!--************************************************************************************************-->")
+                xmlWriter.WriteLine("  <!--In dit xml-bestand configureert u de stochastentool van Hydroconsult.***************************-->")
+                xmlWriter.WriteLine("  <!--Copyright Hydroconsult, 2014********************************************************************-->")
+                xmlWriter.WriteLine("  <!--Enkele algemene wenken:geef bij voorkeur relatieve paden op. Paden zijn t.o.v. dit xml document -->")
+                xmlWriter.WriteLine("  <!--Dit maakt het makkelijke om sommen over verschillende machines te verdelen**********************-->")
+                xmlWriter.WriteLine("  <!--************************************************************************************************-->")
+                xmlWriter.WriteLine("  <instellingen>")
+                xmlWriter.WriteLine("	<!--directory voor de resultaten en maximum aantal parallelle berekeningen-->")
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", InputPathRelative, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", OutputPathRelative, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", ResultsPathRelative, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "klimaatscenario", cmbClimate.Text, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "duur", cmbDuration.Text, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitloop", txtUitloop.Text, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "stochastenconfigfile", DatabasePathRelative, 4)
+                Dim myList As New List(Of String)
+                Dim myVals As New List(Of String)
+                myList.Add("pad")
+                myList.Add("winterpeilveld")
+                myList.Add("zomerpeilveld")
+                myVals.Add(SubcatchmentsPathRelative)
+                myVals.Add(cmbWinterpeil.Text)
+                myVals.Add(cmbZomerpeil.Text)
+                Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "peilgebieden", 4, myList, myVals)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatengecrashtesommentoestaan", chkUseCrashedResults.Checked, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "leesresultatenvanafpercentage", txtResultsStartPercentage.Text, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "volumesalsfrequenties", "TRUE", 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "bestaanderesultatenvervangen", "FALSE", 4)
+                xmlWriter.WriteLine("  </instellingen>")
+                'v2.2.2 removed storing model data in the XML
+                'xmlWriter.WriteLine("  <modellen>")
+                'xmlWriter.WriteLine("		<!--ondersteuning voor modeltypen SOBEK, DIMR, DHYDROSERVER en Custom-->")
+
+                'attrList = New List(Of String)
+                'attrList.Add("id")
+                'attrList.Add("type")
+                'attrList.Add("executable")
+                'attrList.Add("arguments")
+                'attrList.Add("modeldir")
+                'attrList.Add("casename")
+                'attrList.Add("tempworkdir")
+                'attrList.Add("resultsfiles_rr")
+                'attrList.Add("resultsfiles_flow")
+                'For Each myRow As DataGridViewRow In grModels.Rows
+                '    valsList = New List(Of String)
+                '    valsList.Add(myRow.Cells(0).Value)
+                '    valsList.Add(myRow.Cells(1).Value)
+                '    valsList.Add(myRow.Cells(2).Value)
+                '    valsList.Add(myRow.Cells(3).Value)
+                '    valsList.Add(myRow.Cells(4).Value)
+                '    valsList.Add(myRow.Cells(5).Value)
+                '    valsList.Add(myRow.Cells(6).Value)
+                '    valsList.Add(myRow.Cells(7).Value)
+                '    valsList.Add(myRow.Cells(8).Value)
+                '    Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "model", 4, attrList, valsList)
+
+                '    attrList = New List(Of String)
+                '    attrList.Add("bestandsnaam")
+                '    attrList.Add("parameter")
+                '    For Each outRow As DataGridViewRow In grOutputLocations.Rows
+                '        valsList = New List(Of String)
+                '        valsList.Add(outRow.Cells(0).Value)
+                '        valsList.Add(outRow.Cells(1).Value)
+                '    Next
+
+                'Next
+                'xmlWriter.WriteLine("  </modellen>")
+                xmlWriter.WriteLine("</stochastentool>")
+            End Using
+        End If
+
+
+
+
     End Sub
 
     Private Sub TrPatroon_MouseLeave(sender As Object, e As EventArgs)

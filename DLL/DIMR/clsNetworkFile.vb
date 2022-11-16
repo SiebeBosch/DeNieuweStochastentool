@@ -413,11 +413,15 @@ Public Class clsNetworkFile
 
     Public Function Read1D2DLinks() As Boolean
         Try
+            'v2.3.8: D-Hydro models may not have 1D2D links so simply return true
+            If links Is Nothing Then Return True
+
             'array has two dimensions:
             'dimension 1 = each link
             'dimension 2 = resp. 2D cell and 1D node index
             Dim myLink As cls1D2DLink
             Dim MeshNodeFound As Boolean = False
+
 
             For i = 0 To UBound(links, 1)
                 Debug.Print("i is " & i)

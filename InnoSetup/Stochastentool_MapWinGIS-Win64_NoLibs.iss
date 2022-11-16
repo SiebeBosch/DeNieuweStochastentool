@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Stochastentool"
-#define MyAppVersion "2.3.6"
+#define MyAppVersion "2.3.7"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"
@@ -50,7 +50,7 @@ DefaultGroupName={#MyAppName}
 ;LicenseFile={#BinLocation}\Licenses\MapWinGISLicense.rtf
 InfoBeforeFile={#SetupLocation}\releasenotes.txt
 OutputDir={#SetupLocation}
-OutputBaseFilename=StochastentoolSetup-v{#MyAppVersion}-{#CPU}
+OutputBaseFilename=StochastentoolSetup-v{#MyAppVersion}-{#CPU}_noLibs
 SetupIconFile={#SetupLocation}\HYDRO_ICO_DEF.ico
 Compression=lzma
 SolidCompression=yes
