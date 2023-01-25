@@ -51,10 +51,10 @@ Public Class clsHisNCFile
             'waterlevels contains a 2D array where the first dimension contains the timesteps and the second the object index
             'IDList contains an array of strings
 
-            Dim WaterLevelID As Integer
-            Dim TimestepID As Integer
-            Dim TimeID As Integer
-            Dim StationID As Integer
+            Dim WaterLevelIDIdx As Integer
+            Dim TimestepIDIdx As Integer
+            Dim TimeIDIdx As Integer
+            Dim StationIDIdx As Integer
             Dim i As Integer
 
             Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
@@ -63,17 +63,17 @@ Public Class clsHisNCFile
             Dim myVariables As sds.ReadOnlyVariableCollection = dataset.Variables
 
             For i = 0 To dataset.Variables.Count - 1
-                If dataset.Variables.Item(i).Name = "waterlevel" Then WaterLevelID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name = "timestep" Then TimestepID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name = "station_id" Then StationID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name = "timestep" Then TimestepID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name = "time" Then TimeID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "waterlevel" Then WaterLevelIDIdx = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "timestep" Then TimestepIDIdx = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "station_id" Then StationIDIdx = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "timestep" Then TimestepIDIdx = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name = "time" Then TimeIDIdx = dataset.Variables.Item(i).ID
             Next
 
-            Waterlevels = dataset.GetData(Of Double(,))(WaterLevelID)
-            Dim ObservationPointIDs As Byte(,) = dataset.GetData(Of Byte(,))(StationID)
-            Dim TimeStamps As Double() = dataset.GetData(Of Double())(TimestepID)
-            Times = dataset.GetData(Of Double())(TimeID)                'times are expressed in seconds w.r.t. the reference date as stated in the .MDU file
+            Waterlevels = dataset.GetData(Of Double(,))(WaterLevelIDIdx)
+            Dim ObservationPointIDs As Byte(,) = dataset.GetData(Of Byte(,))(StationIDIdx)
+            Dim TimeStamps As Double() = dataset.GetData(Of Double())(TimestepIDIdx)
+            Times = dataset.GetData(Of Double())(TimeIDIdx)                'times are expressed in seconds w.r.t. the reference date as stated in the .MDU file
 
             'de id's zijn samengesteld uit een array van bytes
             Dim IDArray As Byte()

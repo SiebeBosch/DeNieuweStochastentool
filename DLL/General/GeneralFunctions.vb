@@ -2664,7 +2664,7 @@ Public Class GeneralFunctions
         While System.IO.File.Exists(lockFile)
             iWait += 1
             System.Threading.Thread.Sleep(1000)
-            If iWait > 60 Then
+            If iWait > 10 Then
                 System.IO.File.Delete(lockFile)
                 Me.setup.Log.AddError("Database stayed locked for too long. The lock was forcibly removed and process continued.")
                 Exit While

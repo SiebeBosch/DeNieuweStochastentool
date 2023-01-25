@@ -193,6 +193,10 @@ Public Class clsDIMR
                 End If
             Next
 
+            newDIMR.readConfiguration()
+
+
+
             If FlowFM IsNot Nothing Then
                 ModuleDir = SimulationDir & "\" & DIMRConfig.Flow1D.SubDir
                 If Not Directory.Exists(ModuleDir) Then Directory.CreateDirectory(ModuleDir)
@@ -205,7 +209,7 @@ Public Class clsDIMR
 
                 'optionally change the start and end date for this simulation
                 If Not StartDate = Nothing AndAlso Not EndDate = Nothing Then
-                    FlowFM.WriteSimulationPeriod(StartDate, EndDate)
+                    newDIMR.FlowFM.WriteSimulationPeriod(StartDate, EndDate)
                 End If
             End If
 
@@ -214,7 +218,7 @@ Public Class clsDIMR
                 If Not Directory.Exists(ModuleDir) Then Directory.CreateDirectory(ModuleDir)
                 Me.Setup.GeneralFunctions.CopyDirectoryContent(DIMRConfig.RR.GetFullDir, ModuleDir, True)
                 If Not StartDate = Nothing AndAlso Not EndDate = Nothing Then
-                    RR.WriteSimulationPeriod(StartDate, EndDate)
+                    newDIMR.RR.WriteSimulationPeriod(StartDate, EndDate)
                 End If
             End If
 
@@ -223,7 +227,7 @@ Public Class clsDIMR
                 If Not Directory.Exists(ModuleDir) Then Directory.CreateDirectory(ModuleDir)
                 Me.Setup.GeneralFunctions.CopyDirectoryContent(DIMRConfig.RTC.GetFullDir, ModuleDir, True)
                 If Not StartDate = Nothing AndAlso Not EndDate = Nothing Then
-                    RTC.WriteSimulationPeriod(StartDate, EndDate)
+                    newDIMR.RTC.WriteSimulationPeriod(StartDate, EndDate)
                 End If
             End If
 
