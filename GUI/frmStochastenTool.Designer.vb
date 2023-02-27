@@ -34,6 +34,11 @@ Partial Class frmStochasten
         Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ModelsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ModelToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToevoegenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.UitvoerlocatiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ImporterenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlleVerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GrondwatersClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SOBEKToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -262,11 +267,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.UitvoerlocatiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ImporterenToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
-        Me.AlleVerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ModelToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToevoegenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -390,6 +390,38 @@ Partial Class frmStochasten
         Me.ModelsToolStripMenuItem.Name = "ModelsToolStripMenuItem"
         Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(102, 29)
         Me.ModelsToolStripMenuItem.Text = "Modellen"
+        '
+        'ModelToolStripMenuItem
+        '
+        Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
+        Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
+        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.ModelToolStripMenuItem.Text = "Model"
+        '
+        'ToevoegenToolStripMenuItem
+        '
+        Me.ToevoegenToolStripMenuItem.Name = "ToevoegenToolStripMenuItem"
+        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.ToevoegenToolStripMenuItem.Text = "Toevoegen"
+        '
+        'UitvoerlocatiesToolStripMenuItem
+        '
+        Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
+        Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
+        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
+        '
+        'ImporterenToolStripMenuItem1
+        '
+        Me.ImporterenToolStripMenuItem1.Name = "ImporterenToolStripMenuItem1"
+        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
+        Me.ImporterenToolStripMenuItem1.Text = "Importeren"
+        '
+        'AlleVerwijderenToolStripMenuItem
+        '
+        Me.AlleVerwijderenToolStripMenuItem.Name = "AlleVerwijderenToolStripMenuItem"
+        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.AlleVerwijderenToolStripMenuItem.Text = "Verwijderen"
         '
         'ToolsToolStripMenuItem
         '
@@ -2706,38 +2738,6 @@ Partial Class frmStochasten
         Me.prProgress.Name = "prProgress"
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
-        '
-        'UitvoerlocatiesToolStripMenuItem
-        '
-        Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
-        Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
-        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
-        Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
-        '
-        'ImporterenToolStripMenuItem1
-        '
-        Me.ImporterenToolStripMenuItem1.Name = "ImporterenToolStripMenuItem1"
-        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
-        Me.ImporterenToolStripMenuItem1.Text = "Importeren"
-        '
-        'AlleVerwijderenToolStripMenuItem
-        '
-        Me.AlleVerwijderenToolStripMenuItem.Name = "AlleVerwijderenToolStripMenuItem"
-        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
-        Me.AlleVerwijderenToolStripMenuItem.Text = "Verwijderen"
-        '
-        'ModelToolStripMenuItem
-        '
-        Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
-        Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
-        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
-        Me.ModelToolStripMenuItem.Text = "Model"
-        '
-        'ToevoegenToolStripMenuItem
-        '
-        Me.ToevoegenToolStripMenuItem.Name = "ToevoegenToolStripMenuItem"
-        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
-        Me.ToevoegenToolStripMenuItem.Text = "Toevoegen"
         '
         'frmStochasten
         '

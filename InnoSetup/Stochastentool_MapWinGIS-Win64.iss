@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Stochastentool"
-#define MyAppVersion "2.3.8"
+#define MyAppVersion "2.3.9"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"
@@ -18,8 +18,8 @@
 
 #ifdef x64BitVersion
   #define CPU "x64"
-  #define mapwingis = "MapWinGIS-only-v5.2.4-x64-VS2017.exe"
-  #define vcredist "vcredist_x64-" + VsVersion + ".exe"
+  #define mapwingis = "MapWinGIS-only-v5.3.0.0-x64-VS2017.exe"
+  #define vcredist "VC_redist.x64.exe"
   #define MySourceDir BinLocation + "\x64\"
   #define SystemFlag "64bit"
   #define stochastenviewer = "Stochastenviewer.zip"

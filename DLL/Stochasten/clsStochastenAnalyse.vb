@@ -2,6 +2,7 @@
 Imports System.Xml
 Imports System.Windows.Forms
 Imports System.IO
+Imports System.Data.SQLite
 
 
 Public Class clsStochastenAnalyse
@@ -523,80 +524,186 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
+    'Public Function ReadExceedanceDataAllLocationsFromDatabase(Filter As String, ByRef dtResults As DataTable, ByRef dtHerh As DataTable) As Boolean
+
+    '    'retrieves the results for the current location and generates an exceedance chart
+    '    Try
+    '        Dim myQuery As String
+    '        Dim ValuesField As String
+    '        dtHerh = New DataTable
+    '        Dim dtLocs As New DataTable
+    '        Dim dtRuns As New DataTable
+
+    '        If Filter.Trim.ToUpper = "MAX" OrElse Filter.Trim.ToUpper = "MAXVAL" Then
+    '            ValuesField = "MAXVAL"
+    '        ElseIf Filter.Trim.ToUpper = "MIN" OrElse Filter.Trim.ToUpper = "MINVAL" Then
+    '            ValuesField = "MINVAL"
+    '        Else
+    '            Throw New Exception("Timeseries filter on results not supported: " & Filter)
+    '        End If
+
+    '        'myQuery = "SELECT DISTINCT LOCATIENAAM FROM RESULTATEN WHERE  KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ");"
+    '        'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtLocs, False)
+
+    '        'myQuery = "SELECT DISTINCT RUNID FROM RESULTATEN WHERE  KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ");"
+    '        'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtRuns, False)
+
+    '        'retrieve the values for each on this location, sorted by ascending value
+    '        myQuery = "Select LOCATIENAAM, RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & " ORDER BY LOCATIENAAM, " & ValuesField & " ASC;"
+    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtResults, False)
+
+    '        'now that we have our datatable we will have to rework it to two 2D arrays:
+    '        'array 1: results for locations and runs
+    '        'array 2: probability for locations runs
+
+    '        Dim P As Double, V As Double, LocID As String
+    '        Dim Overschrijdingsgrafieken As New clsOverschrijdingsgrafieken(Me.Setup)
+    '        For i = 0 To dtResults.Rows.Count - 1
+    '            LocID = dtResults.Rows(i)(0)
+    '            V = dtResults.Rows(i)(2)
+    '            P = dtResults.Rows(i)(3)
+    '            Dim Grafiek As clsOverschrijdingsgrafiek = Overschrijdingsgrafieken.getAdd(LocID)
+    '            Grafiek.Add(V, P)
+    '        Next
+
+
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function ReadExceedanceDataFromDatabase: " & ex.Message)
+    '        Return False
+    '    End Try
+
+    'End Function
+
     Public Function CalcExceedanceTable(ByRef LocationName As String, Filter As String, ByRef dtResults As DataTable, ByRef dtHerh As DataTable) As Boolean
 
-        'retrieves the results for the current location and generates an exceedance chart
-
+        'code optimized by ChatGPT plus
         Try
-            Dim myQuery As String
+            ' Initialize variables
+            Dim myQuery As String = ""
             Dim pCum As Double = 0
-            Dim i As Integer
-            Dim ValuesField As String
+            Dim i As Integer = 0
+            Dim ValuesField As String = ""
+
+            ' Determine the values field based on the filter
+            Select Case Filter.Trim.ToUpper
+                Case "MAX", "MAXVAL"
+                    ValuesField = "MAXVAL"
+                Case "MIN", "MINVAL"
+                    ValuesField = "MINVAL"
+                Case Else
+                    Throw New ArgumentException("Timeseries filter on results not supported: " & Filter)
+            End Select
+
+            ' Create the Herh table and add columns
             dtHerh = New DataTable
+            dtHerh.Columns.Add("Herhalingstijd", GetType(Double))
+            dtHerh.Columns.Add("Waarde", GetType(Double))
+            dtHerh.Columns.Add("RUNID", GetType(String))
 
-            If Filter.Trim.ToUpper = "MAX" OrElse Filter.Trim.ToUpper = "MAXVAL" Then
-                ValuesField = "MAXVAL"
-            ElseIf Filter.Trim.ToUpper = "MIN" OrElse Filter.Trim.ToUpper = "MINVAL" Then
-                ValuesField = "MINVAL"
-            Else
-                Throw New Exception("Timeseries filter on results not supported: " & Filter)
-            End If
-
-            'retrieve the values for each on this location, sorted by ascending value
-            myQuery = "Select RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM='" & LocationName & "' AND KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & " ORDER BY " & ValuesField & " ASC;"
-            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtResults, False)
-
-            'retrieve all additional information for each run from the RUNS table
-            'myQuery = "SELECT * FROM RUNS WHERE KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ";"
-            'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtRuns, False)
-            'If dtRuns.Rows.Count = 0 OrElse dtResults.Rows.Count = 0 Then Throw New Exception("Error retrieving locations from database for location name=" & LocationName)
-
-            'add columns to the new datatable
-            dtHerh.Columns.Add(New DataColumn("Herhalingstijd", Type.GetType("System.Double")))
-            dtHerh.Columns.Add(New DataColumn("Waarde", Type.GetType("System.Double")))
-            dtHerh.Columns.Add(New DataColumn("RUNID", Type.GetType("System.String")))
-
-            'compute the return period and store in the new table
-            'note: skip the last point since that will cause a divisio by zero. hence the count-2
-            For i = 0 To dtResults.Rows.Count - 2
-                pCum += dtResults.Rows(i)("P")
-
-                ''search the identical run in the RUNS table
-                'For j = 0 To dtRuns.Rows.Count - 1
-                '    ''ALERT: SIEBE NOG CORRIGEREN
-                '    'pCum += 0.01
-                '    If dtRuns.Rows(j)("RUNID") = dtResults.Rows(i)("RUNID") Then
-                '        pCum += dtRuns.Rows(j)("P")
-                '        Exit For
-                '    End If
-                'Next
-
-                dtHerh.Rows.Add()
-                dtHerh.Rows(i)(1) = dtResults.Rows(i)(ValuesField)      'write the value for this data pair
-                dtHerh.Rows(i)(2) = dtResults.Rows(i)("RUNID")          'write the runid for this data pair
-
-                If Setup.StochastenAnalyse.VolumesAsFrequencies Then
-                    Dim maxFreq As Double = 365.25 * 24 / Duration
-                    If pCum < maxFreq Then
-                        dtHerh.Rows(i)(0) = 1 / (maxFreq - pCum)
-                    Else
-                        'de hoogste is niet vast te stellen want maxFreq- fCum = 0, dus deling door nul
-                        'daarom hier een eenvoudige benadering door T(i-1) + 1 te nemen
-                        'maar in het wegschrijven van de resultaten slaan we deze sowieso over
-                        dtHerh.Rows(i)(0) = dtHerh.Rows(i - 1)(0) + 1   'write the return period for this data pair
-                    End If
-                Else
-                    dtHerh.Rows(i)(0) = 1 / -Math.Log(pCum) 'herhalingstijd = 1/-ln(onderschrijdingskans)
-                End If
-            Next
+            ' Build the SQL query using parameterized queries
+            myQuery = "SELECT RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM = @LocationName AND KLIMAATSCENARIO = @KlimaatScenario AND DUUR = @Duration ORDER BY " & ValuesField & " ASC;"
+            Using cmd As New SQLiteCommand(myQuery, Me.Setup.SqliteCon)
+                cmd.Parameters.AddWithValue("@LocationName", LocationName)
+                cmd.Parameters.AddWithValue("@KlimaatScenario", Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper)
+                cmd.Parameters.AddWithValue("@Duration", Setup.StochastenAnalyse.Duration)
+                Using reader As SQLiteDataReader = cmd.ExecuteReader()
+                    While reader.Read()
+                        pCum += reader.GetDouble(reader.GetOrdinal("P"))
+                        Dim value As Double = reader.GetDouble(reader.GetOrdinal(ValuesField))
+                        Dim runId As String = reader.GetString(reader.GetOrdinal("RUNID"))
+                        Dim herhTijd As Double
+                        If Setup.StochastenAnalyse.VolumesAsFrequencies Then
+                            Dim maxFreq As Double = 365.25 * 24 / Setup.StochastenAnalyse.Duration
+                            If pCum < maxFreq Then
+                                herhTijd = 1 / (maxFreq - pCum)
+                            Else
+                                ' Use a simple approximation for the highest value, which is not computable due to division by zero
+                                herhTijd = dtHerh.Rows(i - 1)(0) + 1
+                            End If
+                        Else
+                            herhTijd = 1 / -Math.Log(pCum)
+                        End If
+                        dtHerh.Rows.Add(herhTijd, value, runId)
+                        i += 1
+                    End While
+                End Using
+            End Using
 
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function calcExceedanceTable.")
+            Me.Setup.Log.AddError("Error in function CalcExceedanceTable.")
             Me.Setup.Log.AddError(ex.Message)
             Return False
         End Try
+
     End Function
+
+
+    'Public Function CalcExceedanceTable(ByRef LocationName As String, Filter As String, ByRef dtResults As DataTable, ByRef dtHerh As DataTable) As Boolean
+
+    '    'retrieves the results for the current location and generates an exceedance chart
+
+    '    Try
+    '        Dim myQuery As String
+    '        Dim pCum As Double = 0
+    '        Dim i As Integer
+    '        Dim ValuesField As String
+    '        dtHerh = New DataTable
+
+    '        If Filter.Trim.ToUpper = "MAX" OrElse Filter.Trim.ToUpper = "MAXVAL" Then
+    '            ValuesField = "MAXVAL"
+    '        ElseIf Filter.Trim.ToUpper = "MIN" OrElse Filter.Trim.ToUpper = "MINVAL" Then
+    '            ValuesField = "MINVAL"
+    '        Else
+    '            Throw New Exception("Timeseries filter on results not supported: " & Filter)
+    '        End If
+
+    '        'retrieve the values for each on this location, sorted by ascending value
+    '        myQuery = "Select RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM='" & LocationName & "' AND KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & " ORDER BY " & ValuesField & " ASC;"
+    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtResults, False)
+
+    '        'retrieve all additional information for each run from the RUNS table
+    '        'myQuery = "SELECT * FROM RUNS WHERE KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ";"
+    '        'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtRuns, False)
+    '        'If dtRuns.Rows.Count = 0 OrElse dtResults.Rows.Count = 0 Then Throw New Exception("Error retrieving locations from database for location name=" & LocationName)
+
+    '        'add columns to the new datatable
+    '        dtHerh.Columns.Add(New DataColumn("Herhalingstijd", Type.GetType("System.Double")))
+    '        dtHerh.Columns.Add(New DataColumn("Waarde", Type.GetType("System.Double")))
+    '        dtHerh.Columns.Add(New DataColumn("RUNID", Type.GetType("System.String")))
+
+    '        'compute the return period and store in the new table
+    '        'note: skip the last point since that will cause a divisio by zero. hence the count-2
+    '        For i = 0 To dtResults.Rows.Count - 2
+    '            pCum += dtResults.Rows(i)("P")
+
+    '            dtHerh.Rows.Add()
+    '            dtHerh.Rows(i)(1) = dtResults.Rows(i)(ValuesField)      'write the value for this data pair
+    '            dtHerh.Rows(i)(2) = dtResults.Rows(i)("RUNID")          'write the runid for this data pair
+
+    '            If Setup.StochastenAnalyse.VolumesAsFrequencies Then
+    '                Dim maxFreq As Double = 365.25 * 24 / Duration
+    '                If pCum < maxFreq Then
+    '                    dtHerh.Rows(i)(0) = 1 / (maxFreq - pCum)
+    '                Else
+    '                    'de hoogste is niet vast te stellen want maxFreq- fCum = 0, dus deling door nul
+    '                    'daarom hier een eenvoudige benadering door T(i-1) + 1 te nemen
+    '                    'maar in het wegschrijven van de resultaten slaan we deze sowieso over
+    '                    dtHerh.Rows(i)(0) = dtHerh.Rows(i - 1)(0) + 1   'write the return period for this data pair
+    '                End If
+    '            Else
+    '                dtHerh.Rows(i)(0) = 1 / -Math.Log(pCum) 'herhalingstijd = 1/-ln(onderschrijdingskans)
+    '            End If
+    '        Next
+
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function calcExceedanceTable.")
+    '        Me.Setup.Log.AddError(ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
 
     Public Function getLevelsFromLocation(ByRef LocationName As String, TableName As String, ZPField As String, WPField As String, MaxAllowedLevelField As String, SurfaceLevelField As String, ByRef dt As DataTable) As Boolean
 
@@ -662,6 +769,30 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
+    Public Function CalculateExceedanceMesh() As Boolean
+        'this function is designed to export our mesh to a GeoJSON for the webviewer. Inside, it will store the exceedance tables
+        Try
+            'first thing to do is to read the model's fourier file and turn it into a GeoJSON
+            For Each Model As clsSimulationModel In Models.Values
+                Select Case Model.ModelType
+                    Case Is = GeneralFunctions.enmSimulationModel.DHYDRO, GeneralFunctions.enmSimulationModel.DIMR
+                        Dim fouFile As New clsFouNCFile("c:\SYNC\PROJECTEN\H3110.StochastenRivierenland\04.Bommelerwaard\Model\fm\Output\BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_fou.nc", Me.Setup)
+                        If Not fouFile.Read() Then Throw New Exception("Error reading fourier file.")
+
+
+
+                    Case Else
+                        Throw New Exception("Model type not yet supported for exporting exceedance tables for 2D mesh.")
+                End Select
+            Next
+
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+
+    End Function
+
     Public Function CalculateExceedanceTables(ByRef con As SQLite.SQLiteConnection) As Boolean
         Try
             Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
@@ -725,6 +856,86 @@ Public Class clsStochastenAnalyse
             Return False
         End Try
     End Function
+
+
+    'Public Function CalculateExceedanceTables(ByRef con As SQLite.SQLiteConnection) As Boolean
+    '    Try
+    '        Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
+
+    '        'now only read results locations
+    '        Dim locdt As New DataTable, locIdx As Integer
+    '        Dim query As String = "SELECT DISTINCT LOCATIENAAM, RESULTSTYPE FROM OUTPUTLOCATIONS;"
+    '        Setup.GeneralFunctions.SQLiteQuery(con, query, locdt, False)
+
+    '        'populate a table containing all stochast classes per run
+    '        'for speed, also create a list of row indices
+    '        Dim rundt As New DataTable, i As Integer
+    '        Dim RunsList As New Dictionary(Of String, Integer)
+    '        query = "SELECT RUNID, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
+    '        Setup.GeneralFunctions.SQLiteQuery(con, query, rundt, False)
+    '        For i = 0 To rundt.Rows.Count - 1
+    '            RunsList.Add(rundt.Rows(i)(0), i)
+    '        Next
+
+    '        'clear existing exceedance tables for this location and climate
+    '        query = "DELETE FROM HERHALINGSTIJDEN WHERE DUUR=" & Duration & " AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "';"
+    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False)
+
+    '        'in order to speed up things we will now FIRST read all values
+    '        Dim dtResults As New DataTable
+    '        Dim dtHerh As New DataTable
+    '        Me.Setup.StochastenAnalyse.ReadExceedanceDataAllLocationsFromDatabase(locdt.Rows(locIdx)("RESULTSTYPE"), dtResults, dtHerh)
+
+    '        Stop
+
+
+    '        'for each location in our results table we will now create an exceedance table and write it to the database
+    '        Dim nLocs As Integer = locdt.Rows.Count
+    '        For locIdx = 0 To locdt.Rows.Count - 1
+
+    '            Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, nLocs)
+
+    '            ''make a subset of our datatable and calculate the exceedance table for this location
+    '            'Dim subsetRows() As DataRow = dtResults.Select("LOCATIENAAM = '" & locdt.Rows(locIdx)("LOCATIENAAM") & "'")
+    '            'Dim subsetDT As New DataTable
+    '            'For Each row As DataRow In subsetRows
+    '            '    subsetDT.ImportRow(row)
+    '            'Next
+
+    '            Dim dtRuns As New DataTable
+    '            'Dim dtResults As New DataTable
+    '            'Dim dtHerh As New DataTable
+
+    '            'retrieve all data for the current duration and climat scenario
+    '            If Me.Setup.StochastenAnalyse.CalcExceedanceTable(locdt.Rows(locIdx)("LOCATIENAAM"), locdt.Rows(locIdx)("RESULTSTYPE"), dtResults, dtHerh) Then
+
+    '                'bulk insert our excedance table
+    '                Dim myCmd As New SQLite.SQLiteCommand
+    '                myCmd.Connection = con
+    '                Using transaction = con.BeginTransaction
+
+    '                    For i = 0 To dtHerh.Rows.Count - 1
+
+    '                        Dim RunID As String = dtHerh.Rows(i)("RUNID")
+    '                        Dim RowIdx As Integer = RunsList.Item(RunID)
+
+    '                        myCmd.CommandText = "INSERT INTO HERHALINGSTIJDEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & locdt.Rows(locIdx)(0).ToString & "'," & dtHerh.Rows(i)(0) & "," & dtHerh.Rows(i)(1) & ",'" & rundt.Rows(RowIdx)("SEIZOEN") & "'," & rundt.Rows(RowIdx)("VOLUME") & ",'" & rundt.Rows(RowIdx)("PATROON") & "','" & rundt.Rows(RowIdx)("GW") & "','" & rundt.Rows(RowIdx)("BOUNDARY") & "','" & rundt.Rows(RowIdx)("WIND") & "','" & rundt.Rows(RowIdx)("EXTRA1") & "','" & rundt.Rows(RowIdx)("EXTRA2") & "','" & rundt.Rows(RowIdx)("EXTRA3") & "','" & rundt.Rows(RowIdx)("EXTRA4") & "');"
+    '                        myCmd.ExecuteNonQuery()
+    '                    Next
+
+    '                    'insert the resulta for all return periods at once
+    '                    transaction.Commit() 'this is where the bulk insert is finally executed.
+    '                End Using
+    '            End If
+    '        Next
+    '        Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen succesvol berekend.", 10, 10, True)
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function CalculateExceedanceTables of class clsStochastenAnalyse: " & ex.Message)
+    '        Me.Setup.Log.ShowAll()
+    '        Return False
+    '    End Try
+    'End Function
 
     Public Function ReadResults(ByRef con As SQLite.SQLiteConnection)
         Dim i As Long, n As Long
@@ -799,7 +1010,6 @@ Public Class clsStochastenAnalyse
                                         End If
                                     Next
                                 End If
-
                             End Using
 
                         ElseIf Right(myfile.FileName, 7).ToLower = "_fou.nc" Then

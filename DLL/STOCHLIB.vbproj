@@ -227,6 +227,7 @@
     <Compile Include="DIMR\cls1DNode.vb" />
     <Compile Include="DIMR\clsBoundariesBC.vb" />
     <Compile Include="DIMR\clsBoundaryCondition.vb" />
+    <Compile Include="DIMR\clsClassMapFile.vb" />
     <Compile Include="DIMR\clsDelft3BIniFile.vb" />
     <Compile Include="DIMR\clsDIMR.vb" />
     <Compile Include="DIMR\clsDIMRConfigComponent.vb" />
@@ -461,6 +462,9 @@
     <Compile Include="SOBEK\Simulations\clsSobekSimulation.vb" />
     <Compile Include="SOBEK\Simulations\clsSobekSimulations.vb" />
     <Compile Include="Stochasten\clsFlowForcing.vb" />
+    <Compile Include="Stochasten\clsHerhalingstijd.vb" />
+    <Compile Include="Stochasten\clsOverschrijdingsgrafiek.vb" />
+    <Compile Include="Stochasten\clsOverschrijdingsgrafieken.vb" />
     <Compile Include="Stochasten\clsMeteoForcing.vb" />
     <Compile Include="Stochasten\clsMileageCounter.vb" />
     <Compile Include="General\clsSavitzkyGolaySmoothing.vb" />

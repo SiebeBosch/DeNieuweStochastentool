@@ -177,17 +177,18 @@ Public Class frmImportOutputlocations
                                         'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
                                         WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
                                         ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
                                         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                                     Else
                                         'could not find target levels. Only write the location and parameters
-                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
+                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
                                         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                                         Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & ObsPoint.ID)
                                     End If
                                 End If
                             Next
                         End If
+
 
                         If chkFouFiles.Checked Then
 
@@ -215,11 +216,11 @@ Public Class frmImportOutputlocations
                                             'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
                                             WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
                                             ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
                                             cmd.ExecuteNonQuery()
                                         Else
                                             'could not find target levels. Only write the location and parameters
-                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
+                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
                                             cmd.ExecuteNonQuery()
                                         End If
                                     Next

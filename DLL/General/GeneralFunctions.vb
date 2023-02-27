@@ -38,6 +38,8 @@ Public Class GeneralFunctions
     Public Enum enmHydroModule
         RR = 0
         FLOW = 1
+        FLOW1D = 2
+        FLOW2D = 3
     End Enum
 
     Public Enum enmValidationResult

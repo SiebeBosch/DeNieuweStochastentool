@@ -467,7 +467,7 @@ Public Class clsStochastenRun
 
                     'copy the meteo file to the unique directory for our desired run
                     If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
-                    File.Copy(BuiFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+                    File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
 
                     'write the evaporation file for now we'll assume zero evaporation
                     Dim myEvp As New clsEvpFile(Me.Setup)
@@ -475,14 +475,14 @@ Public Class clsStochastenRun
                     Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
                     myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
                     myEvp.Write(EvpFile)
-                    File.Copy(EvpFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+                    File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
 
                     Setup.GeneralFunctions.UpdateProgressBar("Writing radiation file.", 0, 10, True)
                     Using myWriter As New StreamWriter(QscFile)
                         myWriter.WriteLine("CONSTANTS   'TEMP' 'RAD'")
                         myWriter.WriteLine("DATA        0 0")
                     End Using
-                    File.Copy(QscFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
+                    File.Copy(QscFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
 
                     Setup.GeneralFunctions.UpdateProgressBar("Writing wind file.", 0, 10, True)
                     Using myWriter As New StreamWriter(WdcFile)
@@ -491,23 +491,23 @@ Public Class clsStochastenRun
                         myWriter.WriteLine("0 9.9999e+009 9.9999e+009 tu 0 tp tw 0 9.9999e+009 9.9999e+009 au 0 at ta 0")
                         myWriter.WriteLine("9.9999e+009 9.9999e+009 mteo glmt")
                     End Using
-                    File.Copy(WdcFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
+                    File.Copy(WdcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
 
                     Using mywriter As New StreamWriter(QwcFile)
                         mywriter.WriteLine("CONSTANTS   'VWIND' 'WINDDIR'")
                         mywriter.WriteLine("DATA       0 0")
                     End Using
-                    File.Copy(QwcFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
+                    File.Copy(QwcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
 
                     Using mywriter As New StreamWriter(TmpFile)
                         mywriter.WriteLine("")
                     End Using
-                    File.Copy(TmpFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
+                    File.Copy(TmpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
 
                     Using mywriter As New StreamWriter(RnfFile)
                         mywriter.WriteLine("")
                     End Using
-                    File.Copy(RnfFile, Dir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
+                    File.Copy(RnfFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
 
                     '----------------------------------------------------------------------------------------
                     'release the database for use by other instances
@@ -540,8 +540,8 @@ Public Class clsStochastenRun
                         For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
                             fromFile = myModel.TempWorkDir & "\WORK\" & myFile.FileName
                             fromFile2 = myModel.TempWorkDir & "\WORK\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
-                            toFile = Dir & "\" & myFile.FileName
-                            toFile2 = Dir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+                            toFile = InputFilesDir & "\" & myFile.FileName
+                            toFile2 = InputFilesDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
 
                             If File.Exists(fromFile) Then
                                 Call FileCopy(fromFile, toFile)
@@ -587,7 +587,7 @@ Public Class clsStochastenRun
                     Throw New Exception("Stochast initial groundwater not yet supported for requested model type: " & myModel.ModelType.ToString)
                 End If
 
-                toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(FileName)
+                toStochastDir = InputFilesDir & "\" & Setup.GeneralFunctions.FileNameFromPath(FileName)
                 If File.Exists(fromFile) Then
                     FileCopy(fromFile, toFile)
                     FileCopy(fromFile, toStochastDir)
@@ -628,12 +628,12 @@ Public Class clsStochastenRun
                 If myModel.ModelType = enmSimulationModel.SOBEK Then
                     toFile = myModel.TempWorkDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
-                    toFile = myModel.TempWorkDir & "\" & ModelSubdir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+                    toFile = myModel.TempWorkDir & "\" & ModelSubdir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 Else
                     Throw New Exception("Kan invoerbestand " & fromFile & " niet naar het doelmodel kopieren omdat het modeltype niet wordt ondersteund voor de onderhavige stochast: " & myModel.ModelType.ToString)
                 End If
 
-                toStochastDir = Dir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+                toStochastDir = InputFilesDir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 If File.Exists(fromFile) Then
                     FileCopy(fromFile, toFile)
                     FileCopy(fromFile, toStochastDir)
@@ -716,7 +716,7 @@ Public Class clsStochastenRun
                 Using myWriter As New StreamWriter(myModel.TempWorkDir & "\WORK\boundary.dat")
                     myBoundaryDat.Write(myWriter)
                 End Using
-                File.Copy(myModel.TempWorkDir & "\WORK\boundary.dat", Dir & "\boundary.dat", True)
+                File.Copy(myModel.TempWorkDir & "\WORK\boundary.dat", InputFilesDir & "\boundary.dat", True)
 
             ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
 
@@ -756,7 +756,7 @@ Public Class clsStochastenRun
                 'and finally: write the adjusted boundaries.bc file
                 Dim Path As String = myModel.TempWorkDir & "\" & Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir & "\" & "boundaries.bc"
                 BoundariesBC.Write(Path, SeasonClass.EventStart)
-                File.Copy(Path, Dir & "\boundaries.bc", True)
+                File.Copy(Path, InputFilesDir & "\boundaries.bc", True)
 
             Else
                 Throw New Exception("Error: models other than SOBEK or DIMR are not yet supported for adjusting boundary values")

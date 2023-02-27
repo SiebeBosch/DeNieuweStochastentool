@@ -2524,17 +2524,17 @@ Public Class frmStochasten
         'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
         Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
+        'if we have 2D results, we also create an Exceedance Mesh
+        Setup.StochastenAnalyse.CalculateExceedanceMesh()
+
         Me.Cursor = Cursors.WaitCursor
         Setup.StochastenAnalyse.CalculateExceedanceTables(Me.Setup.SqliteCon)
+
+
 
         Me.Cursor = Cursors.Default
 
     End Sub
-
-    Private Sub GrondwatersClassificerenToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GrondwatersClassificerenToolStripMenuItem.Click
-    End Sub
-
-
 
     Private Sub GrNeerslagstations_CellValueChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grMeteoStations.CellValueChanged
         Dim query As String
