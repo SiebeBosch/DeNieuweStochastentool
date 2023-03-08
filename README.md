@@ -8,7 +8,7 @@ Binnen dit TKI wordt De Nieuwe Stochastentool van Hydroconsult:
 - Opensource gemaakt (deze GIT)
 - Doorontwikkeld om ook volledige stochastenanalyses te kunnen uitvoeren en nabewerken met het programma D-Hydro (Deltares).
 
-Het programma is geschreven in VB.NET in Visual Studio 2019, in het .NET framework 4.6.1.
+Het programma is geschreven in VB.NET in Visual Studio 2019, in het .NET framework 4.8.
 Daarnaast bevat het codeblokken HTML en javascript ten behoeve van de export naar de webviewer voor resultaten.
 
 De broncode is gepubliceerd onder GPL 3.0. Zie het bijgevoegde bestand LICENSE voor de volledige licentietekst.
@@ -19,7 +19,7 @@ De applicatie bestaat uit twee componenten:
 
 Dependencies:
 Belangrijkste dependency is de MapWinGIS library. Dit is een opensource GIS-component, oorspronkelijk van de University of Idaho. 
-Broncodes en binaries van MapWinGIS zijn hier te vinden: https://github.com/MapWindow/MapWinGIS. De eenvoudigste manier om MapWinGIS toe te voegen aan De Nieuwe Stochastentool is door de library separaat te installeren (versie 5.2, 64 bit!). Daarna kan vanuit de solution explorer eenvoudig de MapWinGIS.ocx worden toegevoegd onder References.
+Broncodes en binaries van MapWinGIS zijn hier te vinden: https://github.com/MapWindow/MapWinGIS. De eenvoudigste manier om MapWinGIS toe te voegen aan De Nieuwe Stochastentool is door de library separaat te installeren (versie 5.3.0, 64 bit!). Daarna kan vanuit de solution explorer eenvoudig de MapWinGIS.ocx worden toegevoegd onder References.
 
 Een andere relevante dependency is Gembox Spreadsheets. Dit is een externe component voor het exporteren van de stochastenresultaten naar Excel. Voor deze component is een betaalde licentie benodigd. Deze licentiecode vormt geen onderdeel van deze GIT en zal door mede-ontwikkelaars separaat moeten worden aangeschaft. https://www.gemboxsoftware.com/spreadsheet/pricelist
 
