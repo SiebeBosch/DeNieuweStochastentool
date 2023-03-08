@@ -1,12 +1,11 @@
 # De Nieuwe Stochastentool
-De Nieuwe Stochastentool zoals oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult). Deze applicatie wordt binnen TKI4 doorontwikkeld.
-TKI-projecten zijn door het ministerie van EZ gesubsidiëerde innovatieprojecten. 
+De Nieuwe Stochastentool zoals oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult). Deze applicatie is binnen TKI4 doorontwikkeld tot een volwaardige applicatie met support voor het modelinstrumentarium D-Hydro (Deltares). TKI-projecten zijn door het ministerie van EZ gesubsidiëerde innovatieprojecten. 
 Zie: https://www.rvo.nl/subsidie-en-financieringswijzer/pps-toeslag-onderzoek-en-innovatie/aansluiten-bij-een-tki.
 TKI4 behelst een project van Waterschap Drents Overijsselse Delta i.s.m. kennisinstituut Deltares en Hydroconsult.
 
-Binnen dit TKI wordt De Nieuwe Stochastentool van Hydroconsult:
+Binnen dit TKI is De Nieuwe Stochastentool van Hydroconsult:
 - Opensource gemaakt (deze GIT)
-- Doorontwikkeld om ook volledige stochastenanalyses te kunnen uitvoeren en nabewerken met het programma D-Hydro (Deltares).
+- Doorontwikkeld om ook volledige stochastenanalyses te kunnen uitvoeren en nabewerken met het programma D-Hydro.
 
 Het programma is geschreven in VB.NET in Visual Studio 2019, in het .NET framework 4.8.
 Daarnaast bevat het codeblokken HTML en javascript ten behoeve van de export naar de webviewer voor resultaten.
