@@ -3,6 +3,8 @@ Imports System.Xml
 Imports System.Windows.Forms
 Imports System.IO
 Imports System.Data.SQLite
+Imports System.Net.WebRequestMethods
+Imports DocumentFormat.OpenXml.Bibliography
 
 
 Public Class clsStochastenAnalyse
@@ -793,17 +795,13 @@ Public Class clsStochastenAnalyse
 
     End Function
 
-    Public Function CalculateExceedanceTables(ByRef con As SQLite.SQLiteConnection) As Boolean
+    Public Function CalculateExceedanceTables(ByRef con As SQLite.SQLiteConnection, Optional ByVal process2D As Boolean = False) As Boolean
         Try
             Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
 
-            'now only read results locations
-            Dim locdt As New DataTable, locIdx As Integer
-            Dim query As String = "SELECT DISTINCT LOCATIENAAM, RESULTSTYPE FROM OUTPUTLOCATIONS;"
-            Setup.GeneralFunctions.SQLiteQuery(con, query, locdt, False)
-
             'populate a table containing all stochast classes per run
             'for speed, also create a list of row indices
+            Dim query As String
             Dim rundt As New DataTable, i As Integer
             Dim RunsList As New Dictionary(Of String, Integer)
             query = "SELECT RUNID, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
@@ -811,6 +809,19 @@ Public Class clsStochastenAnalyse
             For i = 0 To rundt.Rows.Count - 1
                 RunsList.Add(rundt.Rows(i)(0), i)
             Next
+
+            'when dealing with 2D we do not have output locations specified
+            Dim locdt As New DataTable, locIdx As Integer
+
+            If process2D Then
+                'now only read results locations
+                query = "SELECT DISTINCT LOCATIENAAM FROM RESULTATEN;"
+                Setup.GeneralFunctions.SQLiteQuery(con, query, locdt, False)
+            Else
+                'now only read results locations
+                query = "SELECT DISTINCT LOCATIENAAM, RESULTSTYPE FROM OUTPUTLOCATIONS;"
+                Setup.GeneralFunctions.SQLiteQuery(con, query, locdt, False)
+            End If
 
             'clear existing exceedance tables for this location and climate
             query = "DELETE FROM HERHALINGSTIJDEN WHERE DUUR=" & Duration & " AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "';"
@@ -857,88 +868,8 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-
-    'Public Function CalculateExceedanceTables(ByRef con As SQLite.SQLiteConnection) As Boolean
-    '    Try
-    '        Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
-
-    '        'now only read results locations
-    '        Dim locdt As New DataTable, locIdx As Integer
-    '        Dim query As String = "SELECT DISTINCT LOCATIENAAM, RESULTSTYPE FROM OUTPUTLOCATIONS;"
-    '        Setup.GeneralFunctions.SQLiteQuery(con, query, locdt, False)
-
-    '        'populate a table containing all stochast classes per run
-    '        'for speed, also create a list of row indices
-    '        Dim rundt As New DataTable, i As Integer
-    '        Dim RunsList As New Dictionary(Of String, Integer)
-    '        query = "SELECT RUNID, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
-    '        Setup.GeneralFunctions.SQLiteQuery(con, query, rundt, False)
-    '        For i = 0 To rundt.Rows.Count - 1
-    '            RunsList.Add(rundt.Rows(i)(0), i)
-    '        Next
-
-    '        'clear existing exceedance tables for this location and climate
-    '        query = "DELETE FROM HERHALINGSTIJDEN WHERE DUUR=" & Duration & " AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "';"
-    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(con, query, False)
-
-    '        'in order to speed up things we will now FIRST read all values
-    '        Dim dtResults As New DataTable
-    '        Dim dtHerh As New DataTable
-    '        Me.Setup.StochastenAnalyse.ReadExceedanceDataAllLocationsFromDatabase(locdt.Rows(locIdx)("RESULTSTYPE"), dtResults, dtHerh)
-
-    '        Stop
-
-
-    '        'for each location in our results table we will now create an exceedance table and write it to the database
-    '        Dim nLocs As Integer = locdt.Rows.Count
-    '        For locIdx = 0 To locdt.Rows.Count - 1
-
-    '            Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, nLocs)
-
-    '            ''make a subset of our datatable and calculate the exceedance table for this location
-    '            'Dim subsetRows() As DataRow = dtResults.Select("LOCATIENAAM = '" & locdt.Rows(locIdx)("LOCATIENAAM") & "'")
-    '            'Dim subsetDT As New DataTable
-    '            'For Each row As DataRow In subsetRows
-    '            '    subsetDT.ImportRow(row)
-    '            'Next
-
-    '            Dim dtRuns As New DataTable
-    '            'Dim dtResults As New DataTable
-    '            'Dim dtHerh As New DataTable
-
-    '            'retrieve all data for the current duration and climat scenario
-    '            If Me.Setup.StochastenAnalyse.CalcExceedanceTable(locdt.Rows(locIdx)("LOCATIENAAM"), locdt.Rows(locIdx)("RESULTSTYPE"), dtResults, dtHerh) Then
-
-    '                'bulk insert our excedance table
-    '                Dim myCmd As New SQLite.SQLiteCommand
-    '                myCmd.Connection = con
-    '                Using transaction = con.BeginTransaction
-
-    '                    For i = 0 To dtHerh.Rows.Count - 1
-
-    '                        Dim RunID As String = dtHerh.Rows(i)("RUNID")
-    '                        Dim RowIdx As Integer = RunsList.Item(RunID)
-
-    '                        myCmd.CommandText = "INSERT INTO HERHALINGSTIJDEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & locdt.Rows(locIdx)(0).ToString & "'," & dtHerh.Rows(i)(0) & "," & dtHerh.Rows(i)(1) & ",'" & rundt.Rows(RowIdx)("SEIZOEN") & "'," & rundt.Rows(RowIdx)("VOLUME") & ",'" & rundt.Rows(RowIdx)("PATROON") & "','" & rundt.Rows(RowIdx)("GW") & "','" & rundt.Rows(RowIdx)("BOUNDARY") & "','" & rundt.Rows(RowIdx)("WIND") & "','" & rundt.Rows(RowIdx)("EXTRA1") & "','" & rundt.Rows(RowIdx)("EXTRA2") & "','" & rundt.Rows(RowIdx)("EXTRA3") & "','" & rundt.Rows(RowIdx)("EXTRA4") & "');"
-    '                        myCmd.ExecuteNonQuery()
-    '                    Next
-
-    '                    'insert the resulta for all return periods at once
-    '                    transaction.Commit() 'this is where the bulk insert is finally executed.
-    '                End Using
-    '            End If
-    '        Next
-    '        Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen succesvol berekend.", 10, 10, True)
-    '        Return True
-    '    Catch ex As Exception
-    '        Me.Setup.Log.AddError("Error in function CalculateExceedanceTables of class clsStochastenAnalyse: " & ex.Message)
-    '        Me.Setup.Log.ShowAll()
-    '        Return False
-    '    End Try
-    'End Function
-
-    Public Function ReadResults(ByRef con As SQLite.SQLiteConnection)
-        Dim i As Long, n As Long
+    Public Function ReadResults(ByRef con As SQLite.SQLiteConnection, results1D As Boolean, results2D As Boolean)
+        Dim i As Long, n As Long, j As Long
         Dim MaxInLastTimeStep As Boolean
         Dim Min As Double, Max As Double, tsMin As Long, tsMax As Long, Avg As Double, mySum As Double
         Dim dtRes As New DataTable, query As String
@@ -955,17 +886,70 @@ Public Class clsStochastenAnalyse
             query = "DELETE FROM RESULTATEN WHERE KLIMAATSCENARIO = '" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR = " & Setup.StochastenAnalyse.Duration.ToString.Trim & ";"
             Setup.GeneralFunctions.SQLiteNoQuery(con, query)
 
-            'read the results
-            n = Runs.Runs.Count
-            i = 0
-            For Each myRun As clsStochastenRun In Runs.Runs.Values                        'doorloop alle runs en lees de resultaatbestanden uit
-                i += 1
-                Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen voor simulatie " & i & " van " & n, i, n, True)
-                For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
-                    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
-                        If Right(myFile.FileName, 4).ToLower = ".his" Then                      'this is a Deltares HIS-file. Read it using the corresponding reader
-                            If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
-                            Using myHisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
+            If results1D Then
+                'process 1D results
+
+                'read the results
+                n = Runs.Runs.Count
+                i = 0
+                For Each myRun As clsStochastenRun In Runs.Runs.Values                        'doorloop alle runs en lees de resultaatbestanden uit
+                    i += 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen voor simulatie " & i & " van " & n, i, n, True)
+                    For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
+                        For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
+                            If Right(myFile.FileName, 4).ToLower = ".his" Then                      'this is a Deltares HIS-file. Read it using the corresponding reader
+                                If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+                                Using myHisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
+                                    If myFile.Parameters.Count = 0 Then
+                                        Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
+                                    Else
+                                        For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+                                            If myPar.Locations.Count = 0 Then
+                                                Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
+                                            Else
+                                                '--------------------------------------------------------------------------------------------------------------------------------------------
+                                                '  writing the results for this run to the database
+                                                '  start by reading the entire file to memory. This is supposed to be MUCH faster than reading from file every time
+                                                '--------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                'database needs to be populated or refreshed for this run. read the hisfile to memory
+                                                myHisReader.ReadToMemory()
+                                                Using hisReader As New BinaryReader(myHisReader.ms)
+
+                                                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                                    Using myCmd As New SQLite.SQLiteCommand
+                                                        myCmd.Connection = Me.Setup.SqliteCon
+                                                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+
+                                                            'walk through each location and retreive the stochastic results
+                                                            For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
+                                                                If Not myHisReader.ReadStochasticResultsFromMemoryStream(hisReader, myLoc.ID, myPar.Name, MaxInLastTimeStep, Min, tsMin, Max, tsMax, Avg, ResultsStartPercentage) Then
+                                                                    Me.Setup.Log.AddError("Could not read results for location " & myLoc.ID & " and parameter " & myPar.Name & ".")
+                                                                Else
+                                                                    'add the outcome of this run to the dictionary of results
+                                                                    myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                                                    myCmd.ExecuteNonQuery()
+                                                                    If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
+                                                                End If
+                                                            Next
+
+                                                            'insert the results for all locations at once
+                                                            transaction.Commit() 'this is where the bulk insert is finally executed.
+                                                        End Using
+                                                    End Using
+
+                                                End Using
+                                                myHisReader.Close()
+
+                                            End If
+                                        Next
+                                    End If
+                                End Using
+
+                            ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
+                                If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+                                Dim myHisNC As New clsHisNCFile(myRun.OutputFilesDir & "\" & myFile.FileName, Me.Setup)
+
                                 If myFile.Parameters.Count = 0 Then
                                     Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
                                 Else
@@ -974,171 +958,119 @@ Public Class clsStochastenAnalyse
                                             Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
                                         Else
                                             '--------------------------------------------------------------------------------------------------------------------------------------------
-                                            '  writing the results for this run to the database
-                                            '  start by reading the entire file to memory. This is supposed to be MUCH faster than reading from file every time
+                                            '  writing the results for this run & parameter to the database
                                             '--------------------------------------------------------------------------------------------------------------------------------------------
+                                            Dim Waterlevels As Double(,) = Nothing
+                                            Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
+                                            Dim IDList As String() = Nothing
+                                            If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
 
-                                            'database needs to be populated or refreshed for this run. read the hisfile to memory
-                                            myHisReader.ReadToMemory()
-                                            Using hisReader As New BinaryReader(myHisReader.ms)
+                                            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                            Using myCmd As New SQLite.SQLiteCommand
+                                                myCmd.Connection = Me.Setup.SqliteCon
+                                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                                                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                                Using myCmd As New SQLite.SQLiteCommand
-                                                    myCmd.Connection = Me.Setup.SqliteCon
-                                                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                                                    For i = 0 To IDList.Count - 1
+                                                        Dim ID As String = IDList(i)
 
-                                                        'walk through each location and retreive the stochastic results
-                                                        For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
-                                                            If Not myHisReader.ReadStochasticResultsFromMemoryStream(hisReader, myLoc.ID, myPar.Name, MaxInLastTimeStep, Min, tsMin, Max, tsMax, Avg, ResultsStartPercentage) Then
-                                                                Me.Setup.Log.AddError("Could not read results for location " & myLoc.ID & " and parameter " & myPar.Name & ".")
-                                                            Else
-                                                                'add the outcome of this run to the dictionary of results
-                                                                myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                                myCmd.ExecuteNonQuery()
-                                                                If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
-                                                            End If
-                                                        Next
+                                                        If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
+                                                            Max = -9.0E+99
+                                                            Min = 9.0E+99
+                                                            mySum = 0
+                                                            n = 0
 
-                                                        'insert the results for all locations at once
-                                                        transaction.Commit() 'this is where the bulk insert is finally executed.
-                                                    End Using
+                                                            For j = 0 To UBound(Waterlevels, 1)
+                                                                If (j + 1) / (UBound(Waterlevels, 1) + 1) * 100 >= ResultsStartPercentage Then
+                                                                    n += 1
+                                                                    mySum += Waterlevels(j, i)
+                                                                    If Waterlevels(j, i) > Max Then
+                                                                        Max = Waterlevels(j, i)
+                                                                        tsMax = j
+                                                                        If j = UBound(Waterlevels, 1) Then MaxInLastTimeStep = True
+                                                                    End If
+                                                                    If Waterlevels(j, i) < Min Then
+                                                                        Min = Waterlevels(j, i)
+                                                                        tsMin = j
+                                                                    End If
+                                                                End If
+                                                            Next
+                                                            Avg = mySum / n
+
+                                                            'add the outcome of this run to the dictionary of results
+                                                            myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                                            myCmd.ExecuteNonQuery()
+                                                            If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myPar.Locations.Item(ID.Trim.ToUpper).ID)
+
+                                                        End If
+                                                    Next
+
+                                                    'insert the resulta for all locations at once
+                                                    transaction.Commit() 'this is where the bulk insert is finally executed.
                                                 End Using
-
                                             End Using
-                                            myHisReader.Close()
 
                                         End If
                                     Next
                                 End If
-                            End Using
-
-                        ElseIf Right(myfile.FileName, 7).ToLower = "_fou.nc" Then
-
-                            'this is a D-Hydro Fourier file!
-                            Dim path As String = myRun.OutputFilesDir & "\" & myFile.FileName
-                            Dim myFouNC As New clsFouNCFile(path, Me.Setup)
-                            If Not System.IO.File.Exists(path) Then Throw New Exception("Fourier file does not exist: " & path)
-                            If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
-
-                            'retrieve the maximum water levels from our Fourier file
-                            Dim Maxima As Double() = myFouNC.get2DMaximumWaterLevels()
-
-                            If myFile.Parameters.Values.Count = 0 Then
-                                Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
-                            Else
-                                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-                                    If myPar.Locations.Count = 0 Then
-                                        Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-                                    Else
-                                        '--------------------------------------------------------------------------------------------------------------------------------------------
-                                        '  writing the results for this run & parameter to the database
-                                        '--------------------------------------------------------------------------------------------------------------------------------------------
-                                        'Dim Waterlevels As Double(,) = Nothing
-                                        'Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
-                                        'Dim IDList As String() = Nothing
-                                        'If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
-
-                                        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                        Using myCmd As New SQLite.SQLiteCommand
-                                            myCmd.Connection = Me.Setup.SqliteCon
-                                            Using transaction = Me.Setup.SqliteCon.BeginTransaction
-
-                                                For i = 0 To Maxima.Count - 1
-                                                    Dim ID As String = i.ToString       'the index number of each cell is also considered its ID
-
-                                                    If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
-                                                        'v2.2.2: support for maxima from Fourier files added. Other params not yet
-                                                        Max = Maxima(i)
-                                                        Min = 0
-                                                        Avg = 0
-
-                                                        'add the outcome of this run to the dictionary of results
-                                                        myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                        myCmd.ExecuteNonQuery()
-
-                                                    End If
-                                                Next
-
-                                                'insert the resulta for all locations at once
-                                                transaction.Commit() 'this is where the bulk insert is finally executed.
-                                            End Using
-                                        End Using
-
-                                    End If
-                                Next
                             End If
-
-                        ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
-                            If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
-                            Dim myHisNC As New clsHisNCFile(myRun.OutputFilesDir & "\" & myFile.FileName, Me.Setup)
-
-                            If myFile.Parameters.Count = 0 Then
-                                Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
-                            Else
-                                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-                                    If myPar.Locations.Count = 0 Then
-                                        Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-                                    Else
-                                        '--------------------------------------------------------------------------------------------------------------------------------------------
-                                        '  writing the results for this run & parameter to the database
-                                        '--------------------------------------------------------------------------------------------------------------------------------------------
-                                        Dim Waterlevels As Double(,) = Nothing
-                                        Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
-                                        Dim IDList As String() = Nothing
-                                        If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
-
-                                        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                        Using myCmd As New SQLite.SQLiteCommand
-                                            myCmd.Connection = Me.Setup.SqliteCon
-                                            Using transaction = Me.Setup.SqliteCon.BeginTransaction
-
-                                                For i = 0 To IDList.Count - 1
-                                                    Dim ID As String = IDList(i)
-
-                                                    If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
-                                                        Max = -9.0E+99
-                                                        Min = 9.0E+99
-                                                        mySum = 0
-                                                        n = 0
-
-                                                        For j = 0 To UBound(Waterlevels, 1)
-                                                            If (j + 1) / (UBound(Waterlevels, 1) + 1) * 100 >= ResultsStartPercentage Then
-                                                                n += 1
-                                                                mySum += Waterlevels(j, i)
-                                                                If Waterlevels(j, i) > Max Then
-                                                                    Max = Waterlevels(j, i)
-                                                                    tsMax = j
-                                                                    If j = UBound(Waterlevels, 1) Then MaxInLastTimeStep = True
-                                                                End If
-                                                                If Waterlevels(j, i) < Min Then
-                                                                    Min = Waterlevels(j, i)
-                                                                    tsMin = j
-                                                                End If
-                                                            End If
-                                                        Next
-                                                        Avg = mySum / n
-
-                                                        'add the outcome of this run to the dictionary of results
-                                                        myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                        myCmd.ExecuteNonQuery()
-                                                        If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myPar.Locations.Item(ID.Trim.ToUpper).ID)
-
-                                                    End If
-                                                Next
-
-                                                'insert the resulta for all locations at once
-                                                transaction.Commit() 'this is where the bulk insert is finally executed.
-                                            End Using
-                                        End Using
-
-                                    End If
-                                Next
-                            End If
-                        End If
+                        Next
                     Next
                 Next
-            Next
 
+            End If
+
+
+            If results2D Then
+                'read the results. For now we will only support Fourier Files
+                n = Runs.Runs.Count
+                i = 0
+                For Each myRun As clsStochastenRun In Runs.Runs.Values                        'doorloop alle runs en lees de resultaatbestanden uit
+                    i += 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen voor simulatie " & i & " van " & n, i, n, True)
+                    For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
+                        For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
+                            If Right(myFile.FileName, 7).ToLower = "_fou.nc" Then
+                                If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+
+                                Dim path As String = myRun.OutputFilesDir & "\" & myFile.FileName
+                                Dim myFouNC As New clsFouNCFile(path, Me.Setup)
+                                If Not System.IO.File.Exists(path) Then Throw New Exception("Fourier file does not exist: " & path)
+                                If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
+
+                                'retrieve the maximum water levels from our Fourier file
+                                Dim Maxima As Double() = myFouNC.get2DMaximumWaterLevels()
+
+                                'now we have to write these maxima to the database. use the index number as location ID
+
+
+                                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                                Using myCmd As New SQLite.SQLiteCommand
+                                    myCmd.Connection = Me.Setup.SqliteCon
+                                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
+
+                                        For j = 0 To Maxima.Count - 1
+                                            Dim ID As String = j.ToString       'the index number of each cell is also considered its ID
+
+                                            Max = Maxima(j)
+                                            Min = 0
+                                            Avg = 0
+
+                                            'add the outcome of this run to the dictionary of results
+                                            myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & j.ToString & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                                            myCmd.ExecuteNonQuery()
+
+                                        Next
+
+                                        'insert the resulta for all locations at once
+                                        transaction.Commit() 'this is where the bulk insert is finally executed.
+                                    End Using
+                                End Using
+
+                            End If
+                        Next
+                    Next
+                Next
+            End If
 
             If Me.Setup.Log.Errors.Count > 0 Then
                 Me.Setup.Log.AddMessage("Reading simulation complete, but with errors! Please check.")
@@ -1414,7 +1346,7 @@ Public Class clsStochastenAnalyse
             Done = True
             For Each myModel In Models.Values
                 For Each myFile In myModel.ResultsFiles.Files.Values
-                    If Not File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then
+                    If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then
                         Done = False
                         AllComplete = False
                         Exit For

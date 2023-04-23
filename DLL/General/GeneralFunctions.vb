@@ -11,7 +11,8 @@ Imports HtmlAgilityPack
 Imports Newtonsoft.Json
 Imports MapWinGIS
 Imports Microsoft.VisualBasic.CompilerServices
-
+Imports System.Data.SQLite
+Imports System.Text
 
 Public Class GeneralFunctions
     Private setup As clsSetup
@@ -2038,6 +2039,144 @@ Public Class GeneralFunctions
         End Try
 
     End Function
+
+    Public Function UpgradeStochastenToolDatabase() As Boolean
+        'here we will implement the new approach to upgrading a table: use the method as proposed by ChatGPT
+        Me.setup.GeneralFunctions.UpdateProgressBar("Upgrading database: checking RESULTATEN table...", 1, 10, True)
+
+        'Upgrade our RESULTATEN table
+        Dim Fields As New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("MINVAL", New clsSQLiteField("MINVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("MAXVAL", New clsSQLiteField("MAXVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("AVGVAL", New clsSQLiteField("AVGVAL", enmSQLiteDataType.SQLITEREAL, False))
+        CreateOrUpdateSQLiteTable(Me.setup.SqliteCon, "RESULTATEN", Fields)
+
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "RUNID"}
+        CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "RESULTATEN", CompositeIndex)
+
+        'Upgrade our HERHALINGSTIJDEN table
+        Fields = New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("GW", New clsSQLiteField("GW", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("BOUNDARY", New clsSQLiteField("BOUNDARY", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("WIND", New clsSQLiteField("WIND", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("HERHALINGSTIJD", New clsSQLiteField("HERHALINGSTIJD", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+        CreateOrUpdateSQLiteTable(Me.setup.SqliteCon, "HERHALINGSTIJDEN", Fields)
+
+        CompositeIndex = New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM"}
+        CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "HERHALINGSTIJDEN", CompositeIndex)
+
+
+
+    End Function
+
+
+
+    Public Sub CreateOrUpdateSQLiteTable(ByVal SQLiteCon As SQLiteConnection, ByVal TableName As String, ByVal Fields As Dictionary(Of String, clsSQLiteField))
+
+        Dim sql As New StringBuilder()
+        Dim checkTableExistsSql As String = $"SELECT name FROM sqlite_master WHERE type='table' AND name='{TableName}';"
+
+        Using cmd As New SQLiteCommand(checkTableExistsSql, SQLiteCon)
+            Dim result = cmd.ExecuteScalar()
+
+            ' Create table if it does not exist
+            If result Is Nothing Then
+                sql.Append($"CREATE TABLE {TableName} (")
+
+                Dim fieldsSql As New List(Of String)
+                For Each field In Fields.Values
+                    fieldsSql.Add($"{field.FieldName} {clsSQLiteField.SQLiteDataTypeToString(field.DataType)}")
+                Next
+
+                sql.Append(String.Join(", ", fieldsSql))
+                sql.Append(");")
+
+                Using createTableCmd As New SQLiteCommand(sql.ToString(), SQLiteCon)
+                    createTableCmd.ExecuteNonQuery()
+                End Using
+            End If
+        End Using
+
+        ' Check and create fields if they do not exist
+        For Each field In Fields.Values
+            Dim checkFieldExistsSql As String = $"PRAGMA table_info({TableName});"
+
+            Dim fieldExists As Boolean = False
+            Using cmd As New SQLiteCommand(checkFieldExistsSql, SQLiteCon)
+                Using reader As SQLiteDataReader = cmd.ExecuteReader()
+                    While reader.Read()
+                        If reader("name").ToString().ToUpper() = field.FieldName.ToUpper() Then
+                            fieldExists = True
+                            Exit While
+                        End If
+                    End While
+                End Using
+            End Using
+
+            If Not fieldExists Then
+                Dim addFieldSql As String = $"ALTER TABLE {TableName} ADD COLUMN {field.FieldName} {clsSQLiteField.SQLiteDataTypeToString(field.DataType)};"
+                Using addFieldCmd As New SQLiteCommand(addFieldSql, SQLiteCon)
+                    addFieldCmd.ExecuteNonQuery()
+                End Using
+            End If
+
+            ' Check and create indexes
+            If field.HasIndex Then
+                Dim indexName As String = $"idx_{TableName}_{field.FieldName}"
+                Dim checkIndexExistsSql As String = $"SELECT name FROM sqlite_master WHERE type='index' AND name='{indexName}';"
+
+                Using cmd As New SQLiteCommand(checkIndexExistsSql, SQLiteCon)
+                    Dim result = cmd.ExecuteScalar()
+
+                    If result Is Nothing Then
+                        Dim createIndexSql As String = $"CREATE INDEX {indexName} ON {TableName}({field.FieldName});"
+
+                        Using createIndexCmd As New SQLiteCommand(createIndexSql, SQLiteCon)
+                            createIndexCmd.ExecuteNonQuery()
+                        End Using
+                    End If
+                End Using
+            End If
+        Next
+    End Sub
+
+
+    Public Sub CreateOrUpdateSQLiteCompositeIndex(ByVal SQLiteCon As SQLiteConnection, ByVal TableName As String, ByVal Fields As List(Of String))
+        Dim indexName As String = $"idx_{TableName}_{String.Join("_", Fields)}"
+
+        ' Check if the composite index exists
+        Dim checkIndexExistsSql As String = $"SELECT name FROM sqlite_master WHERE type='index' AND name='{indexName}';"
+
+        Using cmd As New SQLiteCommand(checkIndexExistsSql, SQLiteCon)
+            Dim result = cmd.ExecuteScalar()
+
+            ' If the index does not exist, create the composite index
+            If result Is Nothing Then
+                Dim createIndexSql As String = $"CREATE INDEX {indexName} ON {TableName}({String.Join(", ", Fields)});"
+
+                Using createIndexCmd As New SQLiteCommand(createIndexSql, SQLiteCon)
+                    createIndexCmd.ExecuteNonQuery()
+                End Using
+            End If
+        End Using
+    End Sub
+
 
     Public Function UpgradeTimeseriesToolDatabase(ByRef myConnection As SQLite.SQLiteConnection) As Boolean
         Try

@@ -68,6 +68,25 @@ Public Class frmStochasten
 
     End Sub
 
+    Private Sub tabOutput_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tabOutput.SelectedIndexChanged
+        'make the output types tab togglable
+        ToggleTabs()
+    End Sub
+
+    Private Sub ToggleTabs()
+        ' Enable tab1D and disable tab2D if tab1D is selected
+        If tabOutput.SelectedTab Is tab1D Then
+            tab1D.Enabled = True
+            tab2D.Enabled = False
+        End If
+
+        ' Enable tab2D and disable tab1D if tab2D is selected
+        If tabOutput.SelectedTab Is tab2D Then
+            tab1D.Enabled = False
+            tab2D.Enabled = True
+        End If
+    End Sub
+
     Private Sub CmbDuration_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmbDuration.SelectedIndexChanged
         RebuildAllGrids()
     End Sub
@@ -2524,13 +2543,13 @@ Public Class frmStochasten
         'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
         Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
-        'if we have 2D results, we also create an Exceedance Mesh
-        Setup.StochastenAnalyse.CalculateExceedanceMesh()
+        If tab2D.Enabled Then
+            'if we have 2D results, we also create an Exceedance Mesh
+            Setup.StochastenAnalyse.CalculateExceedanceMesh()
+        End If
 
         Me.Cursor = Cursors.WaitCursor
         Setup.StochastenAnalyse.CalculateExceedanceTables(Me.Setup.SqliteCon)
-
-
 
         Me.Cursor = Cursors.Default
 
@@ -4307,6 +4326,7 @@ Public Class frmStochasten
         dlgOpenFile.ShowDialog()
         txtDatabase.Text = dlgOpenFile.FileName
         Me.Setup.SetDatabaseConnection(txtDatabase.Text)
+        Me.Setup.GeneralFunctions.UpgradeStochastenToolDatabase
     End Sub
 
     Private Sub btnResultsDir_Click(sender As Object, e As EventArgs) Handles btnResultsDir.Click
@@ -4330,7 +4350,7 @@ Public Class frmStochasten
 
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
-        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon)
+        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon, tab1D.Enabled, tab2D.Enabled)
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
         Me.Cursor = Cursors.Default
@@ -4569,6 +4589,16 @@ Public Class frmStochasten
         If Result = DialogResult.OK Then
             PopulateSimulationModelsGrid()
         End If
+    End Sub
+
+    Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click
+        Me.Setup.GeneralFunctions.UpdateProgressBar("Clearing data from table RESULTATEN", 0, 10, True)
+        Dim query As String = "DELETE FROM RESULTATEN;"
+        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+        Me.Setup.GeneralFunctions.UpdateProgressBar("Clearing data from table HERHALINGSTIJDEN", 5, 10, True)
+        query = "DELETE FROM HERHALINGSTIJDEN;"
+        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+        Me.Setup.GeneralFunctions.UpdateProgressBar("Cleanup complete.", 0, 10, True)
     End Sub
 
     Public Function WriteSubcatchmentsJSON(path As String) As Boolean

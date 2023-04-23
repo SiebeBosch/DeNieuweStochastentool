@@ -150,8 +150,12 @@ Partial Class frmStochasten
         Me.grWindKlassen = New System.Windows.Forms.DataGridView()
         Me.tabExtra = New System.Windows.Forms.TabPage()
         Me.tabPostprocessing = New System.Windows.Forms.TabPage()
-        Me.btnRemoveOutputLocation = New System.Windows.Forms.Button()
+        Me.tabOutput = New System.Windows.Forms.TabControl()
+        Me.tab1D = New System.Windows.Forms.TabPage()
         Me.grOutputLocations = New System.Windows.Forms.DataGridView()
+        Me.btnRemoveOutputLocation = New System.Windows.Forms.Button()
+        Me.tab2D = New System.Windows.Forms.TabPage()
+        Me.radFou = New System.Windows.Forms.RadioButton()
         Me.TabRuns = New System.Windows.Forms.TabPage()
         Me.btnUitlezen = New System.Windows.Forms.Button()
         Me.btnViewer = New System.Windows.Forms.Button()
@@ -267,6 +271,7 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
+        Me.AlleResultatenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -294,7 +299,10 @@ Partial Class frmStochasten
         Me.GroupBox24.SuspendLayout()
         CType(Me.grWindKlassen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.tabPostprocessing.SuspendLayout()
+        Me.tabOutput.SuspendLayout()
+        Me.tab1D.SuspendLayout()
         CType(Me.grOutputLocations, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.tab2D.SuspendLayout()
         Me.TabRuns.SuspendLayout()
         CType(Me.grRuns, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabPage1.SuspendLayout()
@@ -395,32 +403,32 @@ Partial Class frmStochasten
         '
         Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
         Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
-        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.ModelToolStripMenuItem.Text = "Model"
         '
         'ToevoegenToolStripMenuItem
         '
         Me.ToevoegenToolStripMenuItem.Name = "ToevoegenToolStripMenuItem"
-        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(200, 34)
         Me.ToevoegenToolStripMenuItem.Text = "Toevoegen"
         '
         'UitvoerlocatiesToolStripMenuItem
         '
         Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
         Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
-        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
         Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
         '
         'ImporterenToolStripMenuItem1
         '
         Me.ImporterenToolStripMenuItem1.Name = "ImporterenToolStripMenuItem1"
-        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(270, 34)
+        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(205, 34)
         Me.ImporterenToolStripMenuItem1.Text = "Importeren"
         '
         'AlleVerwijderenToolStripMenuItem
         '
         Me.AlleVerwijderenToolStripMenuItem.Name = "AlleVerwijderenToolStripMenuItem"
-        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
+        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(205, 34)
         Me.AlleVerwijderenToolStripMenuItem.Text = "Verwijderen"
         '
         'ToolsToolStripMenuItem
@@ -614,7 +622,7 @@ Partial Class frmStochasten
         '
         'VerwijderenToolStripMenuItem
         '
-        Me.VerwijderenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesSTOWA2014ToolStripMenuItem, Me.VolumesSTOWA2019ToolStripMenuItem})
+        Me.VerwijderenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesSTOWA2014ToolStripMenuItem, Me.VolumesSTOWA2019ToolStripMenuItem, Me.AlleResultatenToolStripMenuItem})
         Me.VerwijderenToolStripMenuItem.Name = "VerwijderenToolStripMenuItem"
         Me.VerwijderenToolStripMenuItem.Size = New System.Drawing.Size(396, 34)
         Me.VerwijderenToolStripMenuItem.Text = "Verwijderen"
@@ -1568,8 +1576,7 @@ Partial Class frmStochasten
         '
         'tabPostprocessing
         '
-        Me.tabPostprocessing.Controls.Add(Me.btnRemoveOutputLocation)
-        Me.tabPostprocessing.Controls.Add(Me.grOutputLocations)
+        Me.tabPostprocessing.Controls.Add(Me.tabOutput)
         Me.tabPostprocessing.Location = New System.Drawing.Point(4, 29)
         Me.tabPostprocessing.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.tabPostprocessing.Name = "tabPostprocessing"
@@ -1579,17 +1586,30 @@ Partial Class frmStochasten
         Me.tabPostprocessing.Text = "Uitvoer"
         Me.tabPostprocessing.UseVisualStyleBackColor = True
         '
-        'btnRemoveOutputLocation
+        'tabOutput
         '
-        Me.btnRemoveOutputLocation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnRemoveOutputLocation.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveOutputLocation.Location = New System.Drawing.Point(1863, 9)
-        Me.btnRemoveOutputLocation.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.btnRemoveOutputLocation.Name = "btnRemoveOutputLocation"
-        Me.btnRemoveOutputLocation.Size = New System.Drawing.Size(42, 40)
-        Me.btnRemoveOutputLocation.TabIndex = 1
-        Me.btnRemoveOutputLocation.Text = "-"
-        Me.btnRemoveOutputLocation.UseVisualStyleBackColor = False
+        Me.tabOutput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.tabOutput.Controls.Add(Me.tab1D)
+        Me.tabOutput.Controls.Add(Me.tab2D)
+        Me.tabOutput.Location = New System.Drawing.Point(7, 12)
+        Me.tabOutput.Name = "tabOutput"
+        Me.tabOutput.SelectedIndex = 0
+        Me.tabOutput.Size = New System.Drawing.Size(1903, 721)
+        Me.tabOutput.TabIndex = 2
+        '
+        'tab1D
+        '
+        Me.tab1D.Controls.Add(Me.grOutputLocations)
+        Me.tab1D.Controls.Add(Me.btnRemoveOutputLocation)
+        Me.tab1D.Location = New System.Drawing.Point(4, 29)
+        Me.tab1D.Name = "tab1D"
+        Me.tab1D.Padding = New System.Windows.Forms.Padding(3)
+        Me.tab1D.Size = New System.Drawing.Size(1895, 688)
+        Me.tab1D.TabIndex = 0
+        Me.tab1D.Text = "1D"
+        Me.tab1D.UseVisualStyleBackColor = True
         '
         'grOutputLocations
         '
@@ -1598,12 +1618,46 @@ Partial Class frmStochasten
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grOutputLocations.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.grOutputLocations.Location = New System.Drawing.Point(4, 9)
+        Me.grOutputLocations.Location = New System.Drawing.Point(7, 8)
         Me.grOutputLocations.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grOutputLocations.Name = "grOutputLocations"
         Me.grOutputLocations.RowHeadersWidth = 51
-        Me.grOutputLocations.Size = New System.Drawing.Size(1851, 691)
+        Me.grOutputLocations.Size = New System.Drawing.Size(1833, 656)
         Me.grOutputLocations.TabIndex = 0
+        '
+        'btnRemoveOutputLocation
+        '
+        Me.btnRemoveOutputLocation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRemoveOutputLocation.BackColor = System.Drawing.Color.IndianRed
+        Me.btnRemoveOutputLocation.Location = New System.Drawing.Point(1847, 8)
+        Me.btnRemoveOutputLocation.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnRemoveOutputLocation.Name = "btnRemoveOutputLocation"
+        Me.btnRemoveOutputLocation.Size = New System.Drawing.Size(42, 40)
+        Me.btnRemoveOutputLocation.TabIndex = 1
+        Me.btnRemoveOutputLocation.Text = "-"
+        Me.btnRemoveOutputLocation.UseVisualStyleBackColor = False
+        '
+        'tab2D
+        '
+        Me.tab2D.Controls.Add(Me.radFou)
+        Me.tab2D.Location = New System.Drawing.Point(4, 29)
+        Me.tab2D.Name = "tab2D"
+        Me.tab2D.Padding = New System.Windows.Forms.Padding(3)
+        Me.tab2D.Size = New System.Drawing.Size(1895, 688)
+        Me.tab2D.TabIndex = 1
+        Me.tab2D.Text = "2D"
+        Me.tab2D.UseVisualStyleBackColor = True
+        '
+        'radFou
+        '
+        Me.radFou.AutoSize = True
+        Me.radFou.Location = New System.Drawing.Point(20, 23)
+        Me.radFou.Name = "radFou"
+        Me.radFou.Size = New System.Drawing.Size(181, 24)
+        Me.radFou.TabIndex = 0
+        Me.radFou.TabStop = True
+        Me.radFou.Text = "Fourier file (D-Hydro)"
+        Me.radFou.UseVisualStyleBackColor = True
         '
         'TabRuns
         '
@@ -2739,6 +2793,12 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
         '
+        'AlleResultatenToolStripMenuItem
+        '
+        Me.AlleResultatenToolStripMenuItem.Name = "AlleResultatenToolStripMenuItem"
+        Me.AlleResultatenToolStripMenuItem.Size = New System.Drawing.Size(292, 34)
+        Me.AlleResultatenToolStripMenuItem.Text = "Alle resultaten"
+        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -2789,7 +2849,11 @@ Partial Class frmStochasten
         Me.GroupBox24.PerformLayout()
         CType(Me.grWindKlassen, System.ComponentModel.ISupportInitialize).EndInit()
         Me.tabPostprocessing.ResumeLayout(False)
+        Me.tabOutput.ResumeLayout(False)
+        Me.tab1D.ResumeLayout(False)
         CType(Me.grOutputLocations, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.tab2D.ResumeLayout(False)
+        Me.tab2D.PerformLayout()
         Me.TabRuns.ResumeLayout(False)
         Me.TabRuns.PerformLayout()
         CType(Me.grRuns, System.ComponentModel.ISupportInitialize).EndInit()
@@ -3085,4 +3149,9 @@ Partial Class frmStochasten
     Friend WithEvents AlleVerwijderenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ModelToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToevoegenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents tabOutput As TabControl
+    Friend WithEvents tab1D As TabPage
+    Friend WithEvents tab2D As TabPage
+    Friend WithEvents radFou As RadioButton
+    Friend WithEvents AlleResultatenToolStripMenuItem As ToolStripMenuItem
 End Class
