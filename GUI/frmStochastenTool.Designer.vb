@@ -70,6 +70,7 @@ Partial Class frmStochasten
         Me.VerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VolumesSTOWA2014ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VolumesSTOWA2019ToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AlleResultatenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BetafunctiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LeesFOUFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -271,7 +272,9 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.AlleResultatenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.rad1D = New System.Windows.Forms.RadioButton()
+        Me.rad2D = New System.Windows.Forms.RadioButton()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -340,6 +343,7 @@ Partial Class frmStochasten
         CType(Me.DataGridView13, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView14, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView15, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'mnuMenu
@@ -639,6 +643,12 @@ Partial Class frmStochasten
         Me.VolumesSTOWA2019ToolStripMenuItem.Size = New System.Drawing.Size(292, 34)
         Me.VolumesSTOWA2019ToolStripMenuItem.Text = "Volumes STOWA 2019"
         '
+        'AlleResultatenToolStripMenuItem
+        '
+        Me.AlleResultatenToolStripMenuItem.Name = "AlleResultatenToolStripMenuItem"
+        Me.AlleResultatenToolStripMenuItem.Size = New System.Drawing.Size(292, 34)
+        Me.AlleResultatenToolStripMenuItem.Text = "Alle resultaten"
+        '
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
@@ -684,6 +694,7 @@ Partial Class frmStochasten
         '
         'tabSettings
         '
+        Me.tabSettings.Controls.Add(Me.GroupBox1)
         Me.tabSettings.Controls.Add(Me.grMeteo)
         Me.tabSettings.Controls.Add(Me.grNabewerking)
         Me.tabSettings.Controls.Add(Me.grBerekeningen)
@@ -832,7 +843,7 @@ Partial Class frmStochasten
         Me.grBerekeningen.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grBerekeningen.Name = "grBerekeningen"
         Me.grBerekeningen.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.grBerekeningen.Size = New System.Drawing.Size(369, 332)
+        Me.grBerekeningen.Size = New System.Drawing.Size(369, 173)
         Me.grBerekeningen.TabIndex = 38
         Me.grBerekeningen.TabStop = False
         Me.grBerekeningen.Text = "Berekeningen"
@@ -1651,6 +1662,7 @@ Partial Class frmStochasten
         'radFou
         '
         Me.radFou.AutoSize = True
+        Me.radFou.Checked = True
         Me.radFou.Location = New System.Drawing.Point(20, 23)
         Me.radFou.Name = "radFou"
         Me.radFou.Size = New System.Drawing.Size(181, 24)
@@ -2793,11 +2805,38 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
         '
-        'AlleResultatenToolStripMenuItem
+        'rad1D
         '
-        Me.AlleResultatenToolStripMenuItem.Name = "AlleResultatenToolStripMenuItem"
-        Me.AlleResultatenToolStripMenuItem.Size = New System.Drawing.Size(292, 34)
-        Me.AlleResultatenToolStripMenuItem.Text = "Alle resultaten"
+        Me.rad1D.AutoSize = True
+        Me.rad1D.Checked = True
+        Me.rad1D.Location = New System.Drawing.Point(18, 39)
+        Me.rad1D.Name = "rad1D"
+        Me.rad1D.Size = New System.Drawing.Size(130, 24)
+        Me.rad1D.TabIndex = 38
+        Me.rad1D.TabStop = True
+        Me.rad1D.Text = "resultaten 1D"
+        Me.rad1D.UseVisualStyleBackColor = True
+        '
+        'rad2D
+        '
+        Me.rad2D.AutoSize = True
+        Me.rad2D.Location = New System.Drawing.Point(19, 69)
+        Me.rad2D.Name = "rad2D"
+        Me.rad2D.Size = New System.Drawing.Size(130, 24)
+        Me.rad2D.TabIndex = 39
+        Me.rad2D.Text = "resultaten 2D"
+        Me.rad2D.UseVisualStyleBackColor = True
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.rad2D)
+        Me.GroupBox1.Controls.Add(Me.rad1D)
+        Me.GroupBox1.Location = New System.Drawing.Point(500, 569)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(369, 155)
+        Me.GroupBox1.TabIndex = 41
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Output"
         '
         'frmStochasten
         '
@@ -2901,6 +2940,8 @@ Partial Class frmStochasten
         CType(Me.DataGridView13, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView14, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView15, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3154,4 +3195,7 @@ Partial Class frmStochasten
     Friend WithEvents tab2D As TabPage
     Friend WithEvents radFou As RadioButton
     Friend WithEvents AlleResultatenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents rad2D As RadioButton
+    Friend WithEvents rad1D As RadioButton
 End Class

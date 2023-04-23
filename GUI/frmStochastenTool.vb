@@ -68,24 +68,6 @@ Public Class frmStochasten
 
     End Sub
 
-    Private Sub tabOutput_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tabOutput.SelectedIndexChanged
-        'make the output types tab togglable
-        ToggleTabs()
-    End Sub
-
-    Private Sub ToggleTabs()
-        ' Enable tab1D and disable tab2D if tab1D is selected
-        If tabOutput.SelectedTab Is tab1D Then
-            tab1D.Enabled = True
-            tab2D.Enabled = False
-        End If
-
-        ' Enable tab2D and disable tab1D if tab2D is selected
-        If tabOutput.SelectedTab Is tab2D Then
-            tab1D.Enabled = False
-            tab2D.Enabled = True
-        End If
-    End Sub
 
     Private Sub CmbDuration_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmbDuration.SelectedIndexChanged
         RebuildAllGrids()
@@ -681,6 +663,12 @@ Public Class frmStochasten
                         txtOutputDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "resultatenmap" Then
                         txtResultatenDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                    ElseIf n_node.Name.Trim.ToLower = "resultatenmodule" Then
+                        If n_node.InnerText.Trim.ToUpper = "2D" Then
+                            rad2D.Checked = True
+                        Else
+                            rad1D.Checked = True
+                        End If
                     ElseIf n_node.Name.Trim.ToLower = "maxparallel" Then
                         txtMaxParallel.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "klimaatscenario" Then
@@ -2543,13 +2531,13 @@ Public Class frmStochasten
         'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
         Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
-        If tab2D.Enabled Then
+        If rad2D.Checked Then
             'if we have 2D results, we also create an Exceedance Mesh
             Setup.StochastenAnalyse.CalculateExceedanceMesh()
         End If
 
         Me.Cursor = Cursors.WaitCursor
-        Setup.StochastenAnalyse.CalculateExceedanceTables(Me.Setup.SqliteCon)
+        Setup.StochastenAnalyse.CalculateExceedanceTables(rad1D.Checked, rad2D.Checked)
 
         Me.Cursor = Cursors.Default
 
@@ -4236,6 +4224,11 @@ Public Class frmStochasten
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", InputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", OutputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", ResultsPathRelative, 4)
+                If rad2D.Checked Then
+                    Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmodule", "2D", 4)
+                Else
+                    Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmodule", "1D", 4)
+                End If
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "klimaatscenario", cmbClimate.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "duur", cmbDuration.Text, 4)
@@ -4350,7 +4343,7 @@ Public Class frmStochasten
 
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
-        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon, tab1D.Enabled, tab2D.Enabled)
+        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon, rad1D.Checked, rad2D.Checked)
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
         Me.Cursor = Cursors.Default
