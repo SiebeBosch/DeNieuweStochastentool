@@ -14,6 +14,7 @@ Imports Microsoft.VisualBasic.CompilerServices
 Imports System.Data.SQLite
 Imports System.Text
 
+
 Public Class GeneralFunctions
     Private setup As clsSetup
     Public unitConversion As clsUnitConversion
@@ -2057,6 +2058,10 @@ Public Class GeneralFunctions
         CreateOrUpdateSQLiteTable(Me.setup.SqliteCon, "RESULTATEN", Fields)
 
         Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "RUNID"}
+        CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "RESULTATEN", CompositeIndex)
+
+        'also create a composite index for the creation of exceedance tables
+        CompositeIndex = New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "MAXVAL"}
         CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "RESULTATEN", CompositeIndex)
 
         'Upgrade our HERHALINGSTIJDEN table
@@ -5073,47 +5078,49 @@ Public Class GeneralFunctions
     End Function
 
     Public Sub DataTable2CSV(ByRef dtRes As DataTable, ByRef dtRuns As DataTable, path As String, delimiter As String)
-        Dim i As Integer, j As Integer, k As Integer, myStr As String, RUNID As String
+        Dim i As Integer, j As Integer, RUNID As String
 
         path = ReplaceInvalidCharactersInPath(path, "_")
         Using csvWriter As New StreamWriter(path)
 
-            'write the csv header
-            myStr = ""
-            For j = 0 To dtRes.Columns.Count - 1
-                myStr &= dtRes.Columns(j).ColumnName & delimiter
+            ' Create a dictionary for fast RUNID lookup
+            Dim runIdRowData As New Dictionary(Of String, String)()
+
+            For i = 0 To dtRuns.Rows.Count - 1
+                Dim rowData As New StringBuilder()
+                For j = 0 To dtRuns.Columns.Count - 2
+                    rowData.Append(dtRuns.Rows(i)(j)).Append(delimiter)
+                Next
+                rowData.Append(dtRuns.Rows(i)(dtRuns.Columns.Count - 1))
+                runIdRowData.Add(dtRuns.Rows(i)("RUNID"), rowData.ToString())
             Next
-            'v2.020: temporarily disabled this feature
-            'For j = 0 To dtRuns.Columns.Count - 2
-            '    myStr &= dtRuns.Columns(j).ColumnName & delimiter
-            'Next
-            'myStr &= dtRuns.Columns(dtRuns.Columns.Count - 1).ColumnName & delimiter
-            csvWriter.WriteLine(myStr)
 
-            'write the csv data
+            ' Write the CSV header
+            Dim csvLine As New StringBuilder()
+            For j = 0 To dtRes.Columns.Count - 1
+                csvLine.Append(dtRes.Columns(j).ColumnName).Append(delimiter)
+            Next
+            csvWriter.WriteLine(csvLine.ToString())
+
+            ' Write the CSV data
             For i = 0 To dtRes.Rows.Count - 1
-                'first the results
-                myStr = ""
+                ' First the results
+                csvLine.Clear()
                 For j = 0 To dtRes.Columns.Count - 1
-                    myStr &= dtRes.Rows(i)(j) & delimiter
+                    csvLine.Append(dtRes.Rows(i)(j)).Append(delimiter)
                 Next
 
-                'then the simulation information
+                ' Then the simulation information
                 RUNID = dtRes.Rows(i)("RUNID")
-                For j = 0 To dtRuns.Rows.Count - 1
-                    If dtRuns.Rows(j)("RUNID") = RUNID Then
-                        For k = 0 To dtRuns.Columns.Count - 2
-                            myStr &= dtRuns.Rows(j)(k) & delimiter
-                        Next
-                        myStr &= dtRuns.Rows(j)(dtRuns.Columns.Count - 1)
-                        Exit For
-                    End If
-                Next
+                If runIdRowData.ContainsKey(RUNID) Then
+                    csvLine.Append(runIdRowData(RUNID))
+                End If
 
-                csvWriter.WriteLine(myStr)
+                csvWriter.WriteLine(csvLine.ToString())
             Next
         End Using
     End Sub
+
 
     Public Sub PopulateComboBoxWithTimeSeriesProcessingOptions(ByRef myCombo As Windows.Forms.ComboBox)
         myCombo.Items.Clear()

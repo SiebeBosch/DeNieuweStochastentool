@@ -3289,7 +3289,15 @@ Public Class frmStochasten
     End Sub
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
-        Call Setup.StochastenAnalyse.ExportResults(Me.Setup.SqliteCon)
+
+        If rad1D.Checked Then
+            Call Setup.StochastenAnalyse.ExportResults1D()
+        End If
+
+        If rad2D.Checked Then
+            Call Setup.StochastenAnalyse.ExportResults2D()
+        End If
+
         Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"
         If Me.Setup.ExcelFile.Sheets.Count > 0 Then Me.Setup.ExcelFile.Save(False)
         Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
