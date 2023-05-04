@@ -1770,7 +1770,7 @@ Public Class GeneralFunctions
     Public Function SqliteRenameTextValue(ByRef con As SQLite.SQLiteConnection, TableName As String, ColumnName As String, OldValue As String, NewValue As String) As Boolean
         Try
             Dim query As String = "UPDATE " & TableName & " SET " & ColumnName & "='" & NewValue & "' WHERE " & ColumnName & "='" & OldValue & "';"
-            SQLiteNoQuery(con, query)
+            SQLiteNoQuery(con, query, False)
             Return True
         Catch ex As Exception
             Me.setup.Log.AddError("Error updating changing value " & OldValue & " to " & NewValue & " in table " & TableName)
@@ -2040,56 +2040,6 @@ Public Class GeneralFunctions
         End Try
 
     End Function
-
-    Public Function UpgradeStochastenToolDatabase() As Boolean
-        'here we will implement the new approach to upgrading a table: use the method as proposed by ChatGPT
-        Me.setup.GeneralFunctions.UpdateProgressBar("Upgrading database: checking RESULTATEN table...", 1, 10, True)
-
-        'Upgrade our RESULTATEN table
-        Dim Fields As New Dictionary(Of String, clsSQLiteField)
-        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
-        Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
-        Fields.Add("MINVAL", New clsSQLiteField("MINVAL", enmSQLiteDataType.SQLITEREAL, False))
-        Fields.Add("MAXVAL", New clsSQLiteField("MAXVAL", enmSQLiteDataType.SQLITEREAL, False))
-        Fields.Add("AVGVAL", New clsSQLiteField("AVGVAL", enmSQLiteDataType.SQLITEREAL, False))
-        CreateOrUpdateSQLiteTable(Me.setup.SqliteCon, "RESULTATEN", Fields)
-
-        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "RUNID"}
-        CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "RESULTATEN", CompositeIndex)
-
-        'also create a composite index for the creation of exceedance tables
-        CompositeIndex = New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "MAXVAL"}
-        CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "RESULTATEN", CompositeIndex)
-
-        'Upgrade our HERHALINGSTIJDEN table
-        Fields = New Dictionary(Of String, clsSQLiteField)
-        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
-        Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
-        Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("GW", New clsSQLiteField("GW", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("BOUNDARY", New clsSQLiteField("BOUNDARY", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("WIND", New clsSQLiteField("WIND", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, False))
-        Fields.Add("HERHALINGSTIJD", New clsSQLiteField("HERHALINGSTIJD", enmSQLiteDataType.SQLITEREAL, False))
-        Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
-        CreateOrUpdateSQLiteTable(Me.setup.SqliteCon, "HERHALINGSTIJDEN", Fields)
-
-        CompositeIndex = New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM"}
-        CreateOrUpdateSQLiteCompositeIndex(Me.setup.SqliteCon, "HERHALINGSTIJDEN", CompositeIndex)
-
-
-
-    End Function
-
 
 
     Public Sub CreateOrUpdateSQLiteTable(ByVal SQLiteCon As SQLiteConnection, ByVal TableName As String, ByVal Fields As Dictionary(Of String, clsSQLiteField))
@@ -5077,44 +5027,26 @@ Public Class GeneralFunctions
 
     End Function
 
-    Public Sub DataTable2CSV(ByRef dtRes As DataTable, ByRef dtRuns As DataTable, path As String, delimiter As String)
-        Dim i As Integer, j As Integer, RUNID As String
+    Public Sub DataTable2CSV(ByRef dt As DataTable, path As String, delimiter As String)
+        Dim i As Integer, j As Integer
 
         path = ReplaceInvalidCharactersInPath(path, "_")
         Using csvWriter As New StreamWriter(path)
 
-            ' Create a dictionary for fast RUNID lookup
-            Dim runIdRowData As New Dictionary(Of String, String)()
-
-            For i = 0 To dtRuns.Rows.Count - 1
-                Dim rowData As New StringBuilder()
-                For j = 0 To dtRuns.Columns.Count - 2
-                    rowData.Append(dtRuns.Rows(i)(j)).Append(delimiter)
-                Next
-                rowData.Append(dtRuns.Rows(i)(dtRuns.Columns.Count - 1))
-                runIdRowData.Add(dtRuns.Rows(i)("RUNID"), rowData.ToString())
-            Next
-
             ' Write the CSV header
             Dim csvLine As New StringBuilder()
-            For j = 0 To dtRes.Columns.Count - 1
-                csvLine.Append(dtRes.Columns(j).ColumnName).Append(delimiter)
+            For j = 0 To dt.Columns.Count - 1
+                csvLine.Append(dt.Columns(j).ColumnName).Append(delimiter)
             Next
             csvWriter.WriteLine(csvLine.ToString())
 
             ' Write the CSV data
-            For i = 0 To dtRes.Rows.Count - 1
+            For i = 0 To dt.Rows.Count - 1
                 ' First the results
                 csvLine.Clear()
-                For j = 0 To dtRes.Columns.Count - 1
-                    csvLine.Append(dtRes.Rows(i)(j)).Append(delimiter)
+                For j = 0 To dt.Columns.Count - 1
+                    csvLine.Append(dt.Rows(i)(j)).Append(delimiter)
                 Next
-
-                ' Then the simulation information
-                RUNID = dtRes.Rows(i)("RUNID")
-                If runIdRowData.ContainsKey(RUNID) Then
-                    csvLine.Append(runIdRowData(RUNID))
-                End If
 
                 csvWriter.WriteLine(csvLine.ToString())
             Next

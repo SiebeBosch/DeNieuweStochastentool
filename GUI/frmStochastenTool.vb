@@ -2719,25 +2719,27 @@ Public Class frmStochasten
             ColSchema = Me.Setup.SqliteCon.GetSchema("COLUMNS")
             TableSchema = Me.Setup.SqliteCon.GetSchema("TABLES")
 
-            Call UpdateSeasonsTable()       'adds all required columns to the seasons table
-            Call UpdateVolumesTable()       'adds all required columns to the volumes table and reorganizes the data inside
-            Call UpdatePatternsTable()      'adds all required columns to the patterns table and reorganizes the data inside
-            Call UpdateNeerslagverloopTable() 'adds all required columns to the neerslagverloop table
-            Call UpdateGroundwaterTable()   'adds all required columns to the groundwater table and reorganizes the data inside
-            Call UpdateBoundariesTable()    'adds all required columns to the boundaries table and reorganizes the data inside
+            Call UpdateSeasonsTable(1)       'adds all required columns to the seasons table
+            Call UpdateVolumesTable(5)       'adds all required columns to the volumes table and reorganizes the data inside
+            Call UpdatePatternsTable(10)      'adds all required columns to the patterns table and reorganizes the data inside
+            Call UpdateNeerslagverloopTable(15) 'adds all required columns to the neerslagverloop table
+            Call UpdateGroundwaterTable(20)   'adds all required columns to the groundwater table and reorganizes the data inside
+            Call UpdateBoundariesTable(25)    'adds all required columns to the boundaries table and reorganizes the data inside
             Call UpdateExtraTables()        'adds all required columns to the 'extra' tables and reorganizes the data inside
-            Call UpdateResultsTable()       'adds all required columns to the results table
-            Call UpdateRunsTable()          'adds all reaquired columns to the runs table
-            Call UpdateSimulationModelsTable()
-            Call UpdateOutputLocationsTableStructure()
-            Call UpdatePolygonsTable()
-            Call UpdateMeteostationsTable() 'adds all required columns to the meteostations table
-            Call UpdateRandknopenTable()    'adds all required columns to the randknopen table
-            Call UpdateRandvoorwaardenTable() 'adds all required columns to the randvoorwaarden table
-            Call UpdateRandreeksenTable()   'adds all required columns to the randreeksen table
-            Call UpdateWindTable()          'adds all required columns to the wind table
-            Call UpdateWindreeksenTable()   'adds all required columns to the windreeksen table
-            Call UpdateExceedanceTable()    'adds all required columns to th exceedance table
+            Call UpdateResultsTable(35)       'adds all required columns to the results table
+            Call UpdateResults2DTable(40)       'adds all required columns to the results table
+            Call UpdateRunsTable(45)          'adds all reaquired columns to the runs table
+            Call UpdateSimulationModelsTable(50)
+            Call UpdateOutputLocationsTableStructure(55)
+            Call UpdatePolygonsTable(60)
+            Call UpdateMeteostationsTable(65) 'adds all required columns to the meteostations table
+            Call UpdateRandknopenTable(70)    'adds all required columns to the randknopen table
+            Call UpdateRandvoorwaardenTable(75) 'adds all required columns to the randvoorwaarden table
+            Call UpdateRandreeksenTable(80)   'adds all required columns to the randreeksen table
+            Call UpdateWindTable(85)          'adds all required columns to the wind table
+            Call UpdateWindreeksenTable(90)   'adds all required columns to the windreeksen table
+            Call UpdateHerhalingstijdenTable(95)    'adds all required columns to th exceedance table
+            Call UpdateHerhalingstijdenTable2D(100)   'adds all required columns to th exceedance table for 2D results
 
             Setup.GeneralFunctions.UpdateProgressBar("tables successfully updated", 0, 15, True)
             Me.Setup.SqliteCon.Close()
@@ -2748,11 +2750,11 @@ Public Class frmStochasten
     End Sub
 
 
-    Public Sub UpdatePolygonsTable()
+    Public Sub UpdatePolygonsTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               tabel POLYGONS
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table POLYGONS", 7, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table POLYGONS", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "POLYGONS") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "POLYGONS")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "POLYGONS", "SHAPEIDX") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "POLYGONS", "SHAPEIDX", enmSQLiteDataType.SQLITENULL)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "POLYGONS", "POINTIDX") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "POLYGONS", "POINTIDX", enmSQLiteDataType.SQLITEINT)
@@ -2761,11 +2763,11 @@ Public Class frmStochasten
         '------------------------------------------------------------------------------------
     End Sub
 
-    Public Sub UpdateOutputLocationsTableStructure()
+    Public Sub UpdateOutputLocationsTableStructure(progress As Integer)
         '------------------------------------------------------------------------------------
         '               tabel OUTPUTLOCATIONS
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table OUTPUTLOCATIONS", 6, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table OUTPUTLOCATIONS", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Setup.SqliteCon, "OUTPUTLOCATIONS") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "OUTPUTLOCATIONS")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIEID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIEID", enmSQLiteDataType.SQLITETEXT, "LOC_IDIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIENAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "OUTPUTLOCATIONS", "LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, "LOC_NAAMIDX")
@@ -2783,11 +2785,11 @@ Public Class frmStochasten
         '------------------------------------------------------------------------------------
     End Sub
 
-    Public Sub UpdateSimulationModelsTable()
+    Public Sub UpdateSimulationModelsTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE THE TABLE SIMULATIONMODELS
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table SIMULATIONMODELS", 5, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table SIMULATIONMODELS", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "SIMULATIONMODELS") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "SIMULATIONMODELS")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "MODELID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "MODELID", enmSQLiteDataType.SQLITETEXT, "SIM_MODELIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "MODELTYPE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "MODELTYPE", enmSQLiteDataType.SQLITETEXT)
@@ -2800,11 +2802,11 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW", enmSQLiteDataType.SQLITETEXT)
     End Sub
 
-    Public Sub UpdateRunsTable()
+    Public Sub UpdateRunsTable(progress As Integer)
         '--------------------------------------------------------------------------------
         'update the table RUNS
         '--------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table RUNS", 4, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RUNS", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RUNS") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RUNS")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "RUNS_KLIMAATIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "DUUR", enmSQLiteDataType.SQLITEINT, "RUNS_DUURIDX")
@@ -2839,54 +2841,153 @@ Public Class frmStochasten
         '------------------------------------------------------------------------------------
     End Sub
 
-    Public Sub UpdateResultsTable()
+    Public Sub UpdateResultsTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL RESULTATEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table RESULTATEN", 3, 15, True)
-        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RESULTATEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RESULTATEN")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "HERH") Then Setup.GeneralFunctions.SQLiteDropColumn(Me.Setup.SqliteCon, "RESULTATEN", "HERH")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "MAXIMUM") Then Setup.GeneralFunctions.SQLiteDropColumn(Me.Setup.SqliteCon, "RESULTATEN", "MAXIMUM")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "CUMFREQ") Then Setup.GeneralFunctions.SQLiteDropColumn(Me.Setup.SqliteCon, "RESULTATEN", "CUMFREQ")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "KLIMAATIDX")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "DUUR", enmSQLiteDataType.SQLITEINT, "DUURIDX")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "LOCATIENAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, "LOCIDX")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "RUNID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "RUNID", enmSQLiteDataType.SQLITETEXT, "RUNIDX")
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "MINVAL") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "MINVAL", enmSQLiteDataType.SQLITEREAL)
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "MAXVAL") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "MAXVAL", enmSQLiteDataType.SQLITEREAL)
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "AVGVAL") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "AVGVAL", enmSQLiteDataType.SQLITEREAL)
-        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RESULTATEN", "P") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RESULTATEN", "P", enmSQLiteDataType.SQLITEREAL)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RESULTATEN", progress, 100, True)
+        Dim Fields As New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("MINVAL", New clsSQLiteField("MINVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("MAXVAL", New clsSQLiteField("MAXVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("AVGVAL", New clsSQLiteField("AVGVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "RESULTATEN", Fields)
+
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "RUNID"}
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "RESULTATEN", CompositeIndex)
 
         'upgrade all old climate scenario names
         Setup.GeneralFunctions.UpgradeClimateScenarioInTables("RESULTATEN", "KLIMAATSCENARIO")
         '--------------------------------------------------------------------------------
     End Sub
-    Public Sub UpdateMeteostationsTable()
+
+
+    Public Sub UpdateResults2DTable(progress As Integer)
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL RESULTATEN
+        '------------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RESULTATEN2D", progress, 100, True)
+        Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+        'Upgrade our RESULTATEN2D table
+        Fields = New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("MINVAL", New clsSQLiteField("MINVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("MAXVAL", New clsSQLiteField("MAXVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("AVGVAL", New clsSQLiteField("AVGVAL", enmSQLiteDataType.SQLITEREAL, False))
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "RESULTATEN2D", Fields)
+
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "FEATUREIDX", "RUNID"}
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "RESULTATEN2D", CompositeIndex)
+
+        'upgrade all old climate scenario names
+        Setup.GeneralFunctions.UpgradeClimateScenarioInTables("RESULTATEN2D", "KLIMAATSCENARIO")
+        '--------------------------------------------------------------------------------
+    End Sub
+
+
+
+    Public Sub UpdateHerhalingstijdenTable(progress As Integer)
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL RESULTATEN
+        '------------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table HERHALINGSTIJDEN", progress, 100, True)
+        Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+        'Upgrade our HERHALINGSTIJDEN table
+        Fields = New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("GW", New clsSQLiteField("GW", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("BOUNDARY", New clsSQLiteField("BOUNDARY", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("WIND", New clsSQLiteField("WIND", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("HERHALINGSTIJD", New clsSQLiteField("HERHALINGSTIJD", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", Fields)
+
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM"}
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", CompositeIndex)
+        '--------------------------------------------------------------------------------
+    End Sub
+
+
+    Public Sub UpdateHerhalingstijdenTable2D(progress As Integer)
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL RESULTATEN
+        '------------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table HERHALINGSTIJDEN2D", progress, 100, True)
+        Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+        'Upgrade our HERHALINGSTIJDEN table
+        Fields = New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("GW", New clsSQLiteField("GW", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("BOUNDARY", New clsSQLiteField("BOUNDARY", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("WIND", New clsSQLiteField("WIND", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, False))
+        Fields.Add("HERHALINGSTIJD", New clsSQLiteField("HERHALINGSTIJD", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D", Fields)
+
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "FEATUREIDX"}
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D", CompositeIndex)
+        '--------------------------------------------------------------------------------
+    End Sub
+
+
+
+
+
+    Public Sub UpdateMeteostationsTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL METEOSTATIONS
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table METEOSTATIONS", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table METEOSTATIONS", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "METEOSTATIONS") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "METEOSTATIONS")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "SEASON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "NAAM", enmSQLiteDataType.SQLITETEXT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "SOORT") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "SOORT", enmSQLiteDataType.SQLITETEXT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "ARF") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "ARF", enmSQLiteDataType.SQLITEREAL)
     End Sub
 
-    Public Sub UpdateRandknopenTable()
+    Public Sub UpdateRandknopenTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL RANDKNOPEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDKNOPEN", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDKNOPEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RANDKNOPEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RANDKNOPEN")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDKNOPEN", "SEASON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDKNOPEN", "KNOOPID", enmSQLiteDataType.SQLITETEXT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDKNOPEN", "SOORT") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDKNOPEN", "MODELID", enmSQLiteDataType.SQLITEINT)
     End Sub
 
-    Public Sub UpdateRandreeksenTable()
+    Public Sub UpdateRandreeksenTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL RANDREEKSEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDREEKSEN", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDREEKSEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RANDREEKSEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RANDREEKSEN")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "REEKS_SCNARIOIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDREEKSEN", "NODEID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDREEKSEN", "NODEID", enmSQLiteDataType.SQLITETEXT, "REEKS_NODEIDX")
@@ -2974,38 +3075,11 @@ Public Class frmStochasten
 
     End Sub
 
-    Public Sub UpdateExceedanceTable()
-        '------------------------------------------------------------------------------------
-        '               UPDATE TABEL HERHALINGSTIJDEN
-        '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table HERHALINGSTIJDEN", 19, 20, True)
-        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "HERHALINGSTIJDEN")
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "HERHKLIMIDX")
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "DUUR", enmSQLiteDataType.SQLITEINT, "HERHDURIDX")
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "LOCATIENAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, "HERHLOCIDX")
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "HERHALINGSTIJD") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "HERHALINGSTIJD", enmSQLiteDataType.SQLITEREAL)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "WAARDE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "WAARDE", enmSQLiteDataType.SQLITEREAL)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "SEIZOEN") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "SEIZOEN", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "VOLUME") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "VOLUME", enmSQLiteDataType.SQLITEREAL)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "PATROON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "PATROON", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "GW") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "GW", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "BOUNDARY") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "BOUNDARY", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "WIND") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "WIND", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA1") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA1", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA2") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA2", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA3") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA3", enmSQLiteDataType.SQLITETEXT)
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA4") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", "EXTRA4", enmSQLiteDataType.SQLITETEXT)
-
-
-        'upgrade all old climate scenario names
-        Setup.GeneralFunctions.UpgradeClimateScenarioInTables("HERHALINGSTIJDEN", "KLIMAATSCENARIO")
-    End Sub
-
-    Public Sub UpdateRandvoorwaardenTable()
+    Public Sub UpdateRandvoorwaardenTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL RANDVOORWAARDEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDVOORWAARDEN", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDVOORWAARDEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RANDVOORWAARDEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RANDVOORWAARDEN")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDVOORWAARDEN", "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDVOORWAARDEN", "NAAM", enmSQLiteDataType.SQLITETEXT, "RANDVOORWAARDEN_NAAMIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDVOORWAARDEN", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDVOORWAARDEN", "DUUR", enmSQLiteDataType.SQLITEINT)
@@ -3019,11 +3093,11 @@ Public Class frmStochasten
 
     End Sub
 
-    Public Sub UpdateWindTable()
+    Public Sub UpdateWindTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL WIND
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table WIND", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table WIND", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "WIND") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "WIND")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "WIND", "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "WIND", "NAAM", enmSQLiteDataType.SQLITETEXT, "WIND_NAAMIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "WIND", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "WIND", "DUUR", enmSQLiteDataType.SQLITEINT, "WIND_DUURIDX")
@@ -3035,11 +3109,11 @@ Public Class frmStochasten
         Setup.GeneralFunctions.UpgradeClimateScenarioInTables("WIND", "KLIMAATSCENARIO")
     End Sub
 
-    Public Sub UpdateWindreeksenTable()
+    Public Sub UpdateWindreeksenTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL WINDREEKSEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table WINDREEKSEN", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table WINDREEKSEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "WINDREEKSEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "WINDREEKSEN")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "WINDREEKSEN", "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "WINDREEKSEN", "NAAM", enmSQLiteDataType.SQLITETEXT, "WR_NAAMIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "WINDREEKSEN", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "WINDREEKSEN", "DUUR", enmSQLiteDataType.SQLITEINT, "WR_DUURIDX")
@@ -3052,11 +3126,11 @@ Public Class frmStochasten
         Setup.GeneralFunctions.UpgradeClimateScenarioInTables("WINDREEKSEN", "KLIMAATSCENARIO")
     End Sub
 
-    Public Sub UpdateNeerslagverloopTable()
+    Public Sub UpdateNeerslagverloopTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL NEERSLAGVERLOOP
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table NEERSLAGVERLOOP", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table NEERSLAGVERLOOP", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "NEERSLAGVERLOOP")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "PATROON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "PATROON", enmSQLiteDataType.SQLITETEXT, "VERLOOP_PATIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "DUUR", enmSQLiteDataType.SQLITEINT, "VERLOOP_DUURIDX")
@@ -3064,11 +3138,11 @@ Public Class frmStochasten
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE", enmSQLiteDataType.SQLITEREAL)
     End Sub
 
-    Public Sub UpdateSeasonsTable()
+    Public Sub UpdateSeasonsTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL SEIZOENEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table SEIZOENEN", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table SEIZOENEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "SEIZOENEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "SEIZOENEN")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "SEASON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "SEASON", enmSQLiteDataType.SQLITETEXT, "SEIZ_SEASONIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "USE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "USE", enmSQLiteDataType.SQLITEINT)
@@ -3076,11 +3150,11 @@ Public Class frmStochasten
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "KANS") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "KANS", enmSQLiteDataType.SQLITEREAL)
     End Sub
 
-    Public Sub UpdateVolumesTable()
+    Public Sub UpdateVolumesTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL VOLUMES
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table VOLUMES", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table VOLUMES", progress, 100, True)
 
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "VOLUMES") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "VOLUMES")
 
@@ -3139,11 +3213,11 @@ Public Class frmStochasten
     End Sub
 
 
-    Public Sub UpdatePatternsTable()
+    Public Sub UpdatePatternsTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL PATRONEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table PATRONEN", 1, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table PATRONEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "PATRONEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "PATRONEN")
 
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "PATRONEN", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "PATRONEN", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "PAT_CLIMATEIDX")
@@ -3170,11 +3244,11 @@ Public Class frmStochasten
 
     End Sub
 
-    Public Sub UpdateBoundariesTable()
+    Public Sub UpdateBoundariesTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL RANDVOORWAARDEN
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDVOORWAARDEN", 2, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table RANDVOORWAARDEN", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RANDVOORWAARDEN") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "RANDVOORWAARDEN")
 
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RANDVOORWAARDEN", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RANDVOORWAARDEN", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "BND_SCENARIOIDX")
@@ -3199,11 +3273,11 @@ Public Class frmStochasten
 
     End Sub
 
-    Public Sub UpdateGroundwaterTable()
+    Public Sub UpdateGroundwaterTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL GRONDWATER
         '------------------------------------------------------------------------------------
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table GRONDWATER", 2, 15, True)
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table GRONDWATER", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "GRONDWATER") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "GRONDWATER")
 
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "GW_SCENARIOIDX")
@@ -3579,7 +3653,7 @@ Public Class frmStochasten
             Dim i As Long, j As Long
             Dim StartDate As Date
 
-            Call UpdateSeasonsTable()    'voegt alle benodigde nieuwe kolommen toe
+            Call UpdateSeasonsTable(0)    'voegt alle benodigde nieuwe kolommen toe
 
             'first check in the Patterns table which unique seasons exist
             'for each unique season, create a new row in SEIZOENEN
@@ -3634,7 +3708,7 @@ Public Class frmStochasten
             Dim i As Long, j As Long
             Dim kans As Double
 
-            Call UpdateVolumesTable() 'voegt de benodigde kolommen toe
+            Call UpdateVolumesTable(0) 'voegt de benodigde kolommen toe
 
             'verplaats de kansen die horen bij elk klimaatscenario naar een nieuwe rij en KANS-kolom
             dtVolume = New DataTable
@@ -3703,7 +3777,7 @@ Public Class frmStochasten
             Dim i As Long, j As Long
             Dim kans As Double
 
-            Call UpdatePatternsTable() 'voegt de benodigde kolommen toe
+            Call UpdatePatternsTable(0) 'voegt de benodigde kolommen toe
 
             'verplaats de kansen die horen bij elk klimaatscenario naar een nieuwe rij en KANS-kolom
             dtPattern = New DataTable
@@ -3772,7 +3846,7 @@ Public Class frmStochasten
             Dim i As Long, j As Long
             Dim kans As Double
 
-            Call UpdateGroundwaterTable() 'voegt de benodigde kolommen toe
+            Call UpdateGroundwaterTable(0) 'voegt de benodigde kolommen toe
 
             dtGW = New DataTable
             query = "SELECT * FROM GRONDWATER;"
@@ -4327,7 +4401,7 @@ Public Class frmStochasten
         dlgOpenFile.ShowDialog()
         txtDatabase.Text = dlgOpenFile.FileName
         Me.Setup.SetDatabaseConnection(txtDatabase.Text)
-        Me.Setup.GeneralFunctions.UpgradeStochastenToolDatabase
+        UpgradeDatabase()
     End Sub
 
     Private Sub btnResultsDir_Click(sender As Object, e As EventArgs) Handles btnResultsDir.Click
