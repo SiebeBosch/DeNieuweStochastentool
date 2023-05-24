@@ -1,5 +1,6 @@
 ﻿Imports STOCHLIB.General
 Imports GemBox.Spreadsheet
+Imports System.IO
 
 Public Class clsShapeFile
 
@@ -82,6 +83,65 @@ Public Class clsShapeFile
         Else
             Return False
         End If
+    End Function
+
+    Public Function WriteToGeoJSONForWeb(ByRef jsWriter As StreamWriter, ScenarioName As String, ShapeNumFieldIdx As Integer, Optional ByVal nTimeStamps As Integer = 0) As Boolean
+        Try
+            Dim ShapeNum As Integer
+
+            'v2.4.5.3: new functionality to write a GeoJSON for the web immediately from our shapefile
+            'this function assumes that the shapefile is already in WebMercator projection
+            jsWriter.WriteLine("   {")
+            jsWriter.WriteLine("        ""type"": ""FeatureCollection"",")
+            jsWriter.WriteLine("        ""name"": """ & ScenarioName & """,")
+            jsWriter.WriteLine("        ""timesteps"": " & nTimeStamps & ",")
+            jsWriter.WriteLine("		""crs"": { ""type"": ""name"", ""properties"": { ""name"": ""urn:ogc:def:crs:OGC:1.3:CRS84""} },")
+
+            jsWriter.WriteLine("		""extent"": {")
+            jsWriter.WriteLine("		    ""minLat"":" & sf.Extents.yMin & ",")
+            jsWriter.WriteLine("		    ""minLng"":" & sf.Extents.xMin & ",")
+            jsWriter.WriteLine("		    ""maxLat"":" & sf.Extents.yMax & ",")
+            jsWriter.WriteLine("		    ""maxLng"":" & sf.Extents.xMax & ",")
+            jsWriter.WriteLine("		},")
+
+            Dim idx As Integer = -1
+            jsWriter.WriteLine("        ""features"": [")                      'open the array containing the features
+
+            'walk through each polygon and write it as a feature
+            Dim lastidx As Integer = sf.NumShapes
+            For i = 0 To sf.NumShapes - 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", i, lastidx, True)
+
+                ShapeNum = sf.CellValue(ShapeNumFieldIdx, i)
+
+                'we have found a cell that contains water depths > 0. Write it to our JSON!
+                jsWriter.Write("            { ""type"": ""Feature"", ""geometry"": { ""type"": ""Polygon"", ""coordinates"": [[")
+
+                Dim myShape As MapWinGIS.Shape = sf.Shape(i)
+
+                'mapwingis writes shapes in counterclockwise direction. the same is true for GeoJSON!
+                For j = 0 To myShape.numPoints - 1
+                    jsWriter.Write("[" & myShape.Point(j).x & "," & myShape.Point(j).y & "]")
+                    If j < myShape.numPoints - 1 Then jsWriter.Write(", ")  'more coordinates will follow
+                Next
+
+                ''close the polygon by repeating the first point
+                'jsWriter.Write("[" & myShape.Point(myShape.numPoints - 1).x & "," & myShape.Point(myShape.numPoints - 1).y & "]")
+
+                'also write the cell index number + its centerpoint
+                jsWriter.Write("]]}, ""properties"": { ""i"": " & ShapeNum & "," & """idx"": " & i & ",""lat"": " & myShape.Center.y & ", ""lon"": " & myShape.Center.x & "}}")
+                If i < sf.NumShapes - 1 Then jsWriter.Write(",")                     'more features to be added
+                jsWriter.Write(vbCrLf)
+
+            Next
+
+            jsWriter.WriteLine("            ]")
+            jsWriter.WriteLine("        }")
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteToGeoJSONForWeb of class clsShapefile: " & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function WriteElevationPercentageToNewField(Percentage As Double, FieldName As String, Optional ByVal NullOutChannelAreaShapefile As Boolean = False) As Boolean

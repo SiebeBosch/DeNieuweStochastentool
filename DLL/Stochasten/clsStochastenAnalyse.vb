@@ -96,6 +96,164 @@ Public Class clsStochastenAnalyse
         End If
     End Function
 
+    Public Function WriteFouTopographyJSON(JSONpath As String) As Boolean
+        Try
+            'first we need to find the output directory of an existing simulation so we can find and read the .FOU file
+            Dim i As Long, n As Long
+            n = Runs.Runs.Count
+            i = 0
+            For Each myRun As clsStochastenRun In Runs.Runs.Values
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen voor simulatie " & i & " van " & n, i, n, True)
+                For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
+                    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
+                        If Right(myFile.FileName, 7).ToLower = "_fou.nc" Then
+
+                            'error handling
+                            If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+
+                            Dim path As String = myRun.OutputFilesDir & "\" & myFile.FileName
+                            Dim myFouNC As New clsFouNCFile(path, Me.Setup)
+                            If Not System.IO.File.Exists(path) Then Throw New Exception("Fourier file does not exist: " & path)
+                            If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
+
+
+                            Using jsWriter As New StreamWriter(JSONpath)
+                                jsWriter.Write("let Mesh = ")
+                                'now that we have read our Fou file, export it to a shapefile
+                                Dim shpPath As String = Me.Setup.GeneralFunctions.getBaseFromFilename(JSONpath) & ".shp"
+                                Dim SourceProjection As New MapWinGIS.GeoProjection
+                                Dim Extents As New MapWinGIS.Extents
+                                SourceProjection.ImportFromEPSG("28992")
+                                Dim TargetProjection As New MapWinGIS.GeoProjection
+                                TargetProjection.ImportFromEPSG("4326")
+                                myFouNC.ReprojectAndWriteMeshToGeoJSON(shpPath, jsWriter, "BASE", SourceProjection, TargetProjection, Extents)
+                            End Using
+
+                            Exit For
+                        End If
+                    Next
+                Next
+
+
+                Exit For
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteFouTopographyJSON of class clsStochastenAnalyse: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+
+
+    Public Function WriteExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer) As Boolean
+        Try
+            Dim locdt As New DataTable
+            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+            'write the dataset to json
+            If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
+            Using exceedanceWriter As New StreamWriter(exceedancedatapath)
+                exceedanceWriter.WriteLine("let exceedancedata = {")
+                exceedanceWriter.WriteLine("    " & Chr(34) & "locations" & Chr(34) & ": [")
+                exceedanceWriter.WriteLine("        {")
+
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Writing results...", 0, 10, True)
+                Dim resNum As Integer = 0
+                For i = 0 To locdt.Rows.Count - 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+
+
+                    'add the exceedance data to the excedancedata.js file
+                    exceedanceWriter.WriteLine("            " & Chr(34) & "ID" & Chr(34) & ": " & Chr(34) & locdt.Rows(i)("LOCATIENAAM") & Chr(34) & ",")
+                    exceedanceWriter.WriteLine("            " & Chr(34) & "data" & Chr(34) & ": [")
+
+                    'for this location we will retrieve the exceedance table
+                    Dim dtHerh As New DataTable
+                    query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                    Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                    'now that we have our exceedance table, we can start writing it to the exceedancedata.js file
+                    Dim exceedanceStr As String = ""
+                    For j = 0 To dtHerh.Rows.Count - 1
+                        exceedanceStr = "                { %x%: " & Math.Round(dtHerh.Rows(j)(0), 2) & ", %y%: " & Math.Round(dtHerh.Rows(j)(1), 2) & ", %stochasts%:{%SEIZOEN%:%" & dtHerh.Rows(j)("SEIZOEN") & "%, %VOLUME%: " & dtHerh.Rows(j)("VOLUME") & ", %PATROON%: %" & dtHerh.Rows(j)("PATROON") & "%, %GW%: %" & dtHerh.Rows(j)("GW") & "%, %BOUNDARY%:%" & dtHerh.Rows(j)("BOUNDARY") & "%, %WIND%" & ":%" & dtHerh.Rows(j)("WIND") & "%,%EXTRA1%:%" & dtHerh.Rows(j)("EXTRA1") & "%,%EXTRA2%:%" & dtHerh.Rows(j)("EXTRA2") & "%,%EXTRA3%:%" & dtHerh.Rows(j)("EXTRA3") & "%,%EXTRA4%:%" & dtHerh.Rows(j)("EXTRA4") & "%}}"
+                        If j < dtHerh.Rows.Count - 1 Then exceedanceStr &= ","
+                        exceedanceStr = exceedanceStr.Replace("%", Chr(34))
+                        exceedanceWriter.WriteLine(exceedanceStr)
+                    Next
+                    exceedanceWriter.WriteLine("            ]")
+                    If i < locdt.Rows.Count - 1 Then
+                        'write the closing string for the previous result before proceeding to the next
+                        exceedanceWriter.WriteLine("        }, {") 'prepare for the next location to be written
+                    End If
+                Next
+                exceedanceWriter.WriteLine("        }") 'closing statement for the last location
+                exceedanceWriter.WriteLine("    ]")
+                exceedanceWriter.WriteLine("};")
+
+            End Using
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteExceedanceDataJSON of frmStochasten: " & ex.Message)
+        End Try
+    End Function
+
+
+    Public Function WriteExceedanceData2DJSON(JSONpath As String, ClimateScenario As String, Duration As Integer) As Boolean
+
+        Try
+            Dim locdt As New DataTable
+            Dim dtHerh As DataTable
+            Dim query As String = "SELECT DISTINCT FEATUREIDX FROM HERHALINGSTIJDEN2D WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+            'write the dataset to json
+            If System.IO.File.Exists(JSONpath) Then System.IO.File.Delete(JSONpath)
+            Using exceedanceWriter As New StreamWriter(JSONpath)
+                exceedanceWriter.WriteLine("let exceedancedata2D = {")
+                exceedanceWriter.WriteLine("    " & Chr(34) & "locations" & Chr(34) & ": [")
+                exceedanceWriter.WriteLine("        {")
+
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Writing results...", 0, 10, True)
+                Dim resNum As Integer = 0
+                For i = 0 To locdt.Rows.Count - 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+
+
+                    'add the exceedance data to the excedancedata.js file
+                    exceedanceWriter.WriteLine("            " & Chr(34) & "FEATUREIDX" & Chr(34) & ": " & Chr(34) & locdt.Rows(i)("FEATUREIDX") & Chr(34) & ",")
+                    exceedanceWriter.WriteLine("            " & Chr(34) & "data" & Chr(34) & ": [")
+
+                    'for this location we will retrieve the exceedance table
+                    dtHerh = New DataTable
+                    query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN2D WHERE FEATUREIDX='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                    Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                    'now that we have our exceedance table, we can start writing it to the exceedancedata.js file
+                    Dim exceedanceStr As String = ""
+                    For j = 0 To dtHerh.Rows.Count - 1
+                        exceedanceStr = "                { """"x"""": " & Math.Round(dtHerh.Rows(j)(0), 2) & ", """"y"""": " & Math.Round(dtHerh.Rows(j)(1), 2) & ", """"stochasts"""":{""""SEIZOEN"""":""""" & dtHerh.Rows(j)("SEIZOEN") & """"", """"VOLUME"""": " & dtHerh.Rows(j)("VOLUME") & ", """"PATROON"""": """"" & dtHerh.Rows(j)("PATROON") & """"", """"GW"""": """"" & dtHerh.Rows(j)("GW") & """"", """"BOUNDARY"""":""""" & dtHerh.Rows(j)("BOUNDARY") & """"", """"WIND""""" & ":""""" & dtHerh.Rows(j)("WIND") & """"",""""EXTRA1"""":""""" & dtHerh.Rows(j)("EXTRA1") & """"",""""EXTRA2"""":""""" & dtHerh.Rows(j)("EXTRA2") & """"",""""EXTRA3"""":""""" & dtHerh.Rows(j)("EXTRA3") & """"",""""EXTRA4"""":""""" & dtHerh.Rows(j)("EXTRA4") & """""}}"
+                        If j < dtHerh.Rows.Count - 1 Then exceedanceStr &= ","
+                        exceedanceWriter.WriteLine(exceedanceStr)
+                    Next
+                    exceedanceWriter.WriteLine("            ]")
+                    If i < locdt.Rows.Count - 1 Then
+                        'write the closing string for the previous result before proceeding to the next
+                        exceedanceWriter.WriteLine("        }, {") 'prepare for the next location to be written
+                    End If
+                Next
+                exceedanceWriter.WriteLine("        }") 'closing statement for the last location
+                exceedanceWriter.WriteLine("    ]")
+                exceedanceWriter.WriteLine("};")
+
+            End Using
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteExceedanceDataJSON of frmStochasten: " & ex.Message)
+        End Try
+    End Function
+
+
+
 
     Public Function ClassifyGroundwaterBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), ExportDir As String) As Boolean
         Try
@@ -969,7 +1127,7 @@ Public Class clsStochastenAnalyse
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
 
             'clear existing exceedance tables for this location and climate
-            query = "DELETE FROM HERHALINGSTIJDEN WHERE DUUR=" & Duration & " AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "';"
+            query = "DELETE FROM HERHALINGSTIJDEN2D WHERE DUUR=" & Duration & " AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "';"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
             'for each location in our results table we will now create an exceedance table and write it to the database

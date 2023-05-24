@@ -5,7 +5,7 @@ Imports Microsoft.Research.Science.Data.Imperative
 Imports STOCHLIB.General
 Imports DocumentFormat.OpenXml.InkML
 Imports System.IO
-
+Imports MapWinGIS
 
 Public Class clsFouNCFile
     Private Setup As clsSetup
@@ -20,6 +20,7 @@ Public Class clsFouNCFile
     Dim Mesh1d_fourier002_maxID As Integer = -1
     Dim Mesh2d_face_xID As Integer = -1
     Dim Mesh2d_face_yID As Integer = -1
+    Dim Mesh2d_face_nodesID As Integer = -1
     Dim Mesh1d_node_xID As Integer = -1
     Dim Mesh1d_node_yID As Integer = -1
     Dim Mesh1d_node_idID As Integer = -1
@@ -32,6 +33,7 @@ Public Class clsFouNCFile
     Dim Mesh1d_fourier002_max As Double()       'size: number of nodes
     Friend Mesh2d_face_x As Double()       'size: number of faces
     Friend Mesh2d_face_y As Double()       'size: number of faces
+    Friend Mesh2d_face_nodes As Integer(,) 'first dimension; face index, second dimension: node index, counted counterclockwise
     Dim Mesh1d_node_x As Double()       'size: number of nodes
     Dim Mesh1d_node_y As Double()       'size: number of nodes
 
@@ -79,6 +81,7 @@ Public Class clsFouNCFile
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_y" Then Mesh2d_face_yID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_nodes" Then Mesh2d_face_nodesID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_x" Then Mesh1d_node_xID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_y" Then Mesh1d_node_yID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_id" Then Mesh1d_node_idID = dataset.Variables.Item(i).ID
@@ -93,6 +96,7 @@ Public Class clsFouNCFile
             If Mesh1d_fourier002_maxID >= 0 Then Mesh1d_fourier002_max = dataset.GetData(Of Double())(Mesh1d_fourier002_maxID)
             If Mesh2d_face_xID >= 0 Then Mesh2d_face_x = dataset.GetData(Of Double())(Mesh2d_face_xID)
             If Mesh2d_face_yID >= 0 Then Mesh2d_face_y = dataset.GetData(Of Double())(Mesh2d_face_yID)
+            If Mesh2d_face_nodesID >= 0 Then Mesh2d_face_nodes = dataset.GetData(Of Integer(,))(Mesh2d_face_nodesID)
             If Mesh1d_node_xID >= 0 Then Mesh1d_node_x = dataset.GetData(Of Double())(Mesh1d_node_xID)
             If Mesh1d_node_yID >= 0 Then Mesh1d_node_y = dataset.GetData(Of Double())(Mesh1d_node_yID)
             If Mesh1d_node_idID >= 0 Then Mesh1d_node_id = dataset.GetData(Of Byte(,))(Mesh1d_node_idID)
@@ -119,6 +123,119 @@ Public Class clsFouNCFile
             Return True
         End Try
     End Function
+
+
+    Public Function ReprojectAndWriteMeshToGeoJSON(ShapefilePath As String, ByRef jsWriter As System.IO.StreamWriter, ScenarioName As String, SourceProjection As MapWinGIS.GeoProjection, TargetProjection As MapWinGIS.GeoProjection, ByRef Extents As MapWinGIS.Extents) As Boolean
+        'this function reprojects our mesh and generates a GeoJSON file of it
+        Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reprojecting and converting mesh from Fou file to GeoJSON...", 0, 10, True)
+
+            'remove existing shapefile
+            If System.IO.File.Exists(ShapefilePath) Then Me.Setup.GeneralFunctions.DeleteShapeFile(ShapefilePath)
+
+            'first convert to shapefile
+            Dim FaceFieldIdx As Integer
+            Dim FaceidxFieldIdx As Integer
+            Dim ResultsFieldName As String = "RESULT"
+            Dim ResultsFieldType As MapWinGIS.FieldType = MapWinGIS.FieldType.INTEGER_FIELD
+            Dim ResultsFieldIdx As Integer
+            Dim ResultsFieldLength As Integer = 10
+            Dim ResulsFieldPrecision As Integer = 0
+            Dim mySF As New MapWinGIS.Shapefile
+
+            If Not MeshToShapefileUsingMapwingis(ShapefilePath, Extents, "FACEIDX", FaceidxFieldIdx, "FACEID", FaceFieldIdx, ResultsFieldName, ResultsFieldIdx, ResultsFieldType, ResultsFieldLength, ResulsFieldPrecision) Then Throw New Exception("Error converting mesh to shapefile")
+
+            'read the shapefile
+            If Not mySF.Open(ShapefilePath) Then Throw New Exception("Error reading temporary shapefile: " & ShapefilePath)
+            mySF.GeoProjection = SourceProjection
+
+            'now reproject the shapefile
+            Dim ReprojectionCount As Integer
+            mySF = mySF.Reproject(TargetProjection, ReprojectionCount)
+            Extents = mySF.Extents      'return our projected shapefile's extents to the calling function
+
+            'finally write our shapefile to GeoJSON format. Do this by first wrapping the Mapwingis.Shapefile in an own clsShapefile class instance
+            Dim Shapefile As New clsShapeFile(Me.Setup)
+            Shapefile.sf = mySF
+            Shapefile.WriteToGeoJSONForWeb(jsWriter, ScenarioName, FaceFieldIdx, 0)
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ReprojectAndWriteMeshToGeoJSON: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+
+    Public Function MeshToShapefileUsingMapwingis(ResultsPath As String, ByRef Extents As MapWinGIS.Extents, FaceIdxFieldname As String, ByRef FaceIdxFieldIdx As Integer, FaceIdFieldName As String, ByRef FaceIdFieldIdx As Integer, ResultFieldName As String, ByRef ResultsFieldIdx As Integer, ResultFieldType As MapWinGIS.FieldType, ResultFieldLength As Integer, ResultFieldPrecision As Integer) As Boolean
+        Try
+            'this function writes the 2D mesh to a shapefile. The shapefile may later be used to insert specific simulation results
+            If ResultsPath <> "" Then
+                If Not System.IO.Directory.Exists(Setup.GeneralFunctions.DirFromFileName(ResultsPath)) Then System.IO.Directory.CreateDirectory(Setup.GeneralFunctions.DirFromFileName(ResultsPath))
+                If System.IO.File.Exists(ResultsPath) Then Me.Setup.GeneralFunctions.DeleteShapeFile(ResultsPath)
+            End If
+            Dim mySf As New MapWinGIS.Shapefile
+            mySf.CreateNewWithShapeID(ResultsPath, ShpfileType.SHP_POLYGON)
+
+            mySf.GeoProjection = New GeoProjection
+            mySf.GeoProjection.ImportFromEPSG("28992")
+            mySf.StartEditingShapes(True)
+
+            'add the columns. notice that the resultsfield stays empty but it is necessary for later adding results
+            FaceIdxFieldIdx = mySf.EditAddField(FaceIdxFieldname, MapWinGIS.FieldType.INTEGER_FIELD, 0, 10)
+            FaceIdFieldIdx = mySf.EditAddField(FaceIdFieldName, MapWinGIS.FieldType.STRING_FIELD, 0, 20)
+            ResultsFieldIdx = mySf.EditAddField(ResultFieldName, ResultFieldType, ResultFieldPrecision, ResultFieldLength) 'prepare a field for our result. This saves time later
+
+            Dim j As Integer
+            'Dim FaceId As String
+            Dim FaceIdx As Integer
+            Dim ShapeIdx As Integer
+
+            'read the classmap file and walk through all cells and write them as a feature
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Converting mesh to shapefile...", 0, 10, True)
+            For FaceIdx = 0 To UBound(Mesh2d_face_x)
+                'FaceIdx = Convert.ToInt32(FaceId)
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", FaceIdx, UBound(Mesh2d_face_x))
+
+                'create a new shape for this face
+                Dim newShape As New MapWinGIS.Shape
+                Dim shapeCreatedSuccess As Boolean = newShape.Create(ShpfileType.SHP_POLYGON)
+
+                'write its coordinates. Notice that Mapwindow writes polygons counterclockwise!
+                Dim startIdx As Integer = -1
+                For j = UBound(Mesh2d_face_nodes, 2) To 0 Step -1
+                    'NOTE: the index numbers inside FaceNodes are 1-based!
+                    If Mesh2d_face_nodes(FaceIdx, j) > -999 Then
+                        If startIdx = -1 Then startIdx = j
+                        newShape.AddPoint(Mesh2d_face_x(Mesh2d_face_nodes(FaceIdx, j) - 1), Mesh2d_face_y(Mesh2d_face_nodes(FaceIdx, j) - 1))
+                    End If
+                Next
+
+                'close the polygon by adding the first point again
+                newShape.AddPoint(Mesh2d_face_x(Mesh2d_face_nodes(FaceIdx, startIdx) - 1), Mesh2d_face_y(Mesh2d_face_nodes(FaceIdx, startIdx) - 1))
+
+                'and add the shape to our file and assign the cell's ID
+                ShapeIdx = mySf.EditAddShape(newShape)
+                mySf.EditCellValue(FaceIdxFieldIdx, ShapeIdx, ShapeIdx)                     'write the face's index number to our shapefile
+                mySf.EditCellValue(FaceIdFieldIdx, ShapeIdx, FaceIdx)              'write the face's name to our shapefile
+            Next
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Mesh written...", 0, 10, True)
+
+            If Not mySf.StopEditingShapes(True, True) Then Throw New Exception("StopEditingShapes failed: " & mySf.ErrorMsg(mySf.LastErrorCode))
+
+            Extents = New MapWinGIS.Extents
+            Extents.SetBounds(mySf.Extents.xMin, mySf.Extents.yMin, 0, mySf.Extents.xMax, mySf.Extents.yMax, 0)
+
+            If Not mySf.Close() Then Throw New Exception("Error: could not close shapefile.")
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function DepthToShapefile of class clsClassMapFile: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
 
     'Public Function FloodStatisticsToGeoJSON(ResultsPath As String, MaxDepth As Boolean, MaxVelocity As Boolean, TInund As Boolean, TMax As Boolean, T20cm As Boolean, T50cm As Boolean) As Boolean
 

@@ -4628,9 +4628,20 @@ Public Class frmStochasten
             'write the locations and all results to the JSON files
             Call WriteStochastsJSON(ViewerDir & "\js\stochasts.js")
             Call WriteSubcatchmentsJSON(ViewerDir & "\js\subcatchments.js")
-            Call WriteExceedanceDataJSON(ViewerDir & "\js\exceedancedata.js")
-            Call WriteLocationsJSON(ViewerDir & "\js\locations.js")
-            Call WriteResultsJSON(ViewerDir & "\js\results.js")
+
+            If rad2D.Checked Then
+                'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
+                If radFou.Checked Then
+                    Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js")
+                    Call WriteFouTopographyJSON(ViewerDir & "\js\Mesh.js")
+                End If
+            End If
+
+            If rad1D.Checked Then
+                Call WriteLocationsJSON(ViewerDir & "\js\locations.js")
+                Call WriteResultsJSON(ViewerDir & "\js\results.js")
+                Call WriteExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js")
+            End If
 
             Me.Setup.GeneralFunctions.UpdateProgressBar("Operation complete.", 0, 10, True)
             Me.Cursor = Cursors.Default
@@ -4698,6 +4709,33 @@ Public Class frmStochasten
             Return False
         End Try
 
+    End Function
+
+    Public Function WriteFouTopographyJSON(path As String) As Boolean
+        Try
+            Return Me.Setup.StochastenAnalyse.WriteFouTopographyJSON(path)
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteFouTopographyJSON: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function WriteExceedanceData2DJSON(path As String) As Boolean
+        Try
+            Return Me.Setup.StochastenAnalyse.WriteExceedanceData2DJSON(path, cmbClimate.Text, Convert.ToInt16(cmbDuration.Text))
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteFouExceedanceJSON: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+    Public Function WriteExceedanceData1DJSON(path As String) As Boolean
+        Try
+            Return Me.Setup.StochastenAnalyse.WriteExceedanceData1DJSON(path, cmbClimate.Text, Convert.ToInt16(cmbDuration.Text))
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteExceedanceData1DJSON: " & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function WriteStochastsJSON(path As String) As Boolean
@@ -4801,58 +4839,6 @@ Public Class frmStochasten
             Return True
         Catch ex As Exception
             Return False
-        End Try
-    End Function
-
-    Public Function WriteExceedanceDataJSON(exceedancedatapath As String) As Boolean
-        Try
-            Dim locdt As New DataTable
-            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND DUUR=" & cmbDuration.Text & ";"
-            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
-
-            'write the dataset to json
-            If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
-            Using exceedanceWriter As New StreamWriter(exceedancedatapath)
-                exceedanceWriter.WriteLine("let exceedancedata = {")
-                exceedanceWriter.WriteLine("    " & Chr(34) & "locations" & Chr(34) & ": [")
-                exceedanceWriter.WriteLine("        {")
-
-                Me.Setup.GeneralFunctions.UpdateProgressBar("Writing results...", 0, 10, True)
-                Dim resNum As Integer = 0
-                For i = 0 To locdt.Rows.Count - 1
-                    Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
-
-
-                    'add the exceedance data to the excedancedata.js file
-                    exceedanceWriter.WriteLine("            " & Chr(34) & "ID" & Chr(34) & ": " & Chr(34) & locdt.Rows(i)("LOCATIENAAM") & Chr(34) & ",")
-                    exceedanceWriter.WriteLine("            " & Chr(34) & "data" & Chr(34) & ": [")
-
-                    'for this location we will retrieve the exceedance table
-                    Dim dtHerh As New DataTable
-                    query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "' AND DUUR=" & cmbDuration.Text & " ORDER BY HERHALINGSTIJD;"
-                    Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
-
-                    'now that we have our exceedance table, we can start writing it to the exceedancedata.js file
-                    Dim exceedanceStr As String = ""
-                    For j = 0 To dtHerh.Rows.Count - 1
-                        exceedanceStr = "                { %x%: " & Math.Round(dtHerh.Rows(j)(0), 2) & ", %y%: " & Math.Round(dtHerh.Rows(j)(1), 2) & ", %stochasts%:{%SEIZOEN%:%" & dtHerh.Rows(j)("SEIZOEN") & "%, %VOLUME%: " & dtHerh.Rows(j)("VOLUME") & ", %PATROON%: %" & dtHerh.Rows(j)("PATROON") & "%, %GW%: %" & dtHerh.Rows(j)("GW") & "%, %BOUNDARY%:%" & dtHerh.Rows(j)("BOUNDARY") & "%, %WIND%" & ":%" & dtHerh.Rows(j)("WIND") & "%,%EXTRA1%:%" & dtHerh.Rows(j)("EXTRA1") & "%,%EXTRA2%:%" & dtHerh.Rows(j)("EXTRA2") & "%,%EXTRA3%:%" & dtHerh.Rows(j)("EXTRA3") & "%,%EXTRA4%:%" & dtHerh.Rows(j)("EXTRA4") & "%}}"
-                        If j < dtHerh.Rows.Count - 1 Then exceedanceStr &= ","
-                        exceedanceStr = exceedanceStr.Replace("%", Chr(34))
-                        exceedanceWriter.WriteLine(exceedanceStr)
-                    Next
-                    exceedanceWriter.WriteLine("            ]")
-                    If i < locdt.Rows.Count - 1 Then
-                        'write the closing string for the previous result before proceeding to the next
-                        exceedanceWriter.WriteLine("        }, {") 'prepare for the next location to be written
-                    End If
-                Next
-                exceedanceWriter.WriteLine("        }") 'closing statement for the last location
-                exceedanceWriter.WriteLine("    ]")
-                exceedanceWriter.WriteLine("};")
-
-            End Using
-        Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function WriteExceedanceDataJSON of frmStochasten: " & ex.Message)
         End Try
     End Function
 
