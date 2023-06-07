@@ -6,6 +6,9 @@ Imports STOCHLIB.General
 Imports DocumentFormat.OpenXml.InkML
 Imports System.IO
 Imports MapWinGIS
+Imports Ionic
+Imports System.Security.Cryptography
+Imports DocumentFormat.OpenXml.Drawing.Diagrams
 
 Public Class clsFouNCFile
     Private Setup As clsSetup
@@ -20,6 +23,8 @@ Public Class clsFouNCFile
     Dim Mesh1d_fourier002_maxID As Integer = -1
     Dim Mesh2d_face_xID As Integer = -1
     Dim Mesh2d_face_yID As Integer = -1
+    Dim Mesh2d_node_xID As Integer = -1
+    Dim Mesh2d_node_yID As Integer = -1
     Dim Mesh2d_face_nodesID As Integer = -1
     Dim Mesh1d_node_xID As Integer = -1
     Dim Mesh1d_node_yID As Integer = -1
@@ -33,7 +38,10 @@ Public Class clsFouNCFile
     Dim Mesh1d_fourier002_max As Double()       'size: number of nodes
     Friend Mesh2d_face_x As Double()       'size: number of faces
     Friend Mesh2d_face_y As Double()       'size: number of faces
+    Friend Mesh2d_node_x As Double()       'x-coordinate of mesh nodes
+    Friend Mesh2d_node_y As Double()       'y-coordianate of mesh nodes
     Friend Mesh2d_face_nodes As Integer(,) 'first dimension; face index, second dimension: node index, counted counterclockwise
+    Friend Mesh2d_face_nodes_start_index As Integer 'the start index for nodes in this collection
     Dim Mesh1d_node_x As Double()       'size: number of nodes
     Dim Mesh1d_node_y As Double()       'size: number of nodes
 
@@ -75,17 +83,20 @@ Public Class clsFouNCFile
             'set the names for all variables
             For i = 0 To dataset.Variables.Count - 1
                 Debug.Print(dataset.Variables.Item(i).Name)
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_y" Then Mesh2d_face_yID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_nodes" Then Mesh2d_face_nodesID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_x" Then Mesh1d_node_xID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_y" Then Mesh1d_node_yID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_id" Then Mesh1d_node_idID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_long_name" Then Mesh1d_node_long_nameID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_y" Then Mesh2d_face_yID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_nodes" Then Mesh2d_face_nodesID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_node_x" Then Mesh2d_node_xID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_node_y" Then Mesh2d_node_yID = dataset.Variables.Item(i).ID
+
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
             Next
 
@@ -96,7 +107,13 @@ Public Class clsFouNCFile
             If Mesh1d_fourier002_maxID >= 0 Then Mesh1d_fourier002_max = dataset.GetData(Of Double())(Mesh1d_fourier002_maxID)
             If Mesh2d_face_xID >= 0 Then Mesh2d_face_x = dataset.GetData(Of Double())(Mesh2d_face_xID)
             If Mesh2d_face_yID >= 0 Then Mesh2d_face_y = dataset.GetData(Of Double())(Mesh2d_face_yID)
-            If Mesh2d_face_nodesID >= 0 Then Mesh2d_face_nodes = dataset.GetData(Of Integer(,))(Mesh2d_face_nodesID)
+            If Mesh2d_face_nodesID >= 0 Then
+                Mesh2d_face_nodes = dataset.GetData(Of Integer(,))(Mesh2d_face_nodesID)
+                Mesh2d_face_nodes_start_index = GetStartIndex(Mesh2d_face_nodes)            'strangely we cannot find the start_index in the metadata although panoply sais it's there. Hence this function
+                'If dataset.Metadata.ContainsKey("start_index") Then Mesh2d_face_nodes_start_index = dataset.Metadata.Item("start_index")
+            End If
+            If Mesh2d_node_xID >= 0 Then Mesh2d_node_x = dataset.GetData(Of Double())(Mesh2d_node_xID)
+            If Mesh2d_node_yID >= 0 Then Mesh2d_node_y = dataset.GetData(Of Double())(Mesh2d_node_yID)
             If Mesh1d_node_xID >= 0 Then Mesh1d_node_x = dataset.GetData(Of Double())(Mesh1d_node_xID)
             If Mesh1d_node_yID >= 0 Then Mesh1d_node_y = dataset.GetData(Of Double())(Mesh1d_node_yID)
             If Mesh1d_node_idID >= 0 Then Mesh1d_node_id = dataset.GetData(Of Byte(,))(Mesh1d_node_idID)
@@ -124,6 +141,128 @@ Public Class clsFouNCFile
         End Try
     End Function
 
+    Public Function GetStartIndex(data As Integer(,)) As Integer
+        'figure out the start index for a 2D array
+        Dim i As Integer, j As Integer
+        Dim start_index As Integer = 99999
+        For i = 0 To UBound(data, 1)
+            For j = 0 To UBound(data, 2)
+                If data(i, j) >= 0 AndAlso data(i, j) < start_index Then start_index = data(i, j)
+            Next
+        Next
+        Return start_index
+    End Function
+
+    Public Function ReprojectAndWriteMeshToWebJS(path As String) As Boolean
+        ' <summary>
+        ' Writes the mesh to a GeoJSON object inside a JS file
+        ' Assumes the source data is in RD New projection (EPSG:29882)
+        ' </summary>
+        ' <param name="path">path to the .js file to be written.</param>
+        ' <returns>a .js file holding a javascript variable that contains a GeoJSON object.</returns>
+        Try
+            Dim i As Long
+            Dim Lat As Double, Lng As Double
+
+            Using meshWriter As New StreamWriter(path)
+                meshWriter.WriteLine("let Mesh = ")
+                meshWriter.WriteLine("   {")
+                meshWriter.WriteLine("        ""type"": ""FeatureCollection"",")
+                meshWriter.WriteLine("        ""name"":  ""test"",")
+                meshWriter.WriteLine("        ""timesteps"": 0,")
+                meshWriter.WriteLine("        ""crs"": { ""type"": ""name"", ""properties"": { ""name"": ""urn:ogc:def:crs:OGC:1.3:CRS84""} },")
+                meshWriter.WriteLine("        ""features"": [")
+
+                For i = 0 To UBound(Mesh2d_face_nodes, 1)
+                    Dim featureStr As String = "            { ""type"": ""Feature"", ""geometry"": { ""type"": ""Polygon"", ""coordinates"": [["
+
+                    'write its coordinates. Notice that the coordinates are written counterclockwise as they should be
+                    Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                    featureStr &= "[" & Lng & "," & Lat & "]"
+                    For j = 1 To UBound(Mesh2d_face_nodes, 2)
+                        If Mesh2d_face_nodes(i, j) > -999 Then
+                            Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                            featureStr &= ",[" & Lng & "," & Lat & "]"
+                        End If
+                    Next
+                    Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                    featureStr &= ",[" & Lng & "," & Lat & "]]]}}"
+                    If i < UBound(Mesh2d_face_nodes, 1) Then featureStr &= ","
+                    meshWriter.WriteLine(featureStr)
+                Next
+
+                meshWriter.WriteLine("        ]")
+                meshWriter.WriteLine("   }")
+            End Using
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function ReprojectAndWriteFloodLevelsMeshToWebJS(resultspath As String, ReturnPeriods As List(Of Integer), ExceedanceValues As Dictionary(Of Integer, List(Of Double))) As Boolean
+        ' <summary>
+        ' Writes the mesh, including flood levels to a GeoJSON object inside a JS file
+        ' Assumes the source data is in RD New projection (EPSG:29882)
+        ' </summary>
+        ' <param name="resultspath">path to the .js file to be written.</param>
+        ' <param name="DatabaseTable">Name of the table in SQLite that holds the return periods.</param>
+        ' <param name="FeatureIdxField">Name of the field in SQLite table that holds the feature index number.</param>
+        ' <param name="ReturnPeriodField">Name of the field in SQLite table that holds the return period.</param>
+        ' <param name="ValuesField">Name of the field in SQLite table that holds the water levels.</param>
+        ' <param name="OnlyWriteActiveCells">A boolean that reduces the number of cells written by only writing those cells that have level differences between the return periods.</param>
+        ' <returns>a .js file holding a javascript variable that contains a GeoJSON object.</returns>
+        Try
+            Dim i As Long
+            Dim Lat As Double, Lng As Double
+
+            Using meshWriter As New StreamWriter(resultspath)
+                meshWriter.WriteLine("let Mesh = ")
+                meshWriter.WriteLine("   {")
+                meshWriter.WriteLine("        ""type"": ""FeatureCollection"",")
+                meshWriter.WriteLine("        ""name"":  ""test"",")
+                meshWriter.WriteLine("        ""timesteps"": 0,")
+                meshWriter.WriteLine("        ""crs"": { ""type"": ""name"", ""properties"": { ""name"": ""urn:ogc:def:crs:OGC:1.3:CRS84""} },")
+                meshWriter.WriteLine("        ""features"": [")
+
+                For i = 0 To UBound(Mesh2d_face_nodes, 1)
+
+                    'we will only generate the cells for which the exceedance level for the highest return period exceeds the level for the lowest return period
+                    Dim waterLevels As List(Of Double) = ExceedanceValues(i)
+                    If waterLevels.Max() > waterLevels.Min() Then
+
+                        Dim featureStr As String = "            { ""type"": ""Feature"", ""properties"": {"
+                        featureStr &= "T" & ReturnPeriods(0) & "," & ExceedanceValues(i)(0)
+                        For j = 1 To ReturnPeriods.Count - 1
+                            featureStr &= "T" & ReturnPeriods(j) & "," & ExceedanceValues(i)(j)
+                        Next
+                        featureStr &= "}, ""geometry"": { ""type"": ""Polygon"", ""coordinates"": [["
+
+                        'write its coordinates. Notice that the coordinates are written counterclockwise as they should be
+                        Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                        featureStr &= "[" & Lng & "," & Lat & "]"
+                        For j = 1 To UBound(Mesh2d_face_nodes, 2)
+                            If Mesh2d_face_nodes(i, j) > -999 Then
+                                Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                                featureStr &= ",[" & Lng & "," & Lat & "]"
+                            End If
+                        Next
+                        Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                        featureStr &= ",[" & Lng & "," & Lat & "]]]}}"
+                        If i < UBound(Mesh2d_face_nodes, 1) Then featureStr &= ","
+                        meshWriter.WriteLine(featureStr)
+                    End If
+
+                Next
+
+                meshWriter.WriteLine("        ]")
+                meshWriter.WriteLine("   }")
+            End Using
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
 
     Public Function ReprojectAndWriteMeshToGeoJSON(ShapefilePath As String, ByRef jsWriter As System.IO.StreamWriter, ScenarioName As String, SourceProjection As MapWinGIS.GeoProjection, TargetProjection As MapWinGIS.GeoProjection, ByRef Extents As MapWinGIS.Extents) As Boolean
         'this function reprojects our mesh and generates a GeoJSON file of it

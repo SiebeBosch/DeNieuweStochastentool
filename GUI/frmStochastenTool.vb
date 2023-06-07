@@ -663,12 +663,9 @@ Public Class frmStochasten
                         txtOutputDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "resultatenmap" Then
                         txtResultatenDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
-                    ElseIf n_node.Name.Trim.ToLower = "resultatenmodule" Then
-                        If n_node.InnerText.Trim.ToUpper = "2D" Then
-                            rad2D.Checked = True
-                        Else
-                            rad1D.Checked = True
-                        End If
+                    ElseIf n_node.Name.Trim.ToLower = "resultatenmodules" Then
+                        Setup.GeneralFunctions.readXMLAttributeBOOL(n_node, "Flow1D", chk1D.Checked)
+                        Setup.GeneralFunctions.readXMLAttributeBOOL(n_node, "Flow2D", chk2D.Checked)
                     ElseIf n_node.Name.Trim.ToLower = "maxparallel" Then
                         txtMaxParallel.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "klimaatscenario" Then
@@ -2531,15 +2528,10 @@ Public Class frmStochasten
         'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
         Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
-        If rad2D.Checked Then
-            'if we have 2D results, we also create an Exceedance Mesh
-            Setup.StochastenAnalyse.CalculateExceedanceMesh()
-        End If
-
         Me.Cursor = Cursors.WaitCursor
-        Setup.StochastenAnalyse.CalculateExceedanceTables(rad1D.Checked, rad2D.Checked)
-
+        Setup.StochastenAnalyse.CalculateExceedanceTables(chk1D.Checked, chk2D.Checked)
         Me.Cursor = Cursors.Default
+
 
     End Sub
 
@@ -3364,11 +3356,11 @@ Public Class frmStochasten
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
 
-        If rad1D.Checked Then
+        If chk2D.Checked Then
             Call Setup.StochastenAnalyse.ExportResults1D()
         End If
 
-        If rad2D.Checked Then
+        If chk2D.Checked Then
             Call Setup.StochastenAnalyse.ExportResults2D()
         End If
 
@@ -4306,7 +4298,7 @@ Public Class frmStochasten
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", InputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", OutputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", ResultsPathRelative, 4)
-                If rad2D.Checked Then
+                If chk2D.Checked Then
                     Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmodule", "2D", 4)
                 Else
                     Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmodule", "1D", 4)
@@ -4425,7 +4417,7 @@ Public Class frmStochasten
 
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
-        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon, rad1D.Checked, rad2D.Checked)
+        Setup.StochastenAnalyse.ReadResults(Me.Setup.SqliteCon, chk1D.Checked, chk2D.Checked)
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
         Me.Cursor = Cursors.Default
@@ -4629,15 +4621,17 @@ Public Class frmStochasten
             Call WriteStochastsJSON(ViewerDir & "\js\stochasts.js")
             Call WriteSubcatchmentsJSON(ViewerDir & "\js\subcatchments.js")
 
-            If rad2D.Checked Then
+            If chk2D.Checked Then
                 'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
-                If radFou.Checked Then
-                    Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js")
-                    Call WriteFouTopographyJSON(ViewerDir & "\js\Mesh.js")
-                End If
+                Setup.StochastenAnalyse.CalculateExceedanceMesh(cmbClimate.Text, cmbDuration.Text)
+
+                'If radFou.Checked Then
+                '    Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js")
+                '    Call WriteFouTopographyJSON(ViewerDir & "\js\Mesh.js")
+                'End If
             End If
 
-            If rad1D.Checked Then
+            If chk1D.Checked Then
                 Call WriteLocationsJSON(ViewerDir & "\js\locations.js")
                 Call WriteResultsJSON(ViewerDir & "\js\results.js")
                 Call WriteExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js")

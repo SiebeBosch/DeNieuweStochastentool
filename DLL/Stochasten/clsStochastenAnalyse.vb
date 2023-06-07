@@ -7,7 +7,7 @@ Imports System.Net.WebRequestMethods
 Imports DocumentFormat.OpenXml.Bibliography
 Imports DocumentFormat.OpenXml.Office2019.Drawing
 Imports System.Transactions
-
+Imports System.Runtime.InteropServices.WindowsRuntime
 
 Public Class clsStochastenAnalyse
 
@@ -800,7 +800,7 @@ Public Class clsStochastenAnalyse
         End Try
 
     End Function
-    Public Function CalcExceedanceTables(ByRef locationList As List(Of Integer), Filter As String, ByRef dtHerh As Dictionary(Of Integer, DataTable)) As Boolean
+    Public Function CalcExceedanceTables2D(ByRef locationList As List(Of Integer), Filter As String, ByRef dtHerh As Dictionary(Of Integer, DataTable), ResultsTableName As String, LocationField As String) As Boolean
         Try
             Dim myQuery As String = ""
             Dim Loc As Integer
@@ -825,11 +825,11 @@ Public Class clsStochastenAnalyse
                 dt.Columns.Add("Herhalingstijd", GetType(Double))
                 dt.Columns.Add("Waarde", GetType(Double))
                 dt.Columns.Add("RUNID", GetType(String))
-                dt.Columns.Add("LOCATIENAAM", GetType(String))
+                dt.Columns.Add(LocationField, GetType(String))
                 dtHerh.Add(Loc, dt)
             Next
 
-            myQuery = "SELECT LOCATIENAAM, RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM IN (" & String.Join(",", locationList.Select(Function(l) "'" & l & "'")) & ") AND KLIMAATSCENARIO = @KlimaatScenario AND DUUR = @Duration ORDER BY LOCATIENAAM, " & ValuesField & " ASC;"
+            myQuery = "SELECT " & LocationField & ", RUNID, " & ValuesField & ", P FROM " & ResultsTableName & " WHERE " & LocationField & " In (" & String.Join(",", locationList.Select(Function(l) l)) & ") AND KLIMAATSCENARIO = @KlimaatScenario AND DUUR = @Duration ORDER BY " & LocationField & ", " & ValuesField & " ASC;"
             Using cmd As New SQLiteCommand(myQuery, Me.Setup.SqliteCon)
                 cmd.Parameters.AddWithValue("@KlimaatScenario", Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper)
                 cmd.Parameters.AddWithValue("@Duration", Setup.StochastenAnalyse.Duration)
@@ -839,15 +839,15 @@ Public Class clsStochastenAnalyse
                         pCumDict.Add(Loc, 0)
                     Next
 
-                    Dim previousLocation As String = ""
+                    Dim previousFeature As Integer = -1
                     While reader.Read()
-                        Dim locationName As String = reader.GetString(reader.GetOrdinal("LOCATIENAAM"))
-                        If previousLocation <> locationName Then
+                        Dim FeatureIdx As Integer = reader.GetInt32(reader.GetOrdinal(LocationField))
+                        If previousFeature <> FeatureIdx Then
                             i = 0 ' Reset the counter when moving to a new location
                         End If
 
-                        Dim pCum As Double = pCumDict(locationName) + reader.GetDouble(reader.GetOrdinal("P"))
-                        pCumDict(locationName) = pCum
+                        Dim pCum As Double = pCumDict(FeatureIdx) + reader.GetDouble(reader.GetOrdinal("P"))
+                        pCumDict(FeatureIdx) = pCum
                         Dim value As Double = reader.GetDouble(reader.GetOrdinal(ValuesField))
                         Dim runId As String = reader.GetString(reader.GetOrdinal("RUNID"))
 
@@ -858,17 +858,15 @@ Public Class clsStochastenAnalyse
                                 herhTijd = 1 / (maxFreq - pCum)
                                 prevVal = value
                             Else
-                                herhTijd = dtHerh(locationName).Rows(i - 1)(0) + 1
-
+                                herhTijd = dtHerh(FeatureIdx).Rows(i - 1)(0) + 1
                                 curVal = value
-
                             End If
                         Else
                             herhTijd = 1 / -Math.Log(pCum)
                         End If
-                        dtHerh(locationName).Rows.Add(herhTijd, value, runId, locationName)
+                        dtHerh(FeatureIdx).Rows.Add(herhTijd, value, runId, FeatureIdx)
                         i += 1
-                        previousLocation = locationName
+                        previousFeature = FeatureIdx
                     End While
                 End Using
             End Using
@@ -1011,7 +1009,47 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function CalculateExceedanceMesh() As Boolean
+
+    Public Function GetExceedanceValuesWaterlevels2D(returnPeriods As List(Of Integer), ClimateScenario As String, Duration As Integer) As Dictionary(Of Integer, List(Of Double))
+        Try
+            Dim returnDictionary As New Dictionary(Of Integer, List(Of Double))()
+
+            Dim dtLoc = New DataTable
+            Dim query As String = "SELECT DISTINCT FEATUREIDX FROM HERHALINGSTIJDEN2D;"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLoc, True)
+
+            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading return periods from database...", 0, 10, True)
+
+            For i = 0 To dtLoc.Rows.Count - 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, dtLoc.Rows.Count)
+
+                Dim dtHerh As New DataTable
+                query = "SELECT HERHALINGSTIJD, WAARDE FROM HERHALINGSTIJDEN2D WHERE FEATUREIDX=" & dtLoc.Rows(i)("FEATUREIDX") & " AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                If dtHerh.Rows.Count > 0 Then
+                    Dim returnPeriodWaterLevels As New List(Of Double)()
+
+                    For Each returnPeriod In returnPeriods
+                        Dim waterlevel As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, returnPeriod, 0, 1)
+                        returnPeriodWaterLevels.Add(waterlevel)
+                    Next
+
+                    Dim featureIdx As Integer = Convert.ToInt32(dtLoc.Rows(i)("FEATUREIDX"))
+                    returnDictionary.Add(featureIdx, returnPeriodWaterLevels)
+                End If
+            Next
+
+            Me.Setup.SqliteCon.Close()
+            Return returnDictionary
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetReturnPeriodsWaterlevels2D: " & ex.Message)
+            Return New Dictionary(Of Integer, List(Of Double))()  ' Return empty dictionary on error
+        End Try
+    End Function
+
+    Public Function CalculateExceedanceMesh(ClimateScenario As String, Duration As Integer) As Boolean
         'this function is designed to export our mesh to a GeoJSON for the webviewer. Inside, it will store the exceedance tables
         Try
             'first thing to do is to read the model's fourier file and turn it into a GeoJSON
@@ -1021,6 +1059,11 @@ Public Class clsStochastenAnalyse
                         Dim fouFile As New clsFouNCFile("c:\SYNC\PROJECTEN\H3110.StochastenRivierenland\04.Bommelerwaard\Model\fm\Output\BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_fou.nc", Me.Setup)
                         If Not fouFile.Read() Then Throw New Exception("Error reading fourier file.")
 
+                        'let's get our return periods from the database!
+                        Dim ReturnPeriods As New List(Of Integer) From {10, 25, 50, 100}
+                        Dim ExceedanceValues As Dictionary(Of Integer, List(Of Double)) = GetExceedanceValuesWaterlevels2D(ReturnPeriods, ClimateScenario, Duration)
+
+                        fouFile.ReprojectAndWriteFloodLevelsMeshToWebJS("c:\temp\bommelerwaard.js", ReturnPeriods, ExceedanceValues)
 
 
                     Case Else
@@ -1146,7 +1189,7 @@ Public Class clsStochastenAnalyse
                 Next
 
                 'retrieve all data for the current duration and climate scenario
-                If Me.Setup.StochastenAnalyse.CalcExceedanceTables(locationChunk, "MAXVAL", dtHerh) Then
+                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "MAXVAL", dtHerh, "RESULTATEN2D", "FEATUREIDX") Then
                     Using transaction = Me.Setup.SqliteCon.BeginTransaction
                         Dim myCmd As New SQLite.SQLiteCommand
                         myCmd.Connection = Me.Setup.SqliteCon
@@ -1191,7 +1234,7 @@ Public Class clsStochastenAnalyse
                                 params("@extra3") = rundt.Rows(RowIdx)("EXTRA3")
                                 params("@extra4") = rundt.Rows(RowIdx)("EXTRA4")
 
-                                InsertRecordWithParameters2D(myCmd, params, "HERHALINGSTIJDEN2D")
+                                If Not InsertRecordWithParameters2D(myCmd, params, "HERHALINGSTIJDEN2D") Then Throw New Exception("Error inserting record with parameters 2D.")
                             Next
                         Next
 
@@ -1208,18 +1251,24 @@ Public Class clsStochastenAnalyse
     End Function
 
 
-    Private Sub InsertRecordWithParameters2D(ByRef myCmd As SQLite.SQLiteCommand, ByVal params As Dictionary(Of String, Object), ByVal tableName As String)
-        Dim query As String = "INSERT INTO " & tableName & " (KLIMAATSCENARIO, DUUR, FEATUREIDX, HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4) VALUES (@klimaatscenario, @duration, @featureidx, @herhalingstijd, @waarde, @seizoen, @volume, @patroon, @gw, @boundary, @wind, @extra1, @extra2, @extra3, @extra4);"
+    Private Function InsertRecordWithParameters2D(ByRef myCmd As SQLite.SQLiteCommand, ByVal params As Dictionary(Of String, Object), ByVal tableName As String) As Boolean
+        Try
+            Dim query As String = "INSERT INTO " & tableName & " (KLIMAATSCENARIO, DUUR, FEATUREIDX, HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4) VALUES (@klimaatscenario, @duration, @featureidx, @herhalingstijd, @waarde, @seizoen, @volume, @patroon, @gw, @boundary, @wind, @extra1, @extra2, @extra3, @extra4);"
 
-        myCmd.CommandText = query
-        myCmd.Parameters.Clear()
+            myCmd.CommandText = query
+            myCmd.Parameters.Clear()
 
-        For Each param As KeyValuePair(Of String, Object) In params
-            myCmd.Parameters.AddWithValue(param.Key, param.Value)
-        Next
+            For Each param As KeyValuePair(Of String, Object) In params
+                myCmd.Parameters.AddWithValue(param.Key, param.Value)
+            Next
 
-        myCmd.ExecuteNonQuery()
-    End Sub
+            myCmd.ExecuteNonQuery()
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function InsertRecordWithParameters2D: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
 
 
@@ -1685,7 +1734,7 @@ Public Class clsStochastenAnalyse
                 Next
 
                 'calculate an exceedance table for this location
-                If Not CalcExceedanceTables(locationChunk, "MAXVAL", dtHerh) Then
+                If Not CalcExceedanceTables2D(locationChunk, "MAXVAL", dtHerh, "RESULTATEN2D", "FEATUREIDX") Then
                     Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
                 Else
                     'also retrieve the runs

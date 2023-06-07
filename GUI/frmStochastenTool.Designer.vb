@@ -76,6 +76,7 @@ Partial Class frmStochasten
         Me.LeesFOUFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tabStochastentool = New System.Windows.Forms.TabControl()
         Me.tabSettings = New System.Windows.Forms.TabPage()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.grMeteo = New System.Windows.Forms.GroupBox()
         Me.btnRemoveMeteoStation = New System.Windows.Forms.Button()
         Me.grMeteoStations = New System.Windows.Forms.DataGridView()
@@ -272,12 +273,12 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.rad1D = New System.Windows.Forms.RadioButton()
-        Me.rad2D = New System.Windows.Forms.RadioButton()
-        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.chk1D = New System.Windows.Forms.CheckBox()
+        Me.chk2D = New System.Windows.Forms.CheckBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.grMeteo.SuspendLayout()
         CType(Me.grMeteoStations, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.grNabewerking.SuspendLayout()
@@ -343,7 +344,6 @@ Partial Class frmStochasten
         CType(Me.DataGridView13, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView14, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.DataGridView15, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'mnuMenu
@@ -707,6 +707,17 @@ Partial Class frmStochasten
         Me.tabSettings.TabIndex = 1
         Me.tabSettings.Text = "Algemeen"
         Me.tabSettings.UseVisualStyleBackColor = True
+        '
+        'GroupBox1
+        '
+        Me.GroupBox1.Controls.Add(Me.chk2D)
+        Me.GroupBox1.Controls.Add(Me.chk1D)
+        Me.GroupBox1.Location = New System.Drawing.Point(500, 569)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(369, 155)
+        Me.GroupBox1.TabIndex = 41
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Output"
         '
         'grMeteo
         '
@@ -2805,38 +2816,29 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
         '
-        'rad1D
+        'chk1D
         '
-        Me.rad1D.AutoSize = True
-        Me.rad1D.Checked = True
-        Me.rad1D.Location = New System.Drawing.Point(18, 39)
-        Me.rad1D.Name = "rad1D"
-        Me.rad1D.Size = New System.Drawing.Size(130, 24)
-        Me.rad1D.TabIndex = 38
-        Me.rad1D.TabStop = True
-        Me.rad1D.Text = "resultaten 1D"
-        Me.rad1D.UseVisualStyleBackColor = True
+        Me.chk1D.AutoSize = True
+        Me.chk1D.Checked = True
+        Me.chk1D.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chk1D.Location = New System.Drawing.Point(22, 42)
+        Me.chk1D.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chk1D.Name = "chk1D"
+        Me.chk1D.Size = New System.Drawing.Size(131, 24)
+        Me.chk1D.TabIndex = 38
+        Me.chk1D.Text = "resultaten 1D"
+        Me.chk1D.UseVisualStyleBackColor = True
         '
-        'rad2D
+        'chk2D
         '
-        Me.rad2D.AutoSize = True
-        Me.rad2D.Location = New System.Drawing.Point(19, 69)
-        Me.rad2D.Name = "rad2D"
-        Me.rad2D.Size = New System.Drawing.Size(130, 24)
-        Me.rad2D.TabIndex = 39
-        Me.rad2D.Text = "resultaten 2D"
-        Me.rad2D.UseVisualStyleBackColor = True
-        '
-        'GroupBox1
-        '
-        Me.GroupBox1.Controls.Add(Me.rad2D)
-        Me.GroupBox1.Controls.Add(Me.rad1D)
-        Me.GroupBox1.Location = New System.Drawing.Point(500, 569)
-        Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(369, 155)
-        Me.GroupBox1.TabIndex = 41
-        Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Output"
+        Me.chk2D.AutoSize = True
+        Me.chk2D.Location = New System.Drawing.Point(22, 76)
+        Me.chk2D.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chk2D.Name = "chk2D"
+        Me.chk2D.Size = New System.Drawing.Size(131, 24)
+        Me.chk2D.TabIndex = 40
+        Me.chk2D.Text = "resultaten 2D"
+        Me.chk2D.UseVisualStyleBackColor = True
         '
         'frmStochasten
         '
@@ -2858,6 +2860,8 @@ Partial Class frmStochasten
         Me.tabStochastentool.ResumeLayout(False)
         Me.tabSettings.ResumeLayout(False)
         Me.tabSettings.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.grMeteo.ResumeLayout(False)
         CType(Me.grMeteoStations, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grNabewerking.ResumeLayout(False)
@@ -2940,8 +2944,6 @@ Partial Class frmStochasten
         CType(Me.DataGridView13, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView14, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.DataGridView15, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.GroupBox1.ResumeLayout(False)
-        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -3196,6 +3198,6 @@ Partial Class frmStochasten
     Friend WithEvents radFou As RadioButton
     Friend WithEvents AlleResultatenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents rad2D As RadioButton
-    Friend WithEvents rad1D As RadioButton
+    Friend WithEvents chk2D As CheckBox
+    Friend WithEvents chk1D As CheckBox
 End Class
