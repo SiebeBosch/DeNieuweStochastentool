@@ -4298,18 +4298,24 @@ Public Class frmStochasten
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", InputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", OutputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", ResultsPathRelative, 4)
-                If chk2D.Checked Then
-                    Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmodule", "2D", 4)
-                Else
-                    Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmodule", "1D", 4)
-                End If
+
+                Dim myList As New List(Of String)
+                Dim myVals As New List(Of String)
+                Dim myBools As New List(Of Boolean)
+                myList.Add("Flow1D")
+                myList.Add("Flow2D")
+                myBools.Add(chk1D.Checked)
+                myBools.Add(chk2D.Checked)
+                Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "resultatenmodules", 4, myList, myVals)
+
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "klimaatscenario", cmbClimate.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "duur", cmbDuration.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitloop", txtUitloop.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "stochastenconfigfile", DatabasePathRelative, 4)
-                Dim myList As New List(Of String)
-                Dim myVals As New List(Of String)
+
+                myList = New List(Of String)
+                myVals = New List(Of String)
                 myList.Add("pad")
                 myList.Add("winterpeilveld")
                 myList.Add("zomerpeilveld")

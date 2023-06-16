@@ -30,7 +30,7 @@ Public Class clsSOBEK
             'add the project
             If System.IO.Directory.Exists(ProjectDir) Then
                 Dim myProject As New clsSobekProject(Me.setup, ProjectDir, ProjectDir, ReadCases)
-                Projects.Add(myProject.ProjectDir, myProject)
+                Projects.Add(myProject.ProjectDir.Trim.ToUpper, myProject)
             End If
             Return True
         Catch ex As Exception

@@ -6748,26 +6748,33 @@ Public Class GeneralFunctions
 
 
     End Function
-
     Public Function RelativeToAbsolutePath(ByVal myPath As String, ByVal myRootDir As String) As String
-
-        Dim tmpPath As String
         If Mid(myPath.Trim, 2, 2) = ":\" Then
             'the given path is not relative but absolute. Do not change it!
             Return myPath
         Else
-            While Left(myPath, 3) = "..\"
-                myPath = Right(myPath, myPath.Length - 3)
-                Dim myDirInfo As DirectoryInfo = Directory.GetParent(myRootDir)
-                myRootDir = myDirInfo.FullName
-            End While
-            myPath = Replace(myPath, ".\", "")
-            tmpPath = myRootDir & "\" & myPath
-            tmpPath = Replace(tmpPath, "\\", "\")
-        End If
-        Return tmpPath
+            ' Ensure the root directory does not end with a backslash
+            If myRootDir.EndsWith("\") Then
+                myRootDir = myRootDir.TrimEnd("\")
+            End If
 
+            While Left(myPath, 3) = "..\"
+                myPath = Mid(myPath, 4)
+                Dim myDirInfo As DirectoryInfo = Directory.GetParent(myRootDir)
+                If myDirInfo IsNot Nothing Then
+                    myRootDir = myDirInfo.FullName
+                End If
+            End While
+
+            If Left(myPath, 2) = ".\" Then
+                myPath = Mid(myPath, 3)
+            End If
+
+            Return Path.Combine(myRootDir, myPath)
+        End If
     End Function
+
+
 
     Public Function MileageOneUp(ByVal startNums As List(Of Integer), ByVal endNums As List(Of Integer), ByRef Stand As List(Of Integer)) As Boolean
         'werkt als een kilometerteller. Als het hectometergetal boven z'n maximum komt, springt hij terug naar nul

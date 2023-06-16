@@ -232,9 +232,9 @@ Public Class clsFouNCFile
                     If waterLevels.Max() > waterLevels.Min() Then
 
                         Dim featureStr As String = "            { ""type"": ""Feature"", ""properties"": {"
-                        featureStr &= "T" & ReturnPeriods(0) & "," & ExceedanceValues(i)(0)
+                        featureStr &= """T" & ReturnPeriods(0) & """:" & Format(ExceedanceValues(i)(0), "0.00")
                         For j = 1 To ReturnPeriods.Count - 1
-                            featureStr &= "T" & ReturnPeriods(j) & "," & ExceedanceValues(i)(j)
+                            featureStr &= ", ""T" & ReturnPeriods(j) & """:" & Format(ExceedanceValues(i)(j), "0.00")
                         Next
                         featureStr &= "}, ""geometry"": { ""type"": ""Polygon"", ""coordinates"": [["
 
