@@ -6,6 +6,14 @@ Imports System.Xml
 Imports MapWinGIS
 Imports Ionic.Zip
 Imports Microsoft.VisualBasic.FileIO
+Imports System.Data.SqlTypes
+
+'for MATLAB files
+Imports csmatio.io
+Imports csmatio.types
+Imports System.Security.Cryptography.X509Certificates
+Imports MathNet.Numerics.RootFinding
+
 
 '========================================================================================================================
 '   GUI GENERAL
@@ -557,7 +565,8 @@ Public Class frmStochasten
         Setup.StochastenAnalyse.Initialize()
 
         dlgOpenFile.Filter = "XML-bestand|*.xml"
-        If dlgOpenFile.ShowDialog = Windows.Forms.DialogResult.OK Then
+        Dim res As DialogResult = dlgOpenFile.ShowDialog()
+        If res = DialogResult.OK Then
             Setup.Settings.SetRootDir(Path.GetDirectoryName(dlgOpenFile.FileName) & "\")
             Setup.Settings.RootDir = Path.GetDirectoryName(dlgOpenFile.FileName) & "\"
             Setup.StochastenAnalyse.XMLFile = Me.Setup.GeneralFunctions.FileNameFromPath(dlgOpenFile.FileName)
@@ -598,12 +607,14 @@ Public Class frmStochasten
 
             'configure the popup-form showing the current pattern
             frmPattern = New frmPatroon(Me.Setup, Setup.StochastenAnalyse.Duration)
+
+            Me.Cursor = Cursors.Default
+
+            'show the logfile
+            Me.Setup.Log.write(Setup.Settings.RootDir & "\logfile.txt", True)
+
         End If
 
-        Me.Cursor = Cursors.Default
-
-        'show the logfile
-        Me.Setup.Log.write(Setup.Settings.RootDir & "\logfile.txt", True)
 
     End Sub
 
@@ -4719,6 +4730,63 @@ Public Class frmStochasten
             Return False
         End Try
     End Function
+
+    Private Sub LeesMATFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LeesMATFileToolStripMenuItem.Click
+        'Dim matFilePath = "c:\SYNC\PROJECTEN\H3116.AAenMaas.Stochasten\03.IO\Input_TQ150QHM.mat"
+
+        'Dim matFilePath = "c:\SYNC\PROJECTEN\H3116.AAenMaas.Stochasten\07.Gevoeligheidsanalyse.DenBosch\03.Model\INPUT\Input_TQ150HM.mat"
+        Dim matfilepath = "c:\SYNC\PROJECTEN\H3116.AAenMaas.Stochasten\07.Gevoeligheidsanalyse.DenBosch\03.Model\INPUT\Init_V_GL_TQ150HM.mat"
+
+        'Dim txtfilePath = "c:\temp\Input_TQ150HM.txt"
+        Dim txtfilePath = "c:\temp\Init_V_GL_TQ150HM.txt"
+
+        Dim args() As String
+        ' create a reader for the file
+        Dim mfr As New MatFileReader(matfilepath)
+
+        Using mywriter As New StreamWriter(txtfilePath)
+            'mywriter.WriteLine("NDimensions: " & mfr.Content.Values(0).NDimensions)
+            mywriter.WriteLine("NDatasets: " & mfr.Content.Values.Count)
+            For i = 1 To mfr.Content.Values.Count
+                mywriter.WriteLine($"Dataset {i}: {mfr.Content.Values(i - 1).Name}")
+                mywriter.WriteLine($"   Dimensions: {mfr.Content.Values(i - 1).NDimensions}")
+                For j = 1 To mfr.Content.Values(i - 1).NDimensions
+                    mywriter.WriteLine($"       Dimension {j}: {mfr.Content.Values(i - 1).Dimensions(j - 1)}")
+                Next
+            Next
+
+            'mywriter.Write(mfr.Content.Values(0))
+            mywriter.WriteLine("")
+            Dim myValues As MLDouble = TryCast(mfr.Content.Values(0), MLDouble)
+            If myValues IsNot Nothing Then
+                ' now get the double values
+                Dim tmp As Double()() = myValues.GetArray()
+                'squares = tmp(0)
+                For i = 0 To UBound(tmp, 1)
+                    Dim myStr As String = ""
+                    Dim content As Object = tmp(i)
+                    For j = 0 To UBound(content)
+                        myStr &= " " & tmp(i)(j)
+                    Next
+                    mywriter.WriteLine(myStr)
+                Next
+
+            End If
+        End Using
+
+        ' get a reference to our matlab 'squares' double matrix
+        'Dim mlSquares As MLDouble = TryCast(mfr.Content("squares"), MLDouble)
+        'If mlSquares IsNot Nothing Then
+        '    ' now get the double values
+        '    Dim tmp As Double()() = mlSquares.GetArray()
+        '    squares = tmp(0)
+        'End If
+    End Sub
+
+    Private Sub btnOutputDir_Click(sender As Object, e As EventArgs) Handles btnOutputDir.Click
+        dlgFolder.ShowDialog()
+        txtOutputDir.Text = dlgFolder.SelectedPath
+    End Sub
 
     Public Function WriteExceedanceData2DJSON(path As String) As Boolean
         Try

@@ -61,10 +61,11 @@ Public Class frmClassifyGroundWater
             Setup.SetActiveCase(cmbSobekCases.Text)
             Setup.SOBEKData.ActiveProject.ActiveCase.RRData.Unpaved3B.Read()
             Setup.SOBEKData.ActiveProject.ActiveCase.RRResults.UPFLODT = New STOCHLIB.clsHisFileBinaryReader(Setup.SOBEKData.ActiveProject.ActiveCase.CaseDir & "\upflowdt.his", Me.Setup)
+            Dim LocationsList As List(Of String) = Setup.SOBEKData.ActiveProject.ActiveCase.RRResults.UPFLODT.ReadAllLocations(False)
 
             'POT analysis settings
             Setup.InitializeTijdreeksStatistiek()
-            Setup.TijdreeksStatistiek.MinTimeStepsBetweenEvents = 24
+            Setup.TijdreeksStatistiek.MinTimeStepsBetweenEvents = Setup.GeneralFunctions.ForceNumeric(txtMinTimestepsBetweenEvents.Text, "Minimum aantal tijdstappen tussen events", 0, enmMessageType.ErrorMessage)
             Setup.TijdreeksStatistiek.POTFrequency = 10
 
             dlgFolder.Description = "Uitvoermap voor de grondwaterklassen."
@@ -81,8 +82,10 @@ Public Class frmClassifyGroundWater
             Else
 
                 'pick the first location to extract the rainfall series from and then read the precipitation
-                myRecord = Setup.SOBEKData.ActiveProject.ActiveCase.RRData.Unpaved3B.Records.Values(0)
-                If Not Setup.TijdreeksStatistiek.addRainfallSeriesFromHisFile(Setup.SOBEKData.ActiveProject.ActiveCase.CaseDir & "\upflowdt.his", myRecord.ID, "Rainfall") Then Throw New Exception("Error reading time series from hisfile.")
+                'bugfix: 2014-01-21: In case of unpaved.3b records that do not exist in the his file this routine crashed. 
+                'therefore I replaced the line below with the next line in which I take the first ID that actually exists in the his file.
+                'myRecord = Setup.SOBEKData.ActiveProject.ActiveCase.RRData.Unpaved3B.Records.Values(0)
+                If Not Setup.TijdreeksStatistiek.addRainfallSeriesFromHisFile(Setup.SOBEKData.ActiveProject.ActiveCase.CaseDir & "\upflowdt.his", LocationsList(0), "Rainfall") Then Throw New Exception("Error reading precipitation from hisfile.")
                 Dates = Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0).Dates 'local copy of the dates
 
                 'Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0).WriteCSV(myRecord.ID)
@@ -101,12 +104,39 @@ Public Class frmClassifyGroundWater
                         End If
                         Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
                     Next
+                ElseIf radGroeiseizoen.Checked Then
+
+                    'for each 3b Record perform a POT analysis for growth season (march through october) and outside growth season (nov through feb)
+                    For i = 1 To 2
+                        'set the current season to process
+                        If i = 1 Then
+                            seizoen = enmSeason.growthseason
+                            Seizoensnaam = "groeiseizoen"
+                        Else
+                            seizoen = enmSeason.outsidegrowthseason
+                            Seizoensnaam = "buitengroeiseizoen"
+                        End If
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Next
 
                 ElseIf radJaarRond.Checked Then
 
                     seizoen = enmSeason.yearround
                     Seizoensnaam = "jaarrond"
                     Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+
+                ElseIf radAprilAugust.Checked Then
+                    For i = 1 To 2
+                        'set the current season to process
+                        If i = 1 Then
+                            seizoen = enmSeason.aprilthroughaugust
+                            Seizoensnaam = "zomer"
+                        Else
+                            seizoen = enmSeason.septemberthroughmarch
+                            Seizoensnaam = "winter"
+                        End If
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Next
                 End If
             End If
 
@@ -157,5 +187,9 @@ Public Class frmClassifyGroundWater
 
     Private Sub cmbSobekCases_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbSobekCases.SelectedIndexChanged
 
+    End Sub
+
+    Private Sub btnGroeiseizoenHelp_Click(sender As Object, e As EventArgs) Handles btnGroeiseizoenHelp.Click
+        MsgBox("Deze periode sluit aan bij de seizoenen zoals gepubliceerd in de neerslagstatistieken 2004 door STOWA en zoals ook in De Nieuwe Stochastentool geïmplementerd.")
     End Sub
 End Class

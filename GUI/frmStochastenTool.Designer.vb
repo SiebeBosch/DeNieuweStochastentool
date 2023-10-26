@@ -74,9 +74,12 @@ Partial Class frmStochasten
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BetafunctiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LeesFOUFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.LeesMATFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tabStochastentool = New System.Windows.Forms.TabControl()
         Me.tabSettings = New System.Windows.Forms.TabPage()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.chk2D = New System.Windows.Forms.CheckBox()
+        Me.chk1D = New System.Windows.Forms.CheckBox()
         Me.grMeteo = New System.Windows.Forms.GroupBox()
         Me.btnRemoveMeteoStation = New System.Windows.Forms.Button()
         Me.grMeteoStations = New System.Windows.Forms.DataGridView()
@@ -273,8 +276,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.chk1D = New System.Windows.Forms.CheckBox()
-        Me.chk2D = New System.Windows.Forms.CheckBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -407,20 +408,20 @@ Partial Class frmStochasten
         '
         Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
         Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
-        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
+        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.ModelToolStripMenuItem.Text = "Model"
         '
         'ToevoegenToolStripMenuItem
         '
         Me.ToevoegenToolStripMenuItem.Name = "ToevoegenToolStripMenuItem"
-        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(200, 34)
+        Me.ToevoegenToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.ToevoegenToolStripMenuItem.Text = "Toevoegen"
         '
         'UitvoerlocatiesToolStripMenuItem
         '
         Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
         Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
-        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(230, 34)
+        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(270, 34)
         Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
         '
         'ImporterenToolStripMenuItem1
@@ -657,7 +658,7 @@ Partial Class frmStochasten
         '
         'BetafunctiesToolStripMenuItem
         '
-        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesFOUFileToolStripMenuItem})
+        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesFOUFileToolStripMenuItem, Me.LeesMATFileToolStripMenuItem})
         Me.BetafunctiesToolStripMenuItem.Name = "BetafunctiesToolStripMenuItem"
         Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(123, 29)
         Me.BetafunctiesToolStripMenuItem.Text = "Betafuncties"
@@ -665,8 +666,14 @@ Partial Class frmStochasten
         'LeesFOUFileToolStripMenuItem
         '
         Me.LeesFOUFileToolStripMenuItem.Name = "LeesFOUFileToolStripMenuItem"
-        Me.LeesFOUFileToolStripMenuItem.Size = New System.Drawing.Size(216, 34)
+        Me.LeesFOUFileToolStripMenuItem.Size = New System.Drawing.Size(221, 34)
         Me.LeesFOUFileToolStripMenuItem.Text = "Lees FOU file"
+        '
+        'LeesMATFileToolStripMenuItem
+        '
+        Me.LeesMATFileToolStripMenuItem.Name = "LeesMATFileToolStripMenuItem"
+        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(221, 34)
+        Me.LeesMATFileToolStripMenuItem.Text = "Lees .MAT file"
         '
         'tabStochastentool
         '
@@ -718,6 +725,30 @@ Partial Class frmStochasten
         Me.GroupBox1.TabIndex = 41
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Output"
+        '
+        'chk2D
+        '
+        Me.chk2D.AutoSize = True
+        Me.chk2D.Location = New System.Drawing.Point(22, 76)
+        Me.chk2D.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chk2D.Name = "chk2D"
+        Me.chk2D.Size = New System.Drawing.Size(131, 24)
+        Me.chk2D.TabIndex = 40
+        Me.chk2D.Text = "resultaten 2D"
+        Me.chk2D.UseVisualStyleBackColor = True
+        '
+        'chk1D
+        '
+        Me.chk1D.AutoSize = True
+        Me.chk1D.Checked = True
+        Me.chk1D.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chk1D.Location = New System.Drawing.Point(22, 42)
+        Me.chk1D.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.chk1D.Name = "chk1D"
+        Me.chk1D.Size = New System.Drawing.Size(131, 24)
+        Me.chk1D.TabIndex = 38
+        Me.chk1D.Text = "resultaten 1D"
+        Me.chk1D.UseVisualStyleBackColor = True
         '
         'grMeteo
         '
@@ -2816,30 +2847,6 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1912, 35)
         Me.prProgress.TabIndex = 24
         '
-        'chk1D
-        '
-        Me.chk1D.AutoSize = True
-        Me.chk1D.Checked = True
-        Me.chk1D.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chk1D.Location = New System.Drawing.Point(22, 42)
-        Me.chk1D.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.chk1D.Name = "chk1D"
-        Me.chk1D.Size = New System.Drawing.Size(131, 24)
-        Me.chk1D.TabIndex = 38
-        Me.chk1D.Text = "resultaten 1D"
-        Me.chk1D.UseVisualStyleBackColor = True
-        '
-        'chk2D
-        '
-        Me.chk2D.AutoSize = True
-        Me.chk2D.Location = New System.Drawing.Point(22, 76)
-        Me.chk2D.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.chk2D.Name = "chk2D"
-        Me.chk2D.Size = New System.Drawing.Size(131, 24)
-        Me.chk2D.TabIndex = 40
-        Me.chk2D.Text = "resultaten 2D"
-        Me.chk2D.UseVisualStyleBackColor = True
-        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
@@ -3200,4 +3207,5 @@ Partial Class frmStochasten
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents chk2D As CheckBox
     Friend WithEvents chk1D As CheckBox
+    Friend WithEvents LeesMATFileToolStripMenuItem As ToolStripMenuItem
 End Class

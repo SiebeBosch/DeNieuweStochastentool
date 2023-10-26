@@ -4,7 +4,7 @@
     <StartArguments>"d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\dimr_config.xml" "d:\SYNC\PROJECTEN\H1301.DijkringenWRIJ\03.Dijkring48.Simulaties\Configuratie.xlsx" "d:\GITHUB\DeNieuweStochastentool\DIMR_Sample\run.bat"</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <StartArguments>"c:\SYNC\PROJECTEN\H3109.Dijkringen.WRIJ\02.Dijkring48.AlleScenarios4\dimr_config.xml" "c:\SYNC\PROJECTEN\H3109.Dijkringen.WRIJ\02.Dijkring48.AlleScenarios4\Configuratie_batch11_laptop.xlsx" "c:\SYNC\PROJECTEN\H3109.Dijkringen.WRIJ\02.Dijkring48.AlleScenarios4\run.bat" 4 "c:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"</StartArguments>
+    <StartArguments>"c:\SYNC\PROJECTEN\H3109.Dijkringen.WRIJ\04.Dijkring48.Implementatie\dimr_config.xml" "c:\SYNC\PROJECTEN\H3109.Dijkringen.WRIJ\04.Dijkring48.Implementatie\Configuratie_batch29_ARTEMIS.xlsx" "c:\SYNC\PROJECTEN\H3109.Dijkringen.WRIJ\04.Dijkring48.Implementatie\run.bat" 4 "c:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt"</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
     <PublishUrlHistory>publish\</PublishUrlHistory>

@@ -93,31 +93,39 @@ Public Class clsSeason
   End Function
 
   Public Function DateInSeason(ByRef myDate As Date) As Boolean
-    'checks if a given date falls inside the current season
-    If Season = enmSeason.yearround Then
-      Return True
-    ElseIf Season = enmSeason.meteosummerhalfyear AndAlso Me.Setup.GeneralFunctions.MeteorologischHalfJaar(myDate) = enmSeason.meteosummerhalfyear Then
-      Return True
-    ElseIf Season = enmSeason.meteowinterhalfyear AndAlso Me.Setup.GeneralFunctions.MeteorologischHalfJaar(myDate) = enmSeason.meteowinterhalfyear Then
-      Return True
-    ElseIf Season = enmSeason.meteosummerquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteosummerquarter Then
-      Return True
-    ElseIf Season = enmSeason.meteoautumnquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteoautumnquarter Then
-      Return True
-    ElseIf Season = enmSeason.meteowinterquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteowinterquarter Then
-      Return True
-    ElseIf Season = enmSeason.meteospringquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteospringquarter Then
-      Return True
-    ElseIf Season = enmSeason.hydrosummerhalfyear AndAlso Me.Setup.GeneralFunctions.HydrologischHalfJaar(myDate) = enmSeason.hydrosummerhalfyear Then
-      Return True
-    ElseIf Season = enmSeason.hydrowinterhalfyear AndAlso Me.Setup.GeneralFunctions.HydrologischHalfJaar(myDate) = enmSeason.hydrowinterhalfyear Then
-      Return True
-    ElseIf Season = enmSeason.marchthroughoctober AndAlso (Month(myDate) >= 3 AndAlso Month(myDate) <= 10) Then
-      Return True
-    ElseIf Season = enmSeason.novemberthroughfebruary AndAlso (Month(myDate) <= 2 OrElse Month(myDate) >= 11) Then
-      Return True
-    Else
-      Return False
+        'checks if a given date falls inside the current season
+        If Season = enmSeason.yearround Then
+            Return True
+        ElseIf Season = enmSeason.meteosummerhalfyear AndAlso Me.Setup.GeneralFunctions.MeteorologischHalfJaar(myDate) = enmSeason.meteosummerhalfyear Then
+            Return True
+        ElseIf Season = enmSeason.meteowinterhalfyear AndAlso Me.Setup.GeneralFunctions.MeteorologischHalfJaar(myDate) = enmSeason.meteowinterhalfyear Then
+            Return True
+        ElseIf Season = enmSeason.meteosummerquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteosummerquarter Then
+            Return True
+        ElseIf Season = enmSeason.meteoautumnquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteoautumnquarter Then
+            Return True
+        ElseIf Season = enmSeason.meteowinterquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteowinterquarter Then
+            Return True
+        ElseIf Season = enmSeason.meteospringquarter AndAlso Me.Setup.GeneralFunctions.MeteorologischSeizoen(myDate) = enmSeason.meteospringquarter Then
+            Return True
+        ElseIf Season = enmSeason.hydrosummerhalfyear AndAlso Me.Setup.GeneralFunctions.HydrologischHalfJaar(myDate) = enmSeason.hydrosummerhalfyear Then
+            Return True
+        ElseIf Season = enmSeason.hydrowinterhalfyear AndAlso Me.Setup.GeneralFunctions.HydrologischHalfJaar(myDate) = enmSeason.hydrowinterhalfyear Then
+            Return True
+        ElseIf Season = enmSeason.marchthroughoctober AndAlso (Month(myDate) >= 3 AndAlso Month(myDate) <= 10) Then
+            Return True
+        ElseIf Season = enmSeason.novemberthroughfebruary AndAlso (Month(myDate) <= 2 OrElse Month(myDate) >= 11) Then
+            Return True
+        ElseIf Season = enmSeason.aprilthroughaugust AndAlso (Month(myDate) >= 4 AndAlso Month(myDate) <= 8) Then
+            Return True
+        ElseIf Season = enmSeason.septemberthroughmarch AndAlso (Month(myDate) <= 3 OrElse Month(myDate) >= 9) Then
+            Return True
+        ElseIf Season = enmSeason.growthseason AndAlso (Month(myDate) >= 3 AndAlso Month(myDate) <= 10) Then
+            Return True
+        ElseIf Season = enmSeason.outsidegrowthseason AndAlso (Month(myDate) <= 2 OrElse Month(myDate) >= 11) Then
+            Return True
+        Else
+            Return False
     End If
   End Function
 

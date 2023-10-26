@@ -1352,6 +1352,7 @@ Public Class GeneralFunctions
         DHYDRO = 5
         DIMR = 6
         DHYDROSERVER = 7
+        SUMAQUA = 8
     End Enum
 
     Public Enum enmKlimaatScenario
@@ -1408,6 +1409,10 @@ Public Class GeneralFunctions
         hydrowinterhalfyear = 8 'hydrological winter: 15-10 to 15-4
         marchthroughoctober = 9 'march through october
         novemberthroughfebruary = 10 'november through february
+        aprilthroughaugust = 11 'april through august
+        septemberthroughmarch = 12 'september through march
+        growthseason = 13 'march through october
+        outsidegrowthseason = 14 'november through february
     End Enum
 
     Public Enum enmValueStatistic
@@ -6978,6 +6983,10 @@ Public Class GeneralFunctions
                 mySeason = enmSeason.marchthroughoctober
             Case "nov-feb", "nov - feb", "november through february", "november - february", "november-february"
                 mySeason = enmSeason.novemberthroughfebruary
+            Case "growthseason"
+                mySeason = enmSeason.growthseason
+            Case "outsidegrowthseason"
+                mySeason = enmSeason.outsidegrowthseason
             Case Else
                 Return False
         End Select

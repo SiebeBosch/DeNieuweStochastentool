@@ -57,3 +57,15 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.pdb
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.SuggestedBindingRedirects.cache
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin32\hdf5.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin32\hdf5.pdb
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin32\hdf5_hl.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin32\hdf5_hl.pdb
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin32\szip.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin32\zlib.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin64\hdf5.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin64\hdf5.pdb
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin64\hdf5_hl.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin64\hdf5_hl.pdb
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin64\szip.dll
+C:\GITHUB\DeNieuweStochastentool\bin\x64\bin64\zlib.dll

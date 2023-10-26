@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="StochastenTool.exe" version="2.3.7.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
+  <asmv1:assemblyIdentity name="StochastenTool.exe" version="2.4.0.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
   <description asmv2:iconFile="HYDRO_ICO_DEF.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="StochastenTool" version="2.3.9.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="StochastenTool" version="2.4.0.0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="StochastenTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -54,6 +54,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="csmatio.dll" size="45568">
+      <assemblyIdentity name="csmatio" version="1.0.20.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>g0XNf2AIvH63MrfHng0e+ulHr9eJrb+qhAvkAxlzNLE=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DynamicInterop.dll" size="17920">
       <assemblyIdentity name="DynamicInterop" version="0.9.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -78,6 +90,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="HDF.PInvoke.dll" size="127488">
+      <assemblyIdentity name="HDF.PInvoke" version="1.10.6.1" publicKeyToken="18793C1FCFFE58A3" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>VkUboSgqrci3iHfRUcYaqgwiIevsMzVkoM/pQS5fhgs=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="HtmlAgilityPack.dll" size="168960">
       <assemblyIdentity name="HtmlAgilityPack" version="1.11.43.0" publicKeyToken="BD319B19EAF3B43A" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -98,6 +122,18 @@
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
         <dsig:DigestValue>Oz5UFoLkjz/Shy+FoGJ42i8+eHfulW2om5DXMqHqoL0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MathNet.Numerics.dll" size="1590272">
+      <assemblyIdentity name="MathNet.Numerics" version="5.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>TJgDpLBnO5OpmiI341VDvi9nQfvVSw/wRc+S6He+CdQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -150,26 +186,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="670592">
-      <assemblyIdentity name="StochastenTool" version="2.3.9.0" language="neutral" processorArchitecture="amd64" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="672640">
+      <assemblyIdentity name="StochastenTool" version="2.4.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>WYqOgBv3gFVPkpVcYdnwZDzcbx3rw/QJfzZ7efjPvw0=</dsig:DigestValue>
+        <dsig:DigestValue>RXmehO97rczlaM8BjU3sZn+bqzBtNSICC0Qpc4Piz7A=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3151360">
-      <assemblyIdentity name="STOCHLIB" version="2.3.7.0" language="neutral" processorArchitecture="amd64" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3155456">
+      <assemblyIdentity name="STOCHLIB" version="2.4.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>4/NQEwJe5+OKgYbYdezgMCWaCp64Wfshf1Bg5aJlfhw=</dsig:DigestValue>
+        <dsig:DigestValue>FMWUhrqX8UaDqWqvIR7T/FtOFDusai+2PlkW45wz2Yo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
