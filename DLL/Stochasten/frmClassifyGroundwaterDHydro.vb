@@ -64,6 +64,7 @@ Public Class frmClassifyGroundwaterDHydro
 
             Dim seizoen As enmSeason
 
+
             If cmbDuration.Text = "" Then
                 MsgBox("Selecteer welke neerslagduur van toepassing is.")
             ElseIf grGrondwaterKlassen.Rows.Count = 0 Then
@@ -76,6 +77,7 @@ Public Class frmClassifyGroundwaterDHydro
                 Dates = Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0).Dates 'local copy of the dates
 
                 'Setup.TijdreeksStatistiek.NeerslagReeksen.Values(0).WriteCSV(myRecord.ID)
+
 
                 If radZomWin.Checked Then
 
@@ -91,6 +93,20 @@ Public Class frmClassifyGroundwaterDHydro
                         End If
                         Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, myCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
                     Next
+                ElseIf radGroeiseizoen.Checked Then
+
+                    'for each 3b Record perform a POT analysis for growth season (march through october) and outside growth season (nov through feb)
+                    For i = 1 To 2
+                        'set the current season to process
+                        If i = 1 Then
+                            seizoen = enmSeason.growthseason
+                            Seizoensnaam = "groeiseizoen"
+                        Else
+                            seizoen = enmSeason.outsidegrowthseason
+                            Seizoensnaam = "buitengroeiseizoen"
+                        End If
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, myCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Next
 
                 ElseIf radJaarRond.Checked Then
 
@@ -98,7 +114,20 @@ Public Class frmClassifyGroundwaterDHydro
                     Seizoensnaam = "jaarrond"
                     Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, myCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
 
+                ElseIf radAprilAugust.Checked Then
+                    For i = 1 To 2
+                        'set the current season to process
+                        If i = 1 Then
+                            seizoen = enmSeason.aprilthroughaugust
+                            Seizoensnaam = "zomer"
+                        Else
+                            seizoen = enmSeason.septemberthroughmarch
+                            Seizoensnaam = "winter"
+                        End If
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, myCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Next
                 End If
+
             End If
 
             'finally write the POT-values to Excel for future reference
@@ -148,5 +177,9 @@ Public Class frmClassifyGroundwaterDHydro
         For Each myRow As DataGridViewRow In grGrondwaterKlassen.SelectedRows
             grGrondwaterKlassen.Rows.Remove(myRow)
         Next
+    End Sub
+
+    Private Sub btnGroeiseizoenHelp_Click(sender As Object, e As EventArgs) Handles btnGroeiseizoenHelp.Click
+        MsgBox("Deze periode sluit aan bij de seizoenen zoals gepubliceerd in de neerslagstatistieken 2004 door STOWA en zoals ook in De Nieuwe Stochastentool geïmplementerd.")
     End Sub
 End Class

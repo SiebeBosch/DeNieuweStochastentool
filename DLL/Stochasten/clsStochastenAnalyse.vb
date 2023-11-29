@@ -306,6 +306,8 @@ Public Class clsStochastenAnalyse
                 'now that we have the starting time index numbers for the POT-events, we can get the groundwater levels from the starting times for each event
                 For Each myRecord In myCase.RRData.Unpaved3B.Records.Values
 
+                    'If myRecord.ID.Trim.ToUpper = "UNP_AFW_BOM502-P_2_1" Then Stop
+
                     j += 1
                     k = -1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("Groundwater classification for season " & seizoen.ToString & " and class " & myRow.Cells("colNaam").Value & ".", j, n)
@@ -317,6 +319,7 @@ Public Class clsStochastenAnalyse
                     Dim GW(0 To TimeSteps.Count - 1) As Double
                     For Each myResult In myResults
                         For Each Result As STOCHLIB.HisDataRow In myResult
+                            'Debug.Print("Location name is " & Result.LocationName)
                             If Result.LocationName = myRecord.ID Then
                                 k += 1
                                 GW(k) = Result.Value 'store the results in a temporary array to allow percentile computation later

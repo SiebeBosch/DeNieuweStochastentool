@@ -30,9 +30,6 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.btnRRDir = New System.Windows.Forms.Button()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.grGrondwaterKlassen = New System.Windows.Forms.DataGridView()
-        Me.colNaam = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colPercentiel = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colTotPerc = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnAddGroundwaterClass = New System.Windows.Forms.Button()
         Me.btnDeleteGroundwaterClass = New System.Windows.Forms.Button()
         Me.radZomWin = New System.Windows.Forms.RadioButton()
@@ -44,6 +41,14 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.btnClassify = New System.Windows.Forms.Button()
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtMinTimestepsBetweenEvents = New System.Windows.Forms.TextBox()
+        Me.radGroeiseizoen = New System.Windows.Forms.RadioButton()
+        Me.radAprilAugust = New System.Windows.Forms.RadioButton()
+        Me.btnGroeiseizoenHelp = New System.Windows.Forms.Button()
+        Me.colNaam = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colPercentiel = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colTotPerc = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.groupSbk.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -56,12 +61,14 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.lblProgress.Location = New System.Drawing.Point(18, 398)
         Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(74, 17)
+        Me.lblProgress.Size = New System.Drawing.Size(70, 16)
         Me.lblProgress.TabIndex = 30
         Me.lblProgress.Text = "Voortgang"
         '
         'groupSbk
         '
+        Me.groupSbk.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.groupSbk.Controls.Add(Me.Label1)
         Me.groupSbk.Controls.Add(Me.txtRRDir)
         Me.groupSbk.Controls.Add(Me.btnRRDir)
@@ -69,7 +76,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.groupSbk.Margin = New System.Windows.Forms.Padding(4)
         Me.groupSbk.Name = "groupSbk"
         Me.groupSbk.Padding = New System.Windows.Forms.Padding(4)
-        Me.groupSbk.Size = New System.Drawing.Size(947, 123)
+        Me.groupSbk.Size = New System.Drawing.Size(1075, 123)
         Me.groupSbk.TabIndex = 28
         Me.groupSbk.TabStop = False
         Me.groupSbk.Text = "Sobek"
@@ -80,21 +87,24 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.Label1.Location = New System.Drawing.Point(24, 34)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(92, 17)
+        Me.Label1.Size = New System.Drawing.Size(86, 16)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "RR-directory:"
         '
         'txtRRDir
         '
+        Me.txtRRDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtRRDir.Location = New System.Drawing.Point(120, 31)
         Me.txtRRDir.Margin = New System.Windows.Forms.Padding(4)
         Me.txtRRDir.Name = "txtRRDir"
-        Me.txtRRDir.Size = New System.Drawing.Size(765, 22)
+        Me.txtRRDir.Size = New System.Drawing.Size(910, 22)
         Me.txtRRDir.TabIndex = 0
         '
         'btnRRDir
         '
-        Me.btnRRDir.Location = New System.Drawing.Point(895, 28)
+        Me.btnRRDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRRDir.Location = New System.Drawing.Point(1038, 29)
         Me.btnRRDir.Margin = New System.Windows.Forms.Padding(4)
         Me.btnRRDir.Name = "btnRRDir"
         Me.btnRRDir.Size = New System.Drawing.Size(29, 27)
@@ -104,6 +114,9 @@ Partial Class frmClassifyGroundwaterDHydro
         '
         'GroupBox1
         '
+        Me.GroupBox1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox1.Controls.Add(Me.grGrondwaterKlassen)
         Me.GroupBox1.Controls.Add(Me.btnAddGroundwaterClass)
         Me.GroupBox1.Controls.Add(Me.btnDeleteGroundwaterClass)
@@ -119,35 +132,17 @@ Partial Class frmClassifyGroundwaterDHydro
         'grGrondwaterKlassen
         '
         Me.grGrondwaterKlassen.AllowUserToAddRows = False
+        Me.grGrondwaterKlassen.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grGrondwaterKlassen.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.grGrondwaterKlassen.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.colNaam, Me.colPercentiel, Me.colTotPerc})
         Me.grGrondwaterKlassen.Location = New System.Drawing.Point(24, 31)
         Me.grGrondwaterKlassen.Margin = New System.Windows.Forms.Padding(4)
         Me.grGrondwaterKlassen.Name = "grGrondwaterKlassen"
         Me.grGrondwaterKlassen.RowHeadersWidth = 51
-        Me.grGrondwaterKlassen.Size = New System.Drawing.Size(465, 162)
+        Me.grGrondwaterKlassen.Size = New System.Drawing.Size(465, 177)
         Me.grGrondwaterKlassen.TabIndex = 5
-        '
-        'colNaam
-        '
-        Me.colNaam.HeaderText = "klassenaam"
-        Me.colNaam.MinimumWidth = 6
-        Me.colNaam.Name = "colNaam"
-        Me.colNaam.Width = 125
-        '
-        'colPercentiel
-        '
-        Me.colPercentiel.HeaderText = "van percentiel"
-        Me.colPercentiel.MinimumWidth = 6
-        Me.colPercentiel.Name = "colPercentiel"
-        Me.colPercentiel.Width = 125
-        '
-        'colTotPerc
-        '
-        Me.colTotPerc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colTotPerc.HeaderText = "tot percentiel"
-        Me.colTotPerc.MinimumWidth = 6
-        Me.colTotPerc.Name = "colTotPerc"
         '
         'btnAddGroundwaterClass
         '
@@ -174,30 +169,35 @@ Partial Class frmClassifyGroundwaterDHydro
         'radZomWin
         '
         Me.radZomWin.AutoSize = True
-        Me.radZomWin.Checked = True
-        Me.radZomWin.Location = New System.Drawing.Point(29, 89)
+        Me.radZomWin.Location = New System.Drawing.Point(28, 132)
         Me.radZomWin.Margin = New System.Windows.Forms.Padding(4)
         Me.radZomWin.Name = "radZomWin"
-        Me.radZomWin.Size = New System.Drawing.Size(183, 21)
+        Me.radZomWin.Size = New System.Drawing.Size(170, 20)
         Me.radZomWin.TabIndex = 21
-        Me.radZomWin.TabStop = True
         Me.radZomWin.Text = "Zomer- en winterhalfjaar"
         Me.radZomWin.UseVisualStyleBackColor = True
         '
         'radJaarRond
         '
         Me.radJaarRond.AutoSize = True
-        Me.radJaarRond.Location = New System.Drawing.Point(29, 117)
+        Me.radJaarRond.Location = New System.Drawing.Point(28, 188)
         Me.radJaarRond.Margin = New System.Windows.Forms.Padding(4)
         Me.radJaarRond.Name = "radJaarRond"
-        Me.radJaarRond.Size = New System.Drawing.Size(86, 21)
+        Me.radJaarRond.Size = New System.Drawing.Size(82, 20)
         Me.radJaarRond.TabIndex = 20
         Me.radJaarRond.Text = "Jaarrond"
         Me.radJaarRond.UseVisualStyleBackColor = True
         '
         'Instellingen
         '
+        Me.Instellingen.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Instellingen.Controls.Add(Me.btnGroeiseizoenHelp)
+        Me.Instellingen.Controls.Add(Me.radAprilAugust)
+        Me.Instellingen.Controls.Add(Me.radGroeiseizoen)
+        Me.Instellingen.Controls.Add(Me.Label3)
         Me.Instellingen.Controls.Add(Me.radZomWin)
+        Me.Instellingen.Controls.Add(Me.txtMinTimestepsBetweenEvents)
         Me.Instellingen.Controls.Add(Me.radJaarRond)
         Me.Instellingen.Controls.Add(Me.cmbDuration)
         Me.Instellingen.Controls.Add(Me.Label4)
@@ -205,7 +205,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.Instellingen.Margin = New System.Windows.Forms.Padding(4)
         Me.Instellingen.Name = "Instellingen"
         Me.Instellingen.Padding = New System.Windows.Forms.Padding(4)
-        Me.Instellingen.Size = New System.Drawing.Size(384, 228)
+        Me.Instellingen.Size = New System.Drawing.Size(512, 228)
         Me.Instellingen.TabIndex = 26
         Me.Instellingen.TabStop = False
         Me.Instellingen.Text = "Classificeren voor:"
@@ -213,7 +213,7 @@ Partial Class frmClassifyGroundwaterDHydro
         'cmbDuration
         '
         Me.cmbDuration.FormattingEnabled = True
-        Me.cmbDuration.Location = New System.Drawing.Point(235, 36)
+        Me.cmbDuration.Location = New System.Drawing.Point(361, 31)
         Me.cmbDuration.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbDuration.Name = "cmbDuration"
         Me.cmbDuration.Size = New System.Drawing.Size(125, 24)
@@ -222,10 +222,10 @@ Partial Class frmClassifyGroundwaterDHydro
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(25, 39)
+        Me.Label4.Location = New System.Drawing.Point(25, 34)
         Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(188, 17)
+        Me.Label4.Size = New System.Drawing.Size(171, 16)
         Me.Label4.TabIndex = 18
         Me.Label4.Text = "Duur gebeurtenissen (uren):"
         '
@@ -234,13 +234,13 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.prProgress.Location = New System.Drawing.Point(22, 417)
         Me.prProgress.Margin = New System.Windows.Forms.Padding(4)
         Me.prProgress.Name = "prProgress"
-        Me.prProgress.Size = New System.Drawing.Size(821, 28)
+        Me.prProgress.Size = New System.Drawing.Size(943, 28)
         Me.prProgress.TabIndex = 29
         '
         'btnClassify
         '
         Me.btnClassify.BackColor = System.Drawing.Color.Yellow
-        Me.btnClassify.Location = New System.Drawing.Point(851, 398)
+        Me.btnClassify.Location = New System.Drawing.Point(980, 399)
         Me.btnClassify.Margin = New System.Windows.Forms.Padding(4)
         Me.btnClassify.Name = "btnClassify"
         Me.btnClassify.Size = New System.Drawing.Size(113, 48)
@@ -248,11 +248,85 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.btnClassify.Text = "Classificeer!"
         Me.btnClassify.UseVisualStyleBackColor = False
         '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(25, 69)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(285, 16)
+        Me.Label3.TabIndex = 32
+        Me.Label3.Text = "Minimum tijd tussen events (aantal tijdstappen):"
+        '
+        'txtMinTimestepsBetweenEvents
+        '
+        Me.txtMinTimestepsBetweenEvents.Location = New System.Drawing.Point(362, 65)
+        Me.txtMinTimestepsBetweenEvents.Name = "txtMinTimestepsBetweenEvents"
+        Me.txtMinTimestepsBetweenEvents.Size = New System.Drawing.Size(125, 22)
+        Me.txtMinTimestepsBetweenEvents.TabIndex = 31
+        Me.txtMinTimestepsBetweenEvents.Text = "0"
+        '
+        'radGroeiseizoen
+        '
+        Me.radGroeiseizoen.AutoSize = True
+        Me.radGroeiseizoen.Checked = True
+        Me.radGroeiseizoen.Location = New System.Drawing.Point(28, 104)
+        Me.radGroeiseizoen.Margin = New System.Windows.Forms.Padding(4)
+        Me.radGroeiseizoen.Name = "radGroeiseizoen"
+        Me.radGroeiseizoen.Size = New System.Drawing.Size(361, 20)
+        Me.radGroeiseizoen.TabIndex = 33
+        Me.radGroeiseizoen.Text = "Groeiseizoen (maart t/m oktober) en buiten groeiseizoen"
+        Me.radGroeiseizoen.UseVisualStyleBackColor = True
+        '
+        'radAprilAugust
+        '
+        Me.radAprilAugust.AutoSize = True
+        Me.radAprilAugust.Location = New System.Drawing.Point(28, 160)
+        Me.radAprilAugust.Margin = New System.Windows.Forms.Padding(4)
+        Me.radAprilAugust.Name = "radAprilAugust"
+        Me.radAprilAugust.Size = New System.Drawing.Size(207, 20)
+        Me.radAprilAugust.TabIndex = 34
+        Me.radAprilAugust.Text = "April t/m aug en sept t/m maart"
+        Me.radAprilAugust.UseVisualStyleBackColor = True
+        '
+        'btnGroeiseizoenHelp
+        '
+        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Yellow
+        Me.btnGroeiseizoenHelp.Location = New System.Drawing.Point(463, 101)
+        Me.btnGroeiseizoenHelp.Name = "btnGroeiseizoenHelp"
+        Me.btnGroeiseizoenHelp.Size = New System.Drawing.Size(23, 23)
+        Me.btnGroeiseizoenHelp.TabIndex = 31
+        Me.btnGroeiseizoenHelp.Text = "?"
+        Me.btnGroeiseizoenHelp.UseVisualStyleBackColor = False
+        '
+        'colNaam
+        '
+        Me.colNaam.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colNaam.FillWeight = 15.58441!
+        Me.colNaam.HeaderText = "klassenaam"
+        Me.colNaam.MinimumWidth = 6
+        Me.colNaam.Name = "colNaam"
+        '
+        'colPercentiel
+        '
+        Me.colPercentiel.HeaderText = "van percentiel"
+        Me.colPercentiel.MinimumWidth = 6
+        Me.colPercentiel.Name = "colPercentiel"
+        Me.colPercentiel.Width = 110
+        '
+        'colTotPerc
+        '
+        Me.colTotPerc.FillWeight = 184.4156!
+        Me.colTotPerc.HeaderText = "tot percentiel"
+        Me.colTotPerc.MinimumWidth = 6
+        Me.colTotPerc.Name = "colTotPerc"
+        Me.colTotPerc.Width = 110
+        '
         'frmClassifyGroundwaterDHydro
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(983, 460)
+        Me.ClientSize = New System.Drawing.Size(1106, 460)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.groupSbk)
         Me.Controls.Add(Me.GroupBox1)
@@ -280,9 +354,6 @@ Partial Class frmClassifyGroundwaterDHydro
     Friend WithEvents btnRRDir As Windows.Forms.Button
     Friend WithEvents GroupBox1 As Windows.Forms.GroupBox
     Public WithEvents grGrondwaterKlassen As Windows.Forms.DataGridView
-    Friend WithEvents colNaam As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents colPercentiel As Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents colTotPerc As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents btnAddGroundwaterClass As Windows.Forms.Button
     Friend WithEvents btnDeleteGroundwaterClass As Windows.Forms.Button
     Friend WithEvents radZomWin As Windows.Forms.RadioButton
@@ -294,4 +365,12 @@ Partial Class frmClassifyGroundwaterDHydro
     Friend WithEvents prProgress As Windows.Forms.ProgressBar
     Friend WithEvents btnClassify As Windows.Forms.Button
     Friend WithEvents dlgFolder As Windows.Forms.FolderBrowserDialog
+    Friend WithEvents Label3 As Windows.Forms.Label
+    Friend WithEvents txtMinTimestepsBetweenEvents As Windows.Forms.TextBox
+    Friend WithEvents radGroeiseizoen As Windows.Forms.RadioButton
+    Friend WithEvents radAprilAugust As Windows.Forms.RadioButton
+    Friend WithEvents btnGroeiseizoenHelp As Windows.Forms.Button
+    Friend WithEvents colNaam As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents colPercentiel As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents colTotPerc As Windows.Forms.DataGridViewTextBoxColumn
 End Class
