@@ -187,11 +187,37 @@ Public Class clsDIMR
                 If Setup.GeneralFunctions.getExtensionFromFileName(myFile).Trim.ToLower = "bat" Then
                     newDIMR.BatchFilePath = SimulationDir & "\" & FileName
                     File.Copy(myFile, newDIMR.BatchFilePath, True)
-                ElseIf FileName.Trim.ToLower = "dimr_config.xml" Then
+                ElseIf FileName.Trim.ToLower.Contains("dimr_config") AndAlso FileName.Trim.ToLower.Contains(".xml") Then ' = "dimr_config.xml" Then
                     newDIMR.DIMRConfig = New clsDIMRConfigFile(Setup, newDIMR)
-                    File.Copy(myFile, SimulationDir & "\" & FileName, True)
+
+                    'here we read the entire content of the DIMR_Config file in memory. Then we replace the line stating the startdate
+                    'Dim path As String = DIMR.ProjectDir & "\" & FileName
+                    Dim content As String, lines As String()
+                    Using xmlReader As New StreamReader(myFile)
+                        content = xmlReader.ReadToEnd()
+                    End Using
+                    lines = Split(content, vbCrLf)
+
+                    Using xmlWriter As New StreamWriter(SimulationDir & "\" & FileName)
+                        For Each myLine In lines
+                            If Strings.Left(myLine.Trim, 6).ToLower = "<time>" Then
+                                'read the three numbers between the tags
+                                myLine = Replace(myLine.Trim, "<time>", "")
+                                myLine = Replace(myLine.Trim, "</time>", "")
+                                Dim myNumbers As String() = Split(myLine.Trim, " ")
+                                'replace the line with the new startdate
+                                xmlWriter.WriteLine($"        <time>{myNumbers(0)} {myNumbers(1)} {EndDate.Subtract(StartDate).TotalSeconds}</time>")
+                            Else
+                                'leave the line untouched and write it
+                                xmlWriter.WriteLine(myLine)
+                            End If
+                        Next
+                    End Using
+
+                    'File.Copy(myFile, SimulationDir & "\" & FileName, True)
                 End If
             Next
+
 
             newDIMR.readConfiguration()
 

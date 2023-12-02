@@ -158,6 +158,12 @@ Public Class clsFlowFMComponent
                     If Strings.Left(myLine.Trim, 7).ToLower = "refdate" Then
                         'write our new start date
                         mduWriter.WriteLine("RefDate                           = " & StartDate.ToString("yyyyMMdd") & "             # Reference date (yyyymmdd)")
+                    ElseIf Strings.Left(myLine.Trim, 5).ToLower = "tunit" Then
+                        mduWriter.WriteLine("Tunit                           = s                   # Time unit for start/stop times (D, H, M or S)")
+                    ElseIf Strings.Left(myLine.Trim, 6).ToLower = "tstart" Then
+                        mduWriter.WriteLine("TStart                          = 0                   # Start time w.r.t. RefDate (in TUnit)")
+                    ElseIf Strings.Left(myLine.Trim, 5).ToLower = "tstop" Then
+                        mduWriter.WriteLine("TStop                           = " & EndDate.Subtract(StartDate).TotalSeconds & "           # Stop  time w.r.t. RefDate (in TUnit)")
                     Else
                         'leave the line untouched and write it
                         mduWriter.WriteLine(myLine)

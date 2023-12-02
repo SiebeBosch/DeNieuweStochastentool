@@ -255,7 +255,7 @@ Public Class clsStochastenAnalyse
 
 
 
-    Public Function ClassifyGroundwaterBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), ExportDir As String) As Boolean
+    Public Function ClassifyGroundwaterBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), IncludeSeepage As Boolean, ExportDir As String) As Boolean
         Try
             Dim mySeason As clsSeason
             Dim myDuration As clsDuration
@@ -266,8 +266,9 @@ Public Class clsStochastenAnalyse
             Dim lPercentile As Double      'lower boundary percentile for this class
             Dim uPercentile As Double      'upper boundary percentile for this class
             Dim repPerc As Double          'percentile for the class
-            Dim repVal As Double          'representative value for the class
-
+            Dim repGW As Double          'representative groundwater level for the class
+            Dim repSep As Double          'representative seepage value for the class
+            Dim sepRecord As clsUnpavedSEPRecord
 
             'carry out the POT analysis on the rainfall volumes
             If Not Setup.TijdreeksStatistiek.CalcPOTEvents(Duration, seizoen.ToString, False) Then Throw New Exception("Error executing a POT-analysis on precipitation volumes for the " & seizoen.ToString)
@@ -281,19 +282,39 @@ Public Class clsStochastenAnalyse
             TimeSteps = myDuration.POTEvents.GetStartingTimeSteps
 
             'read the his results for all location and the previously defined initial timesteps per event
-            Dim myResult As New List(Of STOCHLIB.HisDataRow)
-            Dim myResults As New List(Of List(Of STOCHLIB.HisDataRow))
+            Dim myGroundwaterLevel As New List(Of STOCHLIB.HisDataRow) 'all groundwater levels for a single timestep
+            Dim myGroundwaterLevels As New List(Of List(Of STOCHLIB.HisDataRow)) 'all groundwater levels
+            Dim mySeepageValue As New List(Of STOCHLIB.HisDataRow)     'all seepage values for a single timestep
+            Dim mySeepageValues As New List(Of List(Of STOCHLIB.HisDataRow))        'all seepage values
             myCase.RRResults.UPFLODT.OpenFile()
+
+            'first read the groundwater levels
             myPar = myCase.RRResults.UPFLODT.getParName("Groundw.Level")
             For ts = 0 To TimeSteps.Count - 1
                 myDate = Dates(TimeSteps(ts))
-                myResult = myCase.RRResults.UPFLODT.ReadTimeStep(myDate, myPar)
-                myResults.Add(myResult)
+                myGroundwaterLevel = myCase.RRResults.UPFLODT.ReadTimeStep(myDate, myPar)
+                myGroundwaterLevels.Add(myGroundwaterLevel)
             Next
+
+            'now read the seepage values, if required
+            If IncludeSeepage Then
+                myPar = myCase.RRResults.UPFLODT.getParName("Seepage")
+                For ts = 0 To TimeSteps.Count - 1
+                    myDate = Dates(TimeSteps(ts))
+                    mySeepageValue = myCase.RRResults.UPFLODT.ReadTimeStep(myDate, myPar)
+                    mySeepageValues.Add(mySeepageValue)
+                Next
+            End If
+
             myCase.RRResults.UPFLODT.Close()
 
             'now walk through all rows of the classification datagridview to decide which percentile we'll use
             For Each myRow As DataGridViewRow In myDataGrid.Rows
+
+                If IncludeSeepage Then
+                    'remove the existing seepage records from the case. We will create new ones
+                    myCase.RRData.UnpavedSep.Records.Clear()
+                End If
 
                 'determine the boundaries of the current groundwater class
                 lPercentile = myRow.Cells(1).Value
@@ -304,23 +325,28 @@ Public Class clsStochastenAnalyse
                 j = 0
 
                 'now that we have the starting time index numbers for the POT-events, we can get the groundwater levels from the starting times for each event
-                For Each myRecord In myCase.RRData.Unpaved3B.Records.Values
+                For Each upRecord In myCase.RRData.Unpaved3B.Records.Values
 
-                    'If myRecord.ID.Trim.ToUpper = "UNP_AFW_BOM502-P_2_1" Then Stop
+                    sepRecord = New clsUnpavedSEPRecord(Me.Setup)
+                    sepRecord.ID = upRecord.SP
+                    sepRecord.nm = upRecord.SP
+                    sepRecord.co = 1
+                    sepRecord.ss = 0
+                    myCase.RRData.UnpavedSep.Records.Add(sepRecord.ID.Trim.ToUpper, sepRecord)
 
                     j += 1
                     k = -1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("Groundwater classification for season " & seizoen.ToString & " and class " & myRow.Cells("colNaam").Value & ".", j, n)
                     ws = Me.Setup.ExcelFile.GetAddSheet(seizoensnaam)
                     ws.ws.Cells(0, 0).Value = "Datum"
-                    ws.ws.Cells(0, j).Value = myRecord.ID
+                    ws.ws.Cells(0, j).Value = upRecord.ID
 
                     'get the results for this record from the lists
                     Dim GW(0 To TimeSteps.Count - 1) As Double
-                    For Each myResult In myResults
+                    For Each myResult In myGroundwaterLevels
                         For Each Result As STOCHLIB.HisDataRow In myResult
                             'Debug.Print("Location name is " & Result.LocationName)
-                            If Result.LocationName = myRecord.ID Then
+                            If Result.LocationName = upRecord.ID Then
                                 k += 1
                                 GW(k) = Result.Value 'store the results in a temporary array to allow percentile computation later
                                 ws.ws.Cells(k + 1, 0).Value = Result.TimeStep
@@ -329,30 +355,59 @@ Public Class clsStochastenAnalyse
                         Next
                     Next
 
+                    'get the seepage values for this record from the lists
+                    Dim Seepage(0 To TimeSteps.Count - 1) As Double
+                    If IncludeSeepage Then
+                        k = -1
+                        For Each myResult In mySeepageValues
+                            For Each Result As STOCHLIB.HisDataRow In myResult
+                                If Result.LocationName = upRecord.ID Then
+                                    k += 1
+                                    'we must still convert our seepage values from m3/s to mm/d
+                                    Seepage(k) = Result.Value / upRecord.ga * 1000 * 3600 * 24   'store the results in a temporary array to allow percentile computation later
+                                    'Seepage(k) = Result.Value 'store the results in a temporary array to allow percentile computation later
+                                End If
+                            Next
+                        Next
+                    End If
+
                     'update the unpaved.3b record
-                    repVal = Me.Setup.GeneralFunctions.Percentile(GW, repPerc)
-                    myRecord.ig = 0
-                    myRecord.igconst = Math.Round(myRecord.lv - repVal, 2)
+                    repGW = Me.Setup.GeneralFunctions.Percentile(GW, repPerc)
+                    upRecord.ig = 0
+                    upRecord.igconst = Math.Round(upRecord.lv - repGW, 2)
+
+                    'update the unpaved.sep record
+                    If IncludeSeepage Then
+                        repSep = Me.Setup.GeneralFunctions.Percentile(Seepage, repPerc)
+                        sepRecord.sp = repSep
+                    End If
 
                     'write the statistics to Excel
                     ws = Me.Setup.ExcelFile.GetAddSheet(seizoensnaam & ".Stats")
-                    Dim r As Integer = myRow.Index * 3
-                    ws.ws.Cells(0, j + 1).Value = myRecord.ID
+                    Dim r As Integer = If(IncludeSeepage, myRow.Index * 4, myRow.Index * 3)
+                    ws.ws.Cells(0, j + 1).Value = upRecord.ID
                     ws.ws.Cells(r + 1, 0).Value = myRow.Cells(0).Value
                     ws.ws.Cells(r + 1, 1).Value = "Percentiel " & repPerc
-                    ws.ws.Cells(r + 1, j + 1).Value = Math.Round(repVal, 2)
+                    ws.ws.Cells(r + 1, j + 1).Value = Math.Round(repGW, 2)
                     ws.ws.Cells(r + 2, 0).Value = myRow.Cells(0).Value
                     ws.ws.Cells(r + 2, 1).Value = "Maaiveldhoogte (m NAP)"
-                    ws.ws.Cells(r + 2, j + 1).Value = myRecord.lv
+                    ws.ws.Cells(r + 2, j + 1).Value = upRecord.lv
                     ws.ws.Cells(r + 3, 0).Value = myRow.Cells(0).Value
                     ws.ws.Cells(r + 3, 1).Value = "Grondwaterdiepte (m)"
-                    ws.ws.Cells(r + 3, j + 1).Value = Math.Round(myRecord.lv - repVal, 2)
+                    ws.ws.Cells(r + 3, j + 1).Value = Math.Round(upRecord.lv - repGW, 2)
+                    If IncludeSeepage Then
+                        ws.ws.Cells(r + 4, 0).Value = myRow.Cells(0).Value
+                        ws.ws.Cells(r + 4, 1).Value = "Kwel (mm/d)"
+                        ws.ws.Cells(r + 4, j + 1).Value = Math.Round(repSep, 2)
+                    End If
                 Next
 
-                'set path to the adjusted unpaved.3b file and initialize writing the groundwater level values
+                'set path to the adjusted unpaved.3b and unpaved.sep file and initialize writing the groundwater level values
                 Dim mypath As String = ExportDir & "\" & seizoen.ToString & "_" & myRow.Cells(0).Value & "\"
                 If Not System.IO.Directory.Exists(mypath) Then System.IO.Directory.CreateDirectory(mypath)
                 myCase.RRData.Unpaved3B.Write(mypath & "unpaved.3b", False)
+                If IncludeSeepage Then myCase.RRData.UnpavedSep.Write(mypath & "unpaved.sep", False)
+
             Next
             Return True
         Catch ex As Exception
@@ -377,7 +432,7 @@ Public Class clsStochastenAnalyse
             myQuery = "SELECT * FROM SIMULATIONMODELS"
             Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtModel)
             For i = 0 To dtModel.Rows.Count - 1
-                myModel = New clsSimulationModel(Me.Setup, dtModel.Rows(i)("MODELID"), dtModel.Rows(i)("MODELTYPE"), dtModel.Rows(i)("EXECUTABLE"), dtModel.Rows(i)("ARGUMENTS"), dtModel.Rows(i)("MODELDIR"), dtModel.Rows(i)("CASENAME"), dtModel.Rows(i)("TEMPWORKDIR"), dtModel.Rows(i)("RESULTSFILES_RR"), dtModel.Rows(i)("RESULTSFILES_FLOW"))
+                myModel = New clsSimulationModel(Me.Setup, dtModel.Rows(i)("MODELID"), dtModel.Rows(i)("MODELTYPE"), dtModel.Rows(i)("EXECUTABLE"), dtModel.Rows(i)("ARGUMENTS"), dtModel.Rows(i)("MODELDIR"), dtModel.Rows(i)("CASENAME"), dtModel.Rows(i)("TEMPWORKDIR"), dtModel.Rows(i)("RESULTSFILES_RR"), dtModel.Rows(i)("RESULTSFILES_FLOW"), dtModel.Rows(i)("RESULTSFILES_RTC"))
                 Models.Add(myModel.Id, myModel)
 
                 'while we're in this model, read all outputlocations

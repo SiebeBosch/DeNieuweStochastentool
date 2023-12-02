@@ -271,51 +271,63 @@ Public Class clsStochastenRun
                     'update the progress bar
                     Me.Setup.GeneralFunctions.UpdateProgressBar("Running simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
 
+                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
+                    ''Dim Exec As String = myModel.Exec
+                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
+
+                    'Dim myProcess As New Process
+                    'myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
+                    'myProcess.StartInfo.FileName = Exec
+                    'myProcess.StartInfo.Arguments = myModel.Args
+                    'myProcess.Start()
+
+                    'While Not myProcess.HasExited
+                    '    'pom pom pom
+                    '    Call Setup.GeneralFunctions.Wait(2000)
+                    'End While
+
+
+
+
+                    'v2.3.3 some models requre running a batchfile from the copied model dir. Other require a call to an exe file with a given path.
+                    'therefore we will try to find a local file copy first
                     Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
                     If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
 
-                    Dim myProcess As New Process
-                    myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
-                    myProcess.StartInfo.FileName = Exec
-                    myProcess.StartInfo.Arguments = ""
-                    myProcess.Start()
 
-                    While Not myProcess.HasExited
-                        'pom pom pom
-                        Call Setup.GeneralFunctions.Wait(2000)
-                    End While
+                    'Dim info As New System.Diagnostics.ProcessStartInfo
+                    'info.FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\sample.exe"
+                    'info.Arguments = "/s /v/qn"
+                    'Dim process As New System.Diagnostics.Process
+                    'process.StartInfo = info
+                    'process.Start()
+                    'MessageBox.Show(info.Arguments.ToString())
+                    'process.Close()
 
+                    Directory.SetCurrentDirectory(Path.GetDirectoryName(myModel.TempWorkDir))
 
-
-
-                    ''v2.3.3 some models requre running a batchfile from the copied model dir. Other require a call to an exe file with a given path.
-                    ''therefore we will try to find a local file copy first
-                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
-
-
-                    ''Dim info As New System.Diagnostics.ProcessStartInfo
-                    ''info.FileName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\sample.exe"
-                    ''info.Arguments = "/s /v/qn"
-                    ''Dim process As New System.Diagnostics.Process
-                    ''process.StartInfo = info
-                    ''process.Start()
-                    ''MessageBox.Show(info.Arguments.ToString())
-                    ''process.Close()
-                    'Dim myProcess As System.Diagnostics.Process
-                    'Dim info As System.Diagnostics.ProcessStartInfo
-
-                    'Directory.SetCurrentDirectory(Path.GetDirectoryName(myModel.TempWorkDir))
-                    'info = New System.Diagnostics.ProcessStartInfo
-                    'info.UseShellExecute = True
-                    'info.WorkingDirectory = myModel.TempWorkDir
-                    'info.FileName = Exec
-                    ''info.Arguments = myModel.TempWorkDir & "\" & myModel.Args
+                    Directory.SetCurrentDirectory(myModel.TempWorkDir)
+                    Dim info As New System.Diagnostics.ProcessStartInfo
+                    info.WorkingDirectory = myModel.TempWorkDir
+                    info.FileName = Exec
+                    info.UseShellExecute = False
+                    'info.Arguments = myModel.TempWorkDir & "\" & myModel.Args
+                    info.Arguments = myModel.Args
                     'info.Arguments = ""
 
-                    'myProcess = New System.Diagnostics.Process
-                    'myProcess.StartInfo = info
-                    'myProcess.Start()
+                    Dim myProcess As New System.Diagnostics.Process
+                    myProcess.StartInfo = info
+
+                    'debugging
+                    Debug.Print("Current Directory is " & Directory.GetCurrentDirectory)
+                    Debug.Print("Working Directory is " & info.WorkingDirectory)
+                    Debug.Print("FileName is " & info.FileName)
+                    Debug.Print("UseShellExecute is " & info.UseShellExecute)
+                    Debug.Print("Arguments are " & info.Arguments)
+
+
+
+                    myProcess.Start()
 
                     While Not myProcess.HasExited
                         'waiting for the process to finish before starting the next (note: to be replaced with multithreading in the long term)
@@ -334,12 +346,15 @@ Public Class clsStochastenRun
                                 fromFile = myModel.TempWorkDir & "\" & myProject.DIMRConfig.RR.SubDir & "\" & myFile.FileName
                             ElseIf myFile.HydroModule = enmHydroModule.FLOW Then
                                 fromFile = myModel.TempWorkDir & "\" & myProject.DIMRConfig.Flow1D.SubDir & "\output\" & myFile.FileName
+                            ElseIf myFile.HydroModule = enmHydroModule.RTC Then
+                                fromFile = myModel.TempWorkDir & "\" & myProject.DIMRConfig.RTC.SubDir & "\" & myFile.FileName
                             End If
                         Else
                             fromFile = myModel.TempWorkDir & "\" & myFile.FileName
                         End If
 
                         toFile = OutputFilesDir & "\" & myFile.FileName
+                        GeneralFunctions.EnsureDirectoryPathExists(OutputFilesDir)
 
                         If File.Exists(fromFile) Then
                             Call FileCopy(fromFile, toFile)

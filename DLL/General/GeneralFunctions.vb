@@ -42,6 +42,7 @@ Public Class GeneralFunctions
         FLOW = 1
         FLOW1D = 2
         FLOW2D = 3
+        RTC = 4
     End Enum
 
     Public Enum enmValidationResult
@@ -15407,6 +15408,18 @@ Public Class GeneralFunctions
         If Not SQLiteColumnExists(Me.setup.SqliteCon, "CALIBRATIONPARAMETERS", "NSTEPS") Then SQLiteCreateColumn(Me.setup.SqliteCon, "CALIBRATIONPARAMETERS", "NSTEPS", enmSQLiteDataType.SQLITEINT)
         If Not SQLiteColumnExists(Me.setup.SqliteCon, "CALIBRATIONPARAMETERS", "SMALLERTHANPAR") Then SQLiteCreateColumn(Me.setup.SqliteCon, "CALIBRATIONPARAMETERS", "SMALLERTHANPAR", enmSQLiteDataType.SQLITETEXT)
         If Not SQLiteColumnExists(Me.setup.SqliteCon, "CALIBRATIONPARAMETERS", "GREATERTHANPAR") Then SQLiteCreateColumn(Me.setup.SqliteCon, "CALIBRATIONPARAMETERS", "GREATERTHANPAR", enmSQLiteDataType.SQLITETEXT)
+    End Sub
+
+    Public Shared Sub EnsureDirectoryPathExists(DirectoryPath As String)
+
+
+        Dim directoryInfo As DirectoryInfo = New DirectoryInfo(DirectoryPath)
+
+        ' Check if the directory exists
+        If Not directoryInfo.Exists Then
+            ' Create all directories and subdirectories in the specified path
+            Directory.CreateDirectory(DirectoryPath)
+        End If
     End Sub
 
 End Class

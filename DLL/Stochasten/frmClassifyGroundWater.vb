@@ -102,7 +102,7 @@ Public Class frmClassifyGroundWater
                             seizoen = enmSeason.hydrowinterhalfyear
                             Seizoensnaam = "winter"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, chkSeepage.checked, ExportDir)
                     Next
                 ElseIf radGroeiseizoen.Checked Then
 
@@ -116,14 +116,14 @@ Public Class frmClassifyGroundWater
                             seizoen = enmSeason.outsidegrowthseason
                             Seizoensnaam = "buitengroeiseizoen"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, chkSeepage.checked, ExportDir)
                     Next
 
                 ElseIf radJaarRond.Checked Then
 
                     seizoen = enmSeason.yearround
                     Seizoensnaam = "jaarrond"
-                    Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, chkseepage.checked, ExportDir)
 
                 ElseIf radAprilAugust.Checked Then
                     For i = 1 To 2
@@ -135,7 +135,7 @@ Public Class frmClassifyGroundWater
                             seizoen = enmSeason.septemberthroughmarch
                             Seizoensnaam = "winter"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterBySeason(seizoen, cmbDuration.Text, Me.Setup.SOBEKData.ActiveProject.ActiveCase, grGrondwaterKlassen, Seizoensnaam, Dates, chkSeepage.Checked, ExportDir)
                     Next
                 End If
             End If

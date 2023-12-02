@@ -20,7 +20,7 @@ Public Class clsSimulationModel
         Setup = mySetup
     End Sub
 
-    Public Sub New(ByRef mySetup As clsSetup, ByVal myId As Integer, ByVal myType As String, ByVal myExec As String, ByVal myArgs As String, ByVal myModelDir As String, ByVal myCaseName As String, ByVal myTempWorkDir As String, RRResultsFiles As String, FlowResultsFiles As String)
+    Public Sub New(ByRef mySetup As clsSetup, ByVal myId As Integer, ByVal myType As String, ByVal myExec As String, ByVal myArgs As String, ByVal myModelDir As String, ByVal myCaseName As String, ByVal myTempWorkDir As String, RRResultsFiles As String, FlowResultsFiles As String, RTCResultsFiles As String)
         Dim myFile As String
         Setup = mySetup
         Id = myId
@@ -32,6 +32,7 @@ Public Class clsSimulationModel
         TempWorkDir = myTempWorkDir
 
         ResultsFiles = New clsResultsFiles(Me.Setup, Me)
+
         While Not RRResultsFiles = ""
             myFile = Me.Setup.GeneralFunctions.ParseString(RRResultsFiles, ";")
             ResultsFiles.GetAdd(myFile, GeneralFunctions.enmHydroModule.RR)
@@ -42,6 +43,10 @@ Public Class clsSimulationModel
             ResultsFiles.GetAdd(myFile, GeneralFunctions.enmHydroModule.FLOW)
         End While
 
+        While Not RTCResultsFiles = ""
+            myFile = Me.Setup.GeneralFunctions.ParseString(RTCResultsFiles, ";")
+            ResultsFiles.GetAdd(myFile, GeneralFunctions.enmHydroModule.RTC)
+        End While
 
     End Sub
 

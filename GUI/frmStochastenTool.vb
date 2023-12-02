@@ -645,10 +645,8 @@ Public Class frmStochasten
             Dim m_nodelist As XmlNodeList
             Dim m_node As XmlNode
             Dim n_node As XmlNode
-            Dim o_node As XmlNode
             Dim Catchments As New Dictionary(Of String, String)
             Dim BoundaryNodes As New Dictionary(Of Integer, STOCHLIB.clsStochastBoundaryNode)
-            Dim Pars() As Object, Output() As Object
             Dim query As String
 
             'Create the XML Document
@@ -810,7 +808,7 @@ Public Class frmStochasten
     End Function
 
     Public Sub PopulateSimulationModelsGrid()
-        Dim query As String = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW FROM SIMULATIONMODELS;"
+        Dim query As String = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW, RESULTSFILES_RTC FROM SIMULATIONMODELS;"
         If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
         grModels.DataSource = dtModels
 
@@ -2803,6 +2801,7 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "TEMPWORKDIR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "TEMPWORKDIR", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RR", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW", enmSQLiteDataType.SQLITETEXT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RTC") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RTC", enmSQLiteDataType.SQLITETEXT)
     End Sub
 
     Public Sub UpdateRunsTable(progress As Integer)
@@ -3456,6 +3455,7 @@ Public Class frmStochasten
         'this function creates an instance of clsSimulationModel, based on a row in the grSimulationModels datagrid
         Dim RRResultsFiles As String = ""
         Dim FlowResultsFiles As String = ""
+        Dim RTCResultsFiles As String = ""
         Dim ID As Integer
         Dim ModelType As String = ""
         Dim Exec As String = ""
@@ -3474,8 +3474,9 @@ Public Class frmStochasten
         If Not IsDBNull(Row.Cells(5).Value) Then TempWorkDir = Row.Cells(6).Value
         If Not IsDBNull(Row.Cells(7).Value) Then RRResultsFiles = Row.Cells(7).Value
         If Not IsDBNull(Row.Cells(8).Value) Then FlowResultsFiles = Row.Cells(8).Value
+        If Not IsDBNull(Row.Cells(9).Value) Then RTCResultsFiles = Row.Cells(9).Value
 
-        Dim myModel As New STOCHLIB.clsSimulationModel(Me.Setup, ID, ModelType, Exec, Args, ModelDir, Casename, TempWorkDir, RRResultsFiles, FlowResultsFiles) ', myRow.Cells(6).Value)
+        Dim myModel As New STOCHLIB.clsSimulationModel(Me.Setup, ID, ModelType, Exec, Args, ModelDir, Casename, TempWorkDir, RRResultsFiles, FlowResultsFiles, RTCResultsFiles) ', myRow.Cells(6).Value)
         Return myModel
 
     End Function
@@ -5083,8 +5084,8 @@ Public Class frmStochasten
             'v2.3.2: restored the functionality to update the database when editing in the grid
             'if all cells of the current row have been filled in, clear the existing table and rebuild it, based on the current grid content
             Dim query As String, Args As String = String.Empty, CaseName As String = String.Empty
-            Dim Resultsfiles_RR As String = String.Empty, Resultsfiles_Flow As String = String.Empty
-            Dim r As Integer, c As Integer
+            Dim Resultsfiles_RR As String = String.Empty, Resultsfiles_Flow As String = String.Empty, Resultsfiles_RTC As String = String.Empty
+            Dim r As Integer
 
             'v2.3.2. changed the IsDBNUll checks.
             If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(0).Value) Then Throw New Exception("Specify a Model ID.")
@@ -5096,12 +5097,13 @@ Public Class frmStochasten
             If IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(6).Value) Then Throw New Exception("Specify a temporary work directory for the model.")
             If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(7).Value) Then Resultsfiles_RR = grModels.Rows.Item(e.RowIndex).Cells(7).Value
             If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(8).Value) Then Resultsfiles_Flow = grModels.Rows.Item(e.RowIndex).Cells(8).Value
+            If Not IsDBNull(grModels.Rows.Item(e.RowIndex).Cells(9).Value) Then Resultsfiles_RTC = grModels.Rows.Item(e.RowIndex).Cells(9).Value
 
             'clear the old data
             query = "DELETE FROM SIMULATIONMODELS;"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
             For r = 0 To grModels.Rows.Count - 1
-                query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & grModels.Rows(r).Cells(0).Value & "','" & grModels.Rows(r).Cells(1).Value & "','" & grModels.Rows(r).Cells(2).Value & "','" & Args & "','" & grModels.Rows(r).Cells(4).Value & "','" & CaseName & "','" & grModels.Rows(r).Cells(6).Value & "','" & Resultsfiles_RR & "','" & Resultsfiles_Flow & "');"
+                query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW, RESULTSFILES_RTC) VALUES ('" & grModels.Rows(r).Cells(0).Value & "','" & grModels.Rows(r).Cells(1).Value & "','" & grModels.Rows(r).Cells(2).Value & "','" & Args & "','" & grModels.Rows(r).Cells(4).Value & "','" & CaseName & "','" & grModels.Rows(r).Cells(6).Value & "','" & Resultsfiles_RR & "','" & Resultsfiles_Flow & "','" & Resultsfiles_RTC & "');"
                 If Not Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False) Then Throw New Exception("Error writing model information to the database.")
             Next
 
@@ -5110,9 +5112,6 @@ Public Class frmStochasten
         Finally
             Me.Setup.SqliteCon.Close()
         End Try
-
-
-
     End Sub
 
     Private Sub cmbClimate_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbClimate.SelectedValueChanged
@@ -5121,8 +5120,5 @@ Public Class frmStochasten
         Call RebuildAllGrids()
     End Sub
 
-    Private Sub grModels_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles grModels.CellEndEdit
-
-    End Sub
 End Class
 

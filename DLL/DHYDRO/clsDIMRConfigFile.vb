@@ -1,7 +1,9 @@
 ﻿Option Explicit On
+Imports DocumentFormat.OpenXml.Wordprocessing
 Imports STOCHLIB.General
 Imports STOCHLIB.GeneralFunctions
 Imports System.IO
+Imports System.Runtime.InteropServices.ComTypes
 Imports System.Xml
 
 Public Class clsDIMRConfigFile
@@ -21,6 +23,9 @@ Public Class clsDIMRConfigFile
         RTC = New clsDIMRCONFIGRTCComponent(Me.Setup, Me.DIMR)
         Flow1D = New clsDIMRCONFIGFlow1DComponent(Me.Setup, Me.DIMR)
     End Sub
+
+
+
 
     Public Function Read() As Boolean
         Try
