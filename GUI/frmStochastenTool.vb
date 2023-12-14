@@ -81,20 +81,10 @@ Public Class frmStochasten
         RebuildAllGrids()
     End Sub
 
-    Private Sub BtnRun_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnStartStop.Click
+    Private Sub btnBuild_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnBuild.Click
 
         'make sure to accept crashed results if specified
         Me.Setup.StochastenAnalyse.AllowCrashedResults = chkUseCrashedResults.Checked
-
-        'toggle this button between starting and stopping; also switching colors.
-        If btnStartStop.Text = "Starten" Then
-            btnStartStop.Text = "Stoppen"
-            btnStartStop.BackColor = Color.IndianRed
-        Else
-            btnStartStop.Text = "Starten"
-            btnStartStop.BackColor = Color.MediumSeaGreen
-            Exit Sub
-        End If
 
         'tijdens de berekeningen willen we ook op andere machines kunnen draaien, dus verbreek de verbinding met de database
         If Me.Setup.SqliteCon IsNot Nothing Then Me.Setup.SqliteCon.Close()
@@ -137,7 +127,7 @@ Public Class frmStochasten
         Else
             'de runs
             If grRuns.SelectedRows.Count > 0 Then
-                If Not Me.Setup.StochastenAnalyse.Runs.RunSelected(grRuns, btnPostprocessing) Then
+                If Not Me.Setup.StochastenAnalyse.Runs.BuildSelected(grRuns, btnPostprocessing) Then
                     MsgBox("Fouten bij het draaien van de geselecteerde runs. me.Setup.controleer de logfile voor meldingen.")
                     Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
                 End If
@@ -146,16 +136,10 @@ Public Class frmStochasten
             End If
         End If
 
-
-
         'afsluiten & logfile schrijven
         Dim logfile As String = Replace(Me.Setup.StochastenAnalyse.XMLFile, ".xml", ".log", , , Microsoft.VisualBasic.CompareMethod.Text)
         Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
         Me.Setup.Log.write(Me.Setup.Settings.RootDir & "\" & logfile, True)
-
-        'reset the startstop-button
-        btnStartStop.Text = "Starten"
-        btnStartStop.BackColor = Color.MediumSeaGreen
 
     End Sub
 
@@ -4782,6 +4766,56 @@ Public Class frmStochasten
         '    Dim tmp As Double()() = mlSquares.GetArray()
         '    squares = tmp(0)
         'End If
+    End Sub
+
+    Private Sub btnSimulate_Click(sender As Object, e As EventArgs) Handles btnSimulate.Click
+
+    End Sub
+
+    Private Sub btnCopyResults_Click(sender As Object, e As EventArgs) Handles btnCopyResults.Click
+        Try
+
+            'make sure to accept crashed results if specified
+            Me.Setup.StochastenAnalyse.AllowCrashedResults = chkUseCrashedResults.Checked
+
+            'tijdens de berekeningen willen we ook op andere machines kunnen draaien, dus verbreek de verbinding met de database
+            If Me.Setup.SqliteCon IsNot Nothing Then Me.Setup.SqliteCon.Close()
+
+
+            'again, read de base case from the schematization(s)
+            For Each myModel As STOCHLIB.clsSimulationModel In Me.Setup.StochastenAnalyse.Models.Values
+                If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
+                    Call Setup.SetAddSobekProject(myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec))
+                    If Not Setup.SOBEKData.ActiveProject.Cases.ContainsKey(myModel.CaseName.Trim.ToUpper) Then Throw New Exception("Error: could not find case " & myModel.CaseName & " in SOBEK project.")
+                    Setup.SetActiveCase(myModel.CaseName)
+                    Setup.InitSobekModel(True, True)
+                    Setup.ReadSobekDataDetail(False, False, False, False, False, True, False, False, False, False, False)
+                ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR OrElse myModel.ModelType = enmSimulationModel.DHYDRO OrElse myModel.ModelType = enmSimulationModel.DHYDROSERVER Then
+                    'do nothing since D-Hydro does not yet have a case manager
+                    Call Setup.SetDIMRProject(myModel.ModelDir)
+                    Call Setup.DIMRData.DIMRConfig.Read()
+                End If
+            Next
+
+            'copy the results to the results directory
+            If grRuns.SelectedRows.Count > 0 Then
+                If Not Me.Setup.StochastenAnalyse.Runs.CopyResultsFromSelected(grRuns, btnPostprocessing) Then
+                    MsgBox("Fouten bij het uitlezen van de geselecteerde runs. Controleer de logfile voor meldingen.")
+                    Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
+                End If
+            Else
+                MsgBox("Selecteer de rijen van de simulaties waarvan u de resultaten wilt uitlezen")
+            End If
+
+            'afsluiten & logfile schrijven
+            Dim logfile As String = Replace(Me.Setup.StochastenAnalyse.XMLFile, ".xml", ".log", , , Microsoft.VisualBasic.CompareMethod.Text)
+            Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
+            Me.Setup.Log.write(Me.Setup.Settings.RootDir & "\" & logfile, True)
+
+        Catch ex As Exception
+
+        End Try
+
     End Sub
 
     Private Sub btnOutputDir_Click(sender As Object, e As EventArgs) Handles btnOutputDir.Click

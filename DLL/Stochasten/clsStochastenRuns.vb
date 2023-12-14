@@ -530,7 +530,59 @@ Public Class clsStochastenRuns
         End Try
     End Function
 
-    Public Function RunSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
+    Public Function CopyResultsFromSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
+
+        '------------------------------------------------------------------------------------------------------------------------------
+        'this routine copies the requested results from the selected runs to the output directory
+        '------------------------------------------------------------------------------------------------------------------------------
+        Dim ID As String, myRun As clsStochastenRun
+        Dim i As Long, n As Long
+        Dim Done As Boolean
+
+        Try
+
+            'first figure out how many runs to copy results from
+            n = 0
+            For Each myrow As DataGridViewRow In grRuns.SelectedRows
+                If Not myrow.Cells("DONE").Value = True Then n += 1
+            Next
+
+            'copy results
+            i = 0
+            For Each myRow As DataGridViewRow In grRuns.SelectedRows
+                If Not myRow.Cells("DONE").Value = True Then
+                    i += 1
+                    ID = myRow.Cells("ID").Value
+                    myRun = Runs.Item(ID.Trim.ToUpper)
+
+                    'copy the results files
+                    If Not myRun.CopyResultsFiles(i, n) Then Me.Setup.Log.AddError("Error copying model results for stochast combination " & ID)
+
+                    'set "DONE"to true if all output files for this run are present
+                    Done = True
+                    For Each myModel In StochastenAnalyse.Models.Values
+                        For Each myFile In myModel.ResultsFiles.Files.Values
+                            If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
+                                Done = False
+                            End If
+                        Next
+                    Next
+                    myRow.Cells("DONE").Value = Done
+                End If
+            Next
+
+            'after all runs are complete, refresh the entire grid
+            Call StochastenAnalyse.RefreshRunsGrid(grRuns, btnCharts)
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+    Public Function BuildSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
 
         '------------------------------------------------------------------------------------------------------------------------------
         'this routine actually creates a new instance of the model schematisation(s) to be run and writes them to the temporary workdir
@@ -557,7 +609,7 @@ Public Class clsStochastenRuns
                     myRun = Runs.Item(ID.Trim.ToUpper)
 
                     'execute the run
-                    If Not myRun.Execute(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
+                    If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
 
                     'set "DONE"to true if all output files for this run are present
                     Done = True

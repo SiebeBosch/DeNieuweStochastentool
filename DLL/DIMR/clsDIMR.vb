@@ -165,9 +165,23 @@ Public Class clsDIMR
         End Try
     End Function
 
+    Public Function CopyCase(SimulationDir As String)
+        'in this function we clone our entire DIMR project/case so it can be run from the command line
+        'the function returns a complete new instance of a clsDIMR class
+        Try
+            Dim newDIMR As New clsDIMR(Setup, SimulationDir)
 
+            'first create a new directory for our simulation
+            If Not Directory.Exists(SimulationDir) Then Directory.CreateDirectory(SimulationDir)
+            My.Computer.FileSystem.CopyDirectory(ProjectDir, SimulationDir, True)
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Return Nothing
+        End Try
 
-    Public Function CloneCaseForCommandLineRun(SimulationDir As String, Optional ByVal StartDate As Date = Nothing, Optional ByVal EndDate As Date = Nothing) As clsDIMR
+    End Function
+
+    Public Function CloneAndAdjustCaseForCommandLineRun(SimulationDir As String, Optional ByVal StartDate As Date = Nothing, Optional ByVal EndDate As Date = Nothing) As clsDIMR
         'in this function we clone our entire DIMR project/case so it can be run from the command line
         'the function returns a complete new instance of a clsDIMR class
         Try

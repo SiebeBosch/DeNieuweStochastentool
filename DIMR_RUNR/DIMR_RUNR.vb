@@ -116,7 +116,7 @@ Module DIMR_RUNR
 
                     Dim RunDIMR As clsDIMR
                     Console.WriteLine("Copying model schematization, except for results dir...")
-                    RunDIMR = DIMR.CloneCaseForCommandLineRun(RunDir)
+                    RunDIMR = DIMR.CloneAndAdjustCaseForCommandLineRun(RunDir)
 
                     'finally assign the newly created DIMR instance to our run and read the DIMR configuration
                     Run.SetDIMRProject(RunDIMR)

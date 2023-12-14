@@ -140,6 +140,9 @@ C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\ScientificDataSet.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\STOCHLIB.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Data.SQLite.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.IO.Packaging.dll
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.AccessControl.dll
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Permissions.dll
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Principal.Windows.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\alglibnet2.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\Newtonsoft.Json.dll
@@ -152,6 +155,9 @@ C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\GemBox.Spreadsheet.WinF
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\ScientificDataSet.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Data.SQLite.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.IO.Packaging.xml
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.AccessControl.xml
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Permissions.xml
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Principal.Windows.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.pdb
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\Newtonsoft.Json.xml
@@ -164,9 +170,3 @@ C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.CopyCo
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.exe
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.pdb
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.AccessControl.dll
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Permissions.dll
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Principal.Windows.dll
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.AccessControl.xml
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Permissions.xml
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Principal.Windows.xml

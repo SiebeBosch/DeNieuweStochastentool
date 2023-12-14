@@ -1,0 +1,7 @@
+Configfile:DIMR_Config.xml
+ERROR: configfile "DIMR_Config.xml" does not exist
+Usage:
+run_dimr.bat [--help] [-d debuglevel] [dimr_config.xml]
+    --help         : (Optional) show this usage
+    -d debuglevel  : (Optional) debuglevel=0:ALL, 6:SILENT
+    dimr_config.xml: (Optional) default: dimr_config.xml
