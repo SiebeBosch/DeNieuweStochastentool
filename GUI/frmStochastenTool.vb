@@ -4804,7 +4804,7 @@ Public Class frmStochasten
                     Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
                 End If
             Else
-                MsgBox("Selecteer de rijen van de simulaties waarvan u de resultaten wilt uitlezen")
+                MsgBox("Selecteer de rijen van de simulaties waarvan u de resultaten wilt kopiëren")
             End If
 
             'afsluiten & logfile schrijven

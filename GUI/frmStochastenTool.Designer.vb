@@ -162,6 +162,7 @@ Partial Class frmStochasten
         Me.tab2D = New System.Windows.Forms.TabPage()
         Me.radFou = New System.Windows.Forms.RadioButton()
         Me.TabRuns = New System.Windows.Forms.TabPage()
+        Me.btnCopyResults = New System.Windows.Forms.Button()
         Me.btnSimulate = New System.Windows.Forms.Button()
         Me.btnUitlezen = New System.Windows.Forms.Button()
         Me.btnViewer = New System.Windows.Forms.Button()
@@ -277,7 +278,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.btnCopyResults = New System.Windows.Forms.Button()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -356,7 +356,7 @@ Partial Class frmStochasten
         Me.mnuMenu.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenu.Name = "mnuMenu"
         Me.mnuMenu.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
-        Me.mnuMenu.Size = New System.Drawing.Size(1710, 30)
+        Me.mnuMenu.Size = New System.Drawing.Size(1710, 28)
         Me.mnuMenu.TabIndex = 4
         Me.mnuMenu.Text = "MenuStrip1"
         '
@@ -364,7 +364,7 @@ Partial Class frmStochasten
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.OpenXMLToolStripMenuItem, Me.SaveXMLToolStripMenuItem1, Me.SaveXMLToolStripMenuItem})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(76, 26)
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(76, 24)
         Me.FileToolStripMenuItem.Text = "Bestand"
         '
         'OpenXMLToolStripMenuItem
@@ -389,7 +389,7 @@ Partial Class frmStochasten
         '
         Me.EditToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasteToolStripMenuItem})
         Me.EditToolStripMenuItem.Name = "EditToolStripMenuItem"
-        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 26)
+        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 24)
         Me.EditToolStripMenuItem.Text = "Bewerken"
         '
         'PasteToolStripMenuItem
@@ -403,7 +403,7 @@ Partial Class frmStochasten
         '
         Me.ModelsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ModelToolStripMenuItem, Me.UitvoerlocatiesToolStripMenuItem})
         Me.ModelsToolStripMenuItem.Name = "ModelsToolStripMenuItem"
-        Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(86, 26)
+        Me.ModelsToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.ModelsToolStripMenuItem.Text = "Modellen"
         '
         'ModelToolStripMenuItem
@@ -442,7 +442,7 @@ Partial Class frmStochasten
         '
         Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.GrondwatersClassificerenToolStripMenuItem, Me.GetijdenClassificerenToolStripMenuItem, Me.DirectoriesHernoemenToolStripMenuItem})
         Me.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
-        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(58, 26)
+        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.ToolsToolStripMenuItem.Text = "Tools"
         '
         'GrondwatersClassificerenToolStripMenuItem
@@ -482,7 +482,7 @@ Partial Class frmStochasten
         Me.MappenBeherenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StochastendirectoriesHernoemenToolStripMenuItem, Me.MappenVerwijderenToolStripMenuItem})
         Me.MappenBeherenToolStripMenuItem.Enabled = False
         Me.MappenBeherenToolStripMenuItem.Name = "MappenBeherenToolStripMenuItem"
-        Me.MappenBeherenToolStripMenuItem.Size = New System.Drawing.Size(95, 26)
+        Me.MappenBeherenToolStripMenuItem.Size = New System.Drawing.Size(95, 24)
         Me.MappenBeherenToolStripMenuItem.Text = "Directories"
         '
         'StochastendirectoriesHernoemenToolStripMenuItem
@@ -502,7 +502,7 @@ Partial Class frmStochasten
         Me.KaartToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VerschilkaartToolStripMenuItem, Me.ToonPolygonenToolStripMenuItem, Me.AchtergrondkaartToolStripMenuItem})
         Me.KaartToolStripMenuItem.Enabled = False
         Me.KaartToolStripMenuItem.Name = "KaartToolStripMenuItem"
-        Me.KaartToolStripMenuItem.Size = New System.Drawing.Size(58, 26)
+        Me.KaartToolStripMenuItem.Size = New System.Drawing.Size(58, 24)
         Me.KaartToolStripMenuItem.Text = "Kaart"
         '
         'VerschilkaartToolStripMenuItem
@@ -568,7 +568,7 @@ Partial Class frmStochasten
         Me.GrafiekenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ReferentiepeilenUitShapefileToevoegenToolStripMenuItem})
         Me.GrafiekenToolStripMenuItem.Enabled = False
         Me.GrafiekenToolStripMenuItem.Name = "GrafiekenToolStripMenuItem"
-        Me.GrafiekenToolStripMenuItem.Size = New System.Drawing.Size(86, 26)
+        Me.GrafiekenToolStripMenuItem.Size = New System.Drawing.Size(86, 24)
         Me.GrafiekenToolStripMenuItem.Text = "Grafieken"
         '
         'ReferentiepeilenUitShapefileToevoegenToolStripMenuItem
@@ -581,7 +581,7 @@ Partial Class frmStochasten
         '
         Me.DatabaseToolStripMenuItem1.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.UpgradeNaarToolStripMenuItem, Me.PolygonenUitShapefileToevoegenToolStripMenuItem1, Me.ImporterenToolStripMenuItem, Me.ConverterenVanAccessNaarSQLiteToolStripMenuItem, Me.LegeDatabaseCreërenToolStripMenuItem, Me.VerwijderenToolStripMenuItem})
         Me.DatabaseToolStripMenuItem1.Name = "DatabaseToolStripMenuItem1"
-        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(86, 26)
+        Me.DatabaseToolStripMenuItem1.Size = New System.Drawing.Size(86, 24)
         Me.DatabaseToolStripMenuItem1.Text = "Database"
         '
         'UpgradeNaarToolStripMenuItem
@@ -655,14 +655,14 @@ Partial Class frmStochasten
         'AboutToolStripMenuItem
         '
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(54, 26)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(54, 24)
         Me.AboutToolStripMenuItem.Text = "Over"
         '
         'BetafunctiesToolStripMenuItem
         '
         Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesFOUFileToolStripMenuItem, Me.LeesMATFileToolStripMenuItem})
         Me.BetafunctiesToolStripMenuItem.Name = "BetafunctiesToolStripMenuItem"
-        Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(104, 26)
+        Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(104, 24)
         Me.BetafunctiesToolStripMenuItem.Text = "Betafuncties"
         '
         'LeesFOUFileToolStripMenuItem
@@ -1744,14 +1744,26 @@ Partial Class frmStochasten
         Me.TabRuns.Text = "Simulaties"
         Me.TabRuns.UseVisualStyleBackColor = True
         '
+        'btnCopyResults
+        '
+        Me.btnCopyResults.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnCopyResults.BackColor = System.Drawing.Color.YellowGreen
+        Me.btnCopyResults.Location = New System.Drawing.Point(1522, 233)
+        Me.btnCopyResults.Margin = New System.Windows.Forms.Padding(4)
+        Me.btnCopyResults.Name = "btnCopyResults"
+        Me.btnCopyResults.Size = New System.Drawing.Size(133, 50)
+        Me.btnCopyResults.TabIndex = 39
+        Me.btnCopyResults.Text = "Kopiëren"
+        Me.btnCopyResults.UseVisualStyleBackColor = False
+        '
         'btnSimulate
         '
         Me.btnSimulate.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSimulate.BackColor = System.Drawing.Color.Gold
-        Me.btnSimulate.Location = New System.Drawing.Point(1523, 165)
+        Me.btnSimulate.Location = New System.Drawing.Point(1523, 179)
         Me.btnSimulate.Margin = New System.Windows.Forms.Padding(4)
         Me.btnSimulate.Name = "btnSimulate"
-        Me.btnSimulate.Size = New System.Drawing.Size(133, 40)
+        Me.btnSimulate.Size = New System.Drawing.Size(133, 50)
         Me.btnSimulate.TabIndex = 38
         Me.btnSimulate.Text = "Simuleren"
         Me.btnSimulate.UseVisualStyleBackColor = False
@@ -1761,10 +1773,10 @@ Partial Class frmStochasten
         Me.btnUitlezen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnUitlezen.BackColor = System.Drawing.Color.GreenYellow
         Me.btnUitlezen.Enabled = False
-        Me.btnUitlezen.Location = New System.Drawing.Point(1522, 310)
+        Me.btnUitlezen.Location = New System.Drawing.Point(1522, 287)
         Me.btnUitlezen.Margin = New System.Windows.Forms.Padding(4)
         Me.btnUitlezen.Name = "btnUitlezen"
-        Me.btnUitlezen.Size = New System.Drawing.Size(133, 40)
+        Me.btnUitlezen.Size = New System.Drawing.Size(133, 50)
         Me.btnUitlezen.TabIndex = 37
         Me.btnUitlezen.Text = "Uitlezen"
         Me.btnUitlezen.UseVisualStyleBackColor = False
@@ -1773,10 +1785,10 @@ Partial Class frmStochasten
         '
         Me.btnViewer.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnViewer.BackColor = System.Drawing.Color.CornflowerBlue
-        Me.btnViewer.Location = New System.Drawing.Point(1522, 406)
+        Me.btnViewer.Location = New System.Drawing.Point(1522, 395)
         Me.btnViewer.Margin = New System.Windows.Forms.Padding(4)
         Me.btnViewer.Name = "btnViewer"
-        Me.btnViewer.Size = New System.Drawing.Size(133, 40)
+        Me.btnViewer.Size = New System.Drawing.Size(133, 50)
         Me.btnViewer.TabIndex = 36
         Me.btnViewer.Text = "Publiceren"
         Me.btnViewer.UseVisualStyleBackColor = False
@@ -1785,10 +1797,10 @@ Partial Class frmStochasten
         '
         Me.btnWissen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnWissen.BackColor = System.Drawing.Color.DarkSalmon
-        Me.btnWissen.Location = New System.Drawing.Point(1522, 65)
+        Me.btnWissen.Location = New System.Drawing.Point(1522, 71)
         Me.btnWissen.Margin = New System.Windows.Forms.Padding(4)
         Me.btnWissen.Name = "btnWissen"
-        Me.btnWissen.Size = New System.Drawing.Size(133, 40)
+        Me.btnWissen.Size = New System.Drawing.Size(133, 50)
         Me.btnWissen.TabIndex = 35
         Me.btnWissen.Text = "Wissen"
         Me.btnWissen.UseVisualStyleBackColor = False
@@ -1801,7 +1813,7 @@ Partial Class frmStochasten
         Me.btnPopulateRuns.Location = New System.Drawing.Point(1522, 17)
         Me.btnPopulateRuns.Margin = New System.Windows.Forms.Padding(4)
         Me.btnPopulateRuns.Name = "btnPopulateRuns"
-        Me.btnPopulateRuns.Size = New System.Drawing.Size(133, 40)
+        Me.btnPopulateRuns.Size = New System.Drawing.Size(133, 50)
         Me.btnPopulateRuns.TabIndex = 34
         Me.btnPopulateRuns.Text = "Samenstellen"
         Me.btnPopulateRuns.UseVisualStyleBackColor = False
@@ -1810,10 +1822,10 @@ Partial Class frmStochasten
         '
         Me.btnExport.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnExport.BackColor = System.Drawing.Color.SlateBlue
-        Me.btnExport.Location = New System.Drawing.Point(1522, 454)
+        Me.btnExport.Location = New System.Drawing.Point(1522, 449)
         Me.btnExport.Margin = New System.Windows.Forms.Padding(4)
         Me.btnExport.Name = "btnExport"
-        Me.btnExport.Size = New System.Drawing.Size(133, 40)
+        Me.btnExport.Size = New System.Drawing.Size(133, 50)
         Me.btnExport.TabIndex = 33
         Me.btnExport.Text = "Exporteren"
         Me.btnExport.UseVisualStyleBackColor = False
@@ -1822,10 +1834,10 @@ Partial Class frmStochasten
         '
         Me.btnPostprocessing.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnPostprocessing.BackColor = System.Drawing.Color.LightSeaGreen
-        Me.btnPostprocessing.Location = New System.Drawing.Point(1522, 358)
+        Me.btnPostprocessing.Location = New System.Drawing.Point(1522, 341)
         Me.btnPostprocessing.Margin = New System.Windows.Forms.Padding(4)
         Me.btnPostprocessing.Name = "btnPostprocessing"
-        Me.btnPostprocessing.Size = New System.Drawing.Size(133, 40)
+        Me.btnPostprocessing.Size = New System.Drawing.Size(133, 50)
         Me.btnPostprocessing.TabIndex = 32
         Me.btnPostprocessing.Text = "Nabewerken"
         Me.btnPostprocessing.UseVisualStyleBackColor = False
@@ -1834,10 +1846,10 @@ Partial Class frmStochasten
         '
         Me.btnBuild.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnBuild.BackColor = System.Drawing.Color.Orange
-        Me.btnBuild.Location = New System.Drawing.Point(1523, 114)
+        Me.btnBuild.Location = New System.Drawing.Point(1523, 125)
         Me.btnBuild.Margin = New System.Windows.Forms.Padding(4)
         Me.btnBuild.Name = "btnBuild"
-        Me.btnBuild.Size = New System.Drawing.Size(133, 40)
+        Me.btnBuild.Size = New System.Drawing.Size(133, 50)
         Me.btnBuild.TabIndex = 31
         Me.btnBuild.Text = "Bouwen"
         Me.btnBuild.UseVisualStyleBackColor = False
@@ -2868,19 +2880,6 @@ Partial Class frmStochasten
         Me.prProgress.Name = "prProgress"
         Me.prProgress.Size = New System.Drawing.Size(1674, 28)
         Me.prProgress.TabIndex = 24
-        '
-        'btnCopyResults
-        '
-        Me.btnCopyResults.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnCopyResults.BackColor = System.Drawing.Color.YellowGreen
-        Me.btnCopyResults.Enabled = False
-        Me.btnCopyResults.Location = New System.Drawing.Point(1522, 213)
-        Me.btnCopyResults.Margin = New System.Windows.Forms.Padding(4)
-        Me.btnCopyResults.Name = "btnCopyResults"
-        Me.btnCopyResults.Size = New System.Drawing.Size(133, 40)
-        Me.btnCopyResults.TabIndex = 39
-        Me.btnCopyResults.Text = "Kopiëren"
-        Me.btnCopyResults.UseVisualStyleBackColor = False
         '
         'frmStochasten
         '

@@ -593,39 +593,48 @@ Public Class clsStochastenRuns
         Dim Done As Boolean
 
         Try
+            For Each myModel In StochastenAnalyse.Models.Values
 
-            'first figure out how many runs to do
-            n = 0
-            For Each myrow As DataGridViewRow In grRuns.SelectedRows
-                If Not myrow.Cells("DONE").Value = True Then n += 1
-            Next
+                'in order to run all simulations we will here create one encompassing .bat file that will run all simulations
+                'this .bat file will be written to the workdir and executed from there
+                Using myWriter As New StreamWriter(myModel.TempWorkDir & "\simulations.txt")
 
-            'execute
-            i = 0
-            For Each myRow As DataGridViewRow In grRuns.SelectedRows
-                If Not myRow.Cells("DONE").Value = True Then
-                    i += 1
-                    ID = myRow.Cells("ID").Value
-                    myRun = Runs.Item(ID.Trim.ToUpper)
-
-                    'execute the run
-                    If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
-
-                    'set "DONE"to true if all output files for this run are present
-                    Done = True
-                    For Each myModel In StochastenAnalyse.Models.Values
-                        For Each myFile In myModel.ResultsFiles.Files.Values
-                            If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
-                                Done = False
-                            End If
-                        Next
+                    'first figure out how many runs to do
+                    n = 0
+                    For Each myrow As DataGridViewRow In grRuns.SelectedRows
+                        If Not myrow.Cells("DONE").Value = True Then n += 1
                     Next
-                    myRow.Cells("DONE").Value = Done
-                End If
-            Next
 
-            'after all runs are complete, refresh the entire grid
-            Call StochastenAnalyse.RefreshRunsGrid(grRuns, btnCharts)
+                    'build the model schematisation(s) for all selected runs
+                    i = 0
+                    For Each myRow As DataGridViewRow In grRuns.SelectedRows
+                        If Not myRow.Cells("DONE").Value = True Then
+                            i += 1
+                            ID = myRow.Cells("ID").Value
+                            myRun = Runs.Item(ID.Trim.ToUpper)
+
+                            'build the run
+                            If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
+
+                            'and write a line to the .bat file to run this model using BAT_RUNR
+                            myWriter.WriteLine("""" & myRun.getExePath(myModel) & """ " & myModel.Args)
+
+                            'set "DONE"to true if all output files for this run are present
+                            Done = True
+                            For Each myFile In myModel.ResultsFiles.Files.Values
+                                If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
+                                    Done = False
+                                End If
+                            Next
+                            myRow.Cells("DONE").Value = Done
+                        End If
+                    Next
+
+                    'after all runs are complete, refresh the entire grid
+                    Call StochastenAnalyse.RefreshRunsGrid(grRuns, btnCharts)
+                End Using
+
+            Next
 
             Return True
         Catch ex As Exception

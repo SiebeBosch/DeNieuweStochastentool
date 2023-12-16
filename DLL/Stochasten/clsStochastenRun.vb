@@ -59,6 +59,14 @@ Public Class clsStochastenRun
         StochastenAnalyse = myAnalyse
     End Sub
 
+    Public Function getRunDir(ByRef myModel As clsSimulationModel) As String
+        Return myModel.TempWorkDir & "\" & ID
+    End Function
+
+    Public Function getExePath(ByRef myModel As clsSimulationModel) As String
+        Return getRunDir(myModel) & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
+    End Function
+
     Public Function getMeteoForcing() As clsMeteoForcing
         'creates and returns the meteo forcing for this run so it can be passed to a DHYDROSERVER implementation
         Dim myForcing As New clsMeteoForcing(duur, VolumeClass.Volume, PatternClass.Patroon, SeasonClass.Name)
