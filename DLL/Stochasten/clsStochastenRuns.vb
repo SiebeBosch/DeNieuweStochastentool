@@ -617,7 +617,9 @@ Public Class clsStochastenRuns
                             If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
 
                             'and write a line to the .bat file to run this model using BAT_RUNR
-                            myWriter.WriteLine("""" & myRun.getExePath(myModel) & """ " & myModel.Args)
+                            Dim RelativePath As String = ""
+                            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir, myRun.getExePath(myModel), RelativePath)
+                            myWriter.WriteLine("""" & RelativePath & """ " & myModel.Args)
 
                             'set "DONE"to true if all output files for this run are present
                             Done = True

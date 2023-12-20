@@ -6036,6 +6036,19 @@ Public Class GeneralFunctions
         Return Interpolate(lower / nSteps, Values(lower), upper / nSteps, Values(upper), myPercentile, False)
     End Function
 
+
+    Public Function PercentileFromList(ByVal Values As List(Of Double), ByVal myPercentileDecimal As Double) As Double
+        'this routine calculates the requested percentile from an array of values
+        'first we'll need to sort the array
+        Dim lower As Long, upper As Long
+        Dim nSteps As Long = Values.Count - 1
+        Values.Sort()
+        lower = RoundUD(nSteps * myPercentileDecimal, 0, False)
+        upper = RoundUD(nSteps * myPercentileDecimal, 0, True)
+        Return Interpolate(lower / nSteps, Values(lower), upper / nSteps, Values(upper), myPercentileDecimal, False)
+    End Function
+
+
     Public Function NextSurroundingCell(ByRef StepsDone As Integer, ByVal r As Integer, ByVal c As Integer, ByRef r1 As Integer, ByRef c1 As Integer) As Boolean
         'walks arount a grid cells and returns the next surrounding cell
         Try
@@ -6091,16 +6104,6 @@ Public Class GeneralFunctions
         End Try
     End Function
 
-    Public Function PercentileFromList(ByVal Values As List(Of Double), ByVal myPercentileDecimal As Double) As Double
-        'this routine calculates the requested percentile from an array of values
-        'first we'll need to sort the array
-        Dim lower As Long, upper As Long
-        Dim nSteps As Long = Values.Count - 1
-        Values.Sort()
-        lower = RoundUD(nSteps * myPercentileDecimal, 0, False)
-        upper = RoundUD(nSteps * myPercentileDecimal, 0, True)
-        Return Interpolate(lower / nSteps, Values(lower), upper / nSteps, Values(upper), myPercentileDecimal, False)
-    End Function
 
 
     Public Sub MultiRenameSubDirs(StartDir As String, OldName As String, NewName As String)

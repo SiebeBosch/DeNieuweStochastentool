@@ -1,0 +1,302 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+STOCHLIB
+</name>
+</assembly>
+<members>
+<member name="T:STOCHLIB.My.Resources.Resources">
+<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member>
+<member name="P:STOCHLIB.My.Resources.Resources.ResourceManager">
+<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member>
+<member name="P:STOCHLIB.My.Resources.Resources.Culture">
+<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member>
+<member name="T:STOCHLIB.clsLog">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsLog.AddDebugMessage(System.String)">
+ <summary>
+ Raises the message event with the debug message
+ </summary>
+ <param name="msg">The message</param>
+ <remarks>Paul Meems, 8 Jube 2012</remarks>
+</member>
+<member name="T:STOCHLIB.clsBoundary">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsWWTPDischargePointsShapefile">
+ <summary>
+ Author: Siebe Bosch
+ Date: 31-03-2013
+ Description: this class contains all data concerning Waste Water Treatment Plants in our study area
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.General.clsSetup.#ctor">
+ <summary>
+ Constructor
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.General.MessageEventArgs">
+ <summary>
+ Class waarmee je gegevens door kunt geven in je events (van vb.net naar c#)
+ </summary>
+ <remarks>Toegevoegd door Paul Meems, met hulp van Jeen de Vegt.</remarks>
+</member>
+<member name="M:STOCHLIB.GeneralFunctions.ValidateGT(System.String,System.Double,System.Double)">
+ <summary>
+ This function validates the groundwater table provided
+ </summary>
+ <param name="myGT"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSubcatchmentDataSource.MergeAllShapes">
+ <summary>
+ Deze subroutine voegt shapes samen in één nieuwe shape
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSubcatchmentDataSource.Open(System.Boolean)">
+ <summary>
+ Deze subroutine voegt shapes behorende bij hetzelfde catchment samen tot één nieuwe shape per Catchment
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFInitialData.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsEvpFile">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFNodesData.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFFrictionData.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsHisFileBinaryReader">
+ <summary>
+ His file (Sobek) reader
+ Reads binary and therefore bypasses ODSSVR20.DLL that does not work inside Visual Studio 2008 for selections of locations and/or locations/timesteps
+ Hence this is an alternative for clsHisFile
+ </summary>
+</member>
+<member name="M:STOCHLIB.clsHisFileBinaryReader.Dispose">
+ <summary>
+ See <see cref="M:System.IDisposable.Dispose"/> for more information.
+ </summary>
+</member>
+<member name="M:STOCHLIB.clsHisFileBinaryReader.Dispose(System.Boolean)">
+ <summary>
+ Called when the object is being disposed or finalized.
+ </summary>
+ <param name="disposing">True when the object is being disposed (and therefore can
+ access managed members); false when the object is being finalized without first
+ having been disposed (and therefore can only touch unmanaged members).</param>
+</member>
+<member name="T:STOCHLIB.clsBuiFile">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFBoundaryData.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFData.CleanUp(System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean,System.Boolean)">
+ <summary>
+ This routine cleans up model objects and data for the flow module.
+ It will remove any unused data records
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFData.CalculateBedLevel(STOCHLIB.clsSbkReach,System.Double,System.Double@)">
+ <summary>
+ Berekent de bodemhoogte gegeven een tak en afstand op de tak
+ </summary>
+ <param name="myReach"></param>
+ <param name="lc"></param>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFLateraldata.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFProfileData.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFStructureData.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFTopology.Export(System.Boolean,System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFTopology.FindNearestVectorPoint(STOCHLIB.clsXYZ,System.Boolean,System.Double,MapWinGIS.Shape@,MapWinGIS.Shape@,MapWinGIS.Shape@,System.Collections.Generic.List{System.String})">
+ <summary>
+ TODO: Siebe invullen
+ Deze functie zoekt het dichtstbijzijnde curving point van alle sobektakken voor een gegeven polygoon
+ </summary>
+ <param name="SkipBeginAndEndNode"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFTopology.MakeUniqueNodeID(System.String)">
+ <summary>
+ This function creates a unique ID for a new node or reach object
+ In order to do so it searches until it has found an ID that does not
+ yet occur in the sobek schematization
+ </summary>
+ <param name="IDBase"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsCFTopology.ReachObjectExists(System.String)">
+ <summary>
+ Deze functie zoekt uit of een takobject bestaat en geeft een boolean terug 
+ </summary>
+ <param name="ID"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsDummyReach">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsMeteoStations">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsRRData.CleanUp(System.Boolean,System.Boolean)">
+ <summary>
+ This routine cleans up model objects and data for the flow module.
+ It will remove any unused data records
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsRRSettings">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsRRSettings.Initialize">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+</member>
+<member name="M:STOCHLIB.clsRRTopology.InitializeExport(System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+</member>
+<member name="T:STOCHLIB.clsSbkLinkageNodes">
+ <summary>
+ Geen contructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSbkReach.findAddRRCFConnection(STOCHLIB.clsSbkReachObject,System.String,System.Double,System.Double,System.Double)">
+ <summary>
+ Zoekt, gegeven de tak, het dichtstbijzijnde RRCF-connection, binnen een opgegeven zoekstraal.
+ Als er geen connection wordt gevonden, wordt er een aangemaakt
+ </summary>
+ <param name="mySnapLocation"></param>
+ <param name="minDistFromReachStart"></param>
+ <param name="SearchRadiusUp"></param>
+ <param name="SearchRadiusDown"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSbkReach.AddCrossSectionFromNeighbors">
+ <summary>
+ Deze routine voegt een dwarsprofiel toe aan de onderhavige sobektak als die er geen heeft.
+ hij kiest uit de aanpalende takken de langste die er is (is een arbitraire keuze)
+ en pakt vervolgens het dichtstbijzijnde profiel
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSbkReaches.CreateID(System.String)">
+ <summary>
+ Creëer een ID voor een nieuw te maken sobektak
+ </summary>
+ <param name="NameBase"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSbkReaches.AddCrossSectionsIfNotPresent">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsSettings">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="T:STOCHLIB.clsSbkVectorPoint">
+ <summary>
+ Geen constructor nodig
+ </summary>
+ <remarks></remarks>
+</member>
+<member name="M:STOCHLIB.clsSobekProject.SetActiveCase(System.String)">
+ <summary>
+ TODO: Siebe invullen
+ </summary>
+ <param name="casename"></param>
+ <returns></returns>
+ <remarks></remarks>
+</member>
+</members>
+</doc>

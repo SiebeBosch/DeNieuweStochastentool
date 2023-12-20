@@ -176,7 +176,7 @@ Public Class clsStochastenRun
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
 
                 'for each run we need to create a unique subdirectory to myModel.TempWorkDir
-                Dim runDir As String = myModel.TempWorkDir & "\" & ID
+                Dim runDir As String = getRunDir(myModel) ' myModel.TempWorkDir & "\" & ID
                 If Not System.IO.Directory.Exists(runDir) Then
                     Me.Setup.Log.AddError("Unable to copy simulation results to the results directory. The directory " & runDir & " which should contain the results does not exist.")
                     Continue For

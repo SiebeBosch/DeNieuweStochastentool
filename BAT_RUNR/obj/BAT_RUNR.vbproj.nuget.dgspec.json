@@ -31,7 +31,11 @@
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj": {
+                "projectPath": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -61,6 +65,21 @@
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
         }
+      }
+    },
+    "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj": {
+      "restore": {
+        "projectUniqueName": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj",
+        "projectName": "STOCHLIB",
+        "projectPath": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj",
+        "frameworks": {
+          "net48": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net48": {}
       }
     }
   }

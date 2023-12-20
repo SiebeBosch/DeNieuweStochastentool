@@ -1,11 +1,29 @@
 {
   "version": 3,
   "targets": {
-    "net7.0": {}
+    "net7.0": {
+      "STOCHLIB/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/STOCHLIB.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/STOCHLIB.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "STOCHLIB/1.0.0": {
+      "type": "project",
+      "path": "../DLL/STOCHLIB.vbproj",
+      "msbuildProject": "../DLL/STOCHLIB.vbproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net7.0": []
+    "net7.0": [
+      "STOCHLIB >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\SiebeBosch\\.nuget\\packages\\": {}
@@ -37,7 +55,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj": {
+              "projectPath": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj"
+            }
+          }
         }
       },
       "warningProperties": {

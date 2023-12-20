@@ -267,7 +267,6 @@ Public Class clsStochastenAnalyse
             Dim uPercentile As Double      'upper boundary percentile for this class
             Dim repPerc As Double          'percentile for the class
             Dim repGW As Double          'representative groundwater level for the class
-            Dim repSep As Double          'representative seepage value for the class
             Dim sepRecord As clsUnpavedSEPRecord
 
             'carry out the POT analysis on the rainfall volumes
@@ -327,6 +326,8 @@ Public Class clsStochastenAnalyse
                 'now that we have the starting time index numbers for the POT-events, we can get the groundwater levels from the starting times for each event
                 For Each upRecord In myCase.RRData.Unpaved3B.Records.Values
 
+                    Debug.Print("Processing unpaved record " & upRecord.ID)
+
                     sepRecord = New clsUnpavedSEPRecord(Me.Setup)
                     sepRecord.ID = upRecord.SP
                     sepRecord.nm = upRecord.SP
@@ -378,8 +379,18 @@ Public Class clsStochastenAnalyse
 
                     'update the unpaved.sep record
                     If IncludeSeepage Then
-                        repSep = Me.Setup.GeneralFunctions.Percentile(Seepage, repPerc)
-                        sepRecord.sp = repSep
+
+                        'the representative seepage value is linked to the groundwater levels inside this class
+                        'this means that we must derive the median of the seapage values that are linked to the groundwater levels from thi sclass
+                        Dim SeepageInClass As New List(Of Double)
+                        For k = 0 To Seepage.Length - 1
+                            If GW(k) >= Me.Setup.GeneralFunctions.Percentile(GW, lPercentile) And GW(k) <= Me.Setup.GeneralFunctions.Percentile(GW, uPercentile) Then
+                                SeepageInClass.Add(Seepage(k))
+                            End If
+                        Next
+
+                        'compute the median of the seepage values in this class and assign it to the seepage record
+                        sepRecord.sp = Me.Setup.GeneralFunctions.PercentileFromList(SeepageInClass, 0.5)
                     End If
 
                     'write the statistics to Excel
@@ -398,7 +409,7 @@ Public Class clsStochastenAnalyse
                     If IncludeSeepage Then
                         ws.ws.Cells(r + 4, 0).Value = myRow.Cells(0).Value
                         ws.ws.Cells(r + 4, 1).Value = "Kwel (mm/d)"
-                        ws.ws.Cells(r + 4, j + 1).Value = Math.Round(repSep, 2)
+                        ws.ws.Cells(r + 4, j + 1).Value = Math.Round(sepRecord.sp, 2)
                     End If
                 Next
 
