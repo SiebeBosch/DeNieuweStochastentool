@@ -63,7 +63,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.lblProgress.AutoSize = True
         Me.lblProgress.Location = New System.Drawing.Point(14, 323)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(63, 15)
+        Me.lblProgress.Size = New System.Drawing.Size(56, 13)
         Me.lblProgress.TabIndex = 30
         Me.lblProgress.Text = "Voortgang"
         '
@@ -86,7 +86,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(18, 28)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(78, 15)
+        Me.Label1.Size = New System.Drawing.Size(69, 13)
         Me.Label1.TabIndex = 1
         Me.Label1.Text = "RR-directory:"
         '
@@ -186,7 +186,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.radZomWin.AutoSize = True
         Me.radZomWin.Location = New System.Drawing.Point(21, 107)
         Me.radZomWin.Name = "radZomWin"
-        Me.radZomWin.Size = New System.Drawing.Size(162, 19)
+        Me.radZomWin.Size = New System.Drawing.Size(138, 17)
         Me.radZomWin.TabIndex = 21
         Me.radZomWin.Text = "Zomer- en winterhalfjaar"
         Me.radZomWin.UseVisualStyleBackColor = True
@@ -196,7 +196,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.radJaarRond.AutoSize = True
         Me.radJaarRond.Location = New System.Drawing.Point(21, 153)
         Me.radJaarRond.Name = "radJaarRond"
-        Me.radJaarRond.Size = New System.Drawing.Size(77, 19)
+        Me.radJaarRond.Size = New System.Drawing.Size(66, 17)
         Me.radJaarRond.TabIndex = 20
         Me.radJaarRond.Text = "Jaarrond"
         Me.radJaarRond.UseVisualStyleBackColor = True
@@ -225,7 +225,7 @@ Partial Class frmClassifyGroundwaterDHydro
         '
         Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Yellow
         Me.btnGroeiseizoenHelp.Location = New System.Drawing.Point(347, 82)
-        Me.btnGroeiseizoenHelp.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.btnGroeiseizoenHelp.Margin = New System.Windows.Forms.Padding(2)
         Me.btnGroeiseizoenHelp.Name = "btnGroeiseizoenHelp"
         Me.btnGroeiseizoenHelp.Size = New System.Drawing.Size(17, 19)
         Me.btnGroeiseizoenHelp.TabIndex = 31
@@ -237,7 +237,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.radAprilAugust.AutoSize = True
         Me.radAprilAugust.Location = New System.Drawing.Point(21, 130)
         Me.radAprilAugust.Name = "radAprilAugust"
-        Me.radAprilAugust.Size = New System.Drawing.Size(194, 19)
+        Me.radAprilAugust.Size = New System.Drawing.Size(171, 17)
         Me.radAprilAugust.TabIndex = 34
         Me.radAprilAugust.Text = "April t/m aug en sept t/m maart"
         Me.radAprilAugust.UseVisualStyleBackColor = True
@@ -248,7 +248,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.radGroeiseizoen.Checked = True
         Me.radGroeiseizoen.Location = New System.Drawing.Point(21, 84)
         Me.radGroeiseizoen.Name = "radGroeiseizoen"
-        Me.radGroeiseizoen.Size = New System.Drawing.Size(336, 19)
+        Me.radGroeiseizoen.Size = New System.Drawing.Size(288, 17)
         Me.radGroeiseizoen.TabIndex = 33
         Me.radGroeiseizoen.TabStop = True
         Me.radGroeiseizoen.Text = "Groeiseizoen (maart t/m oktober) en buiten groeiseizoen"
@@ -259,14 +259,14 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.Label3.AutoSize = True
         Me.Label3.Location = New System.Drawing.Point(19, 56)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(267, 15)
+        Me.Label3.Size = New System.Drawing.Size(228, 13)
         Me.Label3.TabIndex = 32
         Me.Label3.Text = "Minimum tijd tussen events (aantal tijdstappen):"
         '
         'txtMinTimestepsBetweenEvents
         '
         Me.txtMinTimestepsBetweenEvents.Location = New System.Drawing.Point(272, 53)
-        Me.txtMinTimestepsBetweenEvents.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.txtMinTimestepsBetweenEvents.Margin = New System.Windows.Forms.Padding(2)
         Me.txtMinTimestepsBetweenEvents.Name = "txtMinTimestepsBetweenEvents"
         Me.txtMinTimestepsBetweenEvents.Size = New System.Drawing.Size(95, 20)
         Me.txtMinTimestepsBetweenEvents.TabIndex = 31
@@ -285,7 +285,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.Label4.AutoSize = True
         Me.Label4.Location = New System.Drawing.Point(19, 28)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(161, 15)
+        Me.Label4.Size = New System.Drawing.Size(138, 13)
         Me.Label4.TabIndex = 18
         Me.Label4.Text = "Duur gebeurtenissen (uren):"
         '
@@ -310,9 +310,9 @@ Partial Class frmClassifyGroundwaterDHydro
         '
         Me.grOptions.Controls.Add(Me.chkSeepage)
         Me.grOptions.Location = New System.Drawing.Point(436, 12)
-        Me.grOptions.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.grOptions.Margin = New System.Windows.Forms.Padding(2)
         Me.grOptions.Name = "grOptions"
-        Me.grOptions.Padding = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.grOptions.Padding = New System.Windows.Forms.Padding(2)
         Me.grOptions.Size = New System.Drawing.Size(384, 100)
         Me.grOptions.TabIndex = 31
         Me.grOptions.TabStop = False
@@ -322,9 +322,9 @@ Partial Class frmClassifyGroundwaterDHydro
         '
         Me.chkSeepage.AutoSize = True
         Me.chkSeepage.Location = New System.Drawing.Point(21, 28)
-        Me.chkSeepage.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.chkSeepage.Margin = New System.Windows.Forms.Padding(2)
         Me.chkSeepage.Name = "chkSeepage"
-        Me.chkSeepage.Size = New System.Drawing.Size(219, 19)
+        Me.chkSeepage.Size = New System.Drawing.Size(187, 17)
         Me.chkSeepage.TabIndex = 0
         Me.chkSeepage.Text = "Kwel meenemen in de classificatie"
         Me.chkSeepage.UseVisualStyleBackColor = True
@@ -342,7 +342,7 @@ Partial Class frmClassifyGroundwaterDHydro
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.btnClassify)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "frmClassifyGroundwaterDHydro"
         Me.Text = "Grondwaterstanden uit D-Hydro classificeren"
         Me.groupSbk.ResumeLayout(False)

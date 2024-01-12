@@ -1354,6 +1354,7 @@ Public Class GeneralFunctions
         DIMR = 6
         DHYDROSERVER = 7
         SUMAQUA = 8
+        HBV = 9
     End Enum
 
     Public Enum enmKlimaatScenario

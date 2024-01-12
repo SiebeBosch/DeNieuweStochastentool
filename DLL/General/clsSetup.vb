@@ -9,6 +9,7 @@ Namespace General
         Public GISData As clsGISData                                            'bevat alle shapefiles en rasters!
         Public SOBEKData As clsSOBEK                                            'bevat alle SOBEK-modellen en -cases
         Public DIMRData As clsDIMR
+        Public HBVData As clsHBVProject
         Public KNMIData As clsKNMIData                  'bevat alle data van het KNMI
         Public StochastenAnalyse As clsStochastenAnalyse
         Public TijdreeksAnalyse As clsTijdreeksAnalyse
@@ -60,6 +61,7 @@ Namespace General
             GISData = New clsGISData(Me)            'bevat alle shapefiles en rasters!
             SOBEKData = New clsSOBEK(Me)            'bevat alle SOBEK-modellen en -cases
             DIMRData = New clsDIMR(Me)              'bevat een DIMR model/case
+            HBVData = New clsHBVProject(Me)                'bevat een HBV model/case
             KNMIData = New clsKNMIData(Me)          'bevat alle data van het KNMI
 
             WWTPs = New clsWWTPs(Me)                        'een klasse met AWZI's en hun eigenschappen
@@ -868,6 +870,10 @@ Namespace General
 
         Public Function SetDIMRProject(ByVal ProjectDir As String)
             Return Me.DIMRData.SetProject(ProjectDir)
+        End Function
+
+        Public Function SetHBVProject(ByVal ProjectDir As String)
+            Return Me.HBVData.SetProject(ProjectDir)
         End Function
 
         Public Sub CreateSobekCase(ByVal ModelDir As String, ProgramsDir As String, ByVal CaseName As String)

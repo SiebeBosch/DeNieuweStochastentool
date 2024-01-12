@@ -597,6 +597,7 @@ Public Class clsStochastenRuns
 
                 'in order to run all simulations we will here create one encompassing .bat file that will run all simulations
                 'this .bat file will be written to the workdir and executed from there
+                If Not System.IO.Directory.Exists(myModel.TempWorkDir) Then System.IO.Directory.CreateDirectory(myModel.TempWorkDir)
                 Using myWriter As New StreamWriter(myModel.TempWorkDir & "\simulations.txt")
 
                     'first figure out how many runs to do

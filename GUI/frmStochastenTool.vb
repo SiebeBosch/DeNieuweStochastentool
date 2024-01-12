@@ -101,6 +101,10 @@ Public Class frmStochasten
                 'do nothing since D-Hydro does not yet have a case manager
                 Call Setup.SetDIMRProject(myModel.ModelDir)
                 Call Setup.DIMRData.DIMRConfig.Read()
+            ElseIf myModel.ModelType = enmSimulationModel.HBV Then
+                'do nothing since HBV does not yet have a case manager
+                Call Setup.SetHBVProject(myModel.ModelDir)
+                Call Setup.HBVData.BasinFile.Read()
             End If
         Next
 
@@ -3274,6 +3278,7 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "FLOWFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "FLOWFILES", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "RTCFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "RTCFILES", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "KANS") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "KANS", enmSQLiteDataType.SQLITEREAL)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "BASEDIR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "BASEDIR", enmSQLiteDataType.SQLITEREAL)
 
         If Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "BESTAND") Then
             'old structure (pre 2.205) detected. Copy all values from 'BESTAND' to 'RRFILES'

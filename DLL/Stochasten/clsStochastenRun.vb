@@ -420,198 +420,6 @@ Public Class clsStochastenRun
                     'update the progress bar
                     Me.Setup.GeneralFunctions.UpdateProgressBar("Building simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
 
-                    '------------------------------------------------------------------------------------------
-                    ' using the createProcess API
-                    '------------------------------------------------------------------------------------------
-                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
-
-                    'Dim Process As Process
-
-                    'Try
-                    '    Dim StartInfo As New ProcessStartInfo
-                    '    StartInfo.WorkingDirectory = myModel.TempWorkDir
-                    '    StartInfo.FileName = Exec
-                    '    StartInfo.Arguments = myModel.Args
-
-                    '    Process = Process.Start(StartInfo)
-                    '    Process.WaitForExit()
-                    '    Process.Close()
-                    'Catch ex As Exception
-                    '    ' Handle error here
-                    'End Try
-
-                    '------------------------------------------------------------------------------------------
-
-                    '------------------------------------------------------------------------------------------
-                    'DIRECT APPROACH TO RUNNING THE BATCH FILE
-                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
-
-                    'Dim myProcess As New Process
-                    'myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
-                    'myProcess.StartInfo.FileName = Exec
-                    'myProcess.StartInfo.Arguments = myModel.Args
-                    'myProcess.Start()
-
-                    'While Not myProcess.HasExited
-                    '    'pom pom pom
-                    '    Call Setup.GeneralFunctions.Wait(2000)
-                    'End While
-                    'myProces.close
-
-                    'ConsoleLogLocalVariables()
-
-                    '------------------------------------------------------------------------------------------
-                    'Determine the executable path
-                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
-                    'Try
-
-                    '    Dim myProcess As New Process
-                    '    myProcess.StartInfo.UseShellExecute = False
-                    '    myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
-                    '    myProcess.StartInfo.FileName = Exec
-                    '    'myProcess.StartInfo.Verb = "runas"
-                    '    myProcess.StartInfo.Arguments = ""
-                    '    myProcess.Start()
-                    '    myProcess.WaitForExit()
-                    '    myProcess.Close()
-                    'Catch ex As Exception
-                    '    ' Handle error here
-                    'End Try
-                    '------------------------------------------------------------------------------------------
-
-                    '------------------------------------------------------------------------------------------
-                    'Determine the PowerShell script path
-                    'Dim scriptPath As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(scriptPath) Then scriptPath = myModel.Exec
-
-                    'Try
-                    '    Dim myProcess As New Process
-                    '    myProcess.StartInfo.UseShellExecute = False
-                    '    myProcess.StartInfo.RedirectStandardOutput = True
-                    '    myProcess.StartInfo.RedirectStandardError = True
-                    '    myProcess.StartInfo.CreateNoWindow = False
-                    '    myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
-
-                    '    ' Set the FileName to PowerShell executable
-                    '    myProcess.StartInfo.FileName = "powershell.exe"
-
-                    '    ' Set the Arguments to execute the script
-                    '    myProcess.StartInfo.Arguments = "-NoProfile -ExecutionPolicy Bypass -File """ & scriptPath & """"
-
-                    '    myProcess.Start()
-
-                    '    ' Read output and error streams (optional)
-                    '    Dim output As String = myProcess.StandardOutput.ReadToEnd()
-                    '    Dim errors As String = myProcess.StandardError.ReadToEnd()
-
-                    '    myProcess.WaitForExit()
-                    '    myProcess.Close()
-
-                    '    ' Handle output and errors here (optional)
-                    'Catch ex As Exception
-                    '    ' Handle error here
-                    'End Try
-                    '------------------------------------------------------------------------------------------
-
-
-
-                    '-----------------------
-                    'execute via our BAT_RUNR
-                    '------------------------------------------------------------------------------------------
-                    ' Determine the executable path
-                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
-                    'Try
-                    '    ' Path to the BAT_RUNR console application
-                    '    Dim batRunrPath As String = "c:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Debug\net7.0\BAT_RUNR.exe" ' Update this with the actual path
-
-                    '    ' Prepare the argument, which is the path to the batch file
-                    '    Dim argument As String = """" & Exec & """"
-
-                    '    ' Initialize a new Process to run the BAT_RUNR console application
-                    '    Dim myProcess As New Process
-                    '    myProcess.StartInfo.WorkingDirectory = myModel.TempWorkDir
-                    '    myProcess.StartInfo.FileName = batRunrPath
-                    '    myProcess.StartInfo.Arguments = argument
-                    '    myProcess.Start()
-                    '    myProcess.WaitForExit()
-                    '    myProcess.Close()
-                    'Catch ex As Exception
-                    '    ' Handle error here
-                    'End Try
-                    '------------------------------------------------------------------------------------------
-
-
-
-
-                    '------------------------------------------------------------------------------------------
-                    'RUNNING THE BATCH FILE VIA CMD.EXE
-                    '------------------------------------------------------------------------------------------
-                    ' Determine the executable path
-                    'Dim Exec As String = myModel.TempWorkDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
-                    'If Not System.IO.File.Exists(Exec) Then Exec = myModel.Exec
-
-                    '' Set the current directory to the temporary working directory
-                    'Directory.SetCurrentDirectory(myModel.TempWorkDir)
-
-                    '' Create a new instance of ProcessStartInfo
-                    'Dim info As New System.Diagnostics.ProcessStartInfo
-
-                    'info.UseShellExecute = True ' Must be false to redirect standard output/error
-                    'info.Verb = "open"
-
-                    '' Set FileName to cmd.exe
-                    'info.FileName = "cmd.exe"
-
-                    '' Use /c switch and provide the .bat file path and arguments
-                    'info.Arguments = "/X """ & Exec & """ " & myModel.Args
-                    'info.WorkingDirectory = myModel.TempWorkDir
-                    '' Set UseShellExecute to True
-                    'info.UseShellExecute = True
-
-                    '' Create a new Process instance
-                    'Dim process As New System.Diagnostics.Process
-                    'Process.StartInfo = info
-
-                    '' Start the process
-                    'Process.Start()
-
-                    '' Wait for the process to exit
-                    'Process.WaitForExit()
-
-                    '' Close the process
-                    'Process.Close()
-                    '------------------------------------------------------------------------------------------
-
-                    ''If logStr = "0" OrElse StochastenAnalyse.AllowCrashedResults Then
-                    ''v2.3.2: from dir was incorrect. Replaced myproject.projectdir by myModel.tempWorkdir
-                    'For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
-                    '    If myModel.ModelType = enmSimulationModel.SOBEK Then
-                    '        fromFile = runDir & "\WORK\" & myFile.FileName
-                    '    ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
-                    '        If myFile.HydroModule = enmHydroModule.RR Then
-                    '            fromFile = runDir & "\" & myProject.DIMRConfig.RR.SubDir & "\" & myFile.FileName
-                    '        ElseIf myFile.HydroModule = enmHydroModule.FLOW Then
-                    '            fromFile = runDir & "\" & myProject.DIMRConfig.Flow1D.SubDir & "\output\" & myFile.FileName
-                    '        ElseIf myFile.HydroModule = enmHydroModule.RTC Then
-                    '            fromFile = runDir & "\" & myProject.DIMRConfig.RTC.SubDir & "\" & myFile.FileName
-                    '        End If
-                    '    Else
-                    '        fromFile = runDir & "\" & myFile.FileName
-                    '    End If
-                    '    toFile = OutputFilesDir & "\" & myFile.FileName
-                    '    GeneralFunctions.EnsureDirectoryPathExists(OutputFilesDir)
-
-                    '    If File.Exists(fromFile) Then
-                    '        Call FileCopy(fromFile, toFile)
-                    '    Else
-                    '        Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
-                    '    End If
-                    'Next
-
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
 
                     'create the paths to the meteo files, both absolute and relative
@@ -773,51 +581,167 @@ Public Class clsStochastenRun
                     '----------------------------------------------------------------------------------------
                     Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
 
-                    ''update the progress bar
-                    'Me.Setup.GeneralFunctions.UpdateProgressBar("Running simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
+                ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.HBV Then
 
-                    'Dim myProcess As New Process
-                    'myProcess.StartInfo.WorkingDirectory = runDir & "\CMTWORK"
-                    'myProcess.StartInfo.FileName = myModel.Exec
-                    'myProcess.StartInfo.Arguments = myModel.Args
-                    'myProcess.Start()
+                    Stop
 
-                    'While Not myProcess.HasExited
-                    '    'pom pom pom
-                    '    Call Setup.GeneralFunctions.Wait(2000)
-                    'End While
+                    'create the paths to the meteo files, both absolute and relative
+                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
+                    Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
+                    If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
+                    For Each meteostation As clsMeteoStation In Me.Setup.StochastenAnalyse.MeteoStations.MeteoStations.Values
+                        If meteostation.StationType = enmMeteoStationType.precipitation Then
+                            'generate a HBV rainfall file and set both the absolute and relative paths
+                            BuiFile = myMeteoDir & meteostation.ID & ".txt"
+                            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
+                            Dim HBVBuiFile As New clsHBVPrecipitationFile(Me.Setup, meteostation.ID)
+                        End If
+                    Next
 
-                    ''if the run was succesful, copy the files
-                    'Dim logReader As New StreamReader(runDir & "\CMTWORK\PLUVIUS1.RTN")
-                    'Dim logStr As String = logReader.ReadLine.Trim
-                    'logReader.Close()
+                    'copy the original project to the temporary work dir and then read it from the new location
+                    Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+                    Dim myProject = New clsHBVProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec))
 
-                    ''warning if results are used although simulation crashed
-                    'If logStr <> "0" AndAlso StochastenAnalyse.AllowCrashedResults Then Me.Setup.Log.AddWarning("Simulatie " & ID & " was niet succesvol, maar resultaat werd toch gebruikt in de nabewerking, conform uw instellingen.")
+                    'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
+                    If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir) Then Throw New Exception("Error: could not clone HBV model for running from the command line.")
 
-                    'If logStr = "0" OrElse StochastenAnalyse.AllowCrashedResults Then
-                    '    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
-                    '        fromFile = runDir & "\WORK\" & myFile.FileName
-                    '        fromFile2 = runDir & "\WORK\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
-                    '        toFile = InputFilesDir & "\" & myFile.FileName
-                    '        toFile2 = InputFilesDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+                    'initialize a new project object from the new location
+                    myProject = New clsHBVProject(Me.Setup, runDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec))
 
-                    '        If File.Exists(fromFile) Then
-                    '            Call FileCopy(fromFile, toFile)
-                    '        Else
-                    '            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
-                    '        End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+                    ''copy the groundwater file
+                    'If GWClass IsNot Nothing Then
+                    '    If GWClass.RRFiles.Count > 0 Then
+                    '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    '    End If
+                    '    If GWClass.FlowFiles.Count > 0 Then
+                    '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    '    End If
+                    '    If GWClass.RTCFiles.Count > 0 Then
+                    '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    '    End If
 
-                    '        If File.Exists(fromFile2) Then
-                    '            Call FileCopy(fromFile2, toFile2)
-                    '        Else
-                    '            Me.Setup.Log.AddWarning("Uitvoerbestand bestaat niet: " & fromFile2 & ". resultaten voor ID's langer dan 20 karakters kunnen daarom niet correct worden uitgelezen.")
-                    '        End If
-
-                    '    Next
-                    'Else
-                    '    Throw New Exception("Simulation for stochastic combination " & ID & " was unsuccessful.")
                     'End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+
+                    ''--------------------------------------------------------------------------------------------------------------------
+                    ''create the boundary file
+                    'If Not WLClass Is Nothing Then
+                    '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
+                    '    If Not BuildWaterLevelBoundaries(myModel, runDir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
+                    'End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+
+                    ''--------------------------------------------------------------------------------------------------------------------
+                    ''copy the file for the extra1 stochast
+                    'If Extra1Class IsNot Nothing Then
+                    '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
+                    '    If Not Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+                    '    If Not Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                    '    If Not Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                    'End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+
+                    ''--------------------------------------------------------------------------------------------------------------------
+                    ''copy the file for the extra2 stochast
+                    'If Extra2Class IsNot Nothing Then
+                    '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
+                    '    If Not Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+                    '    If Not Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                    '    If Not Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                    'End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+
+                    ''--------------------------------------------------------------------------------------------------------------------
+                    ''copy the file for the extra3 stochast
+                    'If Extra3Class IsNot Nothing Then
+                    '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
+                    '    If Not Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+                    '    If Not Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                    '    If Not Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                    'End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+
+                    ''--------------------------------------------------------------------------------------------------------------------
+                    ''copy the file for the extra4 stochast
+                    'If Extra4Class IsNot Nothing Then
+                    '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
+                    '    If Not Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+                    '    If Not Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                    '    If Not Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                    'End If
+                    ''--------------------------------------------------------------------------------------------------------------------
+
+                    ''write the precipitation file and make a backup in the stochast directory
+                    'Dim myBui As New clsBuiFile(Me.Setup)
+                    'Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
+                    'Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+                    'For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
+                    '    If Station.StationType = enmMeteoStationType.precipitation Then
+                    '        Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
+                    '        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                    '    ElseIf Station.StationType = enmMeteoStationType.evaporation Then
+                    '        Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
+                    '        myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
+                    '    End If
+                    'Next
+                    'Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
+                    'myBui.Write(BuiFile, 3)
+
+                    ''copy the meteo file to the unique directory for our desired run
+                    'If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
+                    'File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+
+                    ''write the evaporation file for now we'll assume zero evaporation
+                    'Dim myEvp As New clsEvpFile(Me.Setup)
+                    'Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
+                    'Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
+                    'myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
+                    'myEvp.Write(EvpFile)
+                    'File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+
+                    'Setup.GeneralFunctions.UpdateProgressBar("Writing radiation file.", 0, 10, True)
+                    'Using myWriter As New StreamWriter(QscFile)
+                    '    myWriter.WriteLine("CONSTANTS   'TEMP' 'RAD'")
+                    '    myWriter.WriteLine("DATA        0 0")
+                    'End Using
+                    'File.Copy(QscFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
+
+                    'Setup.GeneralFunctions.UpdateProgressBar("Writing wind file.", 0, 10, True)
+                    'Using myWriter As New StreamWriter(WdcFile)
+                    '    myWriter.WriteLine("GLMT MTEO nm '(null)' ss 0 id '0' ci '-1' lc 9.9999e+009 wu 1")
+                    '    myWriter.WriteLine("wv tv 0 0 9.9999e+009 wd td 0 0 9.9999e+009 su 0 sh ts")
+                    '    myWriter.WriteLine("0 9.9999e+009 9.9999e+009 tu 0 tp tw 0 9.9999e+009 9.9999e+009 au 0 at ta 0")
+                    '    myWriter.WriteLine("9.9999e+009 9.9999e+009 mteo glmt")
+                    'End Using
+                    'File.Copy(WdcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
+
+                    'Using mywriter As New StreamWriter(QwcFile)
+                    '    mywriter.WriteLine("CONSTANTS   'VWIND' 'WINDDIR'")
+                    '    mywriter.WriteLine("DATA       0 0")
+                    'End Using
+                    'File.Copy(QwcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
+
+                    'Using mywriter As New StreamWriter(TmpFile)
+                    '    mywriter.WriteLine("")
+                    'End Using
+                    'File.Copy(TmpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
+
+                    'Using mywriter As New StreamWriter(RnfFile)
+                    '    mywriter.WriteLine("")
+                    'End Using
+                    'File.Copy(RnfFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
+
+                    '----------------------------------------------------------------------------------------
+                    'release the database for use by other instances
+                    '----------------------------------------------------------------------------------------
+                    Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
+
+
+
                 End If
             Next
             Return True
