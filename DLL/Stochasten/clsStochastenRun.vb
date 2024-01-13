@@ -583,24 +583,12 @@ Public Class clsStochastenRun
 
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.HBV Then
 
-                    Stop
-
-                    'create the paths to the meteo files, both absolute and relative
-                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
-                    Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
-                    If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-                    For Each meteostation As clsMeteoStation In Me.Setup.StochastenAnalyse.MeteoStations.MeteoStations.Values
-                        If meteostation.StationType = enmMeteoStationType.precipitation Then
-                            'generate a HBV rainfall file and set both the absolute and relative paths
-                            BuiFile = myMeteoDir & meteostation.ID & ".txt"
-                            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
-                            Dim HBVBuiFile As New clsHBVPrecipitationFile(Me.Setup, meteostation.ID)
-                        End If
-                    Next
-
                     'copy the original project to the temporary work dir and then read it from the new location
                     Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
                     Dim myProject = New clsHBVProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec))
+
+                    'we need to know the station numbers for the meteo stations by reading the original meteo files
+                    If Not myProject.AssignMeteoStationNumbers() Then Throw New Exception("Error assigning meteo station numbers.")
 
                     'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
                     If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir) Then Throw New Exception("Error: could not clone HBV model for running from the command line.")
@@ -675,25 +663,33 @@ Public Class clsStochastenRun
                     'End If
                     ''--------------------------------------------------------------------------------------------------------------------
 
-                    ''write the precipitation file and make a backup in the stochast directory
-                    'Dim myBui As New clsBuiFile(Me.Setup)
-                    'Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-                    'Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
-                    'For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
-                    '    If Station.StationType = enmMeteoStationType.precipitation Then
-                    '        Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                    '        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
-                    '    ElseIf Station.StationType = enmMeteoStationType.evaporation Then
-                    '        Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
-                    '        myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
-                    '    End If
-                    'Next
-                    'Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
-                    'myBui.Write(BuiFile, 3)
+                    'write the precipitation file and make a backup in the stochast directory
+                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
 
-                    ''copy the meteo file to the unique directory for our desired run
-                    'If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
-                    'File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+                    'Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
+                    'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
+                    Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+                    For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
+                        If Station.StationType = enmMeteoStationType.precipitation Then
+                            Dim myBui As New clsBuiFile(Me.Setup)
+                            Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
+                            'generate a HBV rainfall file and set both the absolute and relative paths
+                            BuiFile = runDir & "\" & Station.ID & ".txt"
+                            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
+                            myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                            myBui.WriteHBV(BuiFile, Station, 3)
+                        ElseIf Station.StationType = enmMeteoStationType.evaporation Then
+                            'Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
+                            'myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
+                        End If
+
+                        'copy the meteo file to the unique directory for our desired run
+                        If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
+                        File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+
+                    Next
+                    Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
+
 
                     ''write the evaporation file for now we'll assume zero evaporation
                     'Dim myEvp As New clsEvpFile(Me.Setup)

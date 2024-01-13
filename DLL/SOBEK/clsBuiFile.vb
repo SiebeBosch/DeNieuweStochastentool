@@ -440,6 +440,68 @@ Public Class clsBuiFile
 
     End Sub
 
+
+    Public Sub WriteHBV(ByVal path As String, myStation As clsMeteoStation, Optional ByVal nDigits As Integer = 2)
+
+        Try
+            'deze functie schrijft een neerslaggebeurtnis in HBV bestandsformaat aan de hand van shapes in een shapefile plus een reeds gevulde lijst met stations
+            Dim i As Integer, myStr As String, nTim As Long
+            Dim nStations As Integer = MeteoStations.MeteoStations.Count
+
+            'determine the number formatting for the .bui file (e.g. "0.0000")
+            Dim Formatting As String = "0"
+            If nDigits > 0 Then
+                Formatting &= "."
+                For i = 1 To nDigits
+                    Formatting &= "#"
+                Next
+            End If
+
+            Me.setup.GeneralFunctions.UpdateProgressBar("Writing HBV rainfall-file.", 0, 10)
+
+            'zoek de informatie over tijdstappen op
+            If GetnRecords() = 0 Then
+                Throw New Exception("Error: no records in bui-file. Cannot write.")
+            Else
+                'let op: einddatum moet gecorrigeerd worden door er één tijdstap bij op te tellen (omdat die tijdstap zelf ook nog meetelt)
+                Using buiWriter As New StreamWriter(path, False)
+                    'doorloop alle areas en schrijf de 'bui' weg
+                    buiWriter.WriteLine("'P'")
+                    buiWriter.WriteLine(number)
+                    buiWriter.WriteLine($"'{myStation.Name}_P'")
+                    buiWriter.WriteLine(24)
+
+                    Dim dagen As Integer = TotalSpan.Days
+                    Dim uren As Integer = TotalSpan.Hours
+                    Dim seconds As Integer = TotalSpan.Seconds
+
+                    'schrijf de instellingen voor datum/tijd en tijdstap naar de buifile. Zet het begin op de daadwerkelijke start van de resultaten
+                    'en vul de tijdstappen met resultaten van een tijdstap verder
+                    'buiWriter.WriteLine(" " & StartDate.Year & " " & StartDate.Month & " " & StartDate.Day & " " & StartDate.Hour & " " & StartDate.Minute & " 0 " & dagen & " " & uren & " " & seconds & " 0 ")
+
+                    'write the meteorological data
+                    nTim = GetnRecords()
+                    'Me.setup.GeneralFunctions.UpdateProgressBar("Writing .bui file.", 0, 10)
+
+                    Dim curDate As Date
+                    For i = 0 To nTim - 1
+
+                        curDate = StartDate.AddMinutes(TimeStep.TotalMinutes * i)
+                        myStr = Year(curDate) & " " & Month(curDate) & " " & Day(curDate) & " " & Hour(curDate) & " " & Format(Values(i, 0), Formatting)
+                        buiWriter.WriteLine(myStr)
+                    Next
+
+                    buiWriter.Close()
+                End Using
+
+            End If
+        Catch ex As Exception
+            Me.setup.Log.AddError(ex.Message)
+            Me.setup.Log.AddError("Error in sub WriteHBV of class clsBuiFile.")
+        End Try
+
+    End Sub
+
     Public Sub WriteAsCSV(ByVal path As String, Optional ByVal nDigits As Integer = 2)
 
         Try

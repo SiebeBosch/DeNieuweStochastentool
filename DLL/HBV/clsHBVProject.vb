@@ -14,7 +14,6 @@ Public Class clsHBVProject
     Public ProgramsDir As String
 
     Public BasinFile As clsHBVBasinFile
-    Public ptqwFile As clsHBVPrecipitationFile
 
     Public Sub New(ByRef mySetup As clsSetup)
         Setup = mySetup
@@ -87,6 +86,30 @@ Public Class clsHBVProject
             Return Nothing
         End Try
 
+    End Function
+
+    Public Function AssignMeteoStationNumbers() As Boolean
+        Try
+            'this function assigns meteo station numbers to the meteo stations by reading the original meteo files from the project
+            For Each myStation As clsMeteoStation In Me.Setup.StochastenAnalyse.MeteoStations.MeteoStations.Values
+                If myStation.StationType = GeneralFunctions.enmMeteoStationType.precipitation Then
+                    'first check if a meteo file exists for this station
+                    Dim MeteoFile As String = Me.ProjectDir & "\" & myStation.Name & ".txt"
+                    If Not File.Exists(MeteoFile) Then Throw New Exception("No precipitation file named " & myStation.Name & ".txt found in project directory. Please make sure the meteo stations specified match the files in the project.")
+
+                    'read the meteo file. The station number is in the second row
+                    Using myReader As New StreamReader(MeteoFile)
+                        myReader.ReadLine()
+                        myStation.Number = Convert.ToInt16(myReader.ReadLine())
+                    End Using
+                End If
+            Next
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function AssignMeteoStationNumbers of class clsHBVProject: " & ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function CloneAndAdjustCaseForCommandLineRun(SimulationDir As String, Optional ByVal StartDate As Date = Nothing, Optional ByVal EndDate As Date = Nothing) As Boolean

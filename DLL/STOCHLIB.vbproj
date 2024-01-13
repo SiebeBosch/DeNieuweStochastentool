@@ -430,8 +430,6 @@
     <Compile Include="HBV\clsHBVCompTxtFile.vb" />
     <Compile Include="HBV\clsHBVIndataParFile.vb" />
     <Compile Include="HBV\clsHBVInstateDatFile.vb" />
-    <Compile Include="HBV\clsHBVPrecipitationFile.vb" />
-    <Compile Include="HBV\clsHBVPrecipitationFileRecord.vb" />
     <Compile Include="HBV\clsHBVResDatFile.vb" />
     <Compile Include="HBV\clsHBVResultsSeriesRecord.vb" />
     <Compile Include="HBV\clsHBVSubBasin.vb" />
