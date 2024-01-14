@@ -25,27 +25,27 @@ Public Class clsHBVBasinFile
                 line = sr.ReadLine().Trim()
 
                 If line.StartsWith("'fileformat'") Then
-                    FileFormat = Integer.Parse(GetNumericalValueFromLine(line))
+                    FileFormat = Integer.Parse(GetValueFromLine(line))
                 ElseIf line.StartsWith("'basin'") Then
-                    currentBasin = New clsHBVSubBasin(Me.Setup, GetStringValueFromLine(line))
+                    currentBasin = New clsHBVSubBasin(Me.Setup, CStr(GetValueFromLine(line)))
                     Basins.Add(currentBasin.BasinName, currentBasin)
                 ElseIf currentBasin IsNot Nothing Then
                     If line.StartsWith("'basindir'") Then
-                        currentBasin.BasinDir = GetStringValueFromLine(line)
+                        currentBasin.BasinDir = CStr(GetValueFromLine(line))
                     ElseIf line.StartsWith("'bstatus'") Then
-                        currentBasin.bstatus = GetStringValueFromLine(line)
+                        currentBasin.bstatus = CStr(GetValueFromLine(line))
                     ElseIf line.StartsWith("'pstatus'") Then
-                        currentBasin.pstatus = GetStringValueFromLine(line)
+                        currentBasin.pstatus = CStr(GetValueFromLine(line))
                     ElseIf line.StartsWith("'btype'") Then
-                        currentBasin.btype = GetStringValueFromLine(line)
+                        currentBasin.btype = CStr(GetValueFromLine(line))
                     ElseIf line.StartsWith("'cregion'") Then
-                        currentBasin.cregion = GetNumericalValueFromLine(line)
+                        currentBasin.cregion = Integer.Parse(GetValueFromLine(line))
                     ElseIf line.StartsWith("'outletx'") Then
-                        currentBasin.outletx = GetNumericalValueFromLine(line)
+                        currentBasin.outletx = Double.Parse(GetValueFromLine(line))
                     ElseIf line.StartsWith("'outlety'") Then
-                        currentBasin.outletx = GetNumericalValueFromLine(line)
+                        currentBasin.outletx = Double.Parse(GetValueFromLine(line))
                     ElseIf line.StartsWith("'bcode'") Then
-                        currentBasin.bcode = GetNumericalValueFromLine(line)
+                        currentBasin.bcode = Integer.Parse(GetValueFromLine(line))
                     End If
 
                 End If
@@ -71,26 +71,38 @@ Public Class clsHBVBasinFile
             Next
         End Using
     End Sub
-    Private Function GetNumericalValueFromLine(line As String) As Double
-        Try
-            Dim parts As String() = line.Split("'")
-            If parts.Length > 1 Then
-                ' Assuming the number is always after the second apostrophe and followed by a space.
-                Dim numberPart As String = parts(1).Trim()
-                ' Extract the number from the string.
-                Dim number As Integer = Double.Parse(numberPart)
-                Return number
-            Else
-                ' Return a default value or handle the error as appropriate
-                Return 0
+    Public Function GetValueFromLine(Line As String) As Object
+        ' Replace tabs with spaces
+        Line = Line.Replace(vbTab, " ")
+
+        ' Remove all double spaces
+        While Line.Contains("  ")
+            Line = Line.Replace("  ", " ")
+        End While
+
+        ' Trim the line to remove leading and trailing spaces
+        Line = Line.Trim()
+
+        ' Split the line into parts using space as separator
+        Dim parts As String() = Line.Split(" "c)
+
+        ' Check if there are enough parts to get a value
+        If parts.Length >= 2 Then
+            Dim value As String = parts(1)
+
+            ' Remove quotes if present
+            If value.StartsWith("'") AndAlso value.EndsWith("'") Then
+                value = value.Substring(1, value.Length - 2)
             End If
-        Catch ex As Exception
-            ' Handle parsing error or return a default value
-            Return 0
-        End Try
+
+            ' Return the value, you might want to further process this to 
+            ' convert to the appropriate data type (integer, string, etc.)
+            Return value
+        Else
+            ' Return nothing or throw an exception if the line format is not correct
+            Return Nothing
+        End If
     End Function
 
-    Private Function GetStringValueFromLine(line As String) As String
-        Return line.Split("'")(3).Trim()
-    End Function
+
 End Class

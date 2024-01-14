@@ -19,18 +19,30 @@ Public Class clsHBVProject
         Setup = mySetup
     End Sub
 
-    Public Sub New(ByRef mySetup As clsSetup, myProjectDir As String)
+    Public Sub New(ByRef mySetup As clsSetup, myProjectDir As String, ReadConfig As Boolean)
         Setup = mySetup
         ProjectDir = myProjectDir
         BasinFile = New clsHBVBasinFile(Me.Setup, ProjectDir & "\basin.par")
-        BasinFile.Read()
+        If ReadConfig Then ReadConfiguration()
     End Sub
 
-    Public Sub New(ByRef mySetup As clsSetup, ByVal myProjectDir As String, ByVal ProgramsDir As String)
+    Public Sub New(ByRef mySetup As clsSetup, ByVal myProjectDir As String, ByVal ProgramsDir As String, ReadConfig As Boolean)
         Me.Setup = mySetup
         Me.ProjectDir = myProjectDir
         Me.ProgramsDir = ProgramsDir
+        BasinFile = New clsHBVBasinFile(Me.Setup, Path.Combine(ProjectDir, "basin.par"))
+        If ReadConfig Then ReadConfiguration()
     End Sub
+
+    Public Function ReadConfiguration() As Boolean
+        Try
+            BasinFile.Read()
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error reading HBV Project: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     Public Function SetProject(myProjectDir As String) As Boolean
         Try
@@ -43,18 +55,6 @@ Public Class clsHBVProject
         End Try
     End Function
 
-    Public Function readConfiguration() As Boolean
-        Try
-            'If Not DIMRConfig.Read() Then Throw New Exception("Error reading DIMR Config File.")
-            'FlowFM.ReadMDU()
-            'FlowFM.ReadNetwork()
-            'FlowFM.ReadObservationpoints1D()
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError("Error reading DIMR Configuration: " & ex.Message)
-            Return False
-        End Try
-    End Function
 
     Public Function ReadAll() As Boolean
         'reads the entire project
@@ -88,29 +88,6 @@ Public Class clsHBVProject
 
     End Function
 
-    Public Function AssignMeteoStationNumbers() As Boolean
-        Try
-            'this function assigns meteo station numbers to the meteo stations by reading the original meteo files from the project
-            For Each myStation As clsMeteoStation In Me.Setup.StochastenAnalyse.MeteoStations.MeteoStations.Values
-                If myStation.StationType = GeneralFunctions.enmMeteoStationType.precipitation Then
-                    'first check if a meteo file exists for this station
-                    Dim MeteoFile As String = Me.ProjectDir & "\" & myStation.Name & ".txt"
-                    If Not File.Exists(MeteoFile) Then Throw New Exception("No precipitation file named " & myStation.Name & ".txt found in project directory. Please make sure the meteo stations specified match the files in the project.")
-
-                    'read the meteo file. The station number is in the second row
-                    Using myReader As New StreamReader(MeteoFile)
-                        myReader.ReadLine()
-                        myStation.Number = Convert.ToInt16(myReader.ReadLine())
-                    End Using
-                End If
-            Next
-
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function AssignMeteoStationNumbers of class clsHBVProject: " & ex.Message)
-            Return False
-        End Try
-    End Function
 
     Public Function CloneAndAdjustCaseForCommandLineRun(SimulationDir As String, Optional ByVal StartDate As Date = Nothing, Optional ByVal EndDate As Date = Nothing) As Boolean
         'in this function we clone our entire HBV project/case so it can be run from the command line
@@ -121,6 +98,42 @@ Public Class clsHBVProject
 
             'let's copy the entire project, so all files and subdirectories and their contents to our new directory
             My.Computer.FileSystem.CopyDirectory(ProjectDir, SimulationDir, True)
+
+            'now, for each subbasin we must write an adjusted comp.key file, containing the start and end date of the simulation
+            For Each basin As clsHBVSubBasin In BasinFile.Basins.Values
+                Dim CompKeyFile As String = Path.Combine(SimulationDir, basin.BasinDir, "comp.key")
+
+                'we'll now writ the comp.key file for this subbasin
+                'example file contents:
+                'byear'             2011
+                'bmonth'               1
+                'bday'                 1
+                'bhour'                0
+                'eyear'             2012
+                'emonth'               2
+                'eday'                 1
+                'ehour'                0
+                'timestep'            24
+                'outfield'             1
+                'qcout     ' 'totmean   '           1           1  'mean      '
+                'prec      ' 'totmean   '           2           1  'sum       '
+
+                'not sure if it's necessary but we make sure the length of each line is 26 characters
+                Using compWriter As New StreamWriter(CompKeyFile, False)
+                    compWriter.WriteLine("'byear'             " & StartDate.Year)
+                    compWriter.WriteLine("'bmonth'              " & If(StartDate.Month.ToString.Length = 1, " " & StartDate.Month, StartDate.Month))
+                    compWriter.WriteLine("'bday'                " & If(StartDate.Day.ToString.Length = 1, " " & StartDate.Day, StartDate.Day))
+                    compWriter.WriteLine("'bhour'               " & If(StartDate.Hour.ToString.Length = 1, " " & StartDate.Hour, StartDate.Hour))
+                    compWriter.WriteLine("'eyear'             " & EndDate.Year)
+                    compWriter.WriteLine("'emonth'              " & If(EndDate.Month.ToString.Length = 1, " " & EndDate.Month, EndDate.Month))
+                    compWriter.WriteLine("'eday'                " & If(EndDate.Day.ToString.Length = 1, " " & EndDate.Day, EndDate.Day))
+                    compWriter.WriteLine("'ehour'               " & If(EndDate.Hour.ToString.Length = 1, " " & EndDate.Hour, EndDate.Hour))
+                    compWriter.WriteLine("'timestep'            24")
+                    compWriter.WriteLine("'outfield'             1")
+                    compWriter.WriteLine("'qcout     ' 'totmean   '           1           1  'mean      '")
+                    compWriter.WriteLine("'prec      ' 'totmean   '           2           1  'sum       '")
+                End Using
+            Next
 
             Return True
         Catch ex As Exception

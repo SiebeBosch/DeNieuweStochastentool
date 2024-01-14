@@ -467,7 +467,7 @@ Public Class clsBuiFile
                 Using buiWriter As New StreamWriter(path, False)
                     'doorloop alle areas en schrijf de 'bui' weg
                     buiWriter.WriteLine("'P'")
-                    buiWriter.WriteLine(number)
+                    buiWriter.WriteLine(myStation.Number)
                     buiWriter.WriteLine($"'{myStation.Name}_P'")
                     buiWriter.WriteLine(24)
 
