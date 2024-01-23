@@ -105,6 +105,10 @@ Public Class frmStochasten
                 'do nothing since HBV does not yet have a case manager
                 Call Setup.SetHBVProject(myModel.ModelDir)
                 Call Setup.HBVData.BasinFile.Read()
+            ElseIf myModel.ModelType = enmSimulationModel.SUMAQUA Then
+                'do nothing since SUMAQUA does not yet have a case manager
+                'Call Setup.SetSUMAQUAProject(myModel.ModelDir)
+                'Call Setup.SUMAQUAData.SUMAQUAConfig.Read()
             End If
         Next
 
@@ -705,73 +709,6 @@ Public Class frmStochasten
             Call UpgradeDatabase()
             '------------------------------------------------------------------------------------
 
-            '------------------------------------------------------------------------------------
-            'update the database structure
-            '------------------------------------------------------------------------------------
-
-
-            'v2.2.2: removed the entire specification of models in the XML and instead introduced adding models in the GUI
-            ''------------------------------------------------------------------------------------
-            ''Get the list of models to run 
-            ''------------------------------------------------------------------------------------
-            'm_nodelist = m_xmld.SelectNodes("/stochastentool/modellen")
-            'query = "DELETE FROM SIMULATIONMODELS;"
-            'Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-
-            'For Each m_node In m_nodelist
-            '    'Loop through the nodes
-            '    For Each n_node In m_node.ChildNodes
-            '        If n_node.Name.Trim.ToLower = "model" Then
-            '            ReDim Pars(8)
-            '            If Not IsNumeric(n_node.Attributes.GetNamedItem("id").Value) Then Throw New Exception("Model ID in XML-file moet een geheel getal zijn.")
-
-            '            'add the model found to the database
-            '            Pars(0) = n_node.Attributes.GetNamedItem("id").Value
-            '            Pars(1) = n_node.Attributes.GetNamedItem("type").Value
-            '            Pars(2) = n_node.Attributes.GetNamedItem("executable").Value
-            '            Pars(3) = n_node.Attributes.GetNamedItem("arguments").Value
-            '            Pars(4) = n_node.Attributes.GetNamedItem("modeldir").Value
-            '            Pars(5) = n_node.Attributes.GetNamedItem("casename").Value
-            '            Pars(6) = Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.Attributes.GetNamedItem("tempworkdir").Value, RootDir)
-            '            Dim tmpNode As XmlNode = n_node.Attributes.GetNamedItem("resultsfiles_rr")
-            '            If tmpNode IsNot Nothing Then
-            '                Pars(7) = n_node.Attributes.GetNamedItem("resultsfiles_rr").Value
-            '            Else
-            '                Pars(7) = ""
-            '            End If
-            '            tmpNode = n_node.Attributes.GetNamedItem("resultsfiles_flow")
-            '            If tmpNode IsNot Nothing Then
-            '                Pars(8) = n_node.Attributes.GetNamedItem("resultsfiles_flow").Value
-            '            Else
-            '                Pars(8) = ""
-            '            End If
-            '            query = "INSERT INTO SIMULATIONMODELS (MODELID, MODELTYPE,EXECUTABLE,ARGUMENTS,MODELDIR,CASENAME,TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW) VALUES ('" & Pars(0) & "','" & Pars(1) & "','" & Pars(2) & "','" & Pars(3) & "','" & Pars(4) & "','" & Pars(5) & "','" & Pars(6) & "','" & Pars(7) & "','" & Pars(8) & "');"
-            '            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-
-            '                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-            '                Using cmd As New SQLite.SQLiteCommand
-            '                    cmd.Connection = Me.Setup.SqliteCon
-            '                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
-
-            '                        'now repopulate the results files and locations
-            '                        For Each o_node In n_node.ChildNodes
-            '                            If o_node.Name.Trim.ToLower = "uitvoer" Then
-            '                                ReDim Output(6)
-            '                                Output(0) = Pars(0) 'equal to the model id we're currently in
-            '                                Output(1) = o_node.Attributes.GetNamedItem("bestandsnaam").Value
-            '                                Output(2) = o_node.Attributes.GetNamedItem("parameter").Value
-            '                            End If
-            '                        Next
-            '                        transaction.Commit() 'this is where the bulk insert is finally executed.
-            '                    End Using
-            '                End Using
-            '            End If
-            '    Next
-            'Next
-
-            'query = "SELECT MODELID, MODELTYPE, EXECUTABLE, ARGUMENTS, MODELDIR, CASENAME, TEMPWORKDIR, RESULTSFILES_RR, RESULTSFILES_FLOW FROM SIMULATIONMODELS;"
-            'If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
-            'grModels.DataSource = dtModels
 
             PopulateSimulationModelsGrid()
 
@@ -913,6 +850,15 @@ Public Class frmStochasten
                         myVolumesLabel.Text = "Checksum: "
                         myGroupBox.Controls.Add(myVolumesLabel)
 
+                        ''first select the meteostations from our database
+                        'Dim mt As DataTable = getMeteoStations()
+                        'Dim StationsString As String = ""
+                        'For i = 0 To mt.Rows.Count - 1
+                        '    StationsString &= ", " & mt.Rows(i)(0).ToString
+                        'Next
+
+                        'query = $"Select VOLUME, USE, KANS, KANSCORR{StationsString} from VOLUMES where DUUR=" & cmbDuration.Text & " And SEIZOEN='" & mySeason & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "' ORDER BY VOLUME;"
+
                         'populate the newly created grid me.Setup.containing volumes and update them based on the selection of classes
                         query = "SELECT VOLUME, USE, KANS, KANSCORR from VOLUMES where DUUR=" & cmbDuration.Text & " AND SEIZOEN='" & mySeason & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "' ORDER BY VOLUME;"
 
@@ -951,6 +897,14 @@ Public Class frmStochasten
 
         End If
 
+    End Function
+
+    Public Function getMeteoStations() As DataTable
+        Dim StationsString As String = "" ' = Me.Setup.StochastenAnalyse.MeteoStations.MeteoStations.Values(0).Name
+        Dim query As String = "SELECT DISTINCT NAAM FROM METEOSTATIONS;"
+        Dim mt As New DataTable
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, mt)
+        Return mt
     End Function
 
     Public Sub UpdateVolumes(ByRef grVolumes As DataGridView, ByVal Season As String, ByRef lblChecksum As Windows.Forms.Label)
@@ -3156,6 +3110,13 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "VOLUMES", "USE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "VOLUMES", "USE", enmSQLiteDataType.SQLITEINT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "VOLUMES", "KANS") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "VOLUMES", "KANS", enmSQLiteDataType.SQLITEREAL)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "VOLUMES", "KANSCORR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "VOLUMES", "KANSCORR", enmSQLiteDataType.SQLITEREAL)
+
+        ''each meteo station must get its own column in the volumes table
+        'Dim mt As DataTable = getMeteoStations()
+        'Dim i As Integer
+        'For i = 0 To mt.Rows.Count - 1
+        '    If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "VOLUMES", mt.Rows(i)(0)) Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "VOLUMES", mt.Rows(i)(0), enmSQLiteDataType.SQLITETEXT)
+        'Next
 
         'delete old columns
         If Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "VOLUMES", "HUIDIG") Then UpdateVolumeValues(Me.Setup.SqliteCon, "VOLUMES", "HUIDIG")

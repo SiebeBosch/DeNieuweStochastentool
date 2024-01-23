@@ -1897,7 +1897,7 @@ Public Class clsStochastenAnalyse
 
     End Sub
 
-    Public Function getBuiVerloop(ByVal Patroon As STOCHLIB.GeneralFunctions.enmNeerslagPatroon) As Double()
+    Public Function getBuiVerloop(ByVal Patroon As String) As Double()
 
         '------------------------------------------------------------------------
         'Author: Siebe Bosch

@@ -287,17 +287,14 @@ Public Class clsStochastenRun
                 If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
 
                     'create the paths to the meteo files, both absolute and relative. Meteofiles reside in the RR module
-                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
+                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", runIdx + 1, nRuns, True)
                     Dim myMeteoDir As String = runDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.GetSubDir & "\"
 
                     'copy the original project to the temporary work dir and then read it from the new location
-                    Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+                    Setup.GeneralFunctions.UpdateProgressBar($"Cloning model schematisation for run {runIdx + 1} of {nRuns}...", runIdx + 1, nRuns, True)
                     Dim myProject = New clsDIMR(Me.Setup, myModel.ModelDir)
 
                     myProject.CloneAndAdjustCaseForCommandLineRun(runDir, SeasonClass.EventStart, SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd))
-
-                    'myProject.CopyCase(myModel.TempWorkDir)
-
 
                     'create the meteo files and copy them into the case directory
                     If Me.Setup.DIMRData.RR IsNot Nothing Then

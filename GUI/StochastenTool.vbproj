@@ -247,6 +247,12 @@
     <Compile Include="frmAddModel.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmAddVolume.Designer.vb">
+      <DependentUpon>frmAddVolume.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmAddVolume.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmCopySettingsFromClimateScenario.Designer.vb">
       <DependentUpon>frmCopySettingsFromClimateScenario.vb</DependentUpon>
     </Compile>
@@ -323,6 +329,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmAddModel.resx">
       <DependentUpon>frmAddModel.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmAddVolume.resx">
+      <DependentUpon>frmAddVolume.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCopySettingsFromClimateScenario.resx">
       <DependentUpon>frmCopySettingsFromClimateScenario.vb</DependentUpon>

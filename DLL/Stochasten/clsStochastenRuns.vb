@@ -610,7 +610,6 @@ Public Class clsStochastenRuns
                     i = 0
                     For Each myRow As DataGridViewRow In grRuns.SelectedRows
                         If Not myRow.Cells("DONE").Value = True Then
-                            i += 1
                             ID = myRow.Cells("ID").Value
                             myRun = Runs.Item(ID.Trim.ToUpper)
 
@@ -631,6 +630,7 @@ Public Class clsStochastenRuns
                             Next
                             myRow.Cells("DONE").Value = Done
                         End If
+                        i += 1
                     Next
 
                     'after all runs are complete, refresh the entire grid

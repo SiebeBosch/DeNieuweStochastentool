@@ -424,7 +424,7 @@ Public Class clsNetworkFile
 
 
             For i = 0 To UBound(links, 1)
-                Debug.Print("i is " & i)
+                'Debug.Print("i is " & i)
 
                 myLink = New cls1D2DLink(Me.Setup)
                 myLink.MeshNode1DIdx = links(i, 0)

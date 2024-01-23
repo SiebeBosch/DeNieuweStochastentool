@@ -7,7 +7,7 @@ Imports System.IO
 ''' </summary>
 ''' <remarks></remarks>
 Public Class clsMeteoStations
-    Friend MeteoStations As New Dictionary(Of String, clsMeteoStation)
+    Public MeteoStations As New Dictionary(Of String, clsMeteoStation)
 
     Private setup As clsSetup
 

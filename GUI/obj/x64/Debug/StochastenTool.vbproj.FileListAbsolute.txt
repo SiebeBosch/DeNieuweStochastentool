@@ -195,3 +195,4 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.vbproj.CopyCom
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.pdb
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmAddVolume.resources
