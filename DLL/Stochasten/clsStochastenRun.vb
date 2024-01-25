@@ -285,456 +285,20 @@ Public Class clsStochastenRun
                 'Me.Setup.GeneralFunctions.DatabaseWriteLockFile(Me.Setup.StochastenAnalyse.StochastsConfigFile, ID)
 
                 If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
-
-                    'create the paths to the meteo files, both absolute and relative. Meteofiles reside in the RR module
-                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", runIdx + 1, nRuns, True)
-                    Dim myMeteoDir As String = runDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.GetSubDir & "\"
-
-                    'copy the original project to the temporary work dir and then read it from the new location
-                    Setup.GeneralFunctions.UpdateProgressBar($"Cloning model schematisation for run {runIdx + 1} of {nRuns}...", runIdx + 1, nRuns, True)
-                    Dim myProject = New clsDIMR(Me.Setup, myModel.ModelDir)
-
-                    myProject.CloneAndAdjustCaseForCommandLineRun(runDir, SeasonClass.EventStart, SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd))
-
-                    'create the meteo files and copy them into the case directory
-                    If Me.Setup.DIMRData.RR IsNot Nothing Then
-                        Dim BuiName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetBuiFileName
-                        Dim EvpName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetEvpFileName
-                        BuiFile = myMeteoDir & BuiName
-                        EvpFile = myMeteoDir & EvpName
-
-                        Dim myBui As New clsBuiFile(Me.Setup)
-                        Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-                        Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
-                        For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
-                            If Station.StationType = enmMeteoStationType.precipitation Then
-                                Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                                myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
-                            ElseIf Station.StationType = enmMeteoStationType.evaporation Then
-                                Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
-                                myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
-                            End If
-                        Next
-                        Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
-                        myBui.Write(BuiFile, 3)
-
-                        'copy the precipitation file to the unique directory for our desired run
-                        If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
-                        File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
-
-                        'write the evaporation file for now we'll assume zero evaporation
-                        Dim myEvp As New clsEvpFile(Me.Setup)
-                        Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
-                        Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
-                        myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
-                        myEvp.Write(EvpFile)
-                        File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
-
-                        '--------------------------------------------------------------------------------------------------------------------
-                        'copy the groundwater file(s)
-                        If GWClass IsNot Nothing Then
-                            If GWClass.RRFiles.Count > 0 Then
-                                Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                                If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                            End If
-                            If GWClass.RRFiles.Count > 0 Then
-                                Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                                If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                            End If
-                            If GWClass.RRFiles.Count > 0 Then
-                                Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                                If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                            End If
-                        End If
-                        '--------------------------------------------------------------------------------------------------------------------
-
-                    End If
-
-
-                    If Me.Setup.DIMRData.FlowFM IsNot Nothing Then
-
-                        '--------------------------------------------------------------------------------------------------------------------
-                        'create the boundary file
-                        If WLClass IsNot Nothing Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
-                            If Not BuildWaterLevelBoundaries(myModel, runDir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
-                        End If
-                        '--------------------------------------------------------------------------------------------------------------------
-
-                        '--------------------------------------------------------------------------------------------------------------------
-                        'copy the RR files for the extra1 stochast
-                        If Extra1Class IsNot Nothing Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying Files for stochast extra1.", 0, 10, True)
-                            If Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
-                            If Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
-                            If Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra1 stochast.")
-                        End If
-                        '--------------------------------------------------------------------------------------------------------------------
-
-                        '--------------------------------------------------------------------------------------------------------------------
-                        'copy the file for the extra2 stochast
-                        If Extra2Class IsNot Nothing Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
-                            If Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
-                            If Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
-                            If Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra2 stochast.")
-                        End If
-                        '--------------------------------------------------------------------------------------------------------------------
-
-                        '--------------------------------------------------------------------------------------------------------------------
-                        'copy the file for the extra3 stochast
-                        If Extra3Class IsNot Nothing Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
-                            If Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
-                            If Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
-                            If Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra3 stochast.")
-                        End If
-                        '--------------------------------------------------------------------------------------------------------------------
-
-                        '--------------------------------------------------------------------------------------------------------------------
-                        'copy the file for the extra4 stochast
-                        If Extra4Class IsNot Nothing Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
-                            If Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
-                            If Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
-                            If Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra4 stochast.")
-                        End If
-                        '--------------------------------------------------------------------------------------------------------------------
-
-                    End If
-
-
-
-                    '----------------------------------------------------------------------------------------
-                    'release the database for use by other instances
-                    '----------------------------------------------------------------------------------------
-                    'Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
-
-                    'update the progress bar
-                    Me.Setup.GeneralFunctions.UpdateProgressBar("Building simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
-
+                    BuildDIMRModelRun(myModel, runDir, runIdx, nRuns)
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
-
-                    'create the paths to the meteo files, both absolute and relative
-                    Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
-                    Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
-                    If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-                    BuiFile = myMeteoDir & "meteo.bui"
-                    EvpFile = myMeteoDir & "meteo.evp"
-                    QscFile = myMeteoDir & "meteo.qsc"
-                    WdcFile = myMeteoDir & "meteo.wdc"
-                    QwcFile = myMeteoDir & "meteo.qwc"
-                    TmpFile = myMeteoDir & "meteo.tmp"
-                    RnfFile = myMeteoDir & "meteo.rnf"
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", BuiFile, BuiFileRelative)
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", EvpFile, EvpFileRelative)
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", QscFile, QscFileRelative)
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", WdcFile, WdcFileRelative)
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", QwcFile, QwcFileRelative)
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", TmpFile, TmpFileRelative)
-                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir & "\CMTWORK\", RnfFile, RnfFileRelative)
-
-                    'copy the original project to the temporary work dir and then read it from the new location
-                    Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
-                    Dim myProject = New clsSobekProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
-
-                    'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
-                    If Not myProject.CloneCaseForCommandLineRun(Directory.GetParent(myModel.ModelDir).FullName, myModel.CaseName.Trim.ToUpper, runDir, BuiFileRelative, EvpFileRelative, QscFileRelative, WdcFileRelative, QwcFileRelative, TmpFileRelative, RnfFileRelative) Then Throw New Exception("Error: could not clone SOBEK case for running from the command line.")
-                    myProject = New clsSobekProject(Me.Setup, runDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
-
-                    '--------------------------------------------------------------------------------------------------------------------
-                    'copy the groundwater file
-                    If GWClass IsNot Nothing Then
-                        If GWClass.RRFiles.Count > 0 Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                            If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                        End If
-                        If GWClass.FlowFiles.Count > 0 Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                            If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                        End If
-                        If GWClass.RTCFiles.Count > 0 Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                            If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                        End If
-
-                    End If
-                    '--------------------------------------------------------------------------------------------------------------------
-
-                    '--------------------------------------------------------------------------------------------------------------------
-                    'create the boundary file
-                    If Not WLClass Is Nothing Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
-                        If Not BuildWaterLevelBoundaries(myModel, runDir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
-                    End If
-                    '--------------------------------------------------------------------------------------------------------------------
-
-                    '--------------------------------------------------------------------------------------------------------------------
-                    'copy the file for the extra1 stochast
-                    If Extra1Class IsNot Nothing Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
-                        If Not Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
-                        If Not Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
-                        If Not Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
-                    End If
-                    '--------------------------------------------------------------------------------------------------------------------
-
-                    '--------------------------------------------------------------------------------------------------------------------
-                    'copy the file for the extra2 stochast
-                    If Extra2Class IsNot Nothing Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
-                        If Not Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
-                        If Not Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
-                        If Not Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
-                    End If
-                    '--------------------------------------------------------------------------------------------------------------------
-
-                    '--------------------------------------------------------------------------------------------------------------------
-                    'copy the file for the extra3 stochast
-                    If Extra3Class IsNot Nothing Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
-                        If Not Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
-                        If Not Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
-                        If Not Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
-                    End If
-                    '--------------------------------------------------------------------------------------------------------------------
-
-                    '--------------------------------------------------------------------------------------------------------------------
-                    'copy the file for the extra4 stochast
-                    If Extra4Class IsNot Nothing Then
-                        Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
-                        If Not Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
-                        If Not Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
-                        If Not Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
-                    End If
-                    '--------------------------------------------------------------------------------------------------------------------
-
-                    'write the precipitation file and make a backup in the stochast directory
-                    Dim myBui As New clsBuiFile(Me.Setup)
-                    Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-                    Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
-                    For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
-                        If Station.StationType = enmMeteoStationType.precipitation Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                            myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
-                        ElseIf Station.StationType = enmMeteoStationType.evaporation Then
-                            Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
-                            myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
-                        End If
-                    Next
-                    Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
-                    myBui.Write(BuiFile, 3)
-
-                    'copy the meteo file to the unique directory for our desired run
-                    If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
-                    File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
-
-                    'write the evaporation file for now we'll assume zero evaporation
-                    Dim myEvp As New clsEvpFile(Me.Setup)
-                    Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
-                    Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
-                    myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
-                    myEvp.Write(EvpFile)
-                    File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
-
-                    Setup.GeneralFunctions.UpdateProgressBar("Writing radiation file.", 0, 10, True)
-                    Using myWriter As New StreamWriter(QscFile)
-                        myWriter.WriteLine("CONSTANTS   'TEMP' 'RAD'")
-                        myWriter.WriteLine("DATA        0 0")
-                    End Using
-                    File.Copy(QscFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
-
-                    Setup.GeneralFunctions.UpdateProgressBar("Writing wind file.", 0, 10, True)
-                    Using myWriter As New StreamWriter(WdcFile)
-                        myWriter.WriteLine("GLMT MTEO nm '(null)' ss 0 id '0' ci '-1' lc 9.9999e+009 wu 1")
-                        myWriter.WriteLine("wv tv 0 0 9.9999e+009 wd td 0 0 9.9999e+009 su 0 sh ts")
-                        myWriter.WriteLine("0 9.9999e+009 9.9999e+009 tu 0 tp tw 0 9.9999e+009 9.9999e+009 au 0 at ta 0")
-                        myWriter.WriteLine("9.9999e+009 9.9999e+009 mteo glmt")
-                    End Using
-                    File.Copy(WdcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
-
-                    Using mywriter As New StreamWriter(QwcFile)
-                        mywriter.WriteLine("CONSTANTS   'VWIND' 'WINDDIR'")
-                        mywriter.WriteLine("DATA       0 0")
-                    End Using
-                    File.Copy(QwcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
-
-                    Using mywriter As New StreamWriter(TmpFile)
-                        mywriter.WriteLine("")
-                    End Using
-                    File.Copy(TmpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
-
-                    Using mywriter As New StreamWriter(RnfFile)
-                        mywriter.WriteLine("")
-                    End Using
-                    File.Copy(RnfFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
-
-                    '----------------------------------------------------------------------------------------
-                    'release the database for use by other instances
-                    '----------------------------------------------------------------------------------------
-                    Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
-
+                    BuildSobekModelRun(myModel, runDir)
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.HBV Then
+                    BuildHBVModelRun(myModel, runDir)
+                ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SUMAQUA Then
+                    BuildSumaquaModelRun(myModel, runDir)
+                End If
 
-                    'copy the original project to the temporary work dir and then read it from the new location
-                    Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
-                    Dim myProject = New clsHBVProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
+                '----------------------------------------------------------------------------------------
+                'release the database for use by other instances
+                '----------------------------------------------------------------------------------------
+                Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
 
-                    'we need to know the station numbers for the meteo stations by reading the original meteo files
-                    If Not Me.Setup.StochastenAnalyse.AssignMeteoStationNumbersFromHBVProject(myProject) Then Throw New Exception("Error assigning meteo station numbers.")
-
-                    'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
-                    Dim Startdate As Date = SeasonClass.EventStart
-                    Dim Enddate As Date = SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd)
-
-                    If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir, Startdate, Enddate) Then Throw New Exception("Error: could not clone HBV model for running from the command line.")
-
-                    'initialize a new project object from the new location
-                    myProject = New clsHBVProject(Me.Setup, runDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), False)
-
-                        ''--------------------------------------------------------------------------------------------------------------------
-                        ''copy the groundwater file
-                        'If GWClass IsNot Nothing Then
-                        '    If GWClass.RRFiles.Count > 0 Then
-                        '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                        '    End If
-                        '    If GWClass.FlowFiles.Count > 0 Then
-                        '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                        '    End If
-                        '    If GWClass.RTCFiles.Count > 0 Then
-                        '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-                        '    End If
-
-                        'End If
-                        ''--------------------------------------------------------------------------------------------------------------------
-
-                        ''--------------------------------------------------------------------------------------------------------------------
-                        ''create the boundary file
-                        'If Not WLClass Is Nothing Then
-                        '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
-                        '    If Not BuildWaterLevelBoundaries(myModel, runDir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
-                        'End If
-                        ''--------------------------------------------------------------------------------------------------------------------
-
-                        ''--------------------------------------------------------------------------------------------------------------------
-                        ''copy the file for the extra1 stochast
-                        'If Extra1Class IsNot Nothing Then
-                        '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
-                        '    If Not Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
-                        '    If Not Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
-                        '    If Not Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
-                        'End If
-                        ''--------------------------------------------------------------------------------------------------------------------
-
-                        ''--------------------------------------------------------------------------------------------------------------------
-                        ''copy the file for the extra2 stochast
-                        'If Extra2Class IsNot Nothing Then
-                        '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
-                        '    If Not Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
-                        '    If Not Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
-                        '    If Not Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
-                        'End If
-                        ''--------------------------------------------------------------------------------------------------------------------
-
-                        ''--------------------------------------------------------------------------------------------------------------------
-                        ''copy the file for the extra3 stochast
-                        'If Extra3Class IsNot Nothing Then
-                        '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
-                        '    If Not Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
-                        '    If Not Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
-                        '    If Not Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
-                        'End If
-                        ''--------------------------------------------------------------------------------------------------------------------
-
-                        ''--------------------------------------------------------------------------------------------------------------------
-                        ''copy the file for the extra4 stochast
-                        'If Extra4Class IsNot Nothing Then
-                        '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
-                        '    If Not Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
-                        '    If Not Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
-                        '    If Not Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
-                        'End If
-                        ''--------------------------------------------------------------------------------------------------------------------
-
-                        'write the precipitation file and make a backup in the stochast directory
-                        Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
-
-                        'Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
-                        'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-                        Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
-                        For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
-                            If Station.StationType = enmMeteoStationType.precipitation Then
-                                Dim myBui As New clsBuiFile(Me.Setup)
-                                Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                                'generate a HBV rainfall file and set both the absolute and relative paths
-                                BuiFile = runDir & "\" & Station.ID & ".txt"
-                                Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
-                                myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
-                                myBui.WriteHBV(BuiFile, Station, 3)
-                            ElseIf Station.StationType = enmMeteoStationType.evaporation Then
-                                'Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
-                                'myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
-                            End If
-
-                            'copy the meteo file to the unique directory for our desired run
-                            If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
-                            File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
-
-                        Next
-                        Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
-
-
-                        ''write the evaporation file for now we'll assume zero evaporation
-                        'Dim myEvp As New clsEvpFile(Me.Setup)
-                        'Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
-                        'Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
-                        'myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
-                        'myEvp.Write(EvpFile)
-                        'File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
-
-                        'Setup.GeneralFunctions.UpdateProgressBar("Writing radiation file.", 0, 10, True)
-                        'Using myWriter As New StreamWriter(QscFile)
-                        '    myWriter.WriteLine("CONSTANTS   'TEMP' 'RAD'")
-                        '    myWriter.WriteLine("DATA        0 0")
-                        'End Using
-                        'File.Copy(QscFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
-
-                        'Setup.GeneralFunctions.UpdateProgressBar("Writing wind file.", 0, 10, True)
-                        'Using myWriter As New StreamWriter(WdcFile)
-                        '    myWriter.WriteLine("GLMT MTEO nm '(null)' ss 0 id '0' ci '-1' lc 9.9999e+009 wu 1")
-                        '    myWriter.WriteLine("wv tv 0 0 9.9999e+009 wd td 0 0 9.9999e+009 su 0 sh ts")
-                        '    myWriter.WriteLine("0 9.9999e+009 9.9999e+009 tu 0 tp tw 0 9.9999e+009 9.9999e+009 au 0 at ta 0")
-                        '    myWriter.WriteLine("9.9999e+009 9.9999e+009 mteo glmt")
-                        'End Using
-                        'File.Copy(WdcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
-
-                        'Using mywriter As New StreamWriter(QwcFile)
-                        '    mywriter.WriteLine("CONSTANTS   'VWIND' 'WINDDIR'")
-                        '    mywriter.WriteLine("DATA       0 0")
-                        'End Using
-                        'File.Copy(QwcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
-
-                        'Using mywriter As New StreamWriter(TmpFile)
-                        '    mywriter.WriteLine("")
-                        'End Using
-                        'File.Copy(TmpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
-
-                        'Using mywriter As New StreamWriter(RnfFile)
-                        '    mywriter.WriteLine("")
-                        'End Using
-                        'File.Copy(RnfFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
-
-                        '----------------------------------------------------------------------------------------
-                        'release the database for use by other instances
-                        '----------------------------------------------------------------------------------------
-                        Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
-
-
-
-                    End If
             Next
             Return True
         Catch ex As Exception
@@ -743,6 +307,524 @@ Public Class clsStochastenRun
         End Try
 
 
+    End Function
+
+    Public Function BuildDIMRModelRun(ByRef myModel As clsSimulationModel, runDir As String, runIdx As Integer, nRuns As Integer) As Boolean
+        Try
+
+            'create the paths to the meteo files, both absolute and relative. Meteofiles reside in the RR module
+            Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", runIdx + 1, nRuns, True)
+            Dim myMeteoDir As String = runDir & "\" & Me.Setup.DIMRData.DIMRConfig.RR.GetSubDir & "\"
+
+            'copy the original project to the temporary work dir and then read it from the new location
+            Setup.GeneralFunctions.UpdateProgressBar($"Cloning model schematisation for run {runIdx + 1} of {nRuns}...", runIdx + 1, nRuns, True)
+            Dim myProject = New clsDIMR(Me.Setup, myModel.ModelDir)
+
+            myProject.CloneAndAdjustCaseForCommandLineRun(runDir, SeasonClass.EventStart, SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd))
+
+            'create the meteo files and copy them into the case directory
+            If Me.Setup.DIMRData.RR IsNot Nothing Then
+                Dim BuiName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetBuiFileName
+                Dim EvpName As String = Me.Setup.DIMRData.DIMRConfig.RR.GetEvpFileName
+                BuiFile = myMeteoDir & BuiName
+                EvpFile = myMeteoDir & EvpName
+
+                Dim myBui As New clsBuiFile(Me.Setup)
+                Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
+                Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+                For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
+                    If Station.StationType = enmMeteoStationType.precipitation Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
+                        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                    ElseIf Station.StationType = enmMeteoStationType.evaporation Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
+                        myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
+                    End If
+                Next
+                Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
+                myBui.Write(BuiFile, 3)
+
+                'copy the precipitation file to the unique directory for our desired run
+                If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
+                File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+
+                'write the evaporation file for now we'll assume zero evaporation
+                Dim myEvp As New clsEvpFile(Me.Setup)
+                Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
+                Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
+                myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
+                myEvp.Write(EvpFile)
+                File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'copy the groundwater file(s)
+                If GWClass IsNot Nothing Then
+                    If GWClass.RRFiles.Count > 0 Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    End If
+                    If GWClass.RRFiles.Count > 0 Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    End If
+                    If GWClass.RRFiles.Count > 0 Then
+                        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                    End If
+                End If
+                '--------------------------------------------------------------------------------------------------------------------
+
+            End If
+
+
+            If Me.Setup.DIMRData.FlowFM IsNot Nothing Then
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'create the boundary file
+                If WLClass IsNot Nothing Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
+                    If Not BuildWaterLevelBoundaries(myModel, runDir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
+                End If
+                '--------------------------------------------------------------------------------------------------------------------
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'copy the RR files for the extra1 stochast
+                If Extra1Class IsNot Nothing Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying Files for stochast extra1.", 0, 10, True)
+                    If Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+                    If Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                    If Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra1 stochast.")
+                End If
+                '--------------------------------------------------------------------------------------------------------------------
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'copy the file for the extra2 stochast
+                If Extra2Class IsNot Nothing Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
+                    If Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+                    If Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                    If Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra2 stochast.")
+                End If
+                '--------------------------------------------------------------------------------------------------------------------
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'copy the file for the extra3 stochast
+                If Extra3Class IsNot Nothing Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
+                    If Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+                    If Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                    If Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra3 stochast.")
+                End If
+                '--------------------------------------------------------------------------------------------------------------------
+
+                '--------------------------------------------------------------------------------------------------------------------
+                'copy the file for the extra4 stochast
+                If Extra4Class IsNot Nothing Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
+                    If Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+                    If Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                    If Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van de RTC-bestanden voor de extra4 stochast.")
+                End If
+                '--------------------------------------------------------------------------------------------------------------------
+
+            End If
+
+            'update the progress bar
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Building simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
+
+        Catch ex As Exception
+
+        End Try
+    End Function
+
+    Public Function BuildSobekModelRun(ByRef myModel As clsSimulationModel, rundir As String) As Boolean
+        Try
+
+            'create the paths to the meteo files, both absolute and relative
+            Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
+            Dim myMeteoDir As String = rundir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
+            If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
+            BuiFile = myMeteoDir & "meteo.bui"
+            EvpFile = myMeteoDir & "meteo.evp"
+            QscFile = myMeteoDir & "meteo.qsc"
+            WdcFile = myMeteoDir & "meteo.wdc"
+            QwcFile = myMeteoDir & "meteo.qwc"
+            TmpFile = myMeteoDir & "meteo.tmp"
+            RnfFile = myMeteoDir & "meteo.rnf"
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", BuiFile, BuiFileRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", EvpFile, EvpFileRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", QscFile, QscFileRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", WdcFile, WdcFileRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", QwcFile, QwcFileRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", TmpFile, TmpFileRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(rundir & "\CMTWORK\", RnfFile, RnfFileRelative)
+
+            'copy the original project to the temporary work dir and then read it from the new location
+            Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+            Dim myProject = New clsSobekProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
+
+            'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
+            If Not myProject.CloneCaseForCommandLineRun(Directory.GetParent(myModel.ModelDir).FullName, myModel.CaseName.Trim.ToUpper, rundir, BuiFileRelative, EvpFileRelative, QscFileRelative, WdcFileRelative, QwcFileRelative, TmpFileRelative, RnfFileRelative) Then Throw New Exception("Error: could not clone SOBEK case for running from the command line.")
+            myProject = New clsSobekProject(Me.Setup, rundir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the groundwater file
+            If GWClass IsNot Nothing Then
+                If GWClass.RRFiles.Count > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    If Not CopyGroundwaterFiles(myModel, rundir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                End If
+                If GWClass.FlowFiles.Count > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    If Not CopyGroundwaterFiles(myModel, rundir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                End If
+                If GWClass.RTCFiles.Count > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    If Not CopyGroundwaterFiles(myModel, rundir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                End If
+
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'create the boundary file
+            If Not WLClass Is Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
+                If Not BuildWaterLevelBoundaries(myModel, rundir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra1 stochast
+            If Extra1Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
+                If Not Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 1, Extra1Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+                If Not Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 1, Extra1Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                If Not Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 1, Extra1Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra2 stochast
+            If Extra2Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
+                If Not Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 2, Extra2Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+                If Not Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 2, Extra2Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                If Not Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 2, Extra2Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra3 stochast
+            If Extra3Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
+                If Not Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 3, Extra3Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+                If Not Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 3, Extra3Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                If Not Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 3, Extra3Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra4 stochast
+            If Extra4Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
+                If Not Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 4, Extra4Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+                If Not Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 4, Extra4Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                If Not Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, rundir, 4, Extra4Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            'write the precipitation file and make a backup in the stochast directory
+            Dim myBui As New clsBuiFile(Me.Setup)
+            Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
+            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+            For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
+                If Station.StationType = enmMeteoStationType.precipitation Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
+                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                ElseIf Station.StationType = enmMeteoStationType.evaporation Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
+                    myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
+                End If
+            Next
+            Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
+            myBui.Write(BuiFile, 3)
+
+            'copy the meteo file to the unique directory for our desired run
+            If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
+            File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+
+            'write the evaporation file for now we'll assume zero evaporation
+            Dim myEvp As New clsEvpFile(Me.Setup)
+            Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
+            Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
+            myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
+            myEvp.Write(EvpFile)
+            File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+
+            Setup.GeneralFunctions.UpdateProgressBar("Writing radiation file.", 0, 10, True)
+            Using myWriter As New StreamWriter(QscFile)
+                myWriter.WriteLine("CONSTANTS   'TEMP' 'RAD'")
+                myWriter.WriteLine("DATA        0 0")
+            End Using
+            File.Copy(QscFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
+
+            Setup.GeneralFunctions.UpdateProgressBar("Writing wind file.", 0, 10, True)
+            Using myWriter As New StreamWriter(WdcFile)
+                myWriter.WriteLine("GLMT MTEO nm '(null)' ss 0 id '0' ci '-1' lc 9.9999e+009 wu 1")
+                myWriter.WriteLine("wv tv 0 0 9.9999e+009 wd td 0 0 9.9999e+009 su 0 sh ts")
+                myWriter.WriteLine("0 9.9999e+009 9.9999e+009 tu 0 tp tw 0 9.9999e+009 9.9999e+009 au 0 at ta 0")
+                myWriter.WriteLine("9.9999e+009 9.9999e+009 mteo glmt")
+            End Using
+            File.Copy(WdcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
+
+            Using mywriter As New StreamWriter(QwcFile)
+                mywriter.WriteLine("CONSTANTS   'VWIND' 'WINDDIR'")
+                mywriter.WriteLine("DATA       0 0")
+            End Using
+            File.Copy(QwcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
+
+            Using mywriter As New StreamWriter(TmpFile)
+                mywriter.WriteLine("")
+            End Using
+            File.Copy(TmpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
+
+            Using mywriter As New StreamWriter(RnfFile)
+                mywriter.WriteLine("")
+            End Using
+            File.Copy(RnfFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
+
+        Catch ex As Exception
+
+        End Try
+    End Function
+
+    Public Function BuildHBVModelRun(ByRef myModel As clsSimulationModel, runDir As String) As Boolean
+        Try
+
+            'copy the original project to the temporary work dir and then read it from the new location
+            Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+            Dim myProject = New clsHBVProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
+
+            'we need to know the station numbers for the meteo stations by reading the original meteo files
+            If Not Me.Setup.StochastenAnalyse.AssignMeteoStationNumbersFromHBVProject(myProject) Then Throw New Exception("Error assigning meteo station numbers.")
+
+            'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
+            Dim Startdate As Date = SeasonClass.EventStart
+            Dim Enddate As Date = SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd)
+
+            If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir, Startdate, Enddate) Then Throw New Exception("Error: could not clone HBV model for running from the command line.")
+
+            'initialize a new project object from the new location
+            myProject = New clsHBVProject(Me.Setup, runDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), False)
+
+            ''--------------------------------------------------------------------------------------------------------------------
+            ''copy the groundwater file
+            'If GWClass IsNot Nothing Then
+            '    If GWClass.RRFiles.Count > 0 Then
+            '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+            '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+            '    End If
+            '    If GWClass.FlowFiles.Count > 0 Then
+            '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+            '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+            '    End If
+            '    If GWClass.RTCFiles.Count > 0 Then
+            '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+            '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+            '    End If
+
+            'End If
+            ''--------------------------------------------------------------------------------------------------------------------
+
+            ''--------------------------------------------------------------------------------------------------------------------
+            ''create the boundary file
+            'If Not WLClass Is Nothing Then
+            '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
+            '    If Not BuildWaterLevelBoundaries(myModel, runDir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
+            'End If
+            ''--------------------------------------------------------------------------------------------------------------------
+
+            ''--------------------------------------------------------------------------------------------------------------------
+            ''copy the file for the extra1 stochast
+            'If Extra1Class IsNot Nothing Then
+            '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
+            '    If Not Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+            '    If Not Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+            '    If Not Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+            'End If
+            ''--------------------------------------------------------------------------------------------------------------------
+
+            ''--------------------------------------------------------------------------------------------------------------------
+            ''copy the file for the extra2 stochast
+            'If Extra2Class IsNot Nothing Then
+            '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
+            '    If Not Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+            '    If Not Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+            '    If Not Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+            'End If
+            ''--------------------------------------------------------------------------------------------------------------------
+
+            ''--------------------------------------------------------------------------------------------------------------------
+            ''copy the file for the extra3 stochast
+            'If Extra3Class IsNot Nothing Then
+            '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
+            '    If Not Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+            '    If Not Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+            '    If Not Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+            'End If
+            ''--------------------------------------------------------------------------------------------------------------------
+
+            ''--------------------------------------------------------------------------------------------------------------------
+            ''copy the file for the extra4 stochast
+            'If Extra4Class IsNot Nothing Then
+            '    Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
+            '    If Not Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+            '    If Not Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+            '    If Not Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+            'End If
+            ''--------------------------------------------------------------------------------------------------------------------
+
+            'write the precipitation file and make a backup in the stochast directory
+            Setup.GeneralFunctions.UpdateProgressBar("Preparing meteo files. ", 0, 10, True)
+
+            'Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
+            'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
+            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+            For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
+                If Station.StationType = enmMeteoStationType.precipitation Then
+                    Dim myBui As New clsBuiFile(Me.Setup)
+                    Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
+                    'generate a HBV rainfall file and set both the absolute and relative paths
+                    BuiFile = runDir & "\" & Station.ID & ".txt"
+                    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
+                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                    myBui.WriteHBV(BuiFile, Station, 3)
+                ElseIf Station.StationType = enmMeteoStationType.evaporation Then
+                    'Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
+                    'myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
+                End If
+
+                'copy the meteo file to the unique directory for our desired run
+                If Not System.IO.Directory.Exists(InputFilesDir) Then System.IO.Directory.CreateDirectory(InputFilesDir)
+                File.Copy(BuiFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(BuiFile), True)
+
+            Next
+            Setup.GeneralFunctions.UpdateProgressBar("Writing rainfall event.", 0, 10, True)
+
+
+            ''write the evaporation file for now we'll assume zero evaporation
+            'Dim myEvp As New clsEvpFile(Me.Setup)
+            'Dim Evap(Setup.GeneralFunctions.RoundUD(duur / 24, 0, True)) As Double
+            'Setup.GeneralFunctions.UpdateProgressBar("Writing evaporation event.", 0, 10, True)
+            'myEvp.BuildSTOWATYPE(Evap, SeasonClass.EventStart, StochastenAnalyse.DurationAdd)
+            'myEvp.Write(EvpFile)
+            'File.Copy(EvpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(EvpFile), True)
+
+            'Setup.GeneralFunctions.UpdateProgressBar("Writing radiation file.", 0, 10, True)
+            'Using myWriter As New StreamWriter(QscFile)
+            '    myWriter.WriteLine("CONSTANTS   'TEMP' 'RAD'")
+            '    myWriter.WriteLine("DATA        0 0")
+            'End Using
+            'File.Copy(QscFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QscFile), True)
+
+            'Setup.GeneralFunctions.UpdateProgressBar("Writing wind file.", 0, 10, True)
+            'Using myWriter As New StreamWriter(WdcFile)
+            '    myWriter.WriteLine("GLMT MTEO nm '(null)' ss 0 id '0' ci '-1' lc 9.9999e+009 wu 1")
+            '    myWriter.WriteLine("wv tv 0 0 9.9999e+009 wd td 0 0 9.9999e+009 su 0 sh ts")
+            '    myWriter.WriteLine("0 9.9999e+009 9.9999e+009 tu 0 tp tw 0 9.9999e+009 9.9999e+009 au 0 at ta 0")
+            '    myWriter.WriteLine("9.9999e+009 9.9999e+009 mteo glmt")
+            'End Using
+            'File.Copy(WdcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(WdcFile), True)
+
+            'Using mywriter As New StreamWriter(QwcFile)
+            '    mywriter.WriteLine("CONSTANTS   'VWIND' 'WINDDIR'")
+            '    mywriter.WriteLine("DATA       0 0")
+            'End Using
+            'File.Copy(QwcFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(QwcFile), True)
+
+            'Using mywriter As New StreamWriter(TmpFile)
+            '    mywriter.WriteLine("")
+            'End Using
+            'File.Copy(TmpFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(TmpFile), True)
+
+            'Using mywriter As New StreamWriter(RnfFile)
+            '    mywriter.WriteLine("")
+            'End Using
+            'File.Copy(RnfFile, InputFilesDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(RnfFile), True)
+
+            '----------------------------------------------------------------------------------------
+            'release the database for use by other instances
+            '----------------------------------------------------------------------------------------
+            Me.Setup.GeneralFunctions.DatabaseReleaseLock(Me.Setup.StochastenAnalyse.StochastsConfigFile)
+
+        Catch ex As Exception
+
+        End Try
+    End Function
+
+    Public Function BuildSumaquaModelRun(ByRef myModel As clsSimulationModel, runDir As String) As Boolean
+        Try
+            'for the SUMAQUA model we need to copy the entire model directory
+            'for now only the stochasts Extra1 through 4 are supported
+
+            'copy the original project to the temporary work dir and then read it from the new location
+            Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+            Dim myProject = New clsSumaquaProject(Me.Setup, myModel.ModelDir, myModel.CaseName)
+
+            'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
+            Dim Startdate As Date = SeasonClass.EventStart
+            Dim Enddate As Date = SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd)
+
+            If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir, Startdate, Enddate) Then Throw New Exception("Error: could not clone Sumaqua model for running from the command line.")
+
+            'initialize a new project object from the new location
+            myProject = New clsSumaquaProject(Me.Setup, runDir, myModel.CaseName)
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra1 stochast
+            If Extra1Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra1.", 0, 10, True)
+                If Extra1Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RRFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra1 stochast.")
+                If Extra1Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.FlowFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+                If Extra1Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 1, Extra1Class.RTCFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra1 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra2 stochast
+            If Extra2Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra2.", 0, 10, True)
+                If Extra2Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RRFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra2 stochast.")
+                If Extra2Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.FlowFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+                If Extra2Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 2, Extra2Class.RTCFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra2 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra3 stochast
+            If Extra3Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra3.", 0, 10, True)
+                If Extra3Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RRFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra3 stochast.")
+                If Extra3Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.FlowFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+                If Extra3Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 3, Extra3Class.RTCFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra3 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the file for the extra4 stochast
+            If Extra4Class IsNot Nothing Then
+                Setup.GeneralFunctions.UpdateProgressBar("Copying file for stochast extra4.", 0, 10, True)
+                If Extra4Class.RRFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RRFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de RR-bestanden voor de extra4 stochast.")
+                If Extra4Class.FlowFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.FlowFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+                If Extra4Class.RTCFiles <> "" Then If Not CopyExtraFiles(myModel, runDir, 4, Extra4Class.RTCFiles, "INPUT") Then Throw New Exception("Fout bij het kopieren van de Flow-bestanden voor de extra4 stochast.")
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
+
+
+        Catch ex As Exception
+
+        End Try
     End Function
 
 
@@ -815,6 +897,8 @@ Public Class clsStochastenRun
                 If myModel.ModelType = enmSimulationModel.SOBEK Then
                     toFile = RunDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
+                    toFile = RunDir & "\" & ModelSubdir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
+                ElseIf myModel.ModelType = enmSimulationModel.SUMAQUA Then
                     toFile = RunDir & "\" & ModelSubdir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 Else
                     Throw New Exception("Kan invoerbestand " & fromFile & " niet naar het doelmodel kopieren omdat het modeltype niet wordt ondersteund voor de onderhavige stochast: " & myModel.ModelType.ToString)

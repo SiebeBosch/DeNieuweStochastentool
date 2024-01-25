@@ -106,9 +106,7 @@ Public Class frmStochasten
                 Call Setup.SetHBVProject(myModel.ModelDir)
                 Call Setup.HBVData.BasinFile.Read()
             ElseIf myModel.ModelType = enmSimulationModel.SUMAQUA Then
-                'do nothing since SUMAQUA does not yet have a case manager
-                'Call Setup.SetSUMAQUAProject(myModel.ModelDir)
-                'Call Setup.SUMAQUAData.SUMAQUAConfig.Read()
+                Call Setup.setSumaquaProject(myModel.ModelDir, myModel.CaseName)
             End If
         Next
 
