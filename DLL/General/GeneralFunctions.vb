@@ -5060,6 +5060,32 @@ Public Class GeneralFunctions
         End Using
     End Sub
 
+    Public Sub DataTable2CSVByStreamWriter(ByRef dt As DataTable, ByRef csvWriter As StreamWriter, delimiter As String)
+        Dim i As Integer, j As Integer
+
+        ' Write the CSV header
+        Dim csvLine As New StringBuilder()
+        For j = 0 To dt.Columns.Count - 1
+            csvLine.Append(dt.Columns(j).ColumnName).Append(delimiter)
+        Next
+        csvWriter.WriteLine(csvLine.ToString())
+
+        ' Write the CSV data
+        For i = 0 To dt.Rows.Count - 1
+            csvLine.Clear()
+            For j = 0 To dt.Columns.Count - 1
+                ' Ensure that any delimiters within the data are handled appropriately
+                Dim data As String = dt.Rows(i)(j).ToString()
+                If data.Contains(delimiter) Then
+                    data = """" & data.Replace("""", """""") & """"
+                End If
+                csvLine.Append(data).Append(delimiter)
+            Next
+
+            csvWriter.WriteLine(csvLine.ToString())
+        Next
+    End Sub
+
 
     Public Sub PopulateComboBoxWithTimeSeriesProcessingOptions(ByRef myCombo As Windows.Forms.ComboBox)
         myCombo.Items.Clear()
