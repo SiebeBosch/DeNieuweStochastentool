@@ -20,6 +20,7 @@ Public Class clsFouNCFile
     Dim Mesh2d_fourier001_maxID As Integer = -1
     Dim Mesh1d_fourier001_maxID As Integer = -1
     Dim Mesh2d_fourier002_maxID As Integer = -1
+    Dim Mesh2d_fourier002_maxdepthID As Integer = -1
     Dim Mesh1d_fourier002_maxID As Integer = -1
     Dim Mesh2d_face_xID As Integer = -1
     Dim Mesh2d_face_yID As Integer = -1
@@ -90,6 +91,7 @@ Public Class clsFouNCFile
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_long_name" Then Mesh1d_node_long_nameID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max_depth" Then Mesh2d_fourier002_maxdepthID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = dataset.Variables.Item(i).ID
@@ -105,6 +107,7 @@ Public Class clsFouNCFile
             If Mesh2d_fourier001_maxID >= 0 Then Mesh2d_fourier001_max = dataset.GetData(Of Double())(Mesh2d_fourier001_maxID)
             If Mesh1d_fourier001_maxID >= 0 Then Mesh1d_fourier001_max = dataset.GetData(Of Double())(Mesh1d_fourier001_maxID)
             If Mesh2d_fourier002_maxID >= 0 Then Mesh2d_fourier002_max = dataset.GetData(Of Double())(Mesh2d_fourier002_maxID)
+            If Mesh2d_fourier002_maxdepthID >= 0 Then Mesh2d_fourier002_max_depth = dataset.GetData(Of Double())(Mesh2d_fourier002_maxdepthID)
             If Mesh1d_fourier002_maxID >= 0 Then Mesh1d_fourier002_max = dataset.GetData(Of Double())(Mesh1d_fourier002_maxID)
             If Mesh2d_face_xID >= 0 Then Mesh2d_face_x = dataset.GetData(Of Double())(Mesh2d_face_xID)
             If Mesh2d_face_yID >= 0 Then Mesh2d_face_y = dataset.GetData(Of Double())(Mesh2d_face_yID)
