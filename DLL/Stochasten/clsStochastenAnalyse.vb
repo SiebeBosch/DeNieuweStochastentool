@@ -1614,7 +1614,7 @@ Public Class clsStochastenAnalyse
             If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
 
             'retrieve the maximum water levels from our Fourier file
-            Dim Maxima As Double() = myFouNC.get2DMaximumWaterLevels()
+            Dim Maxima As Double() = myFouNC.get2DMaximumWaterDepths()
 
             'now we have to write these maxima to the database. use the index number as location ID
 

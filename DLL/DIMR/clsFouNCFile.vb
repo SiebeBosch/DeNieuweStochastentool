@@ -35,6 +35,7 @@ Public Class clsFouNCFile
     Dim Mesh2d_fourier001_max As Double()       'size: number of faces
     Dim Mesh1d_fourier001_max As Double()       'size: number of nodes
     Dim Mesh2d_fourier002_max As Double()       'size: number of faces
+    Dim Mesh2d_fourier002_max_depth As Double()       'size: number of faces
     Dim Mesh1d_fourier002_max As Double()       'size: number of nodes
     Friend Mesh2d_face_x As Double()       'size: number of faces
     Friend Mesh2d_face_y As Double()       'size: number of faces
@@ -57,9 +58,9 @@ Public Class clsFouNCFile
         Setup = mySetup
     End Sub
 
-    Public Function get2DMaximumWaterLevels() As Double()
+    Public Function get2DMaximumWaterDepths() As Double()
         'returns the maximum water level per 2D cell
-        Return Mesh2d_fourier002_max
+        Return Mesh2d_fourier002_max_depth
     End Function
 
     Public Function Read() As Boolean
