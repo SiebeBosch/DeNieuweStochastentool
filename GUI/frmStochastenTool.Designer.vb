@@ -1761,6 +1761,7 @@ Partial Class frmStochasten
         '
         Me.btnSimulate.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSimulate.BackColor = System.Drawing.Color.Gold
+        Me.btnSimulate.Enabled = False
         Me.btnSimulate.Location = New System.Drawing.Point(1523, 179)
         Me.btnSimulate.Margin = New System.Windows.Forms.Padding(4)
         Me.btnSimulate.Name = "btnSimulate"

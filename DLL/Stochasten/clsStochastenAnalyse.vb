@@ -8,6 +8,9 @@ Imports DocumentFormat.OpenXml.Bibliography
 Imports DocumentFormat.OpenXml.Office2019.Drawing
 Imports System.Transactions
 Imports System.Runtime.InteropServices.WindowsRuntime
+Imports System.IO.Compression
+Imports System.Text
+'Imports Ionic.Zip
 
 Public Class clsStochastenAnalyse
 
@@ -1661,7 +1664,7 @@ Public Class clsStochastenAnalyse
             Dim dtHerh As DataTable
 
             'prepare a spreadsheet
-            Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
+            Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("1D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
             ws.ws.Cells(0, 0).Value = "ID"
             ws.ws.Cells(1, 0).Value = "Alias"
             ws.ws.Cells(2, 0).Value = 0.01
@@ -1708,62 +1711,83 @@ Public Class clsStochastenAnalyse
             'also write it to Excel, in a less detailed manner
             n = dtLoc.Rows.Count - 1
             Setup.GeneralFunctions.UpdateProgressBar("Exporting results per location...", 0, n)
-            For i = 0 To dtLoc.Rows.Count - 1
-                Setup.GeneralFunctions.UpdateProgressBar("", i, n)
 
-                'create a worksheet for this location
-                'ws = Me.Setup.ExcelFile.GetAddSheet(dtLoc.Rows(i)(0))
+            ' Create a new ZIP archive to store the CSV files
+            Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results1D.zip", ZipArchiveMode.Create)
+                For i = 0 To n
 
-                dtRes = New DataTable
-                dtRuns = New DataTable
-                dtHerh = New DataTable
+                    Setup.GeneralFunctions.UpdateProgressBar("", i, n)
 
-                'calculate an exceedance table for this location
-                If Not CalcExceedanceTable(dtLoc.Rows(i)(0), "MAXVAL", dtRes, dtHerh) Then
-                    Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
-                Else
-                    'also retrieve the runs
-                    Setup.GeneralFunctions.DataTable2CSV(dtHerh, ResultsDir & "\" & dtLoc.Rows(i)(0) & ".csv", ";")
-                    ws.ws.Cells(0, i + 1).Value = dtLoc.Rows(i)(0)
-                    ws.ws.Cells(1, i + 1).Value = dtLoc.Rows(i)(0)
-                    ws.ws.Cells(2, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.01, 0, 1)
-                    ws.ws.Cells(3, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.05, 0, 1)
-                    ws.ws.Cells(4, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.1, 0, 1)
-                    ws.ws.Cells(5, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.5, 0, 1)
-                    ws.ws.Cells(6, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1, 0, 1)
-                    ws.ws.Cells(7, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 2, 0, 1)
-                    ws.ws.Cells(8, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 3, 0, 1)
-                    ws.ws.Cells(9, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 4, 0, 1)
-                    ws.ws.Cells(10, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 5, 0, 1)
-                    ws.ws.Cells(11, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 6, 0, 1)
-                    ws.ws.Cells(12, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 7, 0, 1)
-                    ws.ws.Cells(13, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 8, 0, 1)
-                    ws.ws.Cells(14, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 9, 0, 1)
-                    ws.ws.Cells(15, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 10, 0, 1)
-                    ws.ws.Cells(16, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 15, 0, 1)
-                    ws.ws.Cells(17, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 20, 0, 1)
-                    ws.ws.Cells(18, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 25, 0, 1)
-                    ws.ws.Cells(19, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 30, 0, 1)
-                    ws.ws.Cells(20, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 35, 0, 1)
-                    ws.ws.Cells(21, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 40, 0, 1)
-                    ws.ws.Cells(22, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 45, 0, 1)
-                    ws.ws.Cells(23, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
-                    ws.ws.Cells(24, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 60, 0, 1)
-                    ws.ws.Cells(25, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 70, 0, 1)
-                    ws.ws.Cells(26, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 80, 0, 1)
-                    ws.ws.Cells(27, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 90, 0, 1)
-                    ws.ws.Cells(28, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
-                    ws.ws.Cells(29, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 200, 0, 1)
-                    ws.ws.Cells(30, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 300, 0, 1)
-                    ws.ws.Cells(31, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 400, 0, 1)
-                    ws.ws.Cells(32, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 500, 0, 1)
-                    ws.ws.Cells(33, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 600, 0, 1)
-                    ws.ws.Cells(34, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 700, 0, 1)
-                    ws.ws.Cells(35, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 800, 0, 1)
-                    ws.ws.Cells(36, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 900, 0, 1)
-                    ws.ws.Cells(37, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1000, 0, 1)
-                End If
-            Next
+                    'create a worksheet for this location
+                    'ws = Me.Setup.ExcelFile.GetAddSheet(dtLoc.Rows(i)(0))
+
+                    dtRes = New DataTable
+                    dtRuns = New DataTable
+                    dtHerh = New DataTable
+
+                    ' Calculate an exceedance table for this location
+                    If Not CalcExceedanceTable(dtLoc.Rows(i)(0), "MAXVAL", dtRes, dtHerh) Then
+                        Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
+                    Else
+                        ' Write the CSV content to a MemoryStream
+                        Using ms As New MemoryStream()
+                            Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
+                                Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dtHerh, sw, ";")
+                                sw.Flush()
+                                ms.Position = 0
+
+                                ' Create a new entry in the ZIP file for the CSV
+                                Dim zipEntry As ZipArchiveEntry = zip.CreateEntry(dtLoc.Rows(i)("LOCATIENAAM") & ".csv")
+                                Using entryStream As Stream = zipEntry.Open()
+                                    ms.CopyTo(entryStream)
+                                End Using
+                            End Using
+                        End Using
+
+                        ws.ws.Cells(0, i + 1).Value = dtLoc.Rows(i)(0)
+                        ws.ws.Cells(1, i + 1).Value = dtLoc.Rows(i)(0)
+                        ws.ws.Cells(2, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.01, 0, 1)
+                        ws.ws.Cells(3, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.05, 0, 1)
+                        ws.ws.Cells(4, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.1, 0, 1)
+                        ws.ws.Cells(5, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.5, 0, 1)
+                        ws.ws.Cells(6, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1, 0, 1)
+                        ws.ws.Cells(7, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 2, 0, 1)
+                        ws.ws.Cells(8, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 3, 0, 1)
+                        ws.ws.Cells(9, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 4, 0, 1)
+                        ws.ws.Cells(10, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 5, 0, 1)
+                        ws.ws.Cells(11, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 6, 0, 1)
+                        ws.ws.Cells(12, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 7, 0, 1)
+                        ws.ws.Cells(13, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 8, 0, 1)
+                        ws.ws.Cells(14, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 9, 0, 1)
+                        ws.ws.Cells(15, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 10, 0, 1)
+                        ws.ws.Cells(16, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 15, 0, 1)
+                        ws.ws.Cells(17, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 20, 0, 1)
+                        ws.ws.Cells(18, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 25, 0, 1)
+                        ws.ws.Cells(19, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 30, 0, 1)
+                        ws.ws.Cells(20, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 35, 0, 1)
+                        ws.ws.Cells(21, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 40, 0, 1)
+                        ws.ws.Cells(22, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 45, 0, 1)
+                        ws.ws.Cells(23, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
+                        ws.ws.Cells(24, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 60, 0, 1)
+                        ws.ws.Cells(25, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 70, 0, 1)
+                        ws.ws.Cells(26, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 80, 0, 1)
+                        ws.ws.Cells(27, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 90, 0, 1)
+                        ws.ws.Cells(28, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
+                        ws.ws.Cells(29, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 200, 0, 1)
+                        ws.ws.Cells(30, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 300, 0, 1)
+                        ws.ws.Cells(31, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 400, 0, 1)
+                        ws.ws.Cells(32, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 500, 0, 1)
+                        ws.ws.Cells(33, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 600, 0, 1)
+                        ws.ws.Cells(34, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 700, 0, 1)
+                        ws.ws.Cells(35, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 800, 0, 1)
+                        ws.ws.Cells(36, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 900, 0, 1)
+                        ws.ws.Cells(37, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1000, 0, 1)
+
+                    End If
+                Next
+            End Using
+
+
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ExportResults of class clsStochastenAnalyse.")
@@ -1772,49 +1796,148 @@ Public Class clsStochastenAnalyse
         End Try
 
     End Function
+
     Public Function ExportResults2D() As Boolean
         Try
-            'open the database connection
+            ' Open the database connection
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
             Dim cmd As New SQLite.SQLiteCommand
             cmd.Connection = Me.Setup.SqliteCon
 
             Dim r As Long = 0, c As Long = 0
             Dim i As Long, n As Long
-            Dim dtLoc As New DataTable 'locations
+            Dim dtLoc As New DataTable ' Locations
             Dim dtHerh As New Dictionary(Of Integer, DataTable)
 
-            'get all unique location names from the database
+            'prepare a spreadsheet
+            Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
+            ws.ws.Cells(0, 0).Value = "ID"
+            ws.ws.Cells(0, 1).Value = "Alias"
+            ws.ws.Cells(0, 2).Value = 0.01
+            ws.ws.Cells(0, 3).Value = 0.05
+            ws.ws.Cells(0, 4).Value = 0.1
+            ws.ws.Cells(0, 5).Value = 0.5
+            ws.ws.Cells(0, 6).Value = 1
+            ws.ws.Cells(0, 7).Value = 2
+            ws.ws.Cells(0, 8).Value = 3
+            ws.ws.Cells(0, 9).Value = 4
+            ws.ws.Cells(0, 10).Value = 5
+            ws.ws.Cells(0, 11).Value = 6
+            ws.ws.Cells(0, 12).Value = 7
+            ws.ws.Cells(0, 13).Value = 8
+            ws.ws.Cells(0, 14).Value = 9
+            ws.ws.Cells(0, 15).Value = 10
+            ws.ws.Cells(0, 16).Value = 15
+            ws.ws.Cells(0, 17).Value = 20
+            ws.ws.Cells(0, 18).Value = 25
+            ws.ws.Cells(0, 19).Value = 30
+            ws.ws.Cells(0, 20).Value = 35
+            ws.ws.Cells(0, 21).Value = 40
+            ws.ws.Cells(0, 22).Value = 45
+            ws.ws.Cells(0, 23).Value = 50
+            ws.ws.Cells(0, 24).Value = 60
+            ws.ws.Cells(0, 25).Value = 70
+            ws.ws.Cells(0, 26).Value = 80
+            ws.ws.Cells(0, 27).Value = 90
+            ws.ws.Cells(0, 28).Value = 100
+            ws.ws.Cells(0, 29).Value = 200
+            ws.ws.Cells(0, 30).Value = 300
+            ws.ws.Cells(0, 31).Value = 400
+            ws.ws.Cells(0, 32).Value = 500
+            ws.ws.Cells(0, 33).Value = 600
+            ws.ws.Cells(0, 34).Value = 700
+            ws.ws.Cells(0, 35).Value = 800
+            ws.ws.Cells(0, 36).Value = 900
+            ws.ws.Cells(0, 37).Value = 1000
+
+            ' Get all unique location names from the database
             dtLoc = GetUnique2DLocationNamesFromDB()
 
-            'for every location, build an exceedance chart and export it to CSV
-            'also write it to Excel, in a less detailed manner
             n = dtLoc.Rows.Count - 1
             Dim chunkSize As Integer = 1000
             Setup.GeneralFunctions.UpdateProgressBar("Exporting results per location...", 0, n)
 
-            While i < dtLoc.Rows.Count
-                Setup.GeneralFunctions.UpdateProgressBar("", i, n)
+            ' Create a new ZIP archive
+            If System.IO.File.Exists(ResultsDir & "\Results2D.zip") Then System.IO.File.Delete(ResultsDir & "\Results2D.zip")
+            Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results2D.zip", ZipArchiveMode.Create)
+                While i < dtLoc.Rows.Count
+                    Setup.GeneralFunctions.UpdateProgressBar("", i, n)
 
-                ' Get the location names for the current chunk
-                Dim locationChunk As New List(Of Integer)
-                For j As Integer = i To Math.Min(i + chunkSize - 1, dtLoc.Rows.Count - 1)
-                    locationChunk.Add(dtLoc.Rows(j)("FEATUREIDX"))
-                Next
-
-                'calculate an exceedance table for this location
-                If Not CalcExceedanceTables2D(locationChunk, "MAXVAL", dtHerh, "RESULTATEN2D", "FEATUREIDX") Then
-                    Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
-                Else
-                    'also retrieve the runs
-                    For Each loc As String In locationChunk
-                        Dim locDtHerh As DataTable = dtHerh(loc)
-                        Setup.GeneralFunctions.DataTable2CSV(locDtHerh, ResultsDir & "\" & loc & ".csv", ";")
+                    ' Get the location names for the current chunk
+                    Dim locationChunk As New List(Of Integer)
+                    For j As Integer = i To Math.Min(i + chunkSize - 1, dtLoc.Rows.Count - 1)
+                        locationChunk.Add(dtLoc.Rows(j)("FEATUREIDX"))
                     Next
-                End If
 
-                i += chunkSize ' Move to the next chunk
-            End While
+                    ' Calculate an exceedance table for this location
+                    If Not CalcExceedanceTables2D(locationChunk, "MAXVAL", dtHerh, "RESULTATEN2D", "FEATUREIDX") Then
+                        Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
+                    Else
+                        Dim j As Integer = i
+                        For Each loc As String In locationChunk
+                            Dim locDtHerh As DataTable = dtHerh(loc)
+                            ' Convert DataTable to CSV format and write it to a MemoryStream
+                            Using ms As New MemoryStream()
+                                Using sw As New StreamWriter(ms)
+                                    Setup.GeneralFunctions.DataTable2CSVByStreamWriter(locDtHerh, sw, ";")
+                                    sw.Flush()
+                                    ms.Position = 0
+
+                                    ' Add the MemoryStream to the ZIP file
+                                    Dim zipEntry As ZipArchiveEntry = zip.CreateEntry(loc & ".csv")
+                                    Using entryStream As Stream = zipEntry.Open()
+                                        ms.CopyTo(entryStream)
+                                    End Using
+                                End Using
+                            End Using
+
+                            ws.ws.Cells(j + 1, 0).Value = dtLoc.Rows(j)(0)
+                            ws.ws.Cells(j + 1, 1).Value = dtLoc.Rows(j)(0)
+                            ws.ws.Cells(j + 1, 2).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.01, 0, 1)
+                            ws.ws.Cells(j + 1, 3).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.05, 0, 1)
+                            ws.ws.Cells(j + 1, 4).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.1, 0, 1)
+                            ws.ws.Cells(j + 1, 5).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.5, 0, 1)
+                            ws.ws.Cells(j + 1, 6).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 1, 0, 1)
+                            ws.ws.Cells(j + 1, 7).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 2, 0, 1)
+                            ws.ws.Cells(j + 1, 8).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 3, 0, 1)
+                            ws.ws.Cells(j + 1, 9).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 4, 0, 1)
+                            ws.ws.Cells(j + 1, 10).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 5, 0, 1)
+                            ws.ws.Cells(j + 1, 11).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 6, 0, 1)
+                            ws.ws.Cells(j + 1, 12).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 7, 0, 1)
+                            ws.ws.Cells(j + 1, 13).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 8, 0, 1)
+                            ws.ws.Cells(j + 1, 14).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 9, 0, 1)
+                            ws.ws.Cells(j + 1, 15).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 10, 0, 1)
+                            ws.ws.Cells(j + 1, 16).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 15, 0, 1)
+                            ws.ws.Cells(j + 1, 17).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 20, 0, 1)
+                            ws.ws.Cells(j + 1, 18).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 25, 0, 1)
+                            ws.ws.Cells(j + 1, 19).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 30, 0, 1)
+                            ws.ws.Cells(j + 1, 20).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 35, 0, 1)
+                            ws.ws.Cells(j + 1, 21).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 40, 0, 1)
+                            ws.ws.Cells(j + 1, 22).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 45, 0, 1)
+                            ws.ws.Cells(j + 1, 23).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 50, 0, 1)
+                            ws.ws.Cells(j + 1, 24).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 60, 0, 1)
+                            ws.ws.Cells(j + 1, 25).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 70, 0, 1)
+                            ws.ws.Cells(j + 1, 26).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 80, 0, 1)
+                            ws.ws.Cells(j + 1, 27).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 90, 0, 1)
+                            ws.ws.Cells(j + 1, 28).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 100, 0, 1)
+                            ws.ws.Cells(j + 1, 29).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 200, 0, 1)
+                            ws.ws.Cells(j + 1, 30).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 300, 0, 1)
+                            ws.ws.Cells(j + 1, 21).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 400, 0, 1)
+                            ws.ws.Cells(j + 1, 31).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 500, 0, 1)
+                            ws.ws.Cells(j + 1, 32).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 600, 0, 1)
+                            ws.ws.Cells(j + 1, 33).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 700, 0, 1)
+                            ws.ws.Cells(j + 1, 34).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 800, 0, 1)
+                            ws.ws.Cells(j + 1, 35).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 900, 0, 1)
+                            ws.ws.Cells(j + 1, 36).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 1000, 0, 1)
+
+                            j += 1
+                        Next
+                    End If
+
+                    i += chunkSize ' Move to the next chunk
+                End While
+            End Using
+
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ExportResults2D of class clsStochastenAnalyse.")
@@ -1825,6 +1948,7 @@ Public Class clsStochastenAnalyse
 
 
 
+
     Public Function GetUnique1DLocationNamesFromDB() As DataTable
         Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM OUTPUTLOCATIONS;"
         Dim dtLoc As New DataTable
@@ -1832,7 +1956,7 @@ Public Class clsStochastenAnalyse
         Return dtLoc
     End Function
     Public Function GetUnique2DLocationNamesFromDB() As DataTable
-        Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM RESULTATEN;"
+        Dim query As String = "SELECT DISTINCT FEATUREIDX FROM RESULTATEN2D;"
         Dim dtLoc As New DataTable
         Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLoc, False)
         Return dtLoc

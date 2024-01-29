@@ -59,6 +59,78 @@ Public Class frmStochasten
     'for me.Setup.controledoeleinden
     Private controleResultaten As STOCHLIB.clsResultsByVolume
 
+
+
+    ' Declare the tooltip
+
+    Private ttPopulateRuns As New ToolTip()
+    Private ttDeleteResults As New ToolTip()
+    Private ttBuild As New ToolTip()
+    Private ttSimulate As New ToolTip()
+    Private ttCopyResults As New ToolTip()
+    Private ttUitlezen As New ToolTip()
+    Private ttPostprocessing As New ToolTip()
+    Private ttViewer As New ToolTip()
+    Private ttExport As New ToolTip()
+
+    Private Sub frmStochastenTool_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Set up the delays for the tooltip.
+        ttPopulateRuns.AutoPopDelay = 5000
+        ttDeleteResults.AutoPopDelay = 5000
+        ttBuild.AutoPopDelay = 5000
+        ttSimulate.AutoPopDelay = 5000
+        ttCopyResults.AutoPopDelay = 5000
+        ttUitlezen.AutoPopDelay = 5000
+        ttPostprocessing.AutoPopDelay = 5000
+        ttViewer.AutoPopDelay = 5000
+        ttExport.AutoPopDelay = 5000
+
+        ttPopulateRuns.InitialDelay = 1000
+        ttDeleteResults.InitialDelay = 1000
+        ttBuild.InitialDelay = 1000
+        ttSimulate.InitialDelay = 1000
+        ttCopyResults.InitialDelay = 1000
+        ttUitlezen.InitialDelay = 1000
+        ttPostprocessing.InitialDelay = 1000
+        ttViewer.InitialDelay = 1000
+        ttExport.InitialDelay = 1000
+
+        ttPopulateRuns.ReshowDelay = 500
+        ttDeleteResults.ReshowDelay = 500
+        ttBuild.ReshowDelay = 500
+        ttSimulate.ReshowDelay = 500
+        ttCopyResults.ReshowDelay = 500
+        ttUitlezen.ReshowDelay = 500
+        ttPostprocessing.ReshowDelay = 500
+        ttViewer.ReshowDelay = 500
+        ttExport.ReshowDelay = 500
+
+        ' Force the tooltip text to be displayed whether or not the form is active.
+        ttPopulateRuns.ShowAlways = True
+        ttDeleteResults.ShowAlways = True
+        ttBuild.ShowAlways = True
+        ttSimulate.ShowAlways = True
+        ttCopyResults.ShowAlways = True
+        ttUitlezen.ShowAlways = True
+        ttPostprocessing.ShowAlways = True
+        ttViewer.ShowAlways = True
+        ttExport.ShowAlways = True
+
+        ' Set up the tooltip text for the Button1.
+        ttPopulateRuns.SetToolTip(Me.btnPopulateRuns, "Vult de tabel met simulaties voor alle combinaties van de opgegeven stochasten.")
+        ttDeleteResults.SetToolTip(Me.btnWissen, "Verwijdert de resultaatbestanden van de geselecteerde simulaties uit de stochastenmap.")
+        ttBuild.SetToolTip(Me.btnBuild, "Schrijft een instantie van elk van de geselecteerde simulaties naar de tijdelijke werkmap.")
+        ttSimulate.SetToolTip(Me.btnSimulate, "Start de simulatie van de geselecteerde simulaties. Le top: gebruik om de simulaties elders en in multithreading te draaien het aparte programma BAT_RUNR.")
+        ttCopyResults.SetToolTip(Me.btnCopyResults, "Kopieert de opgegeven resultaatbestanden uit de tijdelijke simulatiemap naar de stochastenmap.")
+        ttUitlezen.SetToolTip(Me.btnUitlezen, "Leest de resultaten van de geselecteerde simulaties uit en schrijft ze naar de database.")
+        ttPostprocessing.SetToolTip(Me.btnPostprocessing, "Bewerkt de resultaten van de geselecteerde simulaties na tot overschrijdingsgrafieken en schrijft die naar de database.")
+        ttViewer.SetToolTip(Me.btnViewer, "Schrijft de herhalingstijden naar de webviewer en opent die.")
+        ttExport.SetToolTip(Me.btnExport, "Exporteert de resultaten van de stochastenanalyse naar een Excel-bestand en CSV-bestanden.")
+
+    End Sub
+
+
+
     Public Sub New()
 
         ' This call is required by the Windows Form Designer.
@@ -75,7 +147,6 @@ Public Class frmStochasten
         Setup.SetProgress(prProgress, lblProgress)
 
     End Sub
-
 
     Private Sub CmbDuration_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles cmbDuration.SelectedIndexChanged
         RebuildAllGrids()
@@ -106,9 +177,7 @@ Public Class frmStochasten
                 Call Setup.SetHBVProject(myModel.ModelDir)
                 Call Setup.HBVData.BasinFile.Read()
             ElseIf myModel.ModelType = enmSimulationModel.SUMAQUA Then
-                'do nothing since SUMAQUA does not yet have a case manager
-                'Call Setup.SetSUMAQUAProject(myModel.ModelDir)
-                'Call Setup.SUMAQUAData.SUMAQUAConfig.Read()
+                Call Setup.setSumaquaProject(myModel.ModelDir, myModel.CaseName)
             End If
         Next
 
@@ -3316,7 +3385,7 @@ Public Class frmStochasten
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
 
-        If chk2D.Checked Then
+        If chk1D.Checked Then
             Call Setup.StochastenAnalyse.ExportResults1D()
         End If
 

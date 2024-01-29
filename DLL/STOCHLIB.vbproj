@@ -175,6 +175,8 @@
       <HintPath>..\GUI\packages\System.Data.SQLite.Linq.1.0.117.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\GUI\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
       <Private>True</Private>
@@ -564,6 +566,7 @@
     <Compile Include="Stochasten\frmClassifyGroundwaterDHydro.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Sumaqua\clsSumaquaProject.vb" />
     <Compile Include="Tijdreeksen\clsTijdreeksAnalyse.vb" />
     <Compile Include="TijdreeksStatistiek\clsDailyPrecipitationSum.vb" />
     <Compile Include="TijdreeksStatistiek\clsDuration.vb" />
