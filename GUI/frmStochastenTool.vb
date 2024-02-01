@@ -4660,7 +4660,7 @@ Public Class frmStochasten
 
             If chk2D.Checked Then
                 'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
-                Setup.StochastenAnalyse.CalculateExceedanceMesh(cmbClimate.Text, cmbDuration.Text)
+                Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", cmbClimate.Text, cmbDuration.Text)
 
                 'If radFou.Checked Then
                 '    Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js")

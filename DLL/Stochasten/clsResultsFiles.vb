@@ -16,4 +16,13 @@ Public Class clsResultsFiles
         Return Files(myFile.Trim.ToUpper)
     End Function
 
+    Public Function getFourierFile() As clsResultsFile
+        For Each myFile As clsResultsFile In Files.Values
+            If myFile.FileName.Contains("fou.nc") Then
+                Return myFile
+            End If
+        Next
+        Return Nothing
+    End Function
+
 End Class

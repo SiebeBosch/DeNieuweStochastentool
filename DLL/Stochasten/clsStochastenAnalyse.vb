@@ -1121,21 +1121,34 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function CalculateExceedanceMesh(ClimateScenario As String, Duration As Integer) As Boolean
+    Public Function CalculateExceedanceMesh(path As String, ClimateScenario As String, Duration As Integer) As Boolean
         'this function is designed to export our mesh to a GeoJSON for the webviewer. Inside, it will store the exceedance tables
         Try
             'first thing to do is to read the model's fourier file and turn it into a GeoJSON
             For Each Model As clsSimulationModel In Models.Values
                 Select Case Model.ModelType
                     Case Is = GeneralFunctions.enmSimulationModel.DHYDRO, GeneralFunctions.enmSimulationModel.DIMR
-                        Dim fouFile As New clsFouNCFile("c:\SYNC\PROJECTEN\H3110.StochastenRivierenland\04.Bommelerwaard\Model\fm\Output\BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_fou.nc", Me.Setup)
+
+                        'now we'll pick the results file from the first simulation and use that as a template to generate a geoJSON
+                        Dim resultsFile As clsResultsFile = Model.ResultsFiles.getFourierFile
+                        Dim ResultsFilePath As String = Runs.Runs.Values(0).OutputFilesDir & "\" & resultsFile.FileName
+
+                        'check if the file exists
+                        If resultsFile Is Nothing Then
+                            Throw New Exception("Could Not find a Fourier file in the model results. Unable to generate exceedance mesh for webviewer.")
+                        ElseIf Not System.IO.File.Exists(ResultsFilePath) Then
+                            Throw New Exception("Could Not find a Fourier file in the model results. Unable to generate exceedance mesh for webviewer.")
+                        End If
+
+                        'we must take one of the fourier files as a template, read it and convert it to a geoJSON with exceedance tables
+                        Dim fouFile As New clsFouNCFile(ResultsFilePath, Me.Setup)
                         If Not fouFile.Read() Then Throw New Exception("Error reading fourier file.")
 
                         'let's get our return periods from the database!
                         Dim ReturnPeriods As New List(Of Integer) From {10, 25, 50, 100}
                         Dim ExceedanceValues As Dictionary(Of Integer, List(Of Double)) = GetExceedanceValuesWaterlevels2D(ReturnPeriods, ClimateScenario, Duration)
 
-                        fouFile.ReprojectAndWriteFloodLevelsMeshToWebJS("c:\temp\bommelerwaard.js", ReturnPeriods, ExceedanceValues)
+                        fouFile.ReprojectAndWriteFloodLevelsMeshToWebJS(path, ReturnPeriods, ExceedanceValues)
 
 
                     Case Else

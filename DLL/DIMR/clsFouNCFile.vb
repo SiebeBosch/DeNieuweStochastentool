@@ -9,6 +9,7 @@ Imports MapWinGIS
 Imports Ionic
 Imports System.Security.Cryptography
 Imports DocumentFormat.OpenXml.Drawing.Diagrams
+Imports DocumentFormat.OpenXml
 
 Public Class clsFouNCFile
     Private Setup As clsSetup
@@ -220,6 +221,8 @@ Public Class clsFouNCFile
             Dim i As Long
             Dim Lat As Double, Lng As Double
 
+            Dim features As New List(Of String)
+
             Using meshWriter As New StreamWriter(resultspath)
                 meshWriter.WriteLine("let Mesh = ")
                 meshWriter.WriteLine("   {")
@@ -253,11 +256,16 @@ Public Class clsFouNCFile
                         Next
                         Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
                         featureStr &= ",[" & Lng & "," & Lat & "]]]}}"
-                        If i < UBound(Mesh2d_face_nodes, 1) Then featureStr &= ","
-                        meshWriter.WriteLine(featureStr)
+                        features.Add(featureStr)
                     End If
-
                 Next
+
+                'write all records but the last with a comma
+                For i = 0 To features.Count - 2
+                    meshWriter.WriteLine(features(i) & ",")
+                Next
+                'write the last record without a comma
+                meshWriter.WriteLine(features(features.Count - 1))
 
                 meshWriter.WriteLine("        ]")
                 meshWriter.WriteLine("   }")
