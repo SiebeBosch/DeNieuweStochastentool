@@ -274,3 +274,4 @@ C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.vbproj.CopyComplete
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.pdb
+C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.frmClassifyGroundwaterHBV.resources

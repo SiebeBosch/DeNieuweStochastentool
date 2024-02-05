@@ -4581,6 +4581,10 @@ Public Class frmStochasten
         myForm.Show()
     End Sub
 
+    Private Sub HBVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HBVToolStripMenuItem.Click
+        Dim myForm As New STOCHLIB.frmClassifyGroundwaterHBV(Me.Setup)
+        myForm.Show()
+    End Sub
     Private Sub LeesFOUFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LeesFOUFileToolStripMenuItem.Click
         Dim path As String = "c:\temp\BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_fou.nc"
         If Not System.IO.File.Exists(path) Then
@@ -4852,6 +4856,7 @@ Public Class frmStochasten
         End Try
 
     End Sub
+
 
     Private Sub btnOutputDir_Click(sender As Object, e As EventArgs) Handles btnOutputDir.Click
         dlgFolder.ShowDialog()

@@ -8,6 +8,12 @@ Public Class clsExcelSheet
     Public lastRowUsed As Long 'keeps track of the last row that has been used
     Private Setup As clsSetup
 
+    Public Sub New(ByRef myws As ExcelWorksheet, ByVal Name As String, ByRef mySetup As clsSetup)
+        ws = myws
+        SheetName = Name
+        Setup = mySetup
+    End Sub
+
     Public Sub New(ByRef wb As ExcelFile, ByVal Name As String, ByRef mySetup As clsSetup)
 
         'make sure our worksheet name is valid and unique

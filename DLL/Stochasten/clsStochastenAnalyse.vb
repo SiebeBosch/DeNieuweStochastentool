@@ -10,6 +10,7 @@ Imports System.Transactions
 Imports System.Runtime.InteropServices.WindowsRuntime
 Imports System.IO.Compression
 Imports System.Text
+Imports GemBox.Spreadsheet
 'Imports Ionic.Zip
 
 Public Class clsStochastenAnalyse
@@ -258,7 +259,7 @@ Public Class clsStochastenAnalyse
 
 
 
-    Public Function ClassifyGroundwaterBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), IncludeSeepage As Boolean, ExportDir As String) As Boolean
+    Public Function ClassifyGroundwaterRRBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), IncludeSeepage As Boolean, ExportDir As String) As Boolean
         Try
             Dim mySeason As clsSeason
             Dim myDuration As clsDuration
@@ -433,6 +434,128 @@ Public Class clsStochastenAnalyse
 
     End Function
 
+    Public Function ClassifyGroundwaterHBVBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByVal HBVReportPath As String, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), ExportDir As String) As Boolean
+        Try
+            Dim mySeason As clsSeason
+            Dim myDuration As clsDuration
+            Dim TimeSteps As List(Of Long)
+            Dim j As Long = 0, k As Long, n As Long
+            Dim ws As clsExcelSheet
+            Dim lPercentile As Double       'lower boundary percentile for this class
+            Dim uPercentile As Double       'upper boundary percentile for this class
+            Dim repPerc As Double           'percentile for the class
+
+            'carry out the POT analysis on the rainfall volumes
+            If Not Setup.TijdreeksStatistiek.CalcPOTEvents(Duration, seizoen.ToString, False) Then Throw New Exception("Error executing a POT-analysis on precipitation volumes for the " & seizoen.ToString)
+
+            'the HBV Excel report contains all timeseries of lz, uz and sm
+            Dim HBVReport As New clsExcelBook(Me.Setup, HBVReportPath)
+            HBVReport.Read()
+
+            'we will read the following parameters: lz, uz and sm (lower zone, upper zone and soil mosture)
+            For Each hbvsheet As ExcelWorksheet In HBVReport.Sheets
+                j += 1   'for writing results to Excel
+
+                'every sheet contains both the rainfall and the groundwater volumes for a single catchment
+                'now, for the given season and duration and the POT analysis performed earlier, we will select the initial timesteps
+                Dim myTijdreeks As clsRainfallSeries = Setup.TijdreeksStatistiek.NeerslagReeksen.Item(hbvsheet.Name)
+                mySeason = myTijdreeks.Seasons.GetByEnum(seizoen)
+                myDuration = mySeason.GetDuration(Duration)
+                TimeSteps = New List(Of Long)
+                TimeSteps = myDuration.POTEvents.GetStartingTimeSteps
+
+                'now read the timeseries from the HBV report, for parameters lz, uz and sm
+                Dim LZ As Double() ' New clsTimeSeries(Me.Setup, "lz", hbvsheet.Name, "volume")
+                Dim UZ As Double() ' New clsTimeSeries(Me.Setup, "uz", hbvsheet.Name, "volume")
+                Dim SM As Double() 'New clsTimeSeries(Me.Setup, "sm", hbvsheet.Name, "volume")
+                ReDim LZ(TimeSteps.Count - 1)
+                ReDim UZ(TimeSteps.Count - 1)
+                ReDim SM(TimeSteps.Count - 1)
+
+                Dim HeaderRowIdx As Integer = 3
+                Dim DateColIdx As Integer = 0
+                Dim LZColIdx As Integer = -1
+                Dim UZColIdx As Integer = -2
+                Dim SMColIdx As Integer = -3
+
+                'first find the columns
+                For i = 0 To 100
+                    If Left(hbvsheet.Cells(HeaderRowIdx, i).Value.ToString, 2).ToLower = "lz" Then LZColIdx = i
+                    If Left(hbvsheet.Cells(HeaderRowIdx, i).Value.ToString, 2).ToLower = "uz" Then UZColIdx = i
+                    If Left(hbvsheet.Cells(HeaderRowIdx, i).Value.ToString, 2).ToLower = "sm" Then SMColIdx = i
+                    If LZColIdx >= 0 AndAlso UZColIdx >= 0 AndAlso SMColIdx >= 0 Then Exit For
+                Next
+                If LZColIdx < 0 Then Throw New Exception("Unable to classify lower zone volumes from HBV report. No column starting with 'lz' found in row 4")
+                If UZColIdx < 0 Then Throw New Exception("Unable to classify upper zone volumes from HBV report. No column starting with 'uz' found in row 4")
+                If SMColIdx < 0 Then Throw New Exception("Unable to classify soil moisture volumes from HBV report. No column starting with 'sm' found in row 4")
+
+                'first read the lz values for the given timesteps
+                For ts = 0 To TimeSteps.Count - 1
+                    LZ(ts) = hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), LZColIdx).Value '.addRecord(Dates(TimeSteps(ts)), hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), LZColIdx).Value)
+                    UZ(ts) = hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), UZColIdx).Value '.addRecord(Dates(TimeSteps(ts)), hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), UZColIdx).Value)
+                    SM(ts) = hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), SMColIdx).Value '.addRecord(Dates(TimeSteps(ts)), hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), SMColIdx).Value)
+                Next
+
+                'now walk through all rows of the classification datagridview to decide which percentile we'll use
+                j = 0
+                For Each myRow As DataGridViewRow In myDataGrid.Rows
+                    j += 1
+
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("Groundwater classification for season " & seizoen.ToString & " and class " & myRow.Cells("colNaam").Value & ".", j, n)
+
+                    'determine the boundaries of the current groundwater class
+                    lPercentile = myRow.Cells(1).Value
+                    uPercentile = myRow.Cells(2).Value
+                    repPerc = (lPercentile + uPercentile) / 2
+
+                    Dim repLZ As Double = Me.Setup.GeneralFunctions.Percentile(LZ, repPerc)
+                    Dim repUZ As Double = Me.Setup.GeneralFunctions.Percentile(UZ, repPerc)
+                    Dim repSM As Double = Me.Setup.GeneralFunctions.Percentile(SM, repPerc)
+
+                    ws = Me.Setup.ExcelFile.GetAddSheet(hbvsheet.Name & "_" & seizoensnaam)
+                    ws.ws.Cells(0, 0).Value = "Repr. percentile"
+                    ws.ws.Cells(0, 1).Value = "LZ"
+                    ws.ws.Cells(0, 2).Value = "UZ"
+                    ws.ws.Cells(0, 3).Value = "SM"
+                    ws.ws.Cells(j, 0).Value = repPerc
+                    ws.ws.Cells(j, 1).Value = repLZ
+                    ws.ws.Cells(j, 2).Value = repUZ
+                    ws.ws.Cells(j, 3).Value = repSM
+
+                    'set path to a HBV instate.dat file and initialize writing the groundwater and soil moisture values
+                    Dim mypath As String = ExportDir & "\" & seizoen.ToString & "_" & myRow.Cells(0).Value & "\" & hbvsheet.Name & "\instate.dat"
+                    If Not System.IO.Directory.Exists(mypath) Then System.IO.Directory.CreateDirectory(mypath)
+                    Using datWriter As New StreamWriter(mypath)
+                        For i = 1 To 64
+                            datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
+                        Next
+                        datWriter.WriteLine("'state' 1")
+                        datWriter.WriteLine("'year' 1900")
+                        datWriter.WriteLine("'month' 1")
+                        datWriter.WriteLine("'hour' 1")
+                        datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
+                        datWriter.WriteLine("'sm' 1 " & repSM)
+                        datWriter.WriteLine("'uz' 1 " & repUZ)
+                        datWriter.WriteLine("'lz' 1 " & repLZ)
+                        datWriter.WriteLine("'wcomp' 1 0.00000")
+                        datWriter.WriteLine("'wstr' 1 0.00000")
+                        datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
+                    End Using
+
+                Next
+            Next
+
+
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.AddError("Error in function ClassifyGroundwaterBySeason of class frmClassifyGroundWater.")
+            Return False
+        End Try
+
+
+    End Function
 
     Public Function PopulateModelsAndLocationsFromDB(ByRef con As SQLite.SQLiteConnection) As Boolean
         Try

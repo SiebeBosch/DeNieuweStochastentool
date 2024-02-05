@@ -4,95 +4,103 @@ Imports System.Text
 Imports System.IO
 
 Public Class clsRainfallSeries
-  Public Name As String
+    Public Name As String
 
-  'for this rainfall series we can derive statistics per season (e.g. meteorological summer, hydrological halfyear etc.)
-  Public Seasons As clsSeasons
-  Public KNMI14Scenarios As clsKNMI14Scenarios
-  Public DailySums As clsRainfallSeries
+    'for this rainfall series we can derive statistics per season (e.g. meteorological summer, hydrological halfyear etc.)
+    Public Seasons As clsSeasons
+    Public KNMI14Scenarios As clsKNMI14Scenarios
+    Public DailySums As clsRainfallSeries
 
-  Public Dates As New List(Of DateTime)
-  Public Values As New List(Of Single)
-  Public InUse As List(Of Integer)   'stores the event number in the time series
+    Public Dates As New List(Of DateTime)
+    Public Values As New List(Of Single)
+    Public InUse As List(Of Integer)   'stores the event number in the time series
 
-  Private Setup As clsSetup
+    Private Setup As clsSetup
 
-  Public Sub New(ByRef mySetup As clsSetup)
-    Setup = mySetup
-    Seasons = New clsSeasons(Me.Setup, Me)
-    KNMI14Scenarios = New clsKNMI14Scenarios(Me.Setup, Me)
-  End Sub
+    Public Sub New(ByRef mySetup As clsSetup)
+        Setup = mySetup
+        Seasons = New clsSeasons(Me.Setup, Me)
+        KNMI14Scenarios = New clsKNMI14Scenarios(Me.Setup, Me)
+    End Sub
 
-  Public Sub calcDailySums()
-    'computes the daily precipitation sums and adds them to the DailySums object
-    Dim i As Long, nextDate As Date
 
-    Dim curDate As New Date(Year(Dates(0)), Month(Dates(0)), Day(Dates(0)))
-    Dim curVol As Double = Values(0)
+    Public Sub New(ByRef mySetup As clsSetup, SeriesName As String)
+        Name = SeriesName
+        Setup = mySetup
+        Seasons = New clsSeasons(Me.Setup, Me)
+        KNMI14Scenarios = New clsKNMI14Scenarios(Me.Setup, Me)
+    End Sub
 
-    DailySums = New clsRainfallSeries(Me.Setup)
-    For i = 1 To Dates.Count - 1
-      nextDate = New Date(Year(Dates(i)), Month(Dates(i)), Day(Dates(i)))
-      If nextDate > curDate Then
-        'current date is now complete, so add it to the series
+    Public Sub calcDailySums()
+        'computes the daily precipitation sums and adds them to the DailySums object
+        Dim i As Long, nextDate As Date
+
+        Dim curDate As New Date(Year(Dates(0)), Month(Dates(0)), Day(Dates(0)))
+        Dim curVol As Double = Values(0)
+
+        DailySums = New clsRainfallSeries(Me.Setup)
+        For i = 1 To Dates.Count - 1
+            nextDate = New Date(Year(Dates(i)), Month(Dates(i)), Day(Dates(i)))
+            If nextDate > curDate Then
+                'current date is now complete, so add it to the series
+                DailySums.Dates.Add(curDate)
+                DailySums.Values.Add(curVol)
+                curVol = Values(i)          'initialize the volume for the next day since we're already inside the next day
+                curDate = nextDate
+            Else
+                curVol += Values(i)        'add the precipitation
+            End If
+        Next
+
+        'finally complete the last date and add it to the series
         DailySums.Dates.Add(curDate)
         DailySums.Values.Add(curVol)
-        curVol = Values(i)          'initialize the volume for the next day since we're already inside the next day
-        curDate = nextDate
-      Else
-        curVol += Values(i)        'add the precipitation
-      End If
-    Next
 
-    'finally complete the last date and add it to the series
-    DailySums.Dates.Add(curDate)
-    DailySums.Values.Add(curVol)
+    End Sub
 
-  End Sub
+    Public Function getSeasonSum(ByVal mySeason As STOCHLIB.GeneralFunctions.enmSeason) As Double
+        'computes the precipitation sum for a given season over the entire time series
+        Dim i As Long, sum As Double = 0
+        For i = 0 To Values.Count - 1
+            If Me.Setup.GeneralFunctions.MeteorologischSeizoen(Dates(i)) = mySeason Then
+                sum += Values(i)
+            End If
+        Next
+        Return sum
+    End Function
 
-  Public Function getSeasonSum(ByVal mySeason As STOCHLIB.GeneralFunctions.enmSeason) As Double
-    'computes the precipitation sum for a given season over the entire time series
-    Dim i As Long, sum As Double = 0
-    For i = 0 To Values.Count - 1
-      If Me.Setup.GeneralFunctions.MeteorologischSeizoen(Dates(i)) = mySeason Then
-        sum += Values(i)
-      End If
-    Next
-    Return sum
-  End Function
+    Public Function countWetDaysBySeason(ByVal mySeason As STOCHLIB.GeneralFunctions.enmSeason, ByVal VolumeThreshold As Double) As Long
+        'counts the total number of wet days (> 0.1mm) for a given season in the entire time series
+        Dim i As Long, n As Long = 0
+        For i = 0 To DailySums.Values.Count - 1
+            If Me.Setup.GeneralFunctions.MeteorologischSeizoen(DailySums.Dates(i)) = mySeason Then
+                If DailySums.Values(i) >= VolumeThreshold Then n += 1
+            End If
+        Next
+        Return n
+    End Function
 
-  Public Function countWetDaysBySeason(ByVal mySeason As STOCHLIB.GeneralFunctions.enmSeason, ByVal VolumeThreshold As Double) As Long
-    'counts the total number of wet days (> 0.1mm) for a given season in the entire time series
-    Dim i As Long, n As Long = 0
-    For i = 0 To DailySums.Values.Count - 1
-      If Me.Setup.GeneralFunctions.MeteorologischSeizoen(DailySums.Dates(i)) = mySeason Then
-        If DailySums.Values(i) >= VolumeThreshold Then n += 1
-      End If
-    Next
-    Return n
-  End Function
+    Public Sub ClearStats()
+        Seasons = New clsSeasons(Me.Setup, Me)
+    End Sub
 
-  Public Sub ClearStats()
-    Seasons = New clsSeasons(Me.Setup, Me)
-  End Sub
+    Public Function getWindowSum(ByVal startIdx As Long, ByVal nSteps As Long) As Double
+        Dim mySum As Double, i As Long
+        For i = startIdx To startIdx + nSteps - 1
+            mySum += Values.Item(i)
+        Next
+        Return mySum
+    End Function
 
-  Public Function getWindowSum(ByVal startIdx As Long, ByVal nSteps As Long) As Double
-    Dim mySum As Double, i As Long
-    For i = startIdx To startIdx + nSteps - 1
-      mySum += Values.Item(i)
-    Next
-    Return mySum
-  End Function
+    Public Function GetTimeStepSizeMinutes() As Double
+        Dim mySpan As TimeSpan = Dates(1).Subtract(Dates(0))
+        Return mySpan.TotalMinutes
+    End Function
 
-  Public Function GetTimeStepSizeMinutes() As Double
-    Dim mySpan As TimeSpan = Dates(1).Subtract(Dates(0))
-    Return mySpan.TotalMinutes
-  End Function
-
-  Public Function getTimeSpanYears() As Double
-    Dim mySpan As TimeSpan = Dates(Dates.Count - 1).Subtract(Dates(0))
-    Return mySpan.Days / 365.25
-  End Function
+    Public Function getTimeSpanYears() As Double
+        Dim mySpan As TimeSpan = Dates(Dates.Count - 1).Subtract(Dates(0))
+        Return mySpan.Days / 365.25
+    End Function
 
     Public Function ReadFromCSV(ByVal Path As String, ByVal Delimiter As String, ByVal DateFormatting As String, ByVal DateHeader As String, ByVal ValuesHeader As String) As Boolean
         Try
@@ -170,20 +178,20 @@ Public Class clsRainfallSeries
     End Function
 
     Public Function WriteCSV(ByVal ScenarioName As String) As Boolean
-    'This function writes the original timeseries to a csv-file, but enhanced with event index number and event precipitation sum
-    Dim i As Long
-    Try
-      Using csvWriter As New StreamWriter(Me.Setup.Settings.ExportDirRoot & "\" & Name & "_" & ScenarioName & ".csv")
-        csvWriter.WriteLine("Date," & Name)
-        For i = 0 To Dates.Count - 1
-          csvWriter.WriteLine(Format(Dates(i), "yyyy/MM/dd HH:mm") & "," & Values(i))
-        Next
-      End Using
-      Return True
-    Catch ex As Exception
-      Return False
-    End Try
-  End Function
+        'This function writes the original timeseries to a csv-file, but enhanced with event index number and event precipitation sum
+        Dim i As Long
+        Try
+            Using csvWriter As New StreamWriter(Me.Setup.Settings.ExportDirRoot & "\" & Name & "_" & ScenarioName & ".csv")
+                csvWriter.WriteLine("Date," & Name)
+                For i = 0 To Dates.Count - 1
+                    csvWriter.WriteLine(Format(Dates(i), "yyyy/MM/dd HH:mm") & "," & Values(i))
+                Next
+            End Using
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
 
 
 

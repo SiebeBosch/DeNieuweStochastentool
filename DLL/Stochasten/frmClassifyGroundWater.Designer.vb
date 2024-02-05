@@ -374,7 +374,7 @@ Partial Class frmClassifyGroundWater
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmClassifyGroundWater"
-        Me.Text = "Initiële grondwaterstanden classificeren"
+        Me.Text = "Initiële grondwaterstanden uit D-Hydro classificeren"
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Instellingen.ResumeLayout(False)
         Me.Instellingen.PerformLayout()

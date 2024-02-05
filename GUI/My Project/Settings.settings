@@ -2,24 +2,6 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
   <Profiles />
   <Settings>
-    <Setting Name="gwClasses" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;nat&lt;/string&gt;
-  &lt;string&gt;middelnat&lt;/string&gt;
-  &lt;string&gt;middeldroog&lt;/string&gt;
-  &lt;string&gt;droog&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
-    <Setting Name="gwPercentiles" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;string&gt;0.125&lt;/string&gt;
-  &lt;string&gt;0.375&lt;/string&gt;
-  &lt;string&gt;0.625&lt;/string&gt;
-  &lt;string&gt;0.875&lt;/string&gt;
-&lt;/ArrayOfString&gt;</Value>
-    </Setting>
     <Setting Name="SobekDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -30,6 +12,30 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="LicenseKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="gwClasses" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;nat&lt;/string&gt;
+  &lt;string&gt;middelnat&lt;/string&gt;
+  &lt;string&gt;middeldroog&lt;/string&gt;
+  &lt;string&gt;droog&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="gwPercentiles" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;string&gt;0.125&lt;/string&gt;
+  &lt;string&gt;0.375&lt;/string&gt;
+  &lt;string&gt;0.625&lt;/string&gt;
+  &lt;string&gt;0.875&lt;/string&gt;
+&lt;/ArrayOfString&gt;</Value>
+    </Setting>
+    <Setting Name="HBVReportPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HBVModelDir" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

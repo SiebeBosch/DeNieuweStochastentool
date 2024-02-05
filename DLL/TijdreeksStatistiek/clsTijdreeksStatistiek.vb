@@ -29,6 +29,58 @@ Public Class clsTijdreeksStatistiek
         Next
     End Sub
 
+    Public Function addRainfallSeriesFromHBVReport(ByRef wb As clsExcelBook) As Boolean
+        'this function reads a rainfall timeseries + groundwater statistics (uz, lz and sm) or upper zone lowerzone and soilmosture from the HBV Reports Excel format to the NeerslagReeksen dictionary
+
+        Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading precipitation series from HBV report...", 0, 10, True)
+
+            Dim sheetnum As Integer = 0
+            For Each ws As clsExcelSheet In wb.Sheets
+                sheetnum += 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", sheetnum, wb.Sheets.Count, True)
+                Dim mySeries As New clsRainfallSeries(Me.Setup, ws.SheetName)
+                Dim HeaderRowIdx As Integer = 3
+                Dim DatesColIdx As Integer = 0
+                Dim PrecColIdx As Integer = -1  'precipitation column
+                'Dim UzColIdx As Integer = -1    'upper zone column
+                'Dim LzColIdx As Integer = -1    'lower zone column
+                'Dim SmColIdx As Integer = -1    'soil moisture column
+
+                For i = 0 To 100
+                    If Left(ws.ws.Cells(HeaderRowIdx, i).Value.ToString, 4) = "prec" Then
+                        PrecColIdx = i
+                        Exit For
+                        'ElseIf Left(ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "lz" Then
+                        '    LzColIdx = i
+                        'ElseIf Left(ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "uz" Then
+                        '    UzColIdx = i
+                        'ElseIf Left(ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "sm" Then
+                        '    SmColIdx = i
+                    End If
+                Next
+
+                If PrecColIdx = -1 Then Throw New Exception("Error: no precipitation column found in Excel worksheet.")
+
+                Dim rowIdx As Integer = HeaderRowIdx
+                While Not ws.ws.Cells(rowIdx + 1, DatesColIdx).Value = ""
+                    rowIdx += 1
+                    mySeries.Dates.Add(ws.ws.Cells(rowIdx, DatesColIdx).Value)
+                    mySeries.Values.Add(ws.ws.Cells(rowIdx, PrecColIdx).Value)
+                End While
+
+                Me.Setup.TijdreeksStatistiek.NeerslagReeksen.Add(mySeries.Name, mySeries)
+            Next
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Import complete.", 0, 10, True)
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+    End Function
+
+
     Public Function addRainfallSeriesFromHisFile(ByVal HisFilePath As String, ByVal LocID As String, ByVal PartOfParameterName As String, Optional ByVal Multiplier As Double = 1) As Boolean
         Dim Dates() As Date = Nothing
         Dim Values() As Double = Nothing

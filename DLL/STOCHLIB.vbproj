@@ -566,6 +566,12 @@
     <Compile Include="Stochasten\frmClassifyGroundwaterDHydro.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Stochasten\frmClassifyGroundwaterHBV.Designer.vb">
+      <DependentUpon>frmClassifyGroundwaterHBV.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Stochasten\frmClassifyGroundwaterHBV.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Sumaqua\clsSumaquaProject.vb" />
     <Compile Include="Tijdreeksen\clsTijdreeksAnalyse.vb" />
     <Compile Include="TijdreeksStatistiek\clsDailyPrecipitationSum.vb" />
@@ -934,6 +940,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Stochasten\frmClassifyGroundwaterDHydro.resx">
       <DependentUpon>frmClassifyGroundwaterDHydro.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Stochasten\frmClassifyGroundwaterHBV.resx">
+      <DependentUpon>frmClassifyGroundwaterHBV.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Stochasten\frmClassifyTidesByStatistics.resx">
       <DependentUpon>frmClassifyTidesByStatistics.vb</DependentUpon>

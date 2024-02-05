@@ -43,6 +43,7 @@ Partial Class frmStochasten
         Me.GrondwatersClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SOBEKToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DHydroToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.HBVToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GetijdenClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.DirectoriesHernoemenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MappenBeherenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -410,7 +411,7 @@ Partial Class frmStochasten
         '
         Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
         Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
-        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(191, 26)
+        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.ModelToolStripMenuItem.Text = "Model"
         '
         'ToevoegenToolStripMenuItem
@@ -423,7 +424,7 @@ Partial Class frmStochasten
         '
         Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
         Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
-        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(191, 26)
+        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
         '
         'ImporterenToolStripMenuItem1
@@ -447,7 +448,7 @@ Partial Class frmStochasten
         '
         'GrondwatersClassificerenToolStripMenuItem
         '
-        Me.GrondwatersClassificerenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SOBEKToolStripMenuItem, Me.DHydroToolStripMenuItem})
+        Me.GrondwatersClassificerenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SOBEKToolStripMenuItem, Me.DHydroToolStripMenuItem, Me.HBVToolStripMenuItem})
         Me.GrondwatersClassificerenToolStripMenuItem.Name = "GrondwatersClassificerenToolStripMenuItem"
         Me.GrondwatersClassificerenToolStripMenuItem.Size = New System.Drawing.Size(300, 26)
         Me.GrondwatersClassificerenToolStripMenuItem.Text = "Grondwater classificeren"
@@ -455,14 +456,20 @@ Partial Class frmStochasten
         'SOBEKToolStripMenuItem
         '
         Me.SOBEKToolStripMenuItem.Name = "SOBEKToolStripMenuItem"
-        Me.SOBEKToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
+        Me.SOBEKToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.SOBEKToolStripMenuItem.Text = "SOBEK"
         '
         'DHydroToolStripMenuItem
         '
         Me.DHydroToolStripMenuItem.Name = "DHydroToolStripMenuItem"
-        Me.DHydroToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
+        Me.DHydroToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.DHydroToolStripMenuItem.Text = "D-Hydro"
+        '
+        'HBVToolStripMenuItem
+        '
+        Me.HBVToolStripMenuItem.Name = "HBVToolStripMenuItem"
+        Me.HBVToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.HBVToolStripMenuItem.Text = "HBV"
         '
         'GetijdenClassificerenToolStripMenuItem
         '
@@ -3246,4 +3253,5 @@ Partial Class frmStochasten
     Friend WithEvents LeesMATFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnSimulate As Button
     Friend WithEvents btnCopyResults As Button
+    Friend WithEvents HBVToolStripMenuItem As ToolStripMenuItem
 End Class
