@@ -12,7 +12,7 @@ Daarnaast bevat het codeblokken HTML en javascript ten behoeve van de export naa
 
 De broncode is gepubliceerd onder GPL 3.0. Zie het bijgevoegde bestand LICENSE voor de volledige licentietekst.
 ## Documentatie
-De documentatie is in zijn geheel opgenomen binnen deze Github repository. U vindt hem hier: https://siebebosch.github.io/DeNieuweStochastentool/.
+De documentatie is in zijn geheel opgenomen in deze Github repository en wordt hier ook bijgehouden. U vindt hem hier: https://siebebosch.github.io/DeNieuweStochastentool/.
 
 ## Architectuur
 De applicatie bestaat uit twee componenten:
