@@ -19,7 +19,7 @@ De applicatie bestaat uit twee componenten:
 - een GUI (gebruiksomgeving)
 - een DLL (library)
 
-Dependencies:
+## Dependencies
 Belangrijkste dependency is de MapWinGIS library. Dit is een opensource GIS-component, oorspronkelijk van de University of Idaho. 
 Broncodes en binaries van MapWinGIS zijn hier te vinden: https://github.com/MapWindow/MapWinGIS. De eenvoudigste manier om MapWinGIS toe te voegen aan De Nieuwe Stochastentool is door de library separaat te installeren (versie 5.3.0, 64 bit!). Daarna kan vanuit de solution explorer eenvoudig de MapWinGIS.ocx worden toegevoegd onder References.
 
@@ -29,7 +29,7 @@ Verder zijn er nog diverse NuGET-packages geconfigureerd, maar dit zal zich vanz
 
 Gebruikers die wel gebruik willen maken van De Nieuwe Stochastentool maar die niet het gedoe willen van downloaden en inladen van de broncode, compileren, licenties van componenten organiseren etc. kunnen contact opnemen met ondergetekende voor een onderhoudscontract.
 
-##compilen en builden setup
+## Compilen en builden setup
 inbegrepen bij de ze Git is een Inno setup script. Dit script kan, na compileren in Visual Studio, worden gebruikt om een installatiebestand voor De Nieuwe Stochastentool te vervaardigen. Download en installeer daartoe Inno Setup https://jrsoftware.org/ alsmede Inno Script Studio https://www.kymoto.org/products/inno-script-studio. Stel in Inno Script Studio het pad naar Inno Setup in. Open dan het .iss bestand en draai het script.
 
 Den Haag, 8 maart 2023
