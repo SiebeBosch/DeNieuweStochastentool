@@ -1,0 +1,7 @@
+---
+title: "Over"
+---
+
+Deze website beschrijft de werking van het programma 'De Nieuwe Stochastentool', hierna aangeduid als 'De Stochastentool'. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode. 
+
+Het programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project <https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki> door Hydroconsult opensource gemaakt en gepubliceerd op Github: <https://github.com/SiebeBosch/DeNieuweStochastentool>. 

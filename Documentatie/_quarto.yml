@@ -1,0 +1,35 @@
+project:
+  type: website
+
+website:
+  title: "De Nieuwe Stochastentool"
+  navbar:
+    left:
+      - tutorial/tutorial.qmd
+      - user_manual/usermanual.qmd
+      - technical_docs/technicaldocumentation.qmd
+      - about.qmd
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - section: "Tutorial"
+        contents:
+          - tutorial/tutorial.qmd
+          - basics-knitr.qmd
+          - basics-jupyter.qmd
+      - section: "Technische documentatie"
+        contents:
+          - layout.qmd
+          - layout-knitr.qmd
+          - layout-jupyter.qmd
+
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+
+
+
