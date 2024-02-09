@@ -1,5 +1,17 @@
 [
   {
+    "objectID": "technical_docs/seizoen.html",
+    "href": "technical_docs/seizoen.html",
+    "title": "Seizoen",
+    "section": "",
+    "text": "Het ‘seizoen’ is strikt genomen geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel zo. Er zijn namelijk talloze andere stochasten die een zeer sterke afhankelijkheid hebben van de tijd van het jaar. Denk hierbij aan het neerslagvolume, neerslagpatroon en de initiële grondwaterconditie. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nAlternative text\n\n\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "crumbs": [
+      "Tutorial",
+      "Technische documentatie",
+      "Seizoen"
+    ]
+  },
+  {
     "objectID": "user_manual/usermanual.html",
     "href": "user_manual/usermanual.html",
     "title": "Gebruikshandleiding",
@@ -14,6 +26,13 @@
     "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
   },
   {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Over",
+    "section": "",
+    "text": "Deze website beschrijft de werking van het programma ‘De Nieuwe Stochastentool’, hierna aangeduid als ‘De Stochastentool’. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode.\nHet programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki door Hydroconsult opensource gemaakt en gepubliceerd op Github: https://github.com/SiebeBosch/DeNieuweStochastentool."
+  },
+  {
     "objectID": "literature.html",
     "href": "literature.html",
     "title": "Literatuur",
@@ -23,32 +42,6 @@
       "Tutorial",
       "Literatuur",
       "Literatuur"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "Over",
-    "section": "",
-    "text": "Deze website beschrijft de werking van het programma ‘De Nieuwe Stochastentool’, hierna aangeduid als ‘De Stochastentool’. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode.\nHet programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki door Hydroconsult opensource gemaakt en gepubliceerd op Github: https://github.com/SiebeBosch/DeNieuweStochastentool."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "De Nieuwe Stochastentool",
-    "section": "",
-    "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
-  },
-  {
-    "objectID": "technical_docs/seizoen.html",
-    "href": "technical_docs/seizoen.html",
-    "title": "Seizoen",
-    "section": "",
-    "text": "Het ‘seizoen’ is strikt genomen geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een zeer sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
-    "crumbs": [
-      "Tutorial",
-      "Technische documentatie",
-      "Seizoen"
     ]
   },
   {
