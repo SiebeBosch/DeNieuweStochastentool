@@ -1,3 +1,4 @@
+
 project:
   type: website
 
@@ -9,6 +10,7 @@ website:
       - user_manual/usermanual.qmd
       - technical_docs/technicaldocumentation.qmd
       - about.qmd
+      - literature.qmd
   sidebar:
     style: "docked"
     search: true
@@ -16,13 +18,12 @@ website:
       - section: "Tutorial"
         contents:
           - tutorial/tutorial.qmd
-          - basics-knitr.qmd
-          - basics-jupyter.qmd
       - section: "Technische documentatie"
         contents:
-          - layout.qmd
-          - layout-knitr.qmd
-          - layout-jupyter.qmd
+          - technical_docs/seizoen.qmd
+      - section: "Literatuur"
+        contents:
+          - literature.qmd
 
 
 format:
