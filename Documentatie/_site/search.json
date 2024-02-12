@@ -4,7 +4,7 @@
     "href": "technical_docs/seizoen.html",
     "title": "Seizoen",
     "section": "",
-    "text": "Het ‘seizoen’ is strikt genomen geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel zo. Er zijn namelijk talloze andere stochasten die een zeer sterke afhankelijkheid hebben van de tijd van het jaar. Denk hierbij aan het neerslagvolume, neerslagpatroon en de initiële grondwaterconditie. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nAlternative text\n\n\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "text": "Het ‘seizoen’ is strikt genomen geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een zeer sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
     "crumbs": [
       "Tutorial",
       "Technische documentatie",
@@ -53,6 +53,121 @@
     "crumbs": [
       "Tutorial",
       "Tutorial"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "De Nieuwe Stochastentool",
+    "section": "",
+    "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
+  },
+  {
+    "objectID": "GUI/general.html",
+    "href": "GUI/general.html",
+    "title": "Tabblad Algemeen",
+    "section": "",
+    "text": "Op het tabblad ‘Algemeen’ kan de gebruiker de algemene instellingen voor de stochastenanalyse opgeven.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/general.html#invoermap",
+    "href": "GUI/general.html#invoermap",
+    "title": "Tabblad Algemeen",
+    "section": "Invoermap",
+    "text": "Invoermap\nDe invoermap bevat alle invoerbestanden die benodigd zijn voor de simulaties. Te denken valt aan een submap ‘grondwater’ met daarin de submappen ‘droog’, ‘middeldroog’, ‘middelnat’ en ‘nat’ en in elk van die mappen het modelbestand wat de onderhavige systeemtoestand beschrijft. In het geval van SOBEK en D-Hydro zou dit het unpaved.3b-bestand zijn.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/general.html#uitvoermap",
+    "href": "GUI/general.html#uitvoermap",
+    "title": "Tabblad Algemeen",
+    "section": "Uitvoermap",
+    "text": "Uitvoermap\nDe uitvoermap bevat alle modeluitvoer waarvan de modelleur heeft vastgelegd dat die uit de modelschematisatie moeten worden gekopiëerd na completering van de simulatie. Welke bestanden dit zijn legt de modelleur vast op het tabblad ‘Modellen’. De lijst met bestanden komt dan terecht in de database, in de tabel ‘SIMULATIONMODELS’.\nIn het geval van SOBEK valt te denken aan bestanden als calcpnt.his (bevat waterhoogtes op rekenpunten)en in het geval van D-Hydro aan bestanden als naam_his.nc (bevat resultaten op observation points en kunstwerken) of naam_fou.nc (bevat maximale waterdieptes en -hoogtes voor zowel 1D als 2D).",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/general.html#resultatenmap",
+    "href": "GUI/general.html#resultatenmap",
+    "title": "Tabblad Algemeen",
+    "section": "Resultatenmap",
+    "text": "Resultatenmap\nDe resultatenmap bevat de uitkomsten van de stochastenanalyse, dus na de statistische nabewerking. In de submappen voor respectievelijk het klimaatscenario en duur komen dan de volgende zaken te staan:\n\nEen excel-bestand met daarin de overschrijdingswaarden voor iedere locatie\nEen ZIP-file met 1D-resultaten. Dit bestand bevat per 1D-locatie een .csv-bestand\nEen ZIP-file met de 2D-resultaten. Dit bestand bevat per 2D-locatie een .csv-bestand\nHet logbestand van de stochastenanalyse: logfile.txt",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/general.html#database",
+    "href": "GUI/general.html#database",
+    "title": "Tabblad Algemeen",
+    "section": "Database",
+    "text": "Database\nIn het veld ‘database’ wordt verwezen naar de SQLite-database (.db) van het onderhavige project. Deze database is cruciaal voor een stochastenanalyse want hij bevat de diverse stochasten en hun kanstoedeling alsmede de berekende overschrijdingswaarden. Als bij aanvang een database ontbreekt, kan de gebruiker er één vervaardigen middels het menu ‘Database’ - ‘Nieuwe database creëren’.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/general.html#shapefile-peilgebieden",
+    "href": "GUI/general.html#shapefile-peilgebieden",
+    "title": "Tabblad Algemeen",
+    "section": "Shapefile peilgebieden",
+    "text": "Shapefile peilgebieden\nDit veld is optioneel. Door streefpeilen op te geven wordt extra context toegevoegd aan de overschrijdingsgrafieken: waterhoogtes worden dan geplot binnen de context van de streefwaterstanden zodat de mate van overschrijding in één oogopslag duidelijk wordt.\n\nVeld winterpeil en Veld zomerpeil\nAls de gebruiker een shapefile met streefpeilen heeft opgegeven dient hij hier te selecteren welk veld resp. winterstreefpeil en zomerstreefpeil bevat.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/general.html#meteo",
+    "href": "GUI/general.html#meteo",
+    "title": "Tabblad Algemeen",
+    "section": "Meteo",
+    "text": "Meteo\nDoor op de &lt;+&gt; button te drukken voegt de gebruiker een nieuw meteo-station toe ten behoeve van de simulaties. Ieder station heeft drie kenmerken die moeten worden opgegeven:\n\nNaam: naam van het meteo-station\nSoort: het soort meteo-station (neerslag, verdamping)\nARF: de gebiedsreductiefactor (Area Reduction Factor). Een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie Overeem.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "GUI/models.html",
+    "href": "GUI/models.html",
+    "title": "Tabblad Modellen",
+    "section": "",
+    "text": "Het tabblad ‘Modellen’ geeft een lijst met modelschematisaties die achtereenvolgens moeten worden doorgerekend in een stochastenanalyse.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Modellen"
+    ]
+  },
+  {
+    "objectID": "GUI/models.html#modelschematisatie-toevoegen",
+    "href": "GUI/models.html#modelschematisatie-toevoegen",
+    "title": "Tabblad Modellen",
+    "section": "Modelschematisatie toevoegen",
+    "text": "Modelschematisatie toevoegen\nDoor op de &lt;+&gt; button te drukken verschijnt een nieuw formulier. Hierop kan de gebruiker aangeven welk type modelschematisatie moet worden toegevoegd, waar de modelbestanden en de executable staan en welke resultaatbestanden door het programma moeten worden bewaard.\n\n\n\n\nModel type: keuze voor het type model. Bijvoorbeeld DIMR of SOBEK\nExecutable: het pad naar de executable (of .bat file) waarmee het simulatieprogramma wordt gestart.\nArguments: eventuele argumenten die moeten worden meegegeven aan de executable.\nModelDir: de map waarin zich het referentiemodel bevindt waarmee de stochastenanalyse moet worden uitgevoerd. Bijvoorbeeld: c:.lit of c:_Config.xml.\nCasename: de naam van de case die moet worden doorgerekend. Dit is essentiëel voor SOBEK-modelschematisaties, maar niet voor bijv. DIMR-configuraties omdat dat type geen onderscheid maakt tussen projecten en cases. In dat geval staat het vrij om een eigen naam te verzinnen.\nWorkdir: een tijdelijke werkmap waarin de diverse modelruns kunnen worden weggeschreven.\nResultsfiles RR: Een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de neerslag-afvoermodule van het model. Bijvoorbeeld: upflowdt.his;pvstordt.his.\nResultsfiles Flow: een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de Flow-module. Bijvoorbeeld: model_his.nc;model_fou.nc.\n\nDoor op de button &lt; Add&gt; te drukken wordt de modelschematisatie met al zijn instellingen toegevoegd aan de tabel SIMULATIONMODELS in de database. Het datagrid op het formulier wordt ook meteen ververst.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruiksomgeving (GUI)",
+      "Tabblad Modellen"
     ]
   }
 ]

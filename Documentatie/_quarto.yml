@@ -7,7 +7,7 @@ website:
   navbar:
     left:
       - tutorial/tutorial.qmd
-      - user_manual/usermanual.qmd
+      - GUI/GUI.qmd
       - technical_docs/technicaldocumentation.qmd
       - about.qmd
       - literature.qmd
@@ -18,6 +18,10 @@ website:
       - section: "Tutorial"
         contents:
           - tutorial/tutorial.qmd
+      - section: "Gebruiksomgeving (GUI)"
+        contents:
+          - GUI/general.qmd
+          - GUI/models.qmd
       - section: "Technische documentatie"
         contents:
           - technical_docs/seizoen.qmd

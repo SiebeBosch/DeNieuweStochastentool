@@ -1,0 +1,6 @@
+---
+title: "Gebruiksomgeving (GUI)"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+

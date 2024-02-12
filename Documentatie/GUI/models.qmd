@@ -1,0 +1,34 @@
+---
+title: "Tabblad Modellen"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Het tabblad 'Modellen' geeft een lijst met modelschematisaties die achtereenvolgens moeten worden doorgerekend in een stochastenanalyse.
+
+![Modellen](img/frm_modellen.png "Modellen")
+
+# Onderdelen van dit formulier
+dit formulier bevat uitsluitend een datagrid en een plus- en min-button. Wanneer de gebruiker het XML-bestand met de stochastenconfiguratie inlaadt wordt de verbinding gelegd met de database, (tabel SIMULATIONMODELS) en verschijnen in dit grid alle door te rekenen modelschematisaties.
+
+Met de buttons <+> en <-> kan de gebruiker zelf modelschematisaties toevoegen of verwijderen. Deze acties worden automatisch onder de motorkap doorgevoerd in de database.
+
+## Modelschematisatie toevoegen
+Door op de <+> button te drukken verschijnt een nieuw formulier. Hierop kan de gebruiker aangeven welk type modelschematisatie moet worden toegevoegd, waar de modelbestanden en de executable staan en welke resultaatbestanden door het programma moeten worden bewaard.
+
+<div style="text-align: left;">
+  <img src="img/frm_addModel.png" alt="Een modelschematisatie toevoegen" style="width: 50%;">
+</div>
+
+* Model type: keuze voor het type model. Bijvoorbeeld DIMR of SOBEK
+* Executable: het pad naar de executable (of .bat file) waarmee het simulatieprogramma wordt gestart.
+* Arguments: eventuele argumenten die moeten worden meegegeven aan de executable.
+* ModelDir: de map waarin zich het referentiemodel bevindt waarmee de stochastenanalyse moet worden uitgevoerd. Bijvoorbeeld: c:\sobek216\model.lit of c:\DIMR\DIMR_Config.xml.
+* Casename: de naam van de case die moet worden doorgerekend. Dit is essentiëel voor SOBEK-modelschematisaties, maar niet voor bijv. DIMR-configuraties omdat dat type geen onderscheid maakt tussen projecten en cases. In dat geval staat het vrij om een eigen naam te verzinnen.
+* Workdir: een tijdelijke werkmap waarin de diverse modelruns kunnen worden weggeschreven.
+* Resultsfiles RR: Een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de neerslag-afvoermodule van het model. Bijvoorbeeld: upflowdt.his;pvstordt.his.
+* Resultsfiles Flow: een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de Flow-module. Bijvoorbeeld: model_his.nc;model_fou.nc.
+
+Door op de button < Add> te drukken wordt de modelschematisatie met al zijn instellingen toegevoegd aan de tabel SIMULATIONMODELS in de database. Het datagrid op het formulier wordt ook meteen ververst.
+
+Een modelschematisatie kan ook worden verwijderd. Selecteer daartoe de rij(en) met modelschematisatie(s) die verwijderd moeten worden en druk op de <->-button.
