@@ -1,0 +1,22 @@
+---
+title: "Tabblad Extra"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Het tabblad 'Extra' is bedoeld voor extra stochasten zoals hydraulische ruwheid en kunstwerkfalen. Het tabblad is generiek opgezet.
+
+![Extra stochasten](img/frm_extra.png "Extra")
+
+We illustreren de generieke opzet van deze extra stochasten aan de hand van het bovenstaande voorbeeld. Daar zijn twee extra stochasten te zien: onderhoudstoestand en kunstwerkfalen.
+
+## Extra stochast onderhoudstoestand
+In het geval van onderhoudstoestand zien we twee klassen: ruw en glad. Beide klassen verwijzen naar een eigen versie van het invoerbestand friction.dat (SOBEK-bestand). 
+
+Omdat we onderscheid maken tussen zomer en winter, is het bovendien mogelijk om in de zomer een andere kansverdeling toe te kennen dan in de winter. Hier geven we aan dat de kans op ruwe watergangen in de zomer 0.8 is en in de winter 0.2. In de winter is dit precies andersom!
+
+## Extra stochast kunstwerkfalen
+In het geval van kunstwerkfalen zien we eveneens twee klassen: faalt en faalt_niet. Ook hier verwijzen beide klassen naar een eigen invoerbestand; ditmaal control.def. 
+
+In dit geval hebben we geacht dat de kans op kunstwerkfalen in de zomer identiek is aan die in de winter, namelijk 0.001 per gebeurtenis.
+

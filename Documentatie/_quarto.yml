@@ -7,10 +7,9 @@ website:
   navbar:
     left:
       - tutorial/tutorial.qmd
-      - GUI/GUI.qmd
+      - GUI/UserManual.qmd
       - technical_docs/technicaldocumentation.qmd
       - about.qmd
-      - literature.qmd
   sidebar:
     style: "docked"
     search: true
@@ -18,17 +17,17 @@ website:
       - section: "Tutorial"
         contents:
           - tutorial/tutorial.qmd
-      - section: "Gebruiksomgeving (GUI)"
+      - section: "Gebruikshandleiding"
         contents:
+          - GUI/structure.qmd
+          - GUI/workings.qmd
           - GUI/general.qmd
           - GUI/models.qmd
+          - GUI/seizoenen.qmd
+          - GUI/volume.qmd
+          - GUI/patterns.qmd
+          - GUI/extra.qmd
       - section: "Technische documentatie"
-        contents:
-          - technical_docs/seizoen.qmd
-      - section: "Literatuur"
-        contents:
-          - literature.qmd
-
 
 format:
   html:

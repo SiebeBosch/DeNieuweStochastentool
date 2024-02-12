@@ -1,0 +1,18 @@
+---
+title: "Tabblad Patronen"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Met de stochast 'Patronen' bedoelen we in een stochastencontext doorgaans het 'tijdsverloop van de neerslag'. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan 'Patronen' ook staan voor het tijdsverloop van 'beekinstroom'.
+
+Echter in deze handleiding nemen we aan dat Patroon staat voor het tijdsverloop van de neerslag. Meer specifiek: doorgaans onderscheiden we hier de zeven buipatronen volgens [@STOWA2004].
+
+![De stochast 'Patronen'](img/frm_patterns.png "Patronen")
+
+Het staat iedereen echter vrij om eigen patronen te definiëren en daar een kans aan te verbinden. Dit kan allemaal in de database, in de volgende tabellen:
+
+* PATRONEN: bevat de naam van ieder patroon en zijn kans
+* NEERSLAGVERLOOP: bevat het tijdsverloop van ieder patroon, als fractie van de neerslagsom per tijdstap
+
+

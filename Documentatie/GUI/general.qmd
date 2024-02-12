@@ -4,13 +4,13 @@ bibliography: literatuur.bib
 reference-section-title: "Literatuur"
 ---
 
-Op het tabblad 'Algemeen' kan de gebruiker de algemene instellingen voor de stochastenanalyse opgeven. 
+Het tabblad 'Algemeen' bevat de algemene instellingen voor de stochastenanalyse. 
 
 ![Algemene instellingen](img/frm_algemeen.png "Algemene instellingen")
 
-# Onderdelen van dit formulier
+# Onderdelen van dit tabblad
 
-Alle onderdelen in dit tabblad worden vastgelegd in het XML-configuratiebestand. Bij het inladen van dit bestand worden de velden op het formulier gevuld, en bij het wegschrijven van de configuratie worden de veldwaarden weggeschreven naar het XML-bestand.
+Alle onderdelen op dit tabblad worden vastgelegd in het XML-configuratiebestand. Bij het inladen van dit bestand worden de velden op het formulier automatisch gevuld. Het wegschrijven van de configuratie zorgt dat de veldwaarden weer worden weggeschreven naar XML.
 
 ## Invoermap
 De invoermap bevat alle invoerbestanden die benodigd zijn voor de simulaties. Te denken valt aan een submap 'grondwater' met daarin de submappen 'droog', 'middeldroog', 'middelnat' en 'nat' en in elk van die mappen het modelbestand wat de onderhavige systeemtoestand beschrijft. In het geval van SOBEK en D-Hydro zou dit het unpaved.3b-bestand zijn.

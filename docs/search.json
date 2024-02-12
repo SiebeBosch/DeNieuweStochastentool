@@ -14,15 +14,154 @@
     "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
   },
   {
-    "objectID": "literature.html",
-    "href": "literature.html",
-    "title": "Literatuur",
+    "objectID": "GUI/workings.html",
+    "href": "GUI/workings.html",
+    "title": "Werking",
     "section": "",
-    "text": "STOWA, 2004, STATISTIEK VAN EXTREME NEERSLAG IN NEDERLAND, Rapportnummer 2004-26, ISBN 90-5773-261-0",
+    "text": "In dit hoofdstuk bespreken we hoe De Nieuwe Stochastentool werkt.",
     "crumbs": [
       "Tutorial",
-      "Literatuur",
-      "Literatuur"
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#grondgedachte",
+    "href": "GUI/workings.html#grondgedachte",
+    "title": "Werking",
+    "section": "grondgedachte",
+    "text": "grondgedachte\nDe grondgedachte is dat er een bepaalde modelschematisatie is (of meerdere in sequentie) waarmee een stochastenanalyse moet worden uitgevoerd.\nDe modelschematisatie moet worden doorgerekend met een groot aantal combinaties van randvoorwaarden en systeemtoestanden, bijvoorbeeld:\n\nNeerslagvolume\nNeerslagpatroon\nInitiële bodemvochttoestand\nBuitenwaterstand\nWind\nOnderhoudstoestand van de watergangen\nKans op kunstwerkfalen\n\nAls de kans van vóórkomen op elk van die combinaties op voorhand bekend is, kunnen we uit de rekenresultaten overschrijdingsgrafieken opstellen.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#voorbereiding",
+    "href": "GUI/workings.html#voorbereiding",
+    "title": "Werking",
+    "section": "voorbereiding",
+    "text": "voorbereiding\nDe gebruiker configureert De Nieuwe Stochastentool door een database in te stellen, aan te geven met welke neerslagduur moet worden gerekend, welk klimaatscenario moet worden toegepast en door de modelschematisatie aan te wijzen. Deze hele configuratie wordt vastgelegd in een .xml-bestand.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#stochasten-definieren",
+    "href": "GUI/workings.html#stochasten-definieren",
+    "title": "Werking",
+    "section": "stochasten definieren",
+    "text": "stochasten definieren\nDe gebruiker definieert stochasten en classificeert die. Iedere klasse van een stochast krijgt een representatieve waarde waarmee het model kan rekenen én een bijbehorende kans toegewezen. Al deze informatie komt in de database te staan.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#uitvoerlocaties-definieren",
+    "href": "GUI/workings.html#uitvoerlocaties-definieren",
+    "title": "Werking",
+    "section": "uitvoerlocaties definieren",
+    "text": "uitvoerlocaties definieren\nDe gebruiker geeft op voor welke resultaatlocaties hij of zij overschrijdingsgrafieken wil opstellen. In het geval van een 1D-model kunnen dit bijvoorbeeld observation points zijn en in het geval van een 2D-model kunnen dit alle 2D-cellen zijn.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#simulaties-klaarzetten",
+    "href": "GUI/workings.html#simulaties-klaarzetten",
+    "title": "Werking",
+    "section": "simulaties klaarzetten",
+    "text": "simulaties klaarzetten\nDe gebruiker stelt op het tabblad ‘Simulaties’ alle combinaties samen van stochastenklassen.\nStel dat er 10 klassen neerslagvolume zijn, 7 neerslagpatronen en 4 klassen initieel grondwatervolume, dan resulteert dit in 10 x 7 x 4 = 280 unieke simulaties. Voor iedere simulatie die wordt een kopie van de oorspronkelijke modelschematisatie geplaatst in een tijdelijke werkmap. Vervolgens injecteert De Nieuwe Stochastentool de modelbestanden die specifiek zijn voor die ene simulatie.\nBijvoorbeeld: een specifieke combinatie moet worden doorgerekend met 100 mm neerslag en onderhoudstoestand ‘ruw’. In dat geval zullen het betreffende neerslagbestand en ruwheidsbestand in het (gekopieerde) model worden geïnjecteerd, waarna het kan worden doorgerekend.\nIedere simulatie heeft zijn eigen submap in de tijdelijke werkmap. In de tijdelijke werkmap wordt een bestandje genaamd ‘Simulations.txt’ geplaatst, wat een overzicht geeft van alle simulaties. Dit bestandje gaan we later voeden aan het losse programma BAT_RUNR.EXE om de modellen daadwerkelijk door te rekenen.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#simulaties-doorrekenen",
+    "href": "GUI/workings.html#simulaties-doorrekenen",
+    "title": "Werking",
+    "section": "simulaties doorrekenen",
+    "text": "simulaties doorrekenen\nTot voor kort konden alle simulaties ook vanuit De Nieuwe Stochastentool zelf worden aangestuurd en gestart. Hier zijn we vanaf gestapt om verschillende redenen.\nSinds kort worden de simulaties gestart met het programma BAT_RUNR.EXE. Als argument geven we het pad naar het bestand simulations.txt mee. Dit bestand geeft een lijst van alle simulaties die moeten worden uitgevoerd.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#resultaten-kopiëren",
+    "href": "GUI/workings.html#resultaten-kopiëren",
+    "title": "Werking",
+    "section": "resultaten kopiëren",
+    "text": "resultaten kopiëren\nAls de simulaties gereed zijn, kan De Nieuwe Stochastentool de resultaatbestanden uit de tijdelijke werkmap ophalen en in de eigen resultatenmap plaatsen.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#resultaten-uitlezen",
+    "href": "GUI/workings.html#resultaten-uitlezen",
+    "title": "Werking",
+    "section": "resultaten uitlezen",
+    "text": "resultaten uitlezen\nMet de resultaatbestanden in de eigen resultatenmap is het mogelijk om ze uit te lezen. Voor iedere opgegeven resultaatlocatie leest het programma het gesimuleerde maximum uit iedere run en schrijft dit naar de database (tabel: RESULTATEN en RESULTATEN2D).",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#resultaten-nabewerken",
+    "href": "GUI/workings.html#resultaten-nabewerken",
+    "title": "Werking",
+    "section": "resultaten nabewerken",
+    "text": "resultaten nabewerken\nAls waarde + kans bekend zijn voor iedere simulatie, kan De Nieuwe Stochastentool een overschrijdingsgrafiek opstellen voor iedere locatie. Het resultaat komt te staan in de database in de tabellen HERHALINGSTIJDEN en HERHALINGSTIJDEN2D.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/workings.html#exporteren-en-publiceren",
+    "href": "GUI/workings.html#exporteren-en-publiceren",
+    "title": "Werking",
+    "section": "exporteren en publiceren",
+    "text": "exporteren en publiceren\nDe Nieuwe Stochastentool heeft mooie tools om de uitkomsten van de stochastenanalyse te publiceren in een webviewer en/of in Excel-formaat.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
+    "objectID": "GUI/UserManual.html",
+    "href": "GUI/UserManual.html",
+    "title": "Gebruikershandleiding",
+    "section": "",
+    "text": "Deze gebruikershandleiding beschrijft de volgende aspecten:\n\nDe structuur van een stochastenconfiguratie\nDe werking van De Nieuwe Stochastentool\nHet toevoegen van modelschematisaties\nSeizoen instellen als ‘stochast’\nDe stochast ‘Volume’ instellen\nDe stochast ‘Patroon’ instellen\nDe ‘extra’ stochasten instellen"
+  },
+  {
+    "objectID": "GUI/seizoenen.html",
+    "href": "GUI/seizoenen.html",
+    "title": "Tabblad Seizoenen",
+    "section": "",
+    "text": "Het tabblad ‘Seizoenen’ is het vertrekpunt voor het configureren van stochasten.\nStrikt genomen is ‘seizoen’ geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Seizoenen"
     ]
   },
   {
@@ -33,7 +172,7 @@
     "text": "Het tabblad ‘Modellen’ geeft een lijst met modelschematisaties die achtereenvolgens moeten worden doorgerekend in een stochastenanalyse.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Modellen"
     ]
   },
@@ -45,19 +184,62 @@
     "text": "Modelschematisatie toevoegen\nDoor op de &lt;+&gt; button te drukken verschijnt een nieuw formulier. Hierop kan de gebruiker aangeven welk type modelschematisatie moet worden toegevoegd, waar de modelbestanden en de executable staan en welke resultaatbestanden door het programma moeten worden bewaard.\n\n\n\n\nModel type: keuze voor het type model. Bijvoorbeeld DIMR of SOBEK\nExecutable: het pad naar de executable (of .bat file) waarmee het simulatieprogramma wordt gestart.\nArguments: eventuele argumenten die moeten worden meegegeven aan de executable.\nModelDir: de map waarin zich het referentiemodel bevindt waarmee de stochastenanalyse moet worden uitgevoerd. Bijvoorbeeld: c:.lit of c:_Config.xml.\nCasename: de naam van de case die moet worden doorgerekend. Dit is essentiëel voor SOBEK-modelschematisaties, maar niet voor bijv. DIMR-configuraties omdat dat type geen onderscheid maakt tussen projecten en cases. In dat geval staat het vrij om een eigen naam te verzinnen.\nWorkdir: een tijdelijke werkmap waarin de diverse modelruns kunnen worden weggeschreven.\nResultsfiles RR: Een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de neerslag-afvoermodule van het model. Bijvoorbeeld: upflowdt.his;pvstordt.his.\nResultsfiles Flow: een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de Flow-module. Bijvoorbeeld: model_his.nc;model_fou.nc.\n\nDoor op de button &lt; Add&gt; te drukken wordt de modelschematisatie met al zijn instellingen toegevoegd aan de tabel SIMULATIONMODELS in de database. Het datagrid op het formulier wordt ook meteen ververst.\nEen modelschematisatie kan ook worden verwijderd. Selecteer daartoe de rij(en) met modelschematisatie(s) die verwijderd moeten worden en druk op de &lt;-&gt;-button.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Modellen"
     ]
+  },
+  {
+    "objectID": "GUI/extra.html",
+    "href": "GUI/extra.html",
+    "title": "Tabblad Extra",
+    "section": "",
+    "text": "Het tabblad ‘Extra’ is bedoeld voor extra stochasten zoals hydraulische ruwheid en kunstwerkfalen. Het tabblad is generiek opgezet.\nWe illustreren de generieke opzet van deze extra stochasten aan de hand van het bovenstaande voorbeeld. Daar zijn twee extra stochasten te zien: onderhoudstoestand en kunstwerkfalen.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Extra"
+    ]
+  },
+  {
+    "objectID": "GUI/extra.html#extra-stochast-onderhoudstoestand",
+    "href": "GUI/extra.html#extra-stochast-onderhoudstoestand",
+    "title": "Tabblad Extra",
+    "section": "Extra stochast onderhoudstoestand",
+    "text": "Extra stochast onderhoudstoestand\nIn het geval van onderhoudstoestand zien we twee klassen: ruw en glad. Beide klassen verwijzen naar een eigen versie van het invoerbestand friction.dat (SOBEK-bestand).\nOmdat we onderscheid maken tussen zomer en winter, is het bovendien mogelijk om in de zomer een andere kansverdeling toe te kennen dan in de winter. Hier geven we aan dat de kans op ruwe watergangen in de zomer 0.8 is en in de winter 0.2. In de winter is dit precies andersom!",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Extra"
+    ]
+  },
+  {
+    "objectID": "GUI/extra.html#extra-stochast-kunstwerkfalen",
+    "href": "GUI/extra.html#extra-stochast-kunstwerkfalen",
+    "title": "Tabblad Extra",
+    "section": "Extra stochast kunstwerkfalen",
+    "text": "Extra stochast kunstwerkfalen\nIn het geval van kunstwerkfalen zien we eveneens twee klassen: faalt en faalt_niet. Ook hier verwijzen beide klassen naar een eigen invoerbestand; ditmaal control.def.\nIn dit geval hebben we geacht dat de kans op kunstwerkfalen in de zomer identiek is aan die in de winter, namelijk 0.001 per gebeurtenis.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Extra"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Over",
+    "section": "",
+    "text": "Deze website beschrijft de werking van het programma ‘De Nieuwe Stochastentool’, hierna aangeduid als ‘De Stochastentool’. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode.\nHet programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki door Hydroconsult opensource gemaakt en gepubliceerd op Github: https://github.com/SiebeBosch/DeNieuweStochastentool."
   },
   {
     "objectID": "GUI/general.html",
     "href": "GUI/general.html",
     "title": "Tabblad Algemeen",
     "section": "",
-    "text": "Op het tabblad ‘Algemeen’ kan de gebruiker de algemene instellingen voor de stochastenanalyse opgeven.",
+    "text": "Het tabblad ‘Algemeen’ bevat de algemene instellingen voor de stochastenanalyse.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -69,7 +251,7 @@
     "text": "Invoermap\nDe invoermap bevat alle invoerbestanden die benodigd zijn voor de simulaties. Te denken valt aan een submap ‘grondwater’ met daarin de submappen ‘droog’, ‘middeldroog’, ‘middelnat’ en ‘nat’ en in elk van die mappen het modelbestand wat de onderhavige systeemtoestand beschrijft. In het geval van SOBEK en D-Hydro zou dit het unpaved.3b-bestand zijn.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -81,7 +263,7 @@
     "text": "Uitvoermap\nDe uitvoermap bevat alle modeluitvoer waarvan de modelleur heeft vastgelegd dat die uit de modelschematisatie moeten worden gekopiëerd na completering van de simulatie. Welke bestanden dit zijn legt de modelleur vast op het tabblad ‘Modellen’. De lijst met bestanden komt dan terecht in de database, in de tabel ‘SIMULATIONMODELS’.\nIn het geval van SOBEK valt te denken aan bestanden als calcpnt.his (bevat waterhoogtes op rekenpunten)en in het geval van D-Hydro aan bestanden als naam_his.nc (bevat resultaten op observation points en kunstwerken) of naam_fou.nc (bevat maximale waterdieptes en -hoogtes voor zowel 1D als 2D).",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -93,7 +275,7 @@
     "text": "Resultatenmap\nDe resultatenmap bevat de uitkomsten van de stochastenanalyse, dus na de statistische nabewerking. In de submappen voor respectievelijk het klimaatscenario en duur komen dan de volgende zaken te staan:\n\nEen excel-bestand met daarin de overschrijdingswaarden voor iedere locatie\nEen ZIP-file met 1D-resultaten. Dit bestand bevat per 1D-locatie een .csv-bestand\nEen ZIP-file met de 2D-resultaten. Dit bestand bevat per 2D-locatie een .csv-bestand\nHet logbestand van de stochastenanalyse: logfile.txt",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -105,7 +287,7 @@
     "text": "Database\nIn het veld ‘database’ wordt verwezen naar de SQLite-database (.db) van het onderhavige project. Deze database is cruciaal voor een stochastenanalyse want hij bevat de diverse stochasten en hun kanstoedeling alsmede de berekende overschrijdingswaarden. Als bij aanvang een database ontbreekt, kan de gebruiker er één vervaardigen middels het menu ‘Database’ - ‘Nieuwe database creëren’.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -117,7 +299,7 @@
     "text": "Shapefile peilgebieden\nDit veld is optioneel. Door streefpeilen op te geven wordt extra context toegevoegd aan de overschrijdingsgrafieken: waterhoogtes worden dan geplot binnen de context van de streefwaterstanden zodat de mate van overschrijding in één oogopslag duidelijk wordt.\n\nVeld winterpeil en Veld zomerpeil\nAls de gebruiker een shapefile met streefpeilen heeft opgegeven dient hij hier te selecteren welk veld resp. winterstreefpeil en zomerstreefpeil bevat.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -129,7 +311,7 @@
     "text": "Meteo\nDoor op de &lt;+&gt; button te drukken voegt de gebruiker een nieuw meteo-station toe ten behoeve van de simulaties. Ieder station heeft drie kenmerken die moeten worden opgegeven:\n\nNaam: naam van het meteo-station\nSoort: het soort meteo-station (neerslag of verdamping)\nARF: de gebiedsreductiefactor (Area Reduction Factor). Een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie (STOWA 2019). Zelf de gebiedsreductiefactor berekenen kan op Meteobase.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -141,7 +323,7 @@
     "text": "Berekeningen\nGeef hier de gewenste duur van de hydrologische gebeurtenissen op. Er is keuze uit de standaardduren van STOWA: 24 uur, 48 uur, 96 uur, 192 uur en 216 uur. Soms komt het voor dat maximale waterstanden iets na de gebeurtenis optreden. Daarom is het mogelijk om de gebeurtenissen uit te breiden met een uitloopperiode.\nDe optie “aantal parallelle berekeningen” is komen te vervallen.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -153,7 +335,7 @@
     "text": "Output\nHier kan de gebruiker aangeven van welke module(s) de output moet worden nabewerkt tot overschrijdingsgrafieken. Op dit moment worden alleen 1D en/of 2D ondersteund.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
@@ -165,16 +347,81 @@
     "text": "Nabewerking\nOnder het kopje ‘nabewerking’ kiest de gebruiker het klimaatscenario. Hoe de overschrijdingsgrafieken uitpakken is afhankelijk van welke kansen het gekozen klimaatscenario toekent aan iedere doorgerekende gebeurtenis.\nOm te voorkomen dat ten onrechte de initiële toestand als ‘hoogste waarde tijdens de simulatie’ wordt aangemerkt, is het mogelijk om bij het uitlezen van de rekenresultaten een eerste percentage van het resultaat te negeren. Dit gebeurt onder de optie ‘lees resultaten vanaf percentage’. dus als de gebruiker hier 10 invult, worden uit het resultaat alleen de laatste 90% van de resultaatreeksen gebruikt om het maximum op te zoeken.\nDe optie ‘ook resultaten gecrashte sommen toestaan’ is op dit moment niet operationeel.",
     "crumbs": [
       "Tutorial",
-      "Gebruiksomgeving (GUI)",
+      "Gebruikshandleiding",
       "Tabblad Algemeen"
     ]
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "Over",
+    "objectID": "GUI/patterns.html",
+    "href": "GUI/patterns.html",
+    "title": "Tabblad Patronen",
     "section": "",
-    "text": "Deze website beschrijft de werking van het programma ‘De Nieuwe Stochastentool’, hierna aangeduid als ‘De Stochastentool’. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode.\nHet programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki door Hydroconsult opensource gemaakt en gepubliceerd op Github: https://github.com/SiebeBosch/DeNieuweStochastentool."
+    "text": "Met de stochast ‘Patronen’ bedoelen we in een stochastencontext doorgaans het ‘tijdsverloop van de neerslag’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Patronen’ ook staan voor het tijdsverloop van ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Patroon staat voor het tijdsverloop van de neerslag. Meer specifiek: doorgaans onderscheiden we hier de zeven buipatronen volgens (STOWA 2004).\n\n\n\nDe stochast ‘Patronen’\n\n\nHet staat iedereen echter vrij om eigen patronen te definiëren en daar een kans aan te verbinden. Dit kan allemaal in de database, in de volgende tabellen:\n\nPATRONEN: bevat de naam van ieder patroon en zijn kans\nNEERSLAGVERLOOP: bevat het tijdsverloop van ieder patroon, als fractie van de neerslagsom per tijdstap\n\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Patronen"
+    ]
+  },
+  {
+    "objectID": "GUI/structure.html",
+    "href": "GUI/structure.html",
+    "title": "Structuur",
+    "section": "",
+    "text": "In dit hoofdstuk bespreken we de structuur waarlangs een stochastenanalyse wordt opgezet in De Nieuwe Stochastentool.\nTwee bestanden vormen het hart van elke stochastenanalyse:\nHet is een goede gewoonte om het configuratiebestand en de database naast elkaar in dezelfde map te plaatsten. Mappen voor invoer, uitvoer en resultaten kunnen ook in die map worden geplaatst.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Structuur"
+    ]
+  },
+  {
+    "objectID": "GUI/structure.html#het-configuratiebestand-.xml",
+    "href": "GUI/structure.html#het-configuratiebestand-.xml",
+    "title": "Structuur",
+    "section": "Het configuratiebestand (.xml)",
+    "text": "Het configuratiebestand (.xml)\nIn dit bestand liggen de basale keuzes voor de stochastenanalyse vast, zoals:\n\nWelke mappen gebruiken we voor modelinvoer, modeluitvoer en resultaten?\nWaar staat de database?\nWelk klimaatscenario passen we toe op de rekenresultaten?\nMet welke neerslagduur gaan we rekenen?\n\nNa het inladen van het configuratiebestand worden al deze instellingen getoond op het tabblad ‘Algemeen’.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Structuur"
+    ]
+  },
+  {
+    "objectID": "GUI/structure.html#de-database-.db",
+    "href": "GUI/structure.html#de-database-.db",
+    "title": "Structuur",
+    "section": "De database (.db)",
+    "text": "De database (.db)\nDe database betreft een SQLite-database. De database bevat vooral stochasten, hun classificatie en kanstoedelingen. Daarnaast bevat de database de rekenresultaten voor alle opgegeven uitvoerlocaties.\nSQLite kan worden geopend in diverse opensource GIS-programma’s zoals QGis (dit is mogelijk doordat Geopackages ook SQlite zijn) of bijvoorbeeld DB Browser for SQLite.\nTer illustratie: de neerslagvolumes en hun kansen bevinden zich in de tabel “VOLUMES”. Voor iedere combinatie van klimaatscenario, duur en volumeklasse ligt vast met welke frequentie (uitgedrukt in aantal gebeurtenissen per jaar) gebeurtenissen uit die klasse voorkomen.\n\n\n\nDetail uit de tabel met neerslagvolumes\n\n\nIndien nodig, dan is het mogelijk een nieuwe, lege, database aan te maken via het menu ‘Database’ - ‘Nieuwe database creëren’.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Structuur"
+    ]
+  },
+  {
+    "objectID": "GUI/structure.html#mappenstructuur",
+    "href": "GUI/structure.html#mappenstructuur",
+    "title": "Structuur",
+    "section": "Mappenstructuur",
+    "text": "Mappenstructuur\nEr zijn mappen nodig voor de volgende aspecten van de stochastenanalyse:\n\nInvoer: voor invoerbestanden voor iedere klasse van iedere stochast. Bijvoorbeeld een unpaved.3b-bestand voor iedere klasse van de stochast initiële grondwatervulling. Of een boundaries.bc file voor iedere klasse van verhoogd buitenwater.\nUitvoer: voor de ruwe resultaatbestanden die, na een succesvolle simulatie, bewaard moeten blijven voor verdere nabewerking. Bijvoorbeeld calcpnt.his (SOBEK) of model_his.nc (D-HYDRO).\nResultaten: een map met het uiteindelijke resultaat van de stochastenanalyse: voor iedere uitvoerlocatie een complete overschrijdingstabel.\n\nHet is een goede gewoonte om in de map met de .xml en .db file ook deze drie mappen te plaatsen.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Structuur"
+    ]
+  },
+  {
+    "objectID": "GUI/volume.html",
+    "href": "GUI/volume.html",
+    "title": "Tabblad Volume",
+    "section": "",
+    "text": "Met ‘Volume’ bedoelen we in een stochastencontext doorgaans het ‘neerslagvolume’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Volume’ ook staan voor een stochast zoals ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Volume staat voor neerslagvolume.\n\n\n\nVolumes\n\n\nBij het inladen van het .xml configuratiebestand zal De Nieuwe Stochastentool eerst achterhalen welke seizoenen er zijn gedefinieerd (database: tabel SEASONS). Voor ieder seizoen verschijnt dan een grid met volumes en hun bijbehorende kansen (eigenlijk: frequenties). Deze waarden komen uit de database: tabel VOLUMES.\nDe waarden zijn uitgedrukt als het gemiddeld aantal gebeurtenissen per jaar wat in de betreffende klasse valt. De som van de frequenties uit alle klassen moet gelijk zijn aan 365.25 * 24/duur. Hiermee dwingen we af dat de stochastenklassen samen alle mogelijke gebeurtenissen vertegenwoordigen die in een jaar kunnen voorkomen. Anders gezegd: de som der kansen is 1.\nDoor in de grids de waarden onder USE aan te passen van 0 naar 1 of andersom is het mogelijk om klassen uit- danwel in te schakelen. De kans van een uitgeschakelde klasse wordt eerlijk herverdeeld over zijn twee nog actieve buren.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Volume"
+    ]
   },
   {
     "objectID": "index.html",
@@ -182,18 +429,6 @@
     "title": "De Nieuwe Stochastentool",
     "section": "",
     "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
-  },
-  {
-    "objectID": "technical_docs/seizoen.html",
-    "href": "technical_docs/seizoen.html",
-    "title": "Seizoen",
-    "section": "",
-    "text": "Het ‘seizoen’ is strikt genomen geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een zeer sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
-    "crumbs": [
-      "Tutorial",
-      "Technische documentatie",
-      "Seizoen"
-    ]
   },
   {
     "objectID": "tutorial/tutorial.html",

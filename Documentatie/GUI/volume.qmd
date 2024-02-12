@@ -1,0 +1,22 @@
+---
+title: "Tabblad Volume"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Met 'Volume' bedoelen we in een stochastencontext doorgaans het 'neerslagvolume'. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan 'Volume' ook staan voor een stochast zoals 'beekinstroom'.
+
+Echter in deze handleiding nemen we aan dat Volume staat voor neerslagvolume. 
+
+![Volumes](img/frm_volumes.png "Volumes")
+
+Bij het inladen van het .xml configuratiebestand zal De Nieuwe Stochastentool eerst achterhalen welke seizoenen er zijn gedefinieerd (database: tabel SEASONS). Voor ieder seizoen verschijnt dan een grid met volumes en hun bijbehorende kansen (eigenlijk: frequenties). Deze waarden komen uit de database: tabel VOLUMES. 
+
+De waarden zijn uitgedrukt als het gemiddeld aantal gebeurtenissen per jaar wat in de betreffende klasse valt. De som van de frequenties uit alle klassen moet gelijk zijn aan 365.25 * 24/duur. Hiermee dwingen we af dat de stochastenklassen samen alle mogelijke gebeurtenissen vertegenwoordigen die in een jaar kunnen voorkomen. Anders gezegd: de som der kansen is 1.
+
+Door in de grids de waarden onder USE aan te passen van 0 naar 1 of andersom is het mogelijk om klassen uit- danwel in te schakelen. De kans van een uitgeschakelde klasse wordt eerlijk herverdeeld over zijn twee nog actieve buren.
+
+
+
+
+

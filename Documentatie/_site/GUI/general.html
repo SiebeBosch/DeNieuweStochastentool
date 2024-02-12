@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -93,8 +113,8 @@ ul.task-list li input[type="checkbox"] {
 <span class="menu-text">Tutorial</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../GUI/GUI.html"> 
-<span class="menu-text">Gebruiksomgeving (GUI)</span></a>
+    <a class="nav-link" href="../GUI/UserManual.html"> 
+<span class="menu-text">Gebruikershandleiding</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../technical_docs/technicaldocumentation.html"> 
@@ -103,10 +123,6 @@ ul.task-list li input[type="checkbox"] {
   <li class="nav-item">
     <a class="nav-link" href="../about.html"> 
 <span class="menu-text">Over</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../literature.html"> 
-<span class="menu-text">Literatuur</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -119,7 +135,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../GUI/general.html">Gebruiksomgeving (GUI)</a></li><li class="breadcrumb-item"><a href="../GUI/general.html">Tabblad Algemeen</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../GUI/structure.html">Gebruikshandleiding</a></li><li class="breadcrumb-item"><a href="../GUI/general.html">Tabblad Algemeen</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -159,12 +175,18 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
- <span class="menu-text">Gebruiksomgeving (GUI)</span></a>
+ <span class="menu-text">Gebruikshandleiding</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../GUI/structure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Structuur</span></a>
+  </div>
+</li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../GUI/general.html" class="sidebar-item-text sidebar-link active">
@@ -177,41 +199,17 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Tabblad Modellen</span></a>
   </div>
 </li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
- <span class="menu-text">Technische documentatie</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../technical_docs/seizoen.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Seizoen</span></a>
+  <a href="../GUI/seizoenen.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tabblad Seizoenen</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
- <span class="menu-text">Literatuur</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../literature.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Literatuur</span></a>
-  </div>
-</li>
-      </ul>
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Technische documentatie</span></span>
   </li>
     </ul>
     </div>
@@ -223,7 +221,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#onderdelen-van-dit-formulier" id="toc-onderdelen-van-dit-formulier" class="nav-link active" data-scroll-target="#onderdelen-van-dit-formulier">Onderdelen van dit formulier</a>
+  <li><a href="#onderdelen-van-dit-tabblad" id="toc-onderdelen-van-dit-tabblad" class="nav-link active" data-scroll-target="#onderdelen-van-dit-tabblad">Onderdelen van dit tabblad</a>
   <ul class="collapse">
   <li><a href="#invoermap" id="toc-invoermap" class="nav-link" data-scroll-target="#invoermap">Invoermap</a></li>
   <li><a href="#uitvoermap" id="toc-uitvoermap" class="nav-link" data-scroll-target="#uitvoermap">Uitvoermap</a></li>
@@ -234,14 +232,18 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#veld-winterpeil-en-veld-zomerpeil" id="toc-veld-winterpeil-en-veld-zomerpeil" class="nav-link" data-scroll-target="#veld-winterpeil-en-veld-zomerpeil">Veld winterpeil en Veld zomerpeil</a></li>
   </ul></li>
   <li><a href="#meteo" id="toc-meteo" class="nav-link" data-scroll-target="#meteo">Meteo</a></li>
+  <li><a href="#berekeningen" id="toc-berekeningen" class="nav-link" data-scroll-target="#berekeningen">Berekeningen</a></li>
+  <li><a href="#output" id="toc-output" class="nav-link" data-scroll-target="#output">Output</a></li>
+  <li><a href="#nabewerking" id="toc-nabewerking" class="nav-link" data-scroll-target="#nabewerking">Nabewerking</a></li>
   </ul></li>
+  <li><a href="#bibliography" id="toc-bibliography" class="nav-link" data-scroll-target="#bibliography">Literatuur</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../GUI/general.html">Gebruiksomgeving (GUI)</a></li><li class="breadcrumb-item"><a href="../GUI/general.html">Tabblad Algemeen</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../GUI/structure.html">Gebruikshandleiding</a></li><li class="breadcrumb-item"><a href="../GUI/general.html">Tabblad Algemeen</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Tabblad Algemeen</h1>
 </div>
@@ -260,16 +262,16 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Op het tabblad ‘Algemeen’ kan de gebruiker de algemene instellingen voor de stochastenanalyse opgeven.</p>
+<p>Het tabblad ‘Algemeen’ bevat de algemene instellingen voor de stochastenanalyse.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img/frm_algemeen.png" title="Algemene instellingen" class="img-fluid figure-img"></p>
 <figcaption>Algemene instellingen</figcaption>
 </figure>
 </div>
-<section id="onderdelen-van-dit-formulier" class="level1">
-<h1>Onderdelen van dit formulier</h1>
-<p>Alle onderdelen in dit tabblad worden vastgelegd in het XML-configuratiebestand. Bij het inladen van dit bestand worden de velden op het formulier gevuld, en bij het wegschrijven van de configuratie worden de veldwaarden weggeschreven naar het XML-bestand.</p>
+<section id="onderdelen-van-dit-tabblad" class="level1">
+<h1>Onderdelen van dit tabblad</h1>
+<p>Alle onderdelen op dit tabblad worden vastgelegd in het XML-configuratiebestand. Bij het inladen van dit bestand worden de velden op het formulier automatisch gevuld. Het wegschrijven van de configuratie zorgt dat de veldwaarden weer worden weggeschreven naar XML.</p>
 <section id="invoermap" class="level2">
 <h2 class="anchored" data-anchor-id="invoermap">Invoermap</h2>
 <p>De invoermap bevat alle invoerbestanden die benodigd zijn voor de simulaties. Te denken valt aan een submap ‘grondwater’ met daarin de submappen ‘droog’, ‘middeldroog’, ‘middelnat’ en ‘nat’ en in elk van die mappen het modelbestand wat de onderhavige systeemtoestand beschrijft. In het geval van SOBEK en D-Hydro zou dit het unpaved.3b-bestand zijn.</p>
@@ -306,15 +308,38 @@ ul.task-list li input[type="checkbox"] {
 <p>Door op de &lt;+&gt; button te drukken voegt de gebruiker een nieuw meteo-station toe ten behoeve van de simulaties. Ieder station heeft drie kenmerken die moeten worden opgegeven:</p>
 <ul>
 <li>Naam: naam van het meteo-station</li>
-<li>Soort: het soort meteo-station (neerslag, verdamping)</li>
-<li>ARF: de gebiedsreductiefactor (Area Reduction Factor). Een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie Overeem.</li>
+<li>Soort: het soort meteo-station (neerslag of verdamping)</li>
+<li>ARF: de gebiedsreductiefactor (Area Reduction Factor). Een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie <span class="citation" data-cites="STOWA2019">(<a href="#ref-STOWA2019" role="doc-biblioref">STOWA 2019</a>)</span>. Zelf de gebiedsreductiefactor berekenen kan op <a href="https://www.meteobase.nl">Meteobase</a>.</li>
 </ul>
+</section>
+<section id="berekeningen" class="level2">
+<h2 class="anchored" data-anchor-id="berekeningen">Berekeningen</h2>
+<p>Geef hier de gewenste duur van de hydrologische gebeurtenissen op. Er is keuze uit de standaardduren van STOWA: 24 uur, 48 uur, 96 uur, 192 uur en 216 uur. Soms komt het voor dat maximale waterstanden iets na de gebeurtenis optreden. Daarom is het mogelijk om de gebeurtenissen uit te breiden met een uitloopperiode.</p>
+<p>De optie “aantal parallelle berekeningen” is komen te vervallen.</p>
+</section>
+<section id="output" class="level2">
+<h2 class="anchored" data-anchor-id="output">Output</h2>
+<p>Hier kan de gebruiker aangeven van welke module(s) de output moet worden nabewerkt tot overschrijdingsgrafieken. Op dit moment worden alleen 1D en/of 2D ondersteund.</p>
+</section>
+<section id="nabewerking" class="level2">
+<h2 class="anchored" data-anchor-id="nabewerking">Nabewerking</h2>
+<p>Onder het kopje ‘nabewerking’ kiest de gebruiker het klimaatscenario. Hoe de overschrijdingsgrafieken uitpakken is afhankelijk van welke kansen het gekozen klimaatscenario toekent aan iedere doorgerekende gebeurtenis.</p>
+<p>Om te voorkomen dat ten onrechte de initiële toestand als ‘hoogste waarde tijdens de simulatie’ wordt aangemerkt, is het mogelijk om bij het uitlezen van de rekenresultaten een eerste percentage van het resultaat te negeren. Dit gebeurt onder de optie ‘lees resultaten vanaf percentage’. dus als de gebruiker hier 10 invult, worden uit het resultaat alleen de laatste 90% van de resultaatreeksen gebruikt om het maximum op te zoeken.</p>
+<p>De optie ‘ook resultaten gecrashte sommen toestaan’ is op dit moment niet operationeel.</p>
 
 
 </section>
 </section>
+<section id="bibliography" class="level1 unnumbered">
 
-</main> <!-- /main -->
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Literatuur</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-STOWA2019" class="csl-entry" role="listitem">
+STOWA. 2019. <span>“<span class="nocase">STATISTIEK VAN EXTREME GEBIEDSNEERSLAG; deelrapport 4</span>.”</span> {Rapport} 2019-19. <span>STOWA</span>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

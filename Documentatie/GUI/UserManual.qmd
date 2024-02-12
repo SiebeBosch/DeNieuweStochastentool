@@ -1,0 +1,18 @@
+---
+title: "Gebruikershandleiding"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Deze gebruikershandleiding beschrijft de volgende aspecten:
+
+1. [De structuur van een stochastenconfiguratie](structure.qmd)
+2. [De werking van De Nieuwe Stochastentool](workings.qmd)
+3. [Het toevoegen van modelschematisaties](models.qmd)
+4. [Seizoen instellen als 'stochast'](seizoenen.qmd)
+5. [De stochast 'Volume' instellen](volume.qmd)
+6. [De stochast 'Patroon' instellen](patterns.qmd)
+7. [De 'extra' stochasten instellen](extra.qmd)
+
+
+

@@ -1,0 +1,50 @@
+---
+title: "Structuur"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+In dit hoofdstuk bespreken we de structuur waarlangs een stochastenanalyse wordt opgezet in De Nieuwe Stochastentool. 
+
+Twee bestanden vormen het hart van elke stochastenanalyse:
+
+* Het configuratiebestand (.xml)
+* De database (.db)
+
+Het is een goede gewoonte om het configuratiebestand en de database naast elkaar in dezelfde map te plaatsten. Mappen voor invoer, uitvoer en resultaten kunnen ook in die map worden geplaatst.
+
+## Het configuratiebestand (.xml)
+In dit bestand liggen de basale keuzes voor de stochastenanalyse vast, zoals:
+
+- Welke mappen gebruiken we voor modelinvoer, modeluitvoer en resultaten?
+- Waar staat de database?
+- Welk klimaatscenario passen we toe op de rekenresultaten?
+- Met welke neerslagduur gaan we rekenen?
+
+Na het inladen van het configuratiebestand worden al deze instellingen getoond op het tabblad 'Algemeen'.
+
+## De database (.db)
+De database betreft een SQLite-database. De database bevat vooral stochasten, hun classificatie en kanstoedelingen. Daarnaast bevat de database de rekenresultaten voor alle opgegeven uitvoerlocaties.
+
+SQLite kan worden geopend in diverse opensource GIS-programma's zoals [QGis](https://qgis.org/en/site/) (dit is mogelijk doordat Geopackages ook SQlite zijn) of bijvoorbeeld [DB Browser for SQLite](https://sqlitebrowser.org/).
+
+Ter illustratie: de neerslagvolumes en hun kansen bevinden zich in de tabel "VOLUMES". Voor iedere combinatie van klimaatscenario, duur en volumeklasse ligt vast met welke frequentie (uitgedrukt in aantal gebeurtenissen per jaar) gebeurtenissen uit die klasse voorkomen. 
+
+![Detail uit de tabel met neerslagvolumes](img/db_volumes.png "Neerslagvolumes")
+
+Indien nodig, dan is het mogelijk een nieuwe, lege, database aan te maken via het menu 'Database' - 'Nieuwe database creëren'.
+
+## Mappenstructuur
+Er zijn mappen nodig voor de volgende aspecten van de stochastenanalyse:
+
+* Invoer: voor invoerbestanden voor iedere klasse van iedere stochast. Bijvoorbeeld een unpaved.3b-bestand voor iedere klasse van de stochast initiële grondwatervulling. Of een boundaries.bc file voor iedere klasse van verhoogd buitenwater.
+* Uitvoer: voor de ruwe resultaatbestanden die, na een succesvolle simulatie, bewaard moeten blijven voor verdere nabewerking. Bijvoorbeeld calcpnt.his (SOBEK) of model_his.nc (D-HYDRO).
+* Resultaten: een map met het uiteindelijke resultaat van de stochastenanalyse: voor iedere uitvoerlocatie een complete overschrijdingstabel.
+
+Het is een goede gewoonte om in de map met de .xml en .db file ook deze drie mappen te plaatsen.
+
+
+
+
+
+
