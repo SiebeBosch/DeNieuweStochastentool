@@ -9,6 +9,7 @@ website:
       - tutorial/tutorial.qmd
       - GUI/UserManual.qmd
       - technical_docs/technicaldocumentation.qmd
+      - cases/cases.qmd
       - about.qmd
   sidebar:
     style: "docked"
@@ -28,7 +29,10 @@ website:
           - GUI/patterns.qmd
           - GUI/extra.qmd
       - section: "Technische documentatie"
-
+      - section: "Praktijkcases"
+        contents:
+          - cases/denbosch.qmd
+          
 format:
   html:
     theme: cosmo

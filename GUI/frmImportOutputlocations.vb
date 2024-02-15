@@ -1,4 +1,5 @@
 ﻿
+Imports Microsoft.VisualBasic.Logging
 Imports STOCHLIB.General
 Public Class frmImportOutputlocations
     Private Setup As clsSetup
@@ -82,7 +83,6 @@ Public Class frmImportOutputlocations
                     'this is the model we will be importing locations for
                     'this routine expands the database table OUTPUTLOCATIONS with the SOBEK H points
                     Dim dtLocations As New DataTable
-                    Dim Lat As Double, Lon As Double
 
                     Dim SubcatchmentsSF As STOCHLIB.clsShapeFile = Nothing
                     If System.IO.File.Exists(SubcatchmentShapefile) Then
@@ -95,139 +95,11 @@ Public Class frmImportOutputlocations
                     End If
 
                     If dtModels.Rows(i)("MODELTYPE") = "SOBEK" Then
-
-                        'read the model schematization
-                        If Not Setup.SOBEKData.ReadProject(ModelDir, True) Then Throw New Exception("SOBEK Project could Not be read: " & ModelDir)
-                        If Not Setup.SetAddSobekProject(ModelDir, True, True) Then Throw New Exception("Error adding SOBEK project " & ModelDir)
-                        If Not Setup.SOBEKData.ActiveProject.SetActiveCase(CaseName) Then Throw New Exception("Error setting sobek case as active: " & CaseName)
-                        If Not Setup.SOBEKData.ActiveProject.ActiveCase.Read(False, True, False, False, False, "") Then Throw New Exception("Error reading active SOBEK case: " & CaseName)
-
-                        If chkCalculationPoints.Checked Then
-                            Dim WLPoints As New Dictionary(Of String, STOCHLIB.clsSbkVectorPoint)
-                            Dim WLPoint As STOCHLIB.clsSbkVectorPoint
-
-                            'read all waterlevel points from the model schematization
-                            If Not Setup.SOBEKData.ActiveProject.ActiveCase.CFTopo.ReadCalculationPointsByReach() Then Throw New Exception("Error reading calculation points.")
-
-                            WLPoints = New Dictionary(Of String, STOCHLIB.clsSbkVectorPoint)
-                            WLPoints = Setup.SOBEKData.ActiveProject.ActiveCase.CFTopo.CollectAllWaterLevelPoints
-                            Me.Setup.GeneralFunctions.UpdateProgressBar("Writing points to database...", 0, 10, True)
-
-                            j = 0
-                            Me.Setup.GeneralFunctions.UpdateProgressBar("", 0, 10, True)
-                            For j = 0 To WLPoints.Count - 1
-                                Me.Setup.GeneralFunctions.UpdateProgressBar("", j, WLPoints.Count)
-                                WLPoint = WLPoints.Values(j)
-
-                                'apply the selection by ID
-                                If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, WLPoint.ID, True) Then
-
-                                    'compute the map coordinates of our point
-                                    Setup.GeneralFunctions.RD2WGS84(WLPoint.X, WLPoint.Y, Lat, Lon)
-
-                                    'retrieve the target levels from our subcatchments shapefile
-                                    'v2.2.2 removed the compulsory existence of a subcatchments shapefile
-                                    Dim ShapeIdx As Integer = -1
-                                    If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(WLPoint.X, WLPoint.Y)
-                                    If ShapeIdx >= 0 Then
-                                        'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
-                                        WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
-                                        ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & WLPoint.ID & "','" & WLPoint.ID & "','" & ModelID & "','FLOW','" & "Water" & "','calcpnt.his','" & cmbResultsFilter.Text & "'," & WLPoint.X & "," & WLPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
-                                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-                                    Else
-                                        'could not find target levels. Only write the location and parameters
-                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & WLPoint.ID & "','" & WLPoint.ID & "','" & ModelID & "','FLOW','" & "Water" & "','calcpnt.his','" & cmbResultsFilter.Text & "'," & WLPoint.X & "," & WLPoint.Y & "," & Lat & "," & Lon & ");"
-                                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-                                        Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & WLPoint.ID)
-                                    End If
-                                End If
-                            Next
-                        End If
-
+                        ImportSOBEKOutputLocations(ModelID, ModelDir, CaseName, IDPatterns, SubcatchmentsSF, WPFieldIdx, ZPFieldIdx)
                     ElseIf dtModels.Rows(i)("MODELTYPE") = "DIMR" OrElse dtModels.Rows(i)("MODELTYPE") = "DHYDROSERVER" Then
-
-                        'read results locations from a D-HYDRO model
-                        Me.Setup.Log.AddMessage("Setting DIMR Project to " & ModelDir)
-                        If Not Setup.SetDIMRProject(ModelDir) Then Throw New Exception("DIMR Project could not be set: " & ModelDir)
-
-                        Me.Setup.Log.AddMessage("Reading DIMRData")
-                        If Not Setup.DIMRData.ReadAll() Then Throw New Exception("DIMR Project could not be read: " & ModelDir)
-
-                        If chkObservationPoints1D.Checked Then
-                            Me.Setup.Log.AddMessage("Reading observation points.")
-
-                            j = 0
-                            n = Setup.DIMRData.FlowFM.Observationpoints1D.Count
-                            For Each ObsPoint As STOCHLIB.cls1DBranchObject In Setup.DIMRData.FlowFM.Observationpoints1D.Values
-
-                                ObsPoint.CalcCoordinates()
-
-                                j += 1
-                                Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
-
-                                'apply the selection by ID
-                                If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, ObsPoint.ID, True) Then
-                                    'compute the map coordinates of our point
-                                    Setup.GeneralFunctions.RD2WGS84(ObsPoint.x, ObsPoint.Y, Lat, Lon)
-
-                                    Dim ShapeIdx As Integer = -1
-                                    If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(ObsPoint.X, ObsPoint.Y)
-                                    If ShapeIdx > 0 Then
-                                        'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
-                                        WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
-                                        ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
-                                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-                                    Else
-                                        'could not find target levels. Only write the location and parameters
-                                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
-                                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
-                                        Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & ObsPoint.ID)
-                                    End If
-                                End If
-                            Next
-                        End If
-
-
-                        If chkFouFiles.Checked Then
-
-                            'we will retrieve our results statistics from the Fourier files
-                            Setup.DIMRData.FlowFM.ReadCellCentersFromFouFile()
-
-                            Using cmd As New SQLite.SQLiteCommand
-                                cmd.Connection = Me.Setup.SqliteCon
-                                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
-
-                                    n = Setup.DIMRData.FlowFM.CellCenterpoints2D.Count
-                                    For j = 0 To Setup.DIMRData.FlowFM.CellCenterpoints2D.Count - 1
-                                        Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
-                                        Dim X As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).X
-                                        Dim Y As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).Y
-
-                                        'compute the map coordinates of our point
-                                        Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
-
-                                        'retrieve the target levels from our subcatchments shapefile
-                                        Dim ShapeIdx As Integer = -1
-                                        If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(X, Y)
-                                        If ShapeIdx > 0 Then
-                                            'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
-                                            WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
-                                            ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
-                                            cmd.ExecuteNonQuery()
-                                        Else
-                                            'could not find target levels. Only write the location and parameters
-                                            cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
-                                            cmd.ExecuteNonQuery()
-                                        End If
-                                    Next
-                                    transaction.Commit() 'this is where the bulk insert is finally executed.
-                                End Using
-                            End Using
-                        End If
+                        ImportDIMROutputLocations(ModelID, ModelDir, IDPatterns, SubcatchmentsSF, WPFieldIdx, ZPFieldIdx)
+                    ElseIf dtModels.Rows(i)("MODELTYPE") = "SUMAQUA" Then
+                        ImportSUMAQUAOutputLocations(ModelID, ModelDir, CaseName, IDPatterns)
                     End If
 
                     If SubcatchmentsSF IsNot Nothing Then
@@ -251,6 +123,217 @@ Public Class frmImportOutputlocations
             Me.Close()
         End Try
     End Sub
+
+    Public Function ImportSUMAQUAOutputLocations(ModelID As String, ModelDir As String, CaseName As String, IDPatterns As List(Of String)) As Boolean
+        Try
+            Dim j As Integer, n As Integer
+            Dim Lat As Double, Lon As Double
+            Dim WP As Double, ZP As Double
+            Dim query As String
+
+
+            'read the model schematization
+            If Not Setup.SumaquaData.SetProject(ModelDir, CaseName) Then Throw New Exception("SUMAQUA Project could Not be read: " & ModelDir)
+
+            'read the output locations from the model schematization
+            Setup.SumaquaData.ReadOutput()
+
+            If chkOutput0D.Checked Then
+                Me.Setup.Log.AddMessage("Reading results locations.")
+
+                j = 0
+                n = Setup.DIMRData.FlowFM.Observationpoints1D.Count
+                For Each ResultsPoint As STOCHLIB.clsSumaquaOutputLocation In Setup.SumaquaData.OutputLocations.Values
+
+                    j += 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+
+                    'apply the selection by ID
+                    If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, ResultsPoint.ID, True) Then
+                        'compute the map coordinates of our point
+                        Setup.GeneralFunctions.RD2WGS84(ResultsPoint.X, ResultsPoint.Y, Lat, Lon)
+
+                        query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ResultsPoint.ID & "','" & ResultsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ResultsPoint.X & "," & ResultsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+
+                        'Dim ShapeIdx As Integer = -1
+                        'If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(ObsPoint.X, ObsPoint.Y)
+                        'If ShapeIdx > 0 Then
+                        '    'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                        '    WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                        '    ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                        '    query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                        '    Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                        'Else
+                        '    'could not find target levels. Only write the location and parameters
+                        '    query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
+                        '    Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                        '    Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & ObsPoint.ID)
+                        'End If
+                    End If
+                Next
+            End If
+
+        Catch ex As Exception
+
+        End Try
+    End Function
+
+    Public Function ImportSOBEKOutputLocations(ModelID As String, ModelDir As String, CaseName As String, IDPatterns As List(Of String), SubcatchmentsSF As STOCHLIB.clsShapeFile, WPFieldIdx As Integer, ZPFieldIdx As Integer) As Boolean
+        Try
+            Dim Lat As Double, Lon As Double
+            Dim j As Integer
+            Dim WP As Double, ZP As Double
+            Dim query As String
+
+
+            'read the model schematization
+            If Not Setup.SOBEKData.ReadProject(ModelDir, True) Then Throw New Exception("SOBEK Project could Not be read: " & ModelDir)
+            If Not Setup.SetAddSobekProject(ModelDir, True, True) Then Throw New Exception("Error adding SOBEK project " & ModelDir)
+            If Not Setup.SOBEKData.ActiveProject.SetActiveCase(CaseName) Then Throw New Exception("Error setting sobek case as active: " & CaseName)
+            If Not Setup.SOBEKData.ActiveProject.ActiveCase.Read(False, True, False, False, False, "") Then Throw New Exception("Error reading active SOBEK case: " & CaseName)
+
+            If chkCalculationPoints1D.Checked Then
+                Dim WLPoints As New Dictionary(Of String, STOCHLIB.clsSbkVectorPoint)
+                Dim WLPoint As STOCHLIB.clsSbkVectorPoint
+
+                'read all waterlevel points from the model schematization
+                If Not Setup.SOBEKData.ActiveProject.ActiveCase.CFTopo.ReadCalculationPointsByReach() Then Throw New Exception("Error reading calculation points.")
+
+                WLPoints = New Dictionary(Of String, STOCHLIB.clsSbkVectorPoint)
+                WLPoints = Setup.SOBEKData.ActiveProject.ActiveCase.CFTopo.CollectAllWaterLevelPoints
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Writing points to database...", 0, 10, True)
+
+                j = 0
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", 0, 10, True)
+                For j = 0 To WLPoints.Count - 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", j, WLPoints.Count)
+                    WLPoint = WLPoints.Values(j)
+
+                    'apply the selection by ID
+                    If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPatterns, WLPoint.ID, True) Then
+
+                        'compute the map coordinates of our point
+                        Setup.GeneralFunctions.RD2WGS84(WLPoint.X, WLPoint.Y, Lat, Lon)
+
+                        'retrieve the target levels from our subcatchments shapefile
+                        'v2.2.2 removed the compulsory existence of a subcatchments shapefile
+                        Dim ShapeIdx As Integer = -1
+                        If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(WLPoint.X, WLPoint.Y)
+                        If ShapeIdx >= 0 Then
+                            'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                            WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                            ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & WLPoint.ID & "','" & WLPoint.ID & "','" & ModelID & "','FLOW','" & "Water" & "','calcpnt.his','" & cmbResultsFilter.Text & "'," & WLPoint.X & "," & WLPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                        Else
+                            'could not find target levels. Only write the location and parameters
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & WLPoint.ID & "','" & WLPoint.ID & "','" & ModelID & "','FLOW','" & "Water" & "','calcpnt.his','" & cmbResultsFilter.Text & "'," & WLPoint.X & "," & WLPoint.Y & "," & Lat & "," & Lon & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                            Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & WLPoint.ID)
+                        End If
+                    End If
+                Next
+            End If
+        Catch ex As Exception
+
+        End Try
+    End Function
+
+    Public Function ImportDIMROutputLocations(ModelID As String, ModelDir As String, IDPAtterns As List(Of String), SubcatchmentsSF As STOCHLIB.clsShapeFile, WPFieldIdx As Integer, ZPFieldIdx As Integer) As Boolean
+        Try
+            Dim Lat As Double, Lon As Double
+            Dim j As Integer, n As Integer
+            Dim WP As Double, ZP As Double
+            Dim query As String
+
+            'read results locations from a D-HYDRO model
+            Me.Setup.Log.AddMessage("Setting DIMR Project to " & ModelDir)
+            If Not Setup.SetDIMRProject(ModelDir) Then Throw New Exception("DIMR Project could not be set: " & ModelDir)
+
+            Me.Setup.Log.AddMessage("Reading DIMRData")
+            If Not Setup.DIMRData.ReadAll() Then Throw New Exception("DIMR Project could not be read: " & ModelDir)
+
+            If chkObservationPoints1D.Checked Then
+                Me.Setup.Log.AddMessage("Reading observation points.")
+
+                j = 0
+                n = Setup.DIMRData.FlowFM.Observationpoints1D.Count
+                For Each ObsPoint As STOCHLIB.cls1DBranchObject In Setup.DIMRData.FlowFM.Observationpoints1D.Values
+
+                    ObsPoint.CalcCoordinates()
+
+                    j += 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+
+                    'apply the selection by ID
+                    If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPAtterns, ObsPoint.ID, True) Then
+                        'compute the map coordinates of our point
+                        Setup.GeneralFunctions.RD2WGS84(ObsPoint.X, ObsPoint.Y, Lat, Lon)
+
+                        Dim ShapeIdx As Integer = -1
+                        If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(ObsPoint.X, ObsPoint.Y)
+                        If ShapeIdx > 0 Then
+                            'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                            WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                            ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                        Else
+                            'could not find target levels. Only write the location and parameters
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                            Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & ObsPoint.ID)
+                        End If
+                    End If
+                Next
+            End If
+
+
+            If chkFouFiles.Checked Then
+
+                'we will retrieve our results statistics from the Fourier files
+                Setup.DIMRData.FlowFM.ReadCellCentersFromFouFile()
+
+                Using cmd As New SQLite.SQLiteCommand
+                    cmd.Connection = Me.Setup.SqliteCon
+                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
+
+                        n = Setup.DIMRData.FlowFM.CellCenterpoints2D.Count
+                        For j = 0 To Setup.DIMRData.FlowFM.CellCenterpoints2D.Count - 1
+                            Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+                            Dim X As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).X
+                            Dim Y As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).Y
+
+                            'compute the map coordinates of our point
+                            Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
+
+                            'retrieve the target levels from our subcatchments shapefile
+                            Dim ShapeIdx As Integer = -1
+                            If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(X, Y)
+                            If ShapeIdx > 0 Then
+                                'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                                WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                                ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                                cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                                cmd.ExecuteNonQuery()
+                            Else
+                                'could not find target levels. Only write the location and parameters
+                                cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
+                                cmd.ExecuteNonQuery()
+                            End If
+                        Next
+                        transaction.Commit() 'this is where the bulk insert is finally executed.
+                    End Using
+                End Using
+            End If
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("error in function ImportDIMROutputLocations: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     Private Sub cmbModelID_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbModelID.SelectedIndexChanged
 

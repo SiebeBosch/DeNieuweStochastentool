@@ -562,7 +562,7 @@ Public Class clsStochastenRuns
                     Done = True
                     For Each myModel In StochastenAnalyse.Models.Values
                         For Each myFile In myModel.ResultsFiles.Files.Values
-                            If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
+                            If Not File.Exists(Path.Combine(myRun.OutputFilesDir, myFile.FileName)) Then
                                 Done = False
                             End If
                         Next

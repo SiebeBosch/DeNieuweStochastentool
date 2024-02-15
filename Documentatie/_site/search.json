@@ -464,5 +464,79 @@
       "Gebruikshandleiding",
       "Werking"
     ]
+  },
+  {
+    "objectID": "cases.html",
+    "href": "cases.html",
+    "title": "Praktijkcases",
+    "section": "",
+    "text": "Dit hoofdstuk behandelt een aantal praktijkcases waarbij we De Nieuwe Stochastentool hebben toegepast.\n\nDen Bosch met het CM-model van Sumaqua"
+  },
+  {
+    "objectID": "cases/cases.html",
+    "href": "cases/cases.html",
+    "title": "Praktijkcases",
+    "section": "",
+    "text": "Dit hoofdstuk behandelt een aantal praktijkcases waarbij we De Nieuwe Stochastentool hebben toegepast.\n\nDen Bosch met het CM-model van Sumaqua"
+  },
+  {
+    "objectID": "cases/denbosch.html",
+    "href": "cases/denbosch.html",
+    "title": "Den Bosch",
+    "section": "",
+    "text": "Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.\n\n\n\nOppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel\n\n\nDe modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#inleiding",
+    "href": "cases/denbosch.html#inleiding",
+    "title": "Den Bosch",
+    "section": "",
+    "text": "Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.\n\n\n\nOppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel\n\n\nDe modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#opgave",
+    "href": "cases/denbosch.html#opgave",
+    "title": "Den Bosch",
+    "section": "Opgave",
+    "text": "Opgave\nDe opdracht was om te onderzoeken in hoeverre de de volgende twee grootheden relevant zijn als stochast:\n\ninitiële vulling van het oppervlaktewatersysteem van Den Bosch\nde lokale beekinstromingen en riooloverstorten binnen het Bossche gebied\n\nZouden dit namelijk geen relevante stochasten blijken, dan zou dit een complete stochastenanalyse voor Den Bosch vele malen eenvoudiger maken. De opdracht werd daarmee feitelijk: het uitvoeren van een gevoeligheidsanalyse om te achterhalen of (een van) beide grootheden als stochast moeten worden meegenomen in een hoogwaterstudie voor Den Bosch.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#de-modelschematisatie",
+    "href": "cases/denbosch.html#de-modelschematisatie",
+    "title": "Den Bosch",
+    "section": "De modelschematisatie",
+    "text": "De modelschematisatie\nDe modellen van Sumaqua draaien als stand-alone executable. Voorwaarde om ze te kunnen draaien is dat de Matlab Runtime versie 4.19 op het systeem geïnstalleerd is. Input van de modellen gaat via twee Matlab-bestanden (.mat):\n\nInit_V_GL + naam + .mat: bevat de initiële vulling van het systeem\nInput_ + naam + .mat: bevat de hydraulische randvoorwaarden, zowel debiet als waterhoogte",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#uitdagingen",
+    "href": "cases/denbosch.html#uitdagingen",
+    "title": "Den Bosch",
+    "section": "Uitdagingen",
+    "text": "Uitdagingen\nOm modelschematisaties van dit type te kunnen ondersteunen was een aantal aanpassingen aan De Nieuwe Stochastentool nodig. Om te beginnen moesten er lees- en schrijfroutines komen voor de .mat files. Dit maakten we mogelijk door gebruik te maken van de library csmatio.\nMaar de belangrijkste uitdaging was eigenlijk dat deze modellen data voor de stochast ‘buitenwater’ en ‘beekafvoer’ combineren in één bestand. Om dit te implementeren in De Nieuwe Stochastentool zouden we per stochast moeten kunnen aangeven in welke kolom in dat bestand de tijdreeks moest worden geschreven.\nEen dergelijk grote doorontwikkeling viel buiten de scope van het project. Daarom is het klaarzetten van de combinaties van beekafvoer en maaswaterstand een stuk voorbewerking geworden. Met behulp van het programma HydroToolbox (Hydroconsult) deden we de tijdreeksanalyse en classificatie en schreven het resultaat naar een groot aantal .mat files.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
   }
 ]

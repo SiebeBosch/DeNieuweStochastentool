@@ -4808,7 +4808,28 @@ Public Class frmStochasten
     End Sub
 
     Private Sub btnSimulate_Click(sender As Object, e As EventArgs) Handles btnSimulate.Click
+        Try
+            ' Get the directory of the current application
+            Dim appPath As String = AppDomain.CurrentDomain.BaseDirectory
+            Dim batRunrPath As String
 
+            If Debugger.IsAttached Then
+                batRunrPath = "c:\Program Files\Hydroconsult\BAT_RUNR\BAT_RUNR.exe"
+            Else
+                batRunrPath = Path.Combine(appPath, "BAT_RUNR.EXE")
+            End If
+
+            For Each myModel In Me.Setup.StochastenAnalyse.Models.Values
+                ' Define the arguments to pass
+                ' Assuming arg1 and arg2 are your internal variables
+                Dim arg1 As String = myModel.TempWorkDir & "\simulations.txt"
+                Dim arg2 As Integer = Me.Setup.GeneralFunctions.ForceNumeric(txtMaxParallel.Text, "Maximum number of simultaneous computations", 4, enmMessageType.Message)
+                Dim arguments As String = arg1 & " " & arg2
+                Process.Start(batRunrPath, arguments)
+            Next
+        Catch ex As Exception
+            MessageBox.Show("Failed to start BAT_RUNR.EXE: " & ex.Message)
+        End Try
     End Sub
 
     Private Sub btnCopyResults_Click(sender As Object, e As EventArgs) Handles btnCopyResults.Click

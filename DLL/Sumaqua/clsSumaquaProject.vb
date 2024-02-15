@@ -8,28 +8,53 @@ Imports sds = Microsoft.Research.Science.Data
 Imports Microsoft.Research.Science.Data.Imperative
 
 
+
 Public Class clsSumaquaProject
     Private Setup As clsSetup
     Public ProjectDir As String
     Public ProjectName As String
     Public ProgramsDir As String
 
-    Public BasinFile As clsHBVBasinFile
+    Dim InputSubdir As String = "INPUT"
+    Dim OutputSubdir As String = "OUTPUT"
+
+    Public OutputLocations As Dictionary(Of String, clsSumaquaOutputLocation)
+    Public ResultsFile As clsMatFile
 
     Public Sub New(ByRef mySetup As clsSetup)
         Setup = mySetup
+        OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocation)
     End Sub
 
     Public Sub New(ByRef mySetup As clsSetup, myProjectDir As String, myProjectName As String)
         Setup = mySetup
         ProjectDir = myProjectDir
         ProjectName = myProjectName
+        OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocation)
+
+        Dim myResultsPath As String = GetResultsPath()
+        ResultsFile = New clsMatFile(Me.Setup, myResultsPath)
+
     End Sub
+
+    Public Function ReadOutput() As Boolean
+        Return ResultsFile.Read(OutputLocations)
+    End Function
+
+    Public Function GetResultsPath() As String
+        Return Path.Combine(ProjectDir, OutputSubdir, "OUTPUT_" & ProjectName & ".mat")
+    End Function
 
     Public Function SetProject(myProjectDir As String, myProjectName As String) As Boolean
         Try
             ProjectDir = myProjectDir
             ProjectName = myProjectName
+
+
+            Dim myResultsPath As String = GetResultsPath()
+            ResultsFile = New clsMatFile(Me.Setup, myResultsPath)
+
+
             Return True
         Catch ex As Exception
             Return False

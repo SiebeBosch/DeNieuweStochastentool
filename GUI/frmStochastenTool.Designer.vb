@@ -411,7 +411,7 @@ Partial Class frmStochasten
         '
         Me.ModelToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToevoegenToolStripMenuItem})
         Me.ModelToolStripMenuItem.Name = "ModelToolStripMenuItem"
-        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.ModelToolStripMenuItem.Size = New System.Drawing.Size(191, 26)
         Me.ModelToolStripMenuItem.Text = "Model"
         '
         'ToevoegenToolStripMenuItem
@@ -424,7 +424,7 @@ Partial Class frmStochasten
         '
         Me.UitvoerlocatiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImporterenToolStripMenuItem1, Me.AlleVerwijderenToolStripMenuItem})
         Me.UitvoerlocatiesToolStripMenuItem.Name = "UitvoerlocatiesToolStripMenuItem"
-        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.UitvoerlocatiesToolStripMenuItem.Size = New System.Drawing.Size(191, 26)
         Me.UitvoerlocatiesToolStripMenuItem.Text = "Uitvoerlocaties"
         '
         'ImporterenToolStripMenuItem1
@@ -456,19 +456,19 @@ Partial Class frmStochasten
         'SOBEKToolStripMenuItem
         '
         Me.SOBEKToolStripMenuItem.Name = "SOBEKToolStripMenuItem"
-        Me.SOBEKToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.SOBEKToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
         Me.SOBEKToolStripMenuItem.Text = "SOBEK"
         '
         'DHydroToolStripMenuItem
         '
         Me.DHydroToolStripMenuItem.Name = "DHydroToolStripMenuItem"
-        Me.DHydroToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.DHydroToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
         Me.DHydroToolStripMenuItem.Text = "D-Hydro"
         '
         'HBVToolStripMenuItem
         '
         Me.HBVToolStripMenuItem.Name = "HBVToolStripMenuItem"
-        Me.HBVToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.HBVToolStripMenuItem.Size = New System.Drawing.Size(150, 26)
         Me.HBVToolStripMenuItem.Text = "HBV"
         '
         'GetijdenClassificerenToolStripMenuItem
@@ -953,7 +953,6 @@ Partial Class frmStochasten
         '
         'txtMaxParallel
         '
-        Me.txtMaxParallel.Enabled = False
         Me.txtMaxParallel.Location = New System.Drawing.Point(224, 94)
         Me.txtMaxParallel.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxParallel.Name = "txtMaxParallel"
@@ -1768,7 +1767,6 @@ Partial Class frmStochasten
         '
         Me.btnSimulate.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnSimulate.BackColor = System.Drawing.Color.Gold
-        Me.btnSimulate.Enabled = False
         Me.btnSimulate.Location = New System.Drawing.Point(1523, 179)
         Me.btnSimulate.Margin = New System.Windows.Forms.Padding(4)
         Me.btnSimulate.Name = "btnSimulate"

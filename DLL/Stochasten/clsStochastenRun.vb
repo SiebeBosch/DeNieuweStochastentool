@@ -218,8 +218,7 @@ Public Class clsStochastenRun
 
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
 
-                    'copy the original project to the temporary work dir and then read it from the new location
-                    Setup.GeneralFunctions.UpdateProgressBar("Cloning model schematisation. ", 0, 10, True)
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying results... ", 0, 10, True)
                     Dim myProject = New clsSobekProject(Me.Setup, myModel.ModelDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), True)
 
                     'if the run was succesful, copy the files
@@ -234,8 +233,8 @@ Public Class clsStochastenRun
                         For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
                             fromFile = runDir & "\WORK\" & myFile.FileName
                             fromFile2 = runDir & "\WORK\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
-                            toFile = InputFilesDir & "\" & myFile.FileName
-                            toFile2 = InputFilesDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
+                            toFile = OutputFilesDir & "\" & myFile.FileName
+                            toFile2 = OutputFilesDir & "\" & Replace(myFile.FileName, ".his", ".hia", , , CompareMethod.Text)
 
                             If File.Exists(fromFile) Then
                                 Call FileCopy(fromFile, toFile)
@@ -253,6 +252,19 @@ Public Class clsStochastenRun
                     Else
                         Throw New Exception("Simulation for stochastic combination " & ID & " was unsuccessful.")
                     End If
+
+                ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SUMAQUA Then
+                    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
+                        fromFile = runDir & "\OUTPUT\" & myFile.FileName
+                        toFile = OutputFilesDir & "\" & myFile.FileName
+
+                        If File.Exists(fromFile) Then
+                            Call FileCopy(fromFile, toFile)
+                        Else
+                            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                        End If
+
+                    Next
                 End If
             Next
             Return True

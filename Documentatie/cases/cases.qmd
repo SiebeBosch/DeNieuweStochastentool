@@ -1,0 +1,9 @@
+---
+title: "Praktijkcases"
+---
+
+Dit hoofdstuk behandelt een aantal praktijkcases waarin we De Nieuwe Stochastentool toepasten.
+
+1. [Den Bosch met het CM-model van Sumaqua](denbosch.qmd)
+
+

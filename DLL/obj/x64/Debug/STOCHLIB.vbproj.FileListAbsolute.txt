@@ -275,3 +275,5 @@ C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.pdb
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Debug\STOCHLIB.frmClassifyGroundwaterHBV.resources
+C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MatFileHandler.dll
+C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MatFileHandler.xml

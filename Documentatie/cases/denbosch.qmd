@@ -1,0 +1,44 @@
+---
+title: "Den Bosch"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+## Inleiding
+Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond 's-Hertogenbosch. Het betreft een soort 'meta-model' in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.
+
+![Oppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel](img/denbosch_poly.png "Den Bosch")
+
+De modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.
+
+## Opgave
+De opdracht was om te onderzoeken in hoeverre de de volgende twee grootheden relevant zijn als stochast:
+
+* initiële vulling van het oppervlaktewatersysteem van Den Bosch
+* de lokale beekinstromingen en riooloverstorten binnen het Bossche gebied
+
+Zouden dit namelijk geen relevante stochasten blijken, dan zou dit een complete stochastenanalyse voor Den Bosch vele malen eenvoudiger maken. De opdracht werd daarmee feitelijk: het uitvoeren van een gevoeligheidsanalyse om te achterhalen of (een van) beide grootheden als stochast moeten worden meegenomen in een hoogwaterstudie voor Den Bosch.
+
+## De modelschematisatie
+De modellen van Sumaqua draaien als stand-alone executable. Voorwaarde om ze te kunnen draaien is dat de Matlab Runtime versie 4.19 op het systeem geïnstalleerd is. Input van de modellen gaat via twee Matlab-bestanden (.mat):
+
+* Init_V_GL + naam + .mat: bevat de initiële vulling van het systeem
+* Input_ + naam + .mat: bevat de hydraulische randvoorwaarden, zowel debiet als waterhoogte
+
+## Uitdagingen
+Om modelschematisaties van dit type te kunnen ondersteunen was een aantal aanpassingen aan De Nieuwe Stochastentool nodig. Om te beginnen moesten er lees- en schrijfroutines komen voor de .mat files. Dit maakten we mogelijk door gebruik te maken van de library csmatio.
+
+Maar de belangrijkste uitdaging was eigenlijk dat deze modellen data voor de stochast 'buitenwater' en 'beekafvoer' combineren in één bestand. Om dit te implementeren in De Nieuwe Stochastentool zouden we per stochast moeten kunnen aangeven in welke kolom in dat bestand de tijdreeks moest worden geschreven. 
+
+Een dergelijk grote doorontwikkeling viel buiten de scope van het project. Daarom is het klaarzetten van de combinaties van beekafvoer en maaswaterstand een stuk voorbewerking geworden. Met behulp van het programma HydroToolbox (Hydroconsult) deden we de tijdreeksanalyse en classificatie en schreven het resultaat naar een groot aantal .mat files.
+
+
+
+
+
+
+
+
+
+
+
