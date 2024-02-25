@@ -9,16 +9,16 @@ Public Class clsSeason
   Public DailySums As Dictionary(Of Date, clsDailyPrecipitationSum)
 
   Private Setup As clsSetup
-  Private Series As clsRainfallSeries
+  Private Series As clsModelTimeSeries
 
-  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries, ByVal mySeason As enmSeason)
+  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByVal mySeason As enmSeason)
     Setup = mySetup
     Series = mySeries
     Season = mySeason
     Durations = New Dictionary(Of Integer, clsDuration)
   End Sub
 
-  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries, ByVal mySeason As String)
+  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByVal mySeason As String)
     Try
       Setup = mySetup
       Series = mySeries
@@ -46,53 +46,53 @@ Public Class clsSeason
     Return Duration
   End Function
 
-  Public Function AggregatePrecipitationByDay() As Boolean
-    'This calculates the daily precipitation sum of the current rainfall series, within the given season
-    Dim ts As Long, myDate As Date
-    Dim mySums As New Dictionary(Of Date, clsDailyPrecipitationSum)
-    Dim mySum As clsDailyPrecipitationSum
+    Public Function AggregateByDay(ModelParameter As GeneralFunctions.enmModelParameter) As Boolean
+        'This calculates the daily precipitation sum of the current rainfall series, within the given season
+        Dim ts As Long, myDate As Date
+        Dim mySums As New Dictionary(Of Date, clsDailyPrecipitationSum)
+        Dim mySum As clsDailyPrecipitationSum
 
-    Try
-      Me.Setup.GeneralFunctions.UpdateProgressBar("Aggregating rainfall series from hour to day", 0, 10)
-      mySums = New Dictionary(Of Date, clsDailyPrecipitationSum)
+        Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Aggregating rainfall series from hour to day", 0, 10)
+            mySums = New Dictionary(Of Date, clsDailyPrecipitationSum)
 
-      'make a dictionary with all daily precipitation sums
-      For ts = 0 To Series.Values.Count - 1
-        If DateInSeason(Series.Dates(ts)) Then
-          myDate = New Date(Year(Series.Dates(ts)), Month(Series.Dates(ts)), Day(Series.Dates(ts))) 'make a new date with just year, month and day
-          If Not mySums.ContainsKey(myDate) Then
-            mySum = New clsDailyPrecipitationSum
-            mySum.myDate = myDate
-            mySum.StartTs = ts
-            mySum.Sum = Series.Values(ts)
-            mySums.Add(myDate, mySum)
-          Else
-            mySum = mySums.Item(myDate)
-            mySum.Sum += Series.Values(ts)
-          End If
-        End If
-      Next
+            'make a dictionary with all daily precipitation sums
+            For ts = 0 To Series.Values.Count - 1
+                If DateInSeason(Series.Dates(ts)) Then
+                    myDate = New Date(Year(Series.Dates(ts)), Month(Series.Dates(ts)), Day(Series.Dates(ts))) 'make a new date with just year, month and day
+                    If Not mySums.ContainsKey(myDate) Then
+                        mySum = New clsDailyPrecipitationSum
+                        mySum.myDate = myDate
+                        mySum.StartTs = ts
+                        mySum.Sum = Series.Values(ModelParameter)(ts)
+                        mySums.Add(myDate, mySum)
+                    Else
+                        mySum = mySums.Item(myDate)
+                        mySum.Sum += Series.Values(ModelParameter)(ts)
+                    End If
+                End If
+            Next
 
-      'sort the dictionary in descending order and replace the 
-      DailySums = New Dictionary(Of Date, clsDailyPrecipitationSum)
-      Dim Sorted = From entry In mySums Order By entry.Value.Sum Descending
-      For Each entry In Sorted
-        DailySums.Add(entry.Key, entry.Value)
-      Next
-      mySums = Nothing
-      Sorted = Nothing
+            'sort the dictionary in descending order and replace the 
+            DailySums = New Dictionary(Of Date, clsDailyPrecipitationSum)
+            Dim Sorted = From entry In mySums Order By entry.Value.Sum Descending
+            For Each entry In Sorted
+                DailySums.Add(entry.Key, entry.Value)
+            Next
+            mySums = Nothing
+            Sorted = Nothing
 
-      Return True
+            Return True
 
-    Catch ex As Exception
-      Me.Setup.Log.AddError("Error in sub AggregatePrecipitationByDay of class clsSeason.")
-      Me.Setup.Log.AddError(ex.Message)
-      Return False
-    End Try
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in sub AggregatePrecipitationByDay of class clsSeason.")
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
 
-  End Function
+    End Function
 
-  Public Function DateInSeason(ByRef myDate As Date) As Boolean
+    Public Function DateInSeason(ByRef myDate As Date) As Boolean
         'checks if a given date falls inside the current season
         If Season = enmSeason.yearround Then
             Return True

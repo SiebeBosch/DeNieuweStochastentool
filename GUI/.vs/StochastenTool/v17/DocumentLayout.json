@@ -1,0 +1,143 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenanalyse.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsrainfallevents.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsrainfallevent.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\frmclassifygroundwaterhbv.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clstijdreeksstatistiek.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsduration.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\frmclassifygroundwaterhbv.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{dcc4ea97-1c0c-482b-b205-e541c0df9728}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "clsRainfallEvent.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
+              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
+              "ViewState": "AQIAAB0AAAAAAAAAAAAuwDIAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:36:43.371Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "clsTijdreeksStatistiek.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
+              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
+              "ViewState": "AQIAAFMCAAAAAAAAAAAmwGUCAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:15:58.905Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "clsDuration.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
+              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
+              "ViewState": "AQIAAOUAAAAAAAAAAAAqwPsAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:15:58.905Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "clsRainfallEvents.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "ViewState": "AQIAACAAAAAAAAAAAAAAACIAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:12:21.769Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "clsStochastenAnalyse.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "ViewState": "AQIAALMBAAAAAAAAAAAuwLkBAAAjAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:11:09.432Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "frmClassifyGroundwaterHBV.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "ViewState": "AQIAAJcAAAAAAAAAAAAqwK0AAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:10:19.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "frmClassifyGroundwaterHBV.vb [Design]",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb [Design]",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-23T15:10:05.435Z",
+              "EditorCaption": " [Design]"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

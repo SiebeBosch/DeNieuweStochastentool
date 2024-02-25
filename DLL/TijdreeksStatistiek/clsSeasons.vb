@@ -5,9 +5,9 @@ Public Class clsSeasons
   Public Seasons As New Dictionary(Of String, clsSeason)
 
   Private Setup As clsSetup
-  Private Series As clsRainfallSeries
+  Private Series As clsModelTimeSeries
 
-  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries)
+  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries)
     Setup = mySetup
     Series = mySeries
   End Sub
@@ -42,7 +42,7 @@ Public Class clsSeasons
     End Try
   End Function
 
-  Public Function Add(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries, ByVal mySeason As String) As clsSeason
+  Public Function Add(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByVal mySeason As String) As clsSeason
     Try
       Setup = mySetup
       Series = mySeries

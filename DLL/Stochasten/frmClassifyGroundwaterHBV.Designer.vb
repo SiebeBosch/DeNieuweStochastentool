@@ -24,10 +24,17 @@ Partial Class frmClassifyGroundwaterHBV
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmClassifyGroundwaterHBV))
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.txtExcelFile = New System.Windows.Forms.TextBox()
+        Me.hlpProjectDir = New System.Windows.Forms.Button()
+        Me.btnProjectDir = New System.Windows.Forms.Button()
+        Me.txtProjectDir = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.hlpHBVRapport = New System.Windows.Forms.Button()
         Me.btnExcel = New System.Windows.Forms.Button()
+        Me.txtExcelFile = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.Instellingen = New System.Windows.Forms.GroupBox()
+        Me.btnGrootheden = New System.Windows.Forms.Button()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.btnGroeiseizoenHelp = New System.Windows.Forms.Button()
         Me.radGroeiseizoen = New System.Windows.Forms.RadioButton()
         Me.Label3 = New System.Windows.Forms.Label()
@@ -48,12 +55,10 @@ Partial Class frmClassifyGroundwaterHBV
         Me.btnAddGroundwaterClass = New System.Windows.Forms.Button()
         Me.btnDeleteGroundwaterClass = New System.Windows.Forms.Button()
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
-        Me.hlpHBVRapport = New System.Windows.Forms.Button()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtProjectDir = New System.Windows.Forms.TextBox()
-        Me.btnProjectDir = New System.Windows.Forms.Button()
-        Me.hlpProjectDir = New System.Windows.Forms.Button()
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
+        Me.chkUZ = New System.Windows.Forms.CheckBox()
+        Me.chkLZ = New System.Windows.Forms.CheckBox()
+        Me.chkSM = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -77,21 +82,50 @@ Partial Class frmClassifyGroundwaterHBV
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Langjarige reeks"
         '
-        'Label1
+        'hlpProjectDir
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(20, 33)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(148, 16)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "HBV rapport file (Excel):"
+        Me.hlpProjectDir.BackColor = System.Drawing.Color.Gold
+        Me.hlpProjectDir.Location = New System.Drawing.Point(1054, 58)
+        Me.hlpProjectDir.Name = "hlpProjectDir"
+        Me.hlpProjectDir.Size = New System.Drawing.Size(23, 23)
+        Me.hlpProjectDir.TabIndex = 31
+        Me.hlpProjectDir.Text = "?"
+        Me.hlpProjectDir.UseVisualStyleBackColor = False
         '
-        'txtExcelFile
+        'btnProjectDir
         '
-        Me.txtExcelFile.Location = New System.Drawing.Point(218, 30)
-        Me.txtExcelFile.Name = "txtExcelFile"
-        Me.txtExcelFile.Size = New System.Drawing.Size(799, 22)
-        Me.txtExcelFile.TabIndex = 1
+        Me.btnProjectDir.Location = New System.Drawing.Point(1023, 58)
+        Me.btnProjectDir.Name = "btnProjectDir"
+        Me.btnProjectDir.Size = New System.Drawing.Size(25, 23)
+        Me.btnProjectDir.TabIndex = 30
+        Me.btnProjectDir.Text = ".."
+        Me.btnProjectDir.UseVisualStyleBackColor = True
+        '
+        'txtProjectDir
+        '
+        Me.txtProjectDir.Location = New System.Drawing.Point(218, 58)
+        Me.txtProjectDir.Name = "txtProjectDir"
+        Me.txtProjectDir.Size = New System.Drawing.Size(799, 22)
+        Me.txtProjectDir.TabIndex = 29
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(21, 61)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(186, 16)
+        Me.Label2.TabIndex = 28
+        Me.Label2.Text = "Map met modelschematisatie:"
+        '
+        'hlpHBVRapport
+        '
+        Me.hlpHBVRapport.BackColor = System.Drawing.Color.Gold
+        Me.hlpHBVRapport.Location = New System.Drawing.Point(1054, 30)
+        Me.hlpHBVRapport.Name = "hlpHBVRapport"
+        Me.hlpHBVRapport.Size = New System.Drawing.Size(23, 23)
+        Me.hlpHBVRapport.TabIndex = 27
+        Me.hlpHBVRapport.Text = "?"
+        Me.hlpHBVRapport.UseVisualStyleBackColor = False
         '
         'btnExcel
         '
@@ -102,8 +136,29 @@ Partial Class frmClassifyGroundwaterHBV
         Me.btnExcel.Text = ".."
         Me.btnExcel.UseVisualStyleBackColor = True
         '
+        'txtExcelFile
+        '
+        Me.txtExcelFile.Location = New System.Drawing.Point(218, 30)
+        Me.txtExcelFile.Name = "txtExcelFile"
+        Me.txtExcelFile.Size = New System.Drawing.Size(799, 22)
+        Me.txtExcelFile.TabIndex = 1
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(20, 33)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(148, 16)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "HBV rapport file (Excel):"
+        '
         'Instellingen
         '
+        Me.Instellingen.Controls.Add(Me.chkSM)
+        Me.Instellingen.Controls.Add(Me.chkLZ)
+        Me.Instellingen.Controls.Add(Me.chkUZ)
+        Me.Instellingen.Controls.Add(Me.btnGrootheden)
+        Me.Instellingen.Controls.Add(Me.Label5)
         Me.Instellingen.Controls.Add(Me.btnGroeiseizoenHelp)
         Me.Instellingen.Controls.Add(Me.radGroeiseizoen)
         Me.Instellingen.Controls.Add(Me.Label3)
@@ -122,10 +177,30 @@ Partial Class frmClassifyGroundwaterHBV
         Me.Instellingen.TabStop = False
         Me.Instellingen.Text = "Classificeren voor:"
         '
+        'btnGrootheden
+        '
+        Me.btnGrootheden.BackColor = System.Drawing.Color.Gold
+        Me.btnGrootheden.Location = New System.Drawing.Point(464, 84)
+        Me.btnGrootheden.Name = "btnGrootheden"
+        Me.btnGrootheden.Size = New System.Drawing.Size(23, 23)
+        Me.btnGrootheden.TabIndex = 29
+        Me.btnGrootheden.Text = "?"
+        Me.btnGrootheden.UseVisualStyleBackColor = False
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Location = New System.Drawing.Point(25, 87)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(239, 16)
+        Me.Label5.TabIndex = 28
+        Me.Label5.Text = "Classificeren op basis van parameters:"
+        '
         'btnGroeiseizoenHelp
         '
-        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Yellow
-        Me.btnGroeiseizoenHelp.Location = New System.Drawing.Point(464, 104)
+        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Gold
+        Me.btnGroeiseizoenHelp.Location = New System.Drawing.Point(464, 170)
         Me.btnGroeiseizoenHelp.Name = "btnGroeiseizoenHelp"
         Me.btnGroeiseizoenHelp.Size = New System.Drawing.Size(23, 23)
         Me.btnGroeiseizoenHelp.TabIndex = 26
@@ -136,7 +211,7 @@ Partial Class frmClassifyGroundwaterHBV
         '
         Me.radGroeiseizoen.AutoSize = True
         Me.radGroeiseizoen.Checked = True
-        Me.radGroeiseizoen.Location = New System.Drawing.Point(28, 107)
+        Me.radGroeiseizoen.Location = New System.Drawing.Point(28, 173)
         Me.radGroeiseizoen.Margin = New System.Windows.Forms.Padding(4)
         Me.radGroeiseizoen.Name = "radGroeiseizoen"
         Me.radGroeiseizoen.Size = New System.Drawing.Size(361, 20)
@@ -148,7 +223,7 @@ Partial Class frmClassifyGroundwaterHBV
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(25, 73)
+        Me.Label3.Location = New System.Drawing.Point(25, 59)
         Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(285, 16)
@@ -157,16 +232,16 @@ Partial Class frmClassifyGroundwaterHBV
         '
         'txtMinTimestepsBetweenEvents
         '
-        Me.txtMinTimestepsBetweenEvents.Location = New System.Drawing.Point(362, 69)
+        Me.txtMinTimestepsBetweenEvents.Location = New System.Drawing.Point(335, 56)
         Me.txtMinTimestepsBetweenEvents.Name = "txtMinTimestepsBetweenEvents"
-        Me.txtMinTimestepsBetweenEvents.Size = New System.Drawing.Size(125, 22)
+        Me.txtMinTimestepsBetweenEvents.Size = New System.Drawing.Size(117, 22)
         Me.txtMinTimestepsBetweenEvents.TabIndex = 23
         Me.txtMinTimestepsBetweenEvents.Text = "0"
         '
         'radAprilAugust
         '
         Me.radAprilAugust.AutoSize = True
-        Me.radAprilAugust.Location = New System.Drawing.Point(28, 161)
+        Me.radAprilAugust.Location = New System.Drawing.Point(28, 219)
         Me.radAprilAugust.Margin = New System.Windows.Forms.Padding(4)
         Me.radAprilAugust.Name = "radAprilAugust"
         Me.radAprilAugust.Size = New System.Drawing.Size(207, 20)
@@ -177,7 +252,7 @@ Partial Class frmClassifyGroundwaterHBV
         'radZomWin
         '
         Me.radZomWin.AutoSize = True
-        Me.radZomWin.Location = New System.Drawing.Point(28, 134)
+        Me.radZomWin.Location = New System.Drawing.Point(28, 196)
         Me.radZomWin.Margin = New System.Windows.Forms.Padding(4)
         Me.radZomWin.Name = "radZomWin"
         Me.radZomWin.Size = New System.Drawing.Size(170, 20)
@@ -188,7 +263,7 @@ Partial Class frmClassifyGroundwaterHBV
         'radJaarRond
         '
         Me.radJaarRond.AutoSize = True
-        Me.radJaarRond.Location = New System.Drawing.Point(28, 188)
+        Me.radJaarRond.Location = New System.Drawing.Point(28, 242)
         Me.radJaarRond.Margin = New System.Windows.Forms.Padding(4)
         Me.radJaarRond.Name = "radJaarRond"
         Me.radJaarRond.Size = New System.Drawing.Size(82, 20)
@@ -199,16 +274,16 @@ Partial Class frmClassifyGroundwaterHBV
         'cmbDuration
         '
         Me.cmbDuration.FormattingEnabled = True
-        Me.cmbDuration.Location = New System.Drawing.Point(362, 35)
+        Me.cmbDuration.Location = New System.Drawing.Point(335, 28)
         Me.cmbDuration.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbDuration.Name = "cmbDuration"
-        Me.cmbDuration.Size = New System.Drawing.Size(125, 24)
+        Me.cmbDuration.Size = New System.Drawing.Size(117, 24)
         Me.cmbDuration.TabIndex = 19
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(25, 39)
+        Me.Label4.Location = New System.Drawing.Point(25, 31)
         Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(171, 16)
@@ -235,7 +310,7 @@ Partial Class frmClassifyGroundwaterHBV
         '
         'btnClassify
         '
-        Me.btnClassify.BackColor = System.Drawing.Color.Yellow
+        Me.btnClassify.BackColor = System.Drawing.Color.Gold
         Me.btnClassify.Location = New System.Drawing.Point(981, 401)
         Me.btnClassify.Margin = New System.Windows.Forms.Padding(4)
         Me.btnClassify.Name = "btnClassify"
@@ -317,50 +392,35 @@ Partial Class frmClassifyGroundwaterHBV
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
         '
-        'hlpHBVRapport
+        'chkUZ
         '
-        Me.hlpHBVRapport.BackColor = System.Drawing.Color.Yellow
-        Me.hlpHBVRapport.Location = New System.Drawing.Point(1054, 30)
-        Me.hlpHBVRapport.Name = "hlpHBVRapport"
-        Me.hlpHBVRapport.Size = New System.Drawing.Size(23, 23)
-        Me.hlpHBVRapport.TabIndex = 27
-        Me.hlpHBVRapport.Text = "?"
-        Me.hlpHBVRapport.UseVisualStyleBackColor = False
+        Me.chkUZ.AutoSize = True
+        Me.chkUZ.Location = New System.Drawing.Point(335, 87)
+        Me.chkUZ.Name = "chkUZ"
+        Me.chkUZ.Size = New System.Drawing.Size(120, 20)
+        Me.chkUZ.TabIndex = 30
+        Me.chkUZ.Text = "uz (upper zone)"
+        Me.chkUZ.UseVisualStyleBackColor = True
         '
-        'Label2
+        'chkLZ
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(21, 61)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(186, 16)
-        Me.Label2.TabIndex = 28
-        Me.Label2.Text = "Map met modelschematisatie:"
+        Me.chkLZ.AutoSize = True
+        Me.chkLZ.Location = New System.Drawing.Point(335, 113)
+        Me.chkLZ.Name = "chkLZ"
+        Me.chkLZ.Size = New System.Drawing.Size(113, 20)
+        Me.chkLZ.TabIndex = 31
+        Me.chkLZ.Text = "lz (lower zone)"
+        Me.chkLZ.UseVisualStyleBackColor = True
         '
-        'txtProjectDir
+        'chkSM
         '
-        Me.txtProjectDir.Location = New System.Drawing.Point(218, 58)
-        Me.txtProjectDir.Name = "txtProjectDir"
-        Me.txtProjectDir.Size = New System.Drawing.Size(799, 22)
-        Me.txtProjectDir.TabIndex = 29
-        '
-        'btnProjectDir
-        '
-        Me.btnProjectDir.Location = New System.Drawing.Point(1023, 58)
-        Me.btnProjectDir.Name = "btnProjectDir"
-        Me.btnProjectDir.Size = New System.Drawing.Size(25, 23)
-        Me.btnProjectDir.TabIndex = 30
-        Me.btnProjectDir.Text = ".."
-        Me.btnProjectDir.UseVisualStyleBackColor = True
-        '
-        'hlpProjectDir
-        '
-        Me.hlpProjectDir.BackColor = System.Drawing.Color.Yellow
-        Me.hlpProjectDir.Location = New System.Drawing.Point(1054, 58)
-        Me.hlpProjectDir.Name = "hlpProjectDir"
-        Me.hlpProjectDir.Size = New System.Drawing.Size(23, 23)
-        Me.hlpProjectDir.TabIndex = 31
-        Me.hlpProjectDir.Text = "?"
-        Me.hlpProjectDir.UseVisualStyleBackColor = False
+        Me.chkSM.AutoSize = True
+        Me.chkSM.Location = New System.Drawing.Point(335, 139)
+        Me.chkSM.Name = "chkSM"
+        Me.chkSM.Size = New System.Drawing.Size(133, 20)
+        Me.chkSM.TabIndex = 32
+        Me.chkSM.Text = "sm (soil moisture)"
+        Me.chkSM.UseVisualStyleBackColor = True
         '
         'frmClassifyGroundwaterHBV
         '
@@ -418,4 +478,9 @@ Partial Class frmClassifyGroundwaterHBV
     Friend WithEvents txtProjectDir As Windows.Forms.TextBox
     Friend WithEvents hlpProjectDir As Windows.Forms.Button
     Friend WithEvents dlgFolder As Windows.Forms.FolderBrowserDialog
+    Friend WithEvents Label5 As Windows.Forms.Label
+    Friend WithEvents btnGrootheden As Windows.Forms.Button
+    Friend WithEvents chkSM As Windows.Forms.CheckBox
+    Friend WithEvents chkLZ As Windows.Forms.CheckBox
+    Friend WithEvents chkUZ As Windows.Forms.CheckBox
 End Class

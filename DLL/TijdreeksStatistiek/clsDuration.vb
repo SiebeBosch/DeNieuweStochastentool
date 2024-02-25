@@ -11,10 +11,10 @@ Public Class clsDuration
     Public InUse As New List(Of Integer)
 
     Private Setup As clsSetup
-    Private Series As clsRainfallSeries
+    Private Series As clsModelTimeSeries
     Private Season As clsSeason
 
-    Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries, ByRef mySeason As clsSeason, ByVal myDurationHours As Integer)
+    Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByRef mySeason As clsSeason, ByVal myDurationHours As Integer)
         Setup = mySetup
         Series = mySeries
         Season = mySeason
@@ -61,7 +61,7 @@ Public Class clsDuration
                 If Not AnnualMaxVal.ContainsKey(curYear) Then AnnualMaxVal.Add(curYear, 0)
 
                 'calculate the window's sum
-                mySum = Series.getWindowSum(ts, DurationTimesteps)
+                mySum = Series.getWindowSum(GeneralFunctions.enmModelParameter.precipitation, ts, DurationTimesteps)
 
                 'check if the first date of the event matches the season we're researching
                 IsInUse = False
@@ -110,12 +110,12 @@ Public Class clsDuration
                 For ts = newEvent.StartTs To newEvent.StartTs + DurationTimesteps - 1
                     newRecord = New clsTimeTableRecord
                     newRecord.Datum = Series.Dates.Item(ts)
-                    newRecord.SetValue(0, Series.Values.Item(ts))
+                    newRecord.SetValue(0, Series.Values(GeneralFunctions.enmModelParameter.precipitation).Item(ts))
                     If Not newEvent.TimeTable.Records.ContainsKey(newRecord.Datum) Then
                         newEvent.TimeTable.Records.Add(newRecord.Datum, newRecord)
                     End If
                 Next
-                newEvent.CalculateSum()
+                newEvent.CalculateSum(GeneralFunctions.enmModelParameter.precipitation)
                 AnnualMaxima.Events.Add(myKey, newEvent)
             Next
 
@@ -131,7 +131,7 @@ Public Class clsDuration
 
     End Function
 
-    Public Function calculatePOTEvents(ByVal PotFrequency As Integer, ByVal MinTimestepsBetweenEvents As Integer, ByVal CalcSTOWAPatterns As Boolean) As Boolean
+    Public Function calculatePOTEvents(ByVal ModelParameter As GeneralFunctions.enmModelParameter, ByVal PotFrequency As Integer, ByVal MinTimestepsBetweenEvents As Integer, ByVal CalcSTOWAPatterns As Boolean) As Boolean
         'This routine identifies all rainfall events that meet the POT-criteria of
         'nPerYear exceedances
         'it does this by sorting the volume sums in descending order
@@ -160,11 +160,11 @@ Public Class clsDuration
             'now sort the list of sums by value in descending order
             InUse = New List(Of Integer)
             Dim Sums As New List(Of clsValueIndexPair)
-            For i = 0 To Series.Values.Count - 1 - DurationTimesteps
-                Sums.Add(New clsValueIndexPair(Series.getWindowSum(i, DurationTimesteps), i))
+            For i = 0 To Series.Values.Item(ModelParameter).Count - 1 - DurationTimesteps
+                Sums.Add(New clsValueIndexPair(Series.getWindowSum(ModelParameter, i, DurationTimesteps), i))
             Next
 
-            For i = 0 To Series.Values.Count - 1
+            For i = 0 To Series.Values.Item(ModelParameter).Count - 1
                 InUse.Add(0)
             Next
 
@@ -209,14 +209,20 @@ Public Class clsDuration
                         InUse(i) = 1
                         newRecord = New clsTimeTableRecord
                         newRecord.Datum = Series.Dates.Item(i)
-                        newRecord.SetValue(0, Series.Values.Item(i))
+
+                        'start by adding the value for each of the modelparameters present in the series
+                        For Each myModelpar As GeneralFunctions.enmModelParameter In Series.Values.Keys
+                            newRecord.SetValue(myModelpar, Series.Values(myModelpar)(i))
+                        Next
+
+                        'add the record to the event
                         If Not newEvent.TimeTable.Records.ContainsKey(newRecord.Datum) Then
                             newEvent.TimeTable.Records.Add(newRecord.Datum, newRecord)
                         Else
                             Me.Setup.Log.AddWarning("Multiple instances of date " & newRecord.Datum & " in data series.")
                         End If
                     Next
-                    newEvent.CalculateSum()
+                    newEvent.CalculateSum(ModelParameter)
                     If CalcSTOWAPatterns Then newEvent.AnalyzePattern()
                     POTEvents.Events.Add(n, newEvent)
                 End If
@@ -259,14 +265,14 @@ Public Class clsDuration
             For Idx = 0 To POTEvents.Events.Values.Count - 1
                 myEvent = POTEvents.Events.Values(Idx)
                 For i = myEvent.StartTs To myEvent.StartTs + DurationTimesteps - 1
-                    Strings(i) = Format(Series.Dates(i), "yyyy/MM/dd HH:mm") & "," & Me.Setup.GeneralFunctions.MeteorologischSeizoen(Series.Dates(i)).ToString & "," & Series.Values(i) & "," & Idx + 1 & "," & myEvent.Sum & "," & myEvent.MeteoSeason.ToString & "," & myEvent.MeteoHalfYear.ToString & "," & myEvent.HydroHalfYear.ToString
+                    Strings(i) = Format(Series.Dates(i), "yyyy/MM/dd HH:mm") & "," & Me.Setup.GeneralFunctions.MeteorologischSeizoen(Series.Dates(i)).ToString & "," & Series.Values(GeneralFunctions.enmModelParameter.precipitation)(i) & "," & Idx + 1 & "," & myEvent.Sum & "," & myEvent.MeteoSeason.ToString & "," & myEvent.MeteoHalfYear.ToString & "," & myEvent.HydroHalfYear.ToString
                 Next
             Next
 
             'now add the strings that are still empty
             For i = 0 To Series.Dates.Count - 1
                 If Strings(i) = "" Then
-                    Strings(i) = Format(Series.Dates(i), "yyyy/MM/dd hh:mm") & "," & Me.Setup.GeneralFunctions.MeteorologischSeizoen(Series.Dates(i)).ToString & "," & Series.Values(i)
+                    Strings(i) = Format(Series.Dates(i), "yyyy/MM/dd hh:mm") & "," & Me.Setup.GeneralFunctions.MeteorologischSeizoen(Series.Dates(i)).ToString & "," & Series.Values(GeneralFunctions.enmModelParameter.precipitation)(i)
                 End If
             Next
 

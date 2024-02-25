@@ -18,19 +18,19 @@ Public Class clsSumaquaProject
     Dim InputSubdir As String = "INPUT"
     Dim OutputSubdir As String = "OUTPUT"
 
-    Public OutputLocations As Dictionary(Of String, clsSumaquaOutputLocation)
+    Public OutputLocations As Dictionary(Of String, clsSumaquaOutputLocationStatistics)
     Public ResultsFile As clsMatFile
 
     Public Sub New(ByRef mySetup As clsSetup)
         Setup = mySetup
-        OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocation)
+        OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocationStatistics)
     End Sub
 
     Public Sub New(ByRef mySetup As clsSetup, myProjectDir As String, myProjectName As String)
         Setup = mySetup
         ProjectDir = myProjectDir
         ProjectName = myProjectName
-        OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocation)
+        OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocationStatistics)
 
         Dim myResultsPath As String = GetResultsPath()
         ResultsFile = New clsMatFile(Me.Setup, myResultsPath)
@@ -38,7 +38,7 @@ Public Class clsSumaquaProject
     End Sub
 
     Public Function ReadOutput() As Boolean
-        Return ResultsFile.Read(OutputLocations)
+        Return ResultsFile.ReadSumaquaResultsStatistics(OutputLocations, GetResultsPath())
     End Function
 
     Public Function GetResultsPath() As String

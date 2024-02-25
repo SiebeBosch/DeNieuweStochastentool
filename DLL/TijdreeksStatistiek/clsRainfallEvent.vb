@@ -12,11 +12,11 @@ Public Class clsTimeSeriesEvent
   Public HydroHalfYear As STOCHLIB.GeneralFunctions.enmSeason
 
   Private Setup As clsSetup
-  Private Series As clsRainfallSeries
+  Private Series As clsModelTimeSeries
   Private Season As clsSeason
   Private Duration As clsDuration
 
-  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries, ByRef mySeason As clsSeason, ByRef myDuration As clsDuration)
+  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByRef mySeason As clsSeason, ByRef myDuration As clsDuration)
     TimeTable = New clsTimeTable(Me.Setup)
     Setup = mySetup
     Series = mySeries
@@ -24,14 +24,42 @@ Public Class clsTimeSeriesEvent
     Duration = myDuration
   End Sub
 
-  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsRainfallSeries, ByRef mySeason As clsSeason)
+  Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByRef mySeason As clsSeason)
     TimeTable = New clsTimeTable(Me.Setup)
     Setup = mySetup
     Series = mySeries
     Season = mySeason
   End Sub
 
-  Public Function TimestepPartOfEvent(ByVal ts As Long) As Boolean
+    Public Function GetParameterValue(Parameter As GeneralFunctions.enmModelParameter, timestepStatistic As GeneralFunctions.enmTimestepStatistic) As Double
+        Try
+            Select Case timestepStatistic
+                Case GeneralFunctions.enmTimestepStatistic.first
+                    Return TimeTable.Records.Values(0).GetValue(Parameter)
+                Case GeneralFunctions.enmTimestepStatistic.last
+                    Return TimeTable.Records.Values(TimeTable.Records.Count - 1).GetValue(Parameter)
+                Case GeneralFunctions.enmTimestepStatistic.sum
+                    Return CalculateSum(Parameter)
+                Case GeneralFunctions.enmTimestepStatistic.mean
+                    Return CalculateSum(Parameter) / TimeTable.Records.Count
+                Case GeneralFunctions.enmTimestepStatistic.max
+                    Return getMax(Parameter)
+                Case GeneralFunctions.enmTimestepStatistic.min
+                    Return getMin(Parameter)
+                Case GeneralFunctions.enmTimestepStatistic.median
+                    Return CalculateMedian(Parameter)
+            End Select
+            Throw New Exception("Unknown timestep statistic")
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function getParameterValue of class clsTimeSeriesEvent: " & ex.Message)
+            Return Double.NaN
+        End Try
+
+
+    End Function
+
+
+    Public Function TimestepPartOfEvent(ByVal ts As Long) As Boolean
     If ts >= StartTs AndAlso ts <= StartTs + TimeTable.Records.Count - 1 Then
       Return True
     Else
@@ -186,12 +214,43 @@ Public Class clsTimeSeriesEvent
   End Function
 
 
-  Public Function CalculateSum() As Double
-    Sum = 0
-    For Each myRecord As clsTimeTableRecord In TimeTable.Records.Values
-      Sum += myRecord.GetValue(0)
-    Next
-    Return Sum
-  End Function
+    Public Function CalculateSum(ModelParameter As GeneralFunctions.enmModelParameter) As Double
+        Sum = 0
+        For Each myRecord As clsTimeTableRecord In TimeTable.Records.Values
+            Sum += myRecord.GetValue(ModelParameter)
+        Next
+        Return Sum
+    End Function
+
+    Public Function CalculateMedian(Modelparameter As GeneralFunctions.enmModelParameter) As Double
+        Dim Values As New List(Of Double)
+        For Each myRecord As clsTimeTableRecord In TimeTable.Records.Values
+            Values.Add(myRecord.GetValue(Modelparameter))
+        Next
+        Values.Sort()
+        Return Me.Setup.GeneralFunctions.PercentileFromList(Values, 0.5)
+    End Function
+
+    Public Function getMax(ModelParameter As GeneralFunctions.enmModelParameter) As Double
+        Dim Max As Double = Double.NaN
+        For Each myRecord As clsTimeTableRecord In TimeTable.Records.Values
+            If Double.IsNaN(Max) Then
+                Max = myRecord.GetValue(ModelParameter)
+            Else
+                If myRecord.GetValue(ModelParameter) > Max Then Max = myRecord.GetValue(ModelParameter)
+            End If
+        Next
+    End Function
+
+    Public Function getMin(ModelParameter As GeneralFunctions.enmModelParameter) As Double
+        Dim Min As Double = Double.NaN
+        For Each myRecord As clsTimeTableRecord In TimeTable.Records.Values
+            If Double.IsNaN(Min) Then
+                Min = myRecord.GetValue(ModelParameter)
+            Else
+                If myRecord.GetValue(ModelParameter) < Min Then Min = myRecord.GetValue(ModelParameter)
+            End If
+        Next
+    End Function
 
 End Class

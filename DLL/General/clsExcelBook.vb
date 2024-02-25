@@ -214,7 +214,6 @@ Public Class clsExcelBook
             Dim ExcelSheet As clsExcelSheet
             For Each ws As ExcelWorksheet In oExcel.Worksheets
                 ExcelSheet = New clsExcelSheet(ws, ws.Name, Setup)
-                Sheets.Add(ExcelSheet)
                 Sheets.Add(ExcelSheet, ExcelSheet.SheetName.Trim.ToUpper)
             Next
 

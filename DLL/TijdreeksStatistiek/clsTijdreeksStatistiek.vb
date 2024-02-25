@@ -5,7 +5,7 @@ Imports System.IO
 
 Public Class clsTijdreeksStatistiek
 
-    Public NeerslagReeksen As New Dictionary(Of String, clsRainfallSeries)
+    Public NeerslagReeksen As New Dictionary(Of String, clsModelTimeSeries)
     Public GetijdenReeksen As New Dictionary(Of String, clsTidalTimeSeries)
     Public Database As String
 
@@ -23,53 +23,79 @@ Public Class clsTijdreeksStatistiek
 
     Public Sub Initialize(ByVal Season As String, ByVal Duration As Integer)
         'adds the required season and duration to the dictionares
-        For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
+        For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
             Dim mySeason As clsSeason = mySeries.Seasons.Add(Me.Setup, mySeries, Season)
             Dim myDuration As clsDuration = mySeason.AddDuration(Duration)
         Next
     End Sub
 
-    Public Function addRainfallSeriesFromHBVReport(ByRef wb As clsExcelBook) As Boolean
+    Public Function addDataSeriesFromHBVReport(ByRef wb As clsExcelBook) As Boolean
         'this function reads a rainfall timeseries + groundwater statistics (uz, lz and sm) or upper zone lowerzone and soilmosture from the HBV Reports Excel format to the NeerslagReeksen dictionary
 
         Try
-            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading precipitation series from HBV report...", 0, 10, True)
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading data series from HBV report...", 0, 10, True)
 
-            Dim sheetnum As Integer = 0
+            Dim sheetidx As Integer = 0
             For Each ws As clsExcelSheet In wb.Sheets
-                sheetnum += 1
-                Me.Setup.GeneralFunctions.UpdateProgressBar("", sheetnum, wb.Sheets.Count, True)
-                Dim mySeries As New clsRainfallSeries(Me.Setup, ws.SheetName)
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", sheetidx, wb.Sheets.Count, True)
+                Dim mySeries As New clsModelTimeSeries(Me.Setup, ws.SheetName)
+                Dim SoilSeries As New clsSobekTable(Me.Setup) 'this is a table that contains the soil moisture, upper zone and lower zone values
+
                 Dim HeaderRowIdx As Integer = 3
                 Dim DatesColIdx As Integer = 0
                 Dim PrecColIdx As Integer = -1  'precipitation column
-                'Dim UzColIdx As Integer = -1    'upper zone column
-                'Dim LzColIdx As Integer = -1    'lower zone column
-                'Dim SmColIdx As Integer = -1    'soil moisture column
+                Dim UzColIdx As Integer = -1    'upper zone column
+                Dim LzColIdx As Integer = -1    'lower zone column
+                Dim SmColIdx As Integer = -1    'soil moisture column
 
+                Dim ParsFound As Integer = 0
                 For i = 0 To 100
                     If Left(ws.ws.Cells(HeaderRowIdx, i).Value.ToString, 4) = "prec" Then
                         PrecColIdx = i
-                        Exit For
-                        'ElseIf Left(ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "lz" Then
-                        '    LzColIdx = i
-                        'ElseIf Left(ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "uz" Then
-                        '    UzColIdx = i
-                        'ElseIf Left(ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "sm" Then
-                        '    SmColIdx = i
+                        ParsFound += 1
+                    ElseIf Left(ws.ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "lz" Then
+                        LzColIdx = i
+                        ParsFound += 1
+                    ElseIf Left(ws.ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "uz" Then
+                        UzColIdx = i
+                        ParsFound += 1
+                    ElseIf Left(ws.ws.Cells(HeaderRowIdx, i).Value.ToString, 2) = "sm" Then
+                        SmColIdx = i
+                        ParsFound += 1
                     End If
+                    If ParsFound >= 4 Then Exit For
                 Next
 
                 If PrecColIdx = -1 Then Throw New Exception("Error: no precipitation column found in Excel worksheet.")
+                If UzColIdx = -1 Then Throw New Exception("Error: no upper zone column found in Excel worksheet.")
+                If LzColIdx = -1 Then Throw New Exception("Error: no lower zone column found in Excel worksheet.")
+                If SmColIdx = -1 Then Throw New Exception("Error: no soil moisture column found in Excel worksheet.")
+
+                'make sure we have associated series for uz, lz and sm
+                If Not mySeries.Values.ContainsKey(GeneralFunctions.enmModelParameter.precipitation) Then mySeries.Values.Add(GeneralFunctions.enmModelParameter.precipitation, New List(Of Single))
+                If Not mySeries.Values.ContainsKey(GeneralFunctions.enmModelParameter.uz) Then mySeries.Values.Add(GeneralFunctions.enmModelParameter.uz, New List(Of Single))
+                If Not mySeries.Values.ContainsKey(GeneralFunctions.enmModelParameter.lz) Then mySeries.Values.Add(GeneralFunctions.enmModelParameter.lz, New List(Of Single))
+                If Not mySeries.Values.ContainsKey(GeneralFunctions.enmModelParameter.sm) Then mySeries.Values.Add(GeneralFunctions.enmModelParameter.sm, New List(Of Single))
 
                 Dim rowIdx As Integer = HeaderRowIdx
-                While Not ws.ws.Cells(rowIdx + 1, DatesColIdx).Value = ""
+                While True
+                    Dim cellValue = ws.ws.Cells(rowIdx + 1, DatesColIdx).Value
+                    If cellValue Is Nothing OrElse String.IsNullOrEmpty(cellValue.ToString()) Then
+                        Exit While
+                    End If
+
                     rowIdx += 1
                     mySeries.Dates.Add(ws.ws.Cells(rowIdx, DatesColIdx).Value)
-                    mySeries.Values.Add(ws.ws.Cells(rowIdx, PrecColIdx).Value)
+                    mySeries.Values.Item(GeneralFunctions.enmModelParameter.precipitation).Add(ws.ws.Cells(rowIdx, PrecColIdx).Value)
+                    mySeries.Values.Item(GeneralFunctions.enmModelParameter.uz).Add(ws.ws.Cells(rowIdx, UzColIdx).Value)
+                    mySeries.Values.Item(GeneralFunctions.enmModelParameter.lz).Add(ws.ws.Cells(rowIdx, LzColIdx).Value)
+                    mySeries.Values.Item(GeneralFunctions.enmModelParameter.sm).Add(ws.ws.Cells(rowIdx, SmColIdx).Value)
+
                 End While
 
                 Me.Setup.TijdreeksStatistiek.NeerslagReeksen.Add(mySeries.Name, mySeries)
+
+                sheetidx += 1
             Next
             Me.Setup.GeneralFunctions.UpdateProgressBar("Import complete.", 0, 10, True)
 
@@ -90,13 +116,13 @@ Public Class clsTijdreeksStatistiek
             Me.Setup.GeneralFunctions.UpdateProgressBar("Reading " & PartOfParameterName & " from hisfile...", 0, 10)
             Dim myReader As New clsHisFileBinaryReader(HisFilePath, Me.Setup)
             If Not myReader.ReadAddLocationResultsToArray(LocID, PartOfParameterName, Dates, Values, Multiplier) Then Throw New Exception("Error reading " & PartOfParameterName & " results for " & LocID & "from hisfile " & HisFilePath)
-            Dim newSeries As New clsRainfallSeries(Me.Setup)
+            Dim newSeries As New clsModelTimeSeries(Me.Setup)
             newSeries.Name = PartOfParameterName
             n = Dates.Count - 1
             For i = 0 To Dates.Count - 1
                 Me.Setup.GeneralFunctions.UpdateProgressBar("", i, n)
                 newSeries.Dates.Add(Dates(i))
-                newSeries.Values.Add(Values(i))
+                newSeries.Values.Item(GeneralFunctions.enmModelParameter.precipitation).Add(Values(i))
             Next
             NeerslagReeksen.Add(newSeries.Name, newSeries)
             Return True
@@ -107,20 +133,20 @@ Public Class clsTijdreeksStatistiek
     End Function
 
     Public Sub ClearStats()
-        For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
+        For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
             mySeries.ClearStats()
         Next
     End Sub
 
     Public Sub calcDailySums()
         'computes the daily precipitation sums and writes them to a timeseries
-        For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
-            mySeries.calcDailySums()
+        For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
+            mySeries.calcDailyPrecipitationSums()
         Next
     End Sub
 
     Public Sub ApplyKNMI14Scenarios(ByVal myScenario As String)
-        For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
+        For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
             mySeries.KNMI14Scenarios.Apply(myScenario)
         Next
     End Sub
@@ -128,7 +154,7 @@ Public Class clsTijdreeksStatistiek
 
     Public Function readPrecipitationFromCSV(ByVal Path As String, ByVal Delimiter As String, ByVal DateFormatting As String, ByVal DateHeader As String, ByVal ValuesHeader As String) As Boolean
         Try
-            Dim mySeries As New clsRainfallSeries(Me.Setup)
+            Dim mySeries As New clsModelTimeSeries(Me.Setup)
             mySeries.Name = ValuesHeader
             If Not mySeries.ReadFromCSV(Path, Delimiter, DateFormatting, DateHeader, ValuesHeader) Then Throw New Exception("Error reading timeseries from csv file.")
             Me.Setup.TijdreeksStatistiek.NeerslagReeksen.Add(ValuesHeader, mySeries)
@@ -179,7 +205,7 @@ Public Class clsTijdreeksStatistiek
         'this function exports the original timeseries, but adds the event index numbers and the event sum to it
         Try
             Me.Setup.GeneralFunctions.UpdateProgressBar("Writing enhanced timeseries.", 0, 10)
-            For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
+            For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
                 For Each mySeason As clsSeason In mySeries.Seasons.Seasons.Values
                     n = mySeason.Durations.Count
                     i = 0
@@ -203,7 +229,7 @@ Public Class clsTijdreeksStatistiek
     Public Function writeCSV(ByVal ScenarioName As String) As Boolean
         'this function exports the original timeseries, but adds the event index numbers and the event sum to it
         Try
-            For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
+            For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
                 If Not mySeries.WriteCSV(ScenarioName) Then Throw New Exception("Error writing CSV file for series " & mySeries.Name)
             Next
             Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, 10)
@@ -224,7 +250,7 @@ Public Class clsTijdreeksStatistiek
         Try
 
             c = -2
-            For Each myReeks As clsRainfallSeries In NeerslagReeksen.Values
+            For Each myReeks As clsModelTimeSeries In NeerslagReeksen.Values
                 For Each mySeason As STOCHLIB.clsSeason In myReeks.Seasons.Seasons.Values
                     For Each myduration As clsDuration In mySeason.Durations.Values
 
@@ -297,7 +323,7 @@ Public Class clsTijdreeksStatistiek
         Dim r As Long, c As Long, i As Integer
 
         Try
-            For Each myReeks As clsRainfallSeries In NeerslagReeksen.Values
+            For Each myReeks As clsModelTimeSeries In NeerslagReeksen.Values
                 ws = Me.Setup.ExcelFile.GetAddSheet(myReeks.Name & "_POT")
                 c = -7
                 For Each mySeason As clsSeason In myReeks.Seasons.Seasons.Values
@@ -361,7 +387,7 @@ Public Class clsTijdreeksStatistiek
         Dim r As Long, i As Integer
 
         Try
-            For Each myReeks As clsRainfallSeries In NeerslagReeksen.Values
+            For Each myReeks As clsModelTimeSeries In NeerslagReeksen.Values
                 ws = Me.Setup.ExcelFile.GetAddSheet(myReeks.Name & "_PATTERNS")
                 r = 0
 
@@ -445,7 +471,7 @@ Public Class clsTijdreeksStatistiek
         Dim r As Long, c As Long
 
         Try
-            For Each myReeks As clsRainfallSeries In NeerslagReeksen.Values
+            For Each myReeks As clsModelTimeSeries In NeerslagReeksen.Values
                 ws = Me.Setup.ExcelFile.GetAddSheet(myReeks.Name & "_stats")
                 c = 0
                 r = 0
@@ -460,23 +486,23 @@ Public Class clsTijdreeksStatistiek
 
                 r += 1
                 ws.ws.Cells(r, 0).Value = "average year round volume"
-                ws.ws.Cells(r, c).Value = myReeks.getWindowSum(0, myReeks.Values.Count - 1) / myReeks.getTimeSpanYears
+                ws.ws.Cells(r, c).Value = myReeks.getWindowSum(GeneralFunctions.enmModelParameter.precipitation, 0, myReeks.Values.Count - 1) / myReeks.getTimeSpanYears
 
                 r += 1
                 ws.ws.Cells(r, 0).Value = "average summer volume"
-                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmSeason.meteosummerquarter) / myReeks.getTimeSpanYears
+                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmModelParameter.precipitation, GeneralFunctions.enmSeason.meteosummerquarter) / myReeks.getTimeSpanYears
 
                 r += 1
                 ws.ws.Cells(r, 0).Value = "average winter volume"
-                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmSeason.meteowinterquarter) / myReeks.getTimeSpanYears
+                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmModelParameter.precipitation, GeneralFunctions.enmSeason.meteowinterquarter) / myReeks.getTimeSpanYears
 
                 r += 1
                 ws.ws.Cells(r, 0).Value = "average spring volume"
-                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmSeason.meteospringquarter) / myReeks.getTimeSpanYears
+                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmModelParameter.precipitation, GeneralFunctions.enmSeason.meteospringquarter) / myReeks.getTimeSpanYears
 
                 r += 1
                 ws.ws.Cells(r, 0).Value = "average autumn volume"
-                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmSeason.meteoautumnquarter) / myReeks.getTimeSpanYears
+                ws.ws.Cells(r, c).Value = myReeks.getSeasonSum(GeneralFunctions.enmModelParameter.precipitation, GeneralFunctions.enmSeason.meteoautumnquarter) / myReeks.getTimeSpanYears
 
                 r += 1
                 ws.ws.Cells(r, 0).Value = "average number of summer days exceeding 0.1"
@@ -521,7 +547,7 @@ Public Class clsTijdreeksStatistiek
         Dim r As Long, c As Long, i As Integer
         Try
 
-            For Each myReeks As clsRainfallSeries In NeerslagReeksen.Values
+            For Each myReeks As clsModelTimeSeries In NeerslagReeksen.Values
                 ws = Me.Setup.ExcelFile.GetAddSheet(myReeks.Name & "_YearMax")
                 c = -3
                 For Each mySeason As STOCHLIB.clsSeason In myReeks.Seasons.Seasons.Values
@@ -559,7 +585,7 @@ Public Class clsTijdreeksStatistiek
     Public Function CalcAnnualMaxEvents(ByVal Duration As Integer, ByVal Seizoen As String) As Boolean
         'This routine identifies the individual rainfall events that make up the annual maxima 
         Try
-            Dim myReeks As clsRainfallSeries = NeerslagReeksen.Values(0)
+            Dim myReeks As clsModelTimeSeries = NeerslagReeksen.Values(0)
             Dim mySeason As clsSeason = myReeks.Seasons.GetAddByDescription(Seizoen)
             Dim myDuration As clsDuration = mySeason.GetAddDuration(Duration)
             If Not myDuration.calculateYearMaxima() Then Throw New Exception("Error computing annyual maxima from series.")
@@ -575,10 +601,10 @@ Public Class clsTijdreeksStatistiek
         'this routine identifies individual rainfall events that meet the POT-criterium
         'the criterium is given in n exceedances per year
         Try
-            For Each mySeries As clsRainfallSeries In NeerslagReeksen.Values
+            For Each mySeries As clsModelTimeSeries In NeerslagReeksen.Values
                 Dim mySeason As clsSeason = mySeries.Seasons.GetAddByDescription(Seizoen)
                 Dim myDuration As clsDuration = mySeason.GetAddDuration(Duration)
-                myDuration.calculatePOTEvents(POTFrequency, MinTimeStepsBetweenEvents, CalcSTOWAPatterns)
+                myDuration.calculatePOTEvents(GeneralFunctions.enmModelParameter.precipitation, POTFrequency, MinTimeStepsBetweenEvents, CalcSTOWAPatterns)
             Next
             Return True
         Catch ex As Exception

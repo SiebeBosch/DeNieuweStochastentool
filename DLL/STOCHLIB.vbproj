@@ -557,7 +557,9 @@
     <Compile Include="SOBEK\Flow Network Files\clsNTWHeader.vb" />
     <Compile Include="SOBEK\RR Data Files\clsGreenHseRF.vb" />
     <Compile Include="Stochasten\clsMileageCounterPercentages.vb" />
-    <Compile Include="Stochasten\clsPercentageClass.vb" />
+    <Compile Include="Stochasten\clsParameterClassifications.vb" />
+    <Compile Include="Stochasten\clsPercentileClass.vb" />
+    <Compile Include="Stochasten\clsPercentileClasses.vb" />
     <Compile Include="Stochasten\clsResultByVolume.vb" />
     <Compile Include="Stochasten\clsResultsByVolume.vb" />
     <Compile Include="Stochasten\clsSequentialElevatedClass.vb" />
@@ -576,7 +578,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Sumaqua\clsMatFile.vb" />
-    <Compile Include="Sumaqua\clsSumaquaOutputLocation.vb" />
+    <Compile Include="Sumaqua\clsSumaquaOutputLocationStatistics.vb" />
     <Compile Include="Sumaqua\clsSumaquaProject.vb" />
     <Compile Include="Tijdreeksen\clsTijdreeksAnalyse.vb" />
     <Compile Include="TijdreeksStatistiek\clsDailyPrecipitationSum.vb" />
@@ -608,7 +610,7 @@
     <Compile Include="TijdreeksStatistiek\clsPOTResult.vb" />
     <Compile Include="TijdreeksStatistiek\clsPOTResults.vb" />
     <Compile Include="TijdreeksStatistiek\clsPOTSeries.vb" />
-    <Compile Include="TijdreeksStatistiek\clsRainfallSeries.vb" />
+    <Compile Include="TijdreeksStatistiek\clsModelTimeSeries.vb" />
     <Compile Include="TijdreeksStatistiek\clsTidalHighsLowsEvent.vb" />
     <Compile Include="TijdreeksStatistiek\clsTidalAmplitudeClasses.vb" />
     <Compile Include="TijdreeksStatistiek\clsTidalSequentialOccurrancesClass.vb" />

@@ -143,7 +143,7 @@ Public Class frmImportOutputlocations
 
                 j = 0
                 n = Setup.DIMRData.FlowFM.Observationpoints1D.Count
-                For Each ResultsPoint As STOCHLIB.clsSumaquaOutputLocation In Setup.SumaquaData.OutputLocations.Values
+                For Each ResultsPoint As STOCHLIB.clsSumaquaOutputLocationStatistics In Setup.SumaquaData.OutputLocations.Values
 
                     j += 1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)

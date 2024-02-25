@@ -32,6 +32,24 @@ Public Class GeneralFunctions
         waarde = 2        'replaces one specific value in one specific section. E.g. T0 in the section [Structure] for object with id "dambreak"
     End Enum
 
+
+    Public Enum enmTimestepStatistic
+        first = 0
+        last = 1
+        mean = 2
+        median = 3
+        min = 4
+        max = 5
+        sum = 6
+    End Enum
+    Public Enum enmModelParameter
+        precipitation = 0
+        evaporation = 1
+        lz = 2 'lower zone (e.g. HBV)
+        uz = 3 'upper zone (e.g. HBV)
+        sm = 4 'soil moisture (e.g. HBV)
+    End Enum
+
     Public Enum enmFouConfigVariable
         wl = 0
         uc = 0
