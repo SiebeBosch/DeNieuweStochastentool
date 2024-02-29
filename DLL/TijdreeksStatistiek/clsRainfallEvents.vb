@@ -1,16 +1,19 @@
-﻿Imports STOCHLIB.General
+﻿Imports DocumentFormat.OpenXml.Spreadsheet
+Imports STOCHLIB.General
 Public Class clsRainfallEvents
 
     Public Events As New Dictionary(Of Integer, clsTimeSeriesEvent)
+
+    'for the classification of parameters by percentile it is possible to use multiple parameters
+    'e.g. primary parameter is the HBV parameter lz (lower zone) and secondary is uz (upper zone) with a side parameter sm (soil moisture)
+    Public PercentileClassifications As New clspercentileClassifications(Me.Setup) ' Dictionary(Of String, List(Of clsPercentileClass))
+
     Public PlottingPositions As DataTable
 
     Private Series As clsModelTimeSeries     'the underlying timeseries with precipitation
     Private Season As clsSeason
     Private Duration As clsDuration
     Private Setup As clsSetup
-
-    'given our set of Events, we can classify the parameters based on the percentiles and the POT events
-    Public ParameterClassifications As Dictionary(Of GeneralFunctions.enmModelParameter, clsParameterClassifications)
 
     Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByRef mySeason As clsSeason, ByRef myDuration As clsDuration)
         Setup = mySetup
@@ -25,21 +28,111 @@ Public Class clsRainfallEvents
         Season = mySeason
     End Sub
 
-    Public Sub CalculateParameterClassification(Parameters As List(Of GeneralFunctions.enmModelParameter), TimeseriesStatistic As GeneralFunctions.enmTimestepStatistic, ByRef PercentileClasses As clsPercentileClasses)
-        'for the given set of events we will classify the values for one or more parameters, given a set of percentile classes
-        ParameterClassifications = New Dictionary(Of GeneralFunctions.enmModelParameter, clsParameterClassifications)
-        For Each myParameter As GeneralFunctions.enmModelParameter In Parameters
-            ParameterClassifications.Add(myParameter, New clsParameterClassifications(Me.Setup, myParameter, PercentileClasses))
-
-            'for the current parameter we will calculate the classification
-            ParameterClassifications.Item(myParameter).Calculate(Me, TimeseriesStatistic)
-
-        Next
-    End Sub
-
     Public Sub Add(ByVal Idx As Integer, ByVal maxEvent As clsTimeSeriesEvent)
         Events.Add(Idx, maxEvent)
     End Sub
+
+    Public Function CalculateParameterClassification(ByRef ModelParameters As clsModelParameterClass, TimestepStatistic As GeneralFunctions.enmTimestepStatistic, ByRef PercentileClassesTemplate As clsPercentileClasses) As Boolean
+
+        'this function classifies the events by percentile classes for a given set of parameters
+        'start with the primary parameter
+
+        Try
+            For Each myPercentileClass As clsPercentileClass In PercentileClassesTemplate.Classes.Values
+
+                Dim newClass As New clsPercentileClass
+                newClass.Name = myPercentileClass.Name
+                newClass.Parameter = ModelParameters.PrimaryParameter
+                newClass.LBoundPercentile = myPercentileClass.LBoundPercentile
+                newClass.UboundPercentile = myPercentileClass.UboundPercentile
+                newClass.RepresentativePercentile = myPercentileClass.RepresentativePercentile
+
+                'read the parameter values from the events
+                Dim ParameterValues As New List(Of Double)
+                For Each myEvent As clsTimeSeriesEvent In Events.Values
+                    ParameterValues.Add(myEvent.GetParameterValue(ModelParameters.PrimaryParameter, TimestepStatistic))
+                Next
+
+                'now calculate the percentile values for our primary parameter
+                newClass.RepresentativeValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues, myPercentileClass.RepresentativePercentile)
+                newClass.LBoundValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues, myPercentileClass.LBoundPercentile)
+                newClass.UboundValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues, myPercentileClass.UboundPercentile)
+
+                'and add the index numbers of the events that fall within this percentile class to the list
+                For i = 0 To Events.Count - 1
+                    If ParameterValues(i) >= newClass.LBoundValue And ParameterValues(i) <= newClass.UboundValue Then
+                        newClass.EventIdxNums.Add(i)
+                    End If
+                Next
+
+                'now for the side parameters within this class we calculate the median over all events that fall within this class
+                For Each mySideParameter As GeneralFunctions.enmModelParameter In ModelParameters.PrimarySideParameters
+                    Dim SideParameterValues As New List(Of Double)
+                    For i = 0 To newClass.EventIdxNums.Count - 1
+                        SideParameterValues.Add(Events.Values(newClass.EventIdxNums(i)).GetParameterValue(mySideParameter, TimestepStatistic))
+                    Next
+                    'assign the median value to the class
+                    newClass.SideParameterValues.Add(mySideParameter, Setup.GeneralFunctions.PercentileFromList(SideParameterValues, 0.5))
+                Next
+
+                'if we have a secondary parameter, we do the same for this parameter
+                If ModelParameters.SecondaryParameter <> GeneralFunctions.enmModelParameter.none Then
+
+                    'also for the secondary parameter we must iterate through each percentileClass
+                    For Each myPercentileClass2 As clsPercentileClass In PercentileClassesTemplate.Classes.Values
+                        Dim newClass2 As New clsPercentileClass
+                        newClass2.Name = myPercentileClass2.Name
+                        newClass2.Parameter = ModelParameters.SecondaryParameter
+                        newClass2.LBoundPercentile = myPercentileClass2.LBoundPercentile
+                        newClass2.UboundPercentile = myPercentileClass2.UboundPercentile
+                        newClass2.RepresentativePercentile = myPercentileClass2.RepresentativePercentile
+
+                        'read the parameter values from the events
+                        'we'll only loop through the events that fall within our primary percentile class
+                        Dim ParameterValues2 As New List(Of Double)
+                        For i = 0 To newClass.EventIdxNums.Count - 1
+                            ParameterValues2.Add(Events.Values(newClass.EventIdxNums(i)).GetParameterValue(ModelParameters.SecondaryParameter, TimestepStatistic))
+                        Next
+
+                        'now calculate the percentile values for our primary parameter
+                        newClass2.RepresentativeValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues2, myPercentileClass2.RepresentativePercentile)
+                        newClass2.LBoundValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues2, myPercentileClass2.LBoundPercentile)
+                        newClass2.UboundValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues2, myPercentileClass2.UboundPercentile)
+
+                        'and add the index numbers of the events that fall within this percentile class to the list
+                        For i = 0 To Events.Count - 1
+                            If ParameterValues(i) >= newClass.LBoundValue And ParameterValues(i) <= newClass.UboundValue Then
+                                newClass2.EventIdxNums.Add(i)
+                            End If
+                        Next
+
+                        'now for the side parameters within this class we calculate the median over all events that fall within this class
+                        For Each mySideParameter As GeneralFunctions.enmModelParameter In ModelParameters.SecondarySideParameters
+                            Dim SideParameterValues As New List(Of Double)
+
+                            For i = 0 To newClass2.EventIdxNums.Count - 1
+                                SideParameterValues.Add(Events.Values(newClass2.EventIdxNums(i)).GetParameterValue(mySideParameter, TimestepStatistic))
+                            Next
+                            newClass2.SideParameterValues.Add(mySideParameter, Setup.GeneralFunctions.PercentileFromList(SideParameterValues, 0.5))
+                        Next
+
+                        PercentileClassifications.Add(New List(Of clsPercentileClass) From {newClass, newClass2})
+
+                    Next
+
+                Else
+                    'if we don't have a secondary parameter, we just add the primary parameter
+                    PercentileClassifications.Add(New List(Of clsPercentileClass) From {newClass})
+                End If
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in clsRainfallEvents.CalculateParameterClassification: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
 
     Public Function getAdd(ByVal myIdx As Integer) As clsTimeSeriesEvent
         Dim myEvent As clsTimeSeriesEvent

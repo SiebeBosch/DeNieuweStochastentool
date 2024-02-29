@@ -43,11 +43,12 @@ Public Class GeneralFunctions
         sum = 6
     End Enum
     Public Enum enmModelParameter
-        precipitation = 0
-        evaporation = 1
-        lz = 2 'lower zone (e.g. HBV)
-        uz = 3 'upper zone (e.g. HBV)
-        sm = 4 'soil moisture (e.g. HBV)
+        none = 0
+        precipitation = 1
+        evaporation = 2
+        lz = 3 'lower zone (e.g. HBV)
+        uz = 4 'upper zone (e.g. HBV)
+        sm = 5 'soil moisture (e.g. HBV)
     End Enum
 
     Public Enum enmFouConfigVariable

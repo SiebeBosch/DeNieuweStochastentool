@@ -495,6 +495,8 @@
     <Compile Include="SOBEK\Simulations\clsSobekSimulations.vb" />
     <Compile Include="Stochasten\clsFlowForcing.vb" />
     <Compile Include="Stochasten\clsHerhalingstijd.vb" />
+    <Compile Include="Stochasten\clsModelParameterClass.vb" />
+    <Compile Include="Stochasten\clsModelParameterSet.vb" />
     <Compile Include="Stochasten\clsOverschrijdingsgrafiek.vb" />
     <Compile Include="Stochasten\clsOverschrijdingsgrafieken.vb" />
     <Compile Include="Stochasten\clsMeteoForcing.vb" />
@@ -557,9 +559,11 @@
     <Compile Include="SOBEK\Flow Network Files\clsNTWHeader.vb" />
     <Compile Include="SOBEK\RR Data Files\clsGreenHseRF.vb" />
     <Compile Include="Stochasten\clsMileageCounterPercentages.vb" />
-    <Compile Include="Stochasten\clsParameterClassifications.vb" />
+    <Compile Include="Stochasten\clsParameterPercentileCombination.vb" />
     <Compile Include="Stochasten\clsPercentileClass.vb" />
     <Compile Include="Stochasten\clsPercentileClasses.vb" />
+    <Compile Include="Stochasten\clspercentileClassification.vb" />
+    <Compile Include="Stochasten\clspercentileClassifications.vb" />
     <Compile Include="Stochasten\clsResultByVolume.vb" />
     <Compile Include="Stochasten\clsResultsByVolume.vb" />
     <Compile Include="Stochasten\clsSequentialElevatedClass.vb" />

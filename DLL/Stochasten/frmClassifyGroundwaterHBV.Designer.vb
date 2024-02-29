@@ -33,6 +33,8 @@ Partial Class frmClassifyGroundwaterHBV
         Me.txtExcelFile = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Instellingen = New System.Windows.Forms.GroupBox()
+        Me.chkLZ = New System.Windows.Forms.CheckBox()
+        Me.chkUZ = New System.Windows.Forms.CheckBox()
         Me.btnGrootheden = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.btnGroeiseizoenHelp = New System.Windows.Forms.Button()
@@ -56,9 +58,6 @@ Partial Class frmClassifyGroundwaterHBV
         Me.btnDeleteGroundwaterClass = New System.Windows.Forms.Button()
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
-        Me.chkUZ = New System.Windows.Forms.CheckBox()
-        Me.chkLZ = New System.Windows.Forms.CheckBox()
-        Me.chkSM = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -154,7 +153,6 @@ Partial Class frmClassifyGroundwaterHBV
         '
         'Instellingen
         '
-        Me.Instellingen.Controls.Add(Me.chkSM)
         Me.Instellingen.Controls.Add(Me.chkLZ)
         Me.Instellingen.Controls.Add(Me.chkUZ)
         Me.Instellingen.Controls.Add(Me.btnGrootheden)
@@ -177,10 +175,30 @@ Partial Class frmClassifyGroundwaterHBV
         Me.Instellingen.TabStop = False
         Me.Instellingen.Text = "Classificeren voor:"
         '
+        'chkLZ
+        '
+        Me.chkLZ.AutoSize = True
+        Me.chkLZ.Location = New System.Drawing.Point(335, 90)
+        Me.chkLZ.Name = "chkLZ"
+        Me.chkLZ.Size = New System.Drawing.Size(35, 20)
+        Me.chkLZ.TabIndex = 31
+        Me.chkLZ.Text = "lz"
+        Me.chkLZ.UseVisualStyleBackColor = True
+        '
+        'chkUZ
+        '
+        Me.chkUZ.AutoSize = True
+        Me.chkUZ.Location = New System.Drawing.Point(335, 112)
+        Me.chkUZ.Name = "chkUZ"
+        Me.chkUZ.Size = New System.Drawing.Size(70, 20)
+        Me.chkUZ.TabIndex = 30
+        Me.chkUZ.Text = "uz + sm"
+        Me.chkUZ.UseVisualStyleBackColor = True
+        '
         'btnGrootheden
         '
         Me.btnGrootheden.BackColor = System.Drawing.Color.Gold
-        Me.btnGrootheden.Location = New System.Drawing.Point(464, 84)
+        Me.btnGrootheden.Location = New System.Drawing.Point(464, 87)
         Me.btnGrootheden.Name = "btnGrootheden"
         Me.btnGrootheden.Size = New System.Drawing.Size(23, 23)
         Me.btnGrootheden.TabIndex = 29
@@ -190,7 +208,7 @@ Partial Class frmClassifyGroundwaterHBV
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(25, 87)
+        Me.Label5.Location = New System.Drawing.Point(25, 90)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(239, 16)
@@ -214,7 +232,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.radGroeiseizoen.Location = New System.Drawing.Point(28, 173)
         Me.radGroeiseizoen.Margin = New System.Windows.Forms.Padding(4)
         Me.radGroeiseizoen.Name = "radGroeiseizoen"
-        Me.radGroeiseizoen.Size = New System.Drawing.Size(361, 20)
+        Me.radGroeiseizoen.Size = New System.Drawing.Size(358, 20)
         Me.radGroeiseizoen.TabIndex = 25
         Me.radGroeiseizoen.TabStop = True
         Me.radGroeiseizoen.Text = "Groeiseizoen (maart t/m oktober) en buiten groeiseizoen"
@@ -223,7 +241,7 @@ Partial Class frmClassifyGroundwaterHBV
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(25, 59)
+        Me.Label3.Location = New System.Drawing.Point(25, 62)
         Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(285, 16)
@@ -232,7 +250,7 @@ Partial Class frmClassifyGroundwaterHBV
         '
         'txtMinTimestepsBetweenEvents
         '
-        Me.txtMinTimestepsBetweenEvents.Location = New System.Drawing.Point(335, 56)
+        Me.txtMinTimestepsBetweenEvents.Location = New System.Drawing.Point(335, 59)
         Me.txtMinTimestepsBetweenEvents.Name = "txtMinTimestepsBetweenEvents"
         Me.txtMinTimestepsBetweenEvents.Size = New System.Drawing.Size(117, 22)
         Me.txtMinTimestepsBetweenEvents.TabIndex = 23
@@ -244,7 +262,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.radAprilAugust.Location = New System.Drawing.Point(28, 219)
         Me.radAprilAugust.Margin = New System.Windows.Forms.Padding(4)
         Me.radAprilAugust.Name = "radAprilAugust"
-        Me.radAprilAugust.Size = New System.Drawing.Size(207, 20)
+        Me.radAprilAugust.Size = New System.Drawing.Size(204, 20)
         Me.radAprilAugust.TabIndex = 22
         Me.radAprilAugust.Text = "April t/m aug en sept t/m maart"
         Me.radAprilAugust.UseVisualStyleBackColor = True
@@ -255,7 +273,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.radZomWin.Location = New System.Drawing.Point(28, 196)
         Me.radZomWin.Margin = New System.Windows.Forms.Padding(4)
         Me.radZomWin.Name = "radZomWin"
-        Me.radZomWin.Size = New System.Drawing.Size(170, 20)
+        Me.radZomWin.Size = New System.Drawing.Size(167, 20)
         Me.radZomWin.TabIndex = 21
         Me.radZomWin.Text = "Zomer- en winterhalfjaar"
         Me.radZomWin.UseVisualStyleBackColor = True
@@ -266,7 +284,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.radJaarRond.Location = New System.Drawing.Point(28, 242)
         Me.radJaarRond.Margin = New System.Windows.Forms.Padding(4)
         Me.radJaarRond.Name = "radJaarRond"
-        Me.radJaarRond.Size = New System.Drawing.Size(82, 20)
+        Me.radJaarRond.Size = New System.Drawing.Size(79, 20)
         Me.radJaarRond.TabIndex = 20
         Me.radJaarRond.Text = "Jaarrond"
         Me.radJaarRond.UseVisualStyleBackColor = True
@@ -392,36 +410,6 @@ Partial Class frmClassifyGroundwaterHBV
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
         '
-        'chkUZ
-        '
-        Me.chkUZ.AutoSize = True
-        Me.chkUZ.Location = New System.Drawing.Point(335, 87)
-        Me.chkUZ.Name = "chkUZ"
-        Me.chkUZ.Size = New System.Drawing.Size(120, 20)
-        Me.chkUZ.TabIndex = 30
-        Me.chkUZ.Text = "uz (upper zone)"
-        Me.chkUZ.UseVisualStyleBackColor = True
-        '
-        'chkLZ
-        '
-        Me.chkLZ.AutoSize = True
-        Me.chkLZ.Location = New System.Drawing.Point(335, 113)
-        Me.chkLZ.Name = "chkLZ"
-        Me.chkLZ.Size = New System.Drawing.Size(113, 20)
-        Me.chkLZ.TabIndex = 31
-        Me.chkLZ.Text = "lz (lower zone)"
-        Me.chkLZ.UseVisualStyleBackColor = True
-        '
-        'chkSM
-        '
-        Me.chkSM.AutoSize = True
-        Me.chkSM.Location = New System.Drawing.Point(335, 139)
-        Me.chkSM.Name = "chkSM"
-        Me.chkSM.Size = New System.Drawing.Size(133, 20)
-        Me.chkSM.TabIndex = 32
-        Me.chkSM.Text = "sm (soil moisture)"
-        Me.chkSM.UseVisualStyleBackColor = True
-        '
         'frmClassifyGroundwaterHBV
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -480,7 +468,6 @@ Partial Class frmClassifyGroundwaterHBV
     Friend WithEvents dlgFolder As Windows.Forms.FolderBrowserDialog
     Friend WithEvents Label5 As Windows.Forms.Label
     Friend WithEvents btnGrootheden As Windows.Forms.Button
-    Friend WithEvents chkSM As Windows.Forms.CheckBox
     Friend WithEvents chkLZ As Windows.Forms.CheckBox
     Friend WithEvents chkUZ As Windows.Forms.CheckBox
 End Class

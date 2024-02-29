@@ -11,6 +11,7 @@ Imports System.Runtime.InteropServices.WindowsRuntime
 Imports System.IO.Compression
 Imports System.Text
 Imports GemBox.Spreadsheet
+Imports DocumentFormat.OpenXml.Spreadsheet
 'Imports Ionic.Zip
 
 Public Class clsStochastenAnalyse
@@ -434,81 +435,42 @@ Public Class clsStochastenAnalyse
 
     End Function
 
-    Public Function ClassifyGroundwaterHBVBySeason(Parameters As List(Of GeneralFunctions.enmModelParameter), TimeseriesStatistic As GeneralFunctions.enmTimestepStatistic, ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByVal HBVReportPath As String, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), ExportDir As String) As Boolean
+    Public Function ClassifyGroundwaterHBVBySeason(ModelParameters As clsModelParameterClass, TimeseriesStatistic As GeneralFunctions.enmTimestepStatistic, ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByVal HBVReportPath As String, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), ExportDir As String) As Boolean
         Try
             Dim mySeason As clsSeason
             Dim myDuration As clsDuration
             Dim j As Long = 0
             Dim ws As clsExcelSheet
 
+            'Dim parameters As New List(Of GeneralFunctions.enmModelParameter) From {GeneralFunctions.enmModelParameter.lz, GeneralFunctions.enmModelParameter.uz, GeneralFunctions.enmModelParameter.sm}
+
             'first carry out the POT analysis on the rainfall volumes
             If Not Setup.TijdreeksStatistiek.CalcPOTEvents(Duration, seizoen.ToString, False) Then Throw New Exception("Error executing a POT-analysis on precipitation volumes for the " & seizoen.ToString)
 
             'next we need to assign each of our POT events to its corresponding percentile class
             'for this we will read our percentiles from the datagrid
-            Dim PercentileClasses As New clsPercentileClasses()
-            PercentileClasses.ReadFromDataGrid(myDataGrid)
+            Dim PercentileClassesTemplate As New clsPercentileClasses(Me.Setup)
+            PercentileClassesTemplate.ReadFromDataGrid(myDataGrid)
 
-            'now retrieve the combinationo of season and duration and initialize the parameter classification for that combination
+            'now retrieve the combination of season and duration and initialize the parameter classification for that combination
             For Each mySeries As clsModelTimeSeries In Setup.TijdreeksStatistiek.NeerslagReeksen.Values
                 mySeason = mySeries.Seasons.GetAdd(seizoen)
                 myDuration = mySeason.GetAddDuration(Duration)
-                myDuration.POTEvents.CalculateParameterClassification(Parameters, TimeseriesStatistic, PercentileClasses)
+
+                'first we classify by the main parameter
+                myDuration.POTEvents.CalculateParameterClassification(ModelParameters, TimeseriesStatistic, PercentileClassesTemplate)
+
+
+                'finally we will write the instate.dat files for each combination percentile classes
+                For Each myKey As String In myDuration.POTEvents.PercentileClassifications.Classifications.Keys
+                    Dim mypath As String = ExportDir & "\" & myDuration.ToString & "\" & seizoen.ToString & "\" & myKey & "\instate.dat"
+                    If Not System.IO.Directory.Exists(mypath) Then System.IO.Directory.CreateDirectory(mypath)
+
+                    myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteInstateDatFile(mypath)
+                Next
             Next
 
 
-
-
-
-
-
-            ''the HBV Excel report contains all timeseries of lz, uz and sm
-            'Dim HBVReport As New clsExcelBook(Me.Setup, HBVReportPath)
-            'HBVReport.Read()
-
-            ''we will read the following parameters: lz, uz and sm (lower zone, upper zone and soil mosture)
-            'For Each hbvsheet As ExcelWorksheet In HBVReport.Sheets
-            '    j += 1   'for writing results to Excel
-
-            '    'every sheet contains both the rainfall and the groundwater volumes for a single catchment
-            '    'now, for the given season and duration and the POT analysis performed earlier, we will select the initial timesteps
-            '    Dim myTijdreeks As clsModelTimeSeries = Setup.TijdreeksStatistiek.NeerslagReeksen.Item(hbvsheet.Name)
-            '    mySeason = myTijdreeks.Seasons.GetByEnum(seizoen)
-            '    myDuration = mySeason.GetDuration(Duration)
-            '    TimeSteps = New List(Of Long)
-            '    TimeSteps = myDuration.POTEvents.GetStartingTimeSteps
-
-            '    'now read the timeseries from the HBV report, for parameters lz, uz and sm
-            '    Dim LZ As Double() ' New clsTimeSeries(Me.Setup, "lz", hbvsheet.Name, "volume")
-            '    Dim UZ As Double() ' New clsTimeSeries(Me.Setup, "uz", hbvsheet.Name, "volume")
-            '    Dim SM As Double() 'New clsTimeSeries(Me.Setup, "sm", hbvsheet.Name, "volume")
-            '    ReDim LZ(TimeSteps.Count - 1)
-            '    ReDim UZ(TimeSteps.Count - 1)
-            '    ReDim SM(TimeSteps.Count - 1)
-
-            '    Dim HeaderRowIdx As Integer = 3
-            '    Dim DateColIdx As Integer = 0
-            '    Dim LZColIdx As Integer = -1
-            '    Dim UZColIdx As Integer = -2
-            '    Dim SMColIdx As Integer = -3
-
-            '    'first find the columns
-            '    For i = 0 To 100
-            '        If Left(hbvsheet.Cells(HeaderRowIdx, i).Value.ToString, 2).ToLower = "lz" Then LZColIdx = i
-            '        If Left(hbvsheet.Cells(HeaderRowIdx, i).Value.ToString, 2).ToLower = "uz" Then UZColIdx = i
-            '        If Left(hbvsheet.Cells(HeaderRowIdx, i).Value.ToString, 2).ToLower = "sm" Then SMColIdx = i
-            '        If LZColIdx >= 0 AndAlso UZColIdx >= 0 AndAlso SMColIdx >= 0 Then Exit For
-            '    Next
-            '    If LZColIdx < 0 Then Throw New Exception("Unable to classify lower zone volumes from HBV report. No column starting with 'lz' found in row 4")
-            '    If UZColIdx < 0 Then Throw New Exception("Unable to classify upper zone volumes from HBV report. No column starting with 'uz' found in row 4")
-            '    If SMColIdx < 0 Then Throw New Exception("Unable to classify soil moisture volumes from HBV report. No column starting with 'sm' found in row 4")
-
-            '    'first read the lz values for the given timesteps
-            '    For ts = 0 To TimeSteps.Count - 1
-            '        LZ(ts) = hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), LZColIdx).Value '.addRecord(Dates(TimeSteps(ts)), hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), LZColIdx).Value)
-            '        UZ(ts) = hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), UZColIdx).Value '.addRecord(Dates(TimeSteps(ts)), hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), UZColIdx).Value)
-            '        SM(ts) = hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), SMColIdx).Value '.addRecord(Dates(TimeSteps(ts)), hbvsheet.Cells(HeaderRowIdx + TimeSteps(ts), SMColIdx).Value)
-            '    Next
 
             '    'now walk through all rows of the classification datagridview to decide which percentile we'll use
             '    j = 0
@@ -538,23 +500,6 @@ Public Class clsStochastenAnalyse
 
             '        'set path to a HBV instate.dat file and initialize writing the groundwater and soil moisture values
             '        Dim mypath As String = ExportDir & "\" & seizoen.ToString & "_" & myRow.Cells(0).Value & "\" & hbvsheet.Name & "\instate.dat"
-            '        If Not System.IO.Directory.Exists(mypath) Then System.IO.Directory.CreateDirectory(mypath)
-            '        Using datWriter As New StreamWriter(mypath)
-            '            For i = 1 To 64
-            '                datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
-            '            Next
-            '            datWriter.WriteLine("'state' 1")
-            '            datWriter.WriteLine("'year' 1900")
-            '            datWriter.WriteLine("'month' 1")
-            '            datWriter.WriteLine("'hour' 1")
-            '            datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
-            '            datWriter.WriteLine("'sm' 1 " & repSM)
-            '            datWriter.WriteLine("'uz' 1 " & repUZ)
-            '            datWriter.WriteLine("'lz' 1 " & repLZ)
-            '            datWriter.WriteLine("'wcomp' 1 0.00000")
-            '            datWriter.WriteLine("'wstr' 1 0.00000")
-            '            datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
-            '        End Using
 
             '    Next
             'Next
@@ -570,6 +515,89 @@ Public Class clsStochastenAnalyse
 
 
     End Function
+
+    Public Function getParameterIndex(parameters As List(Of GeneralFunctions.enmModelParameter), Parameter As GeneralFunctions.enmModelParameter) As Integer
+        If parameters.Contains(Parameter) Then
+            Return parameters.IndexOf(Parameter)
+        Else
+            Return -1
+        End If
+    End Function
+
+    Function GetParameterPercentileCombinations(ByVal parameters As List(Of String), ByVal percentileClasses As Dictionary(Of String, clsPercentileClass)) As Dictionary(Of String, clsParameterPercentileCombination)
+        Try
+            Dim ParameterPercentileCombinations As New Dictionary(Of String, clsParameterPercentileCombination)
+            Dim currentCombination As New List(Of String)
+
+            ' Start the recursive process
+            AddParameterPercentileCombinationRecursive(parameters, percentileClasses, 0, "", New List(Of String), New List(Of clsPercentileClass), ParameterPercentileCombinations)
+
+            Return ParameterPercentileCombinations
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function GetParameterPercentileCombinations of class clsStochastenAnalyse: " & ex.Message)
+            Return Nothing
+        End Try
+    End Function
+
+    Private Sub AddParameterPercentileCombinationRecursive(ByVal parameters As List(Of String), ByVal percentileClasses As Dictionary(Of String, clsPercentileClass), ByVal currentIndex As Integer, ByVal currentName As String, ByVal currentParameters As List(Of String), ByVal currentPercentileClasses As List(Of clsPercentileClass), ByRef combinations As Dictionary(Of String, clsParameterPercentileCombination))
+        If currentIndex >= parameters.Count Then
+            ' Base case: all parameters processed
+            Dim Combination As New clsParameterPercentileCombination(Me.Setup)
+            Combination.Name = currentName.TrimEnd("_"c)
+            Combination.Parameters.AddRange(currentParameters)
+            Combination.PercentileClasses.AddRange(currentPercentileClasses)
+            combinations.Add(Combination.Name.ToUpper, Combination)
+        Else
+            ' Recursive case: process each percentile class for the current parameter
+            For Each percentileClass As clsPercentileClass In percentileClasses.Values
+                Dim newName As String = If(currentName = "", "", currentName & "_") & parameters(currentIndex) & "_" & percentileClass.Name
+                Dim newParameters As New List(Of String)(currentParameters) From {
+                parameters(currentIndex)
+            }
+                Dim newPercentileClasses As New List(Of clsPercentileClass)(currentPercentileClasses) From {
+                percentileClass
+            }
+
+                AddParameterPercentileCombinationRecursive(parameters, percentileClasses, currentIndex + 1, newName, newParameters, newPercentileClasses, combinations)
+            Next
+        End If
+    End Sub
+
+
+    'Function GetParameterPercentileCombinations(ByVal parameters As List(Of String), ByVal percentileClasses As Dictionary(Of String, clsPercentileClass)) As Dictionary(Of String, clsParameterPercentileCombination)
+    '    Try
+    '        Dim ParameterPercentileCombinations As New Dictionary(Of String, clsParameterPercentileCombination)
+    '        If parameters.Count = 1 Then
+    '            For Each percentileclass As clsPercentileClass In percentileClasses.Values
+    '                Dim Combination As New clsParameterPercentileCombination(Me.Setup)
+    '                Combination.Name = parameters(0) & "_" & percentileclass.Name
+    '                Combination.Parameters.Add(parameters(0))
+    '                Combination.PercentileClasses.Add(percentileclass)
+    '                ParameterPercentileCombinations.Add(Combination.Name.Trim.ToUpper, Combination)
+    '            Next
+    '        ElseIf parameters.Count = 2 Then
+    '            For Each firstPercentileclass As clsPercentileClass In percentileClasses.Values
+    '                For Each secondPercentileClass As clsPercentileClass In percentileClasses.Values
+    '                    Dim Combination As New clsParameterPercentileCombination(Me.Setup)
+    '                    Combination.Name = parameters(0) & "_" & firstPercentileclass.Name & "_" & parameters(1) & "_" & secondPercentileClass.Name
+    '                    Combination.Parameters.Add(parameters(0))
+    '                    Combination.Parameters.Add(parameters(1))
+    '                    Combination.PercentileClasses.Add(firstPercentileclass)
+    '                    Combination.PercentileClasses.Add(secondPercentileClass)
+    '                    ParameterPercentileCombinations.Add(Combination.Name.Trim.ToUpper, Combination)
+    '                Next
+    '            Next
+    '        Else
+    '            Throw New Exception("Error: invalid number of parameters to classify. Only 1 or 2 parameters are supported.")
+    '        End If
+
+    '        Return ParameterPercentileCombinations
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function GetParameterPercentileCombinations of class clsStochastenAnalyse: " & ex.Message
+    '        Return Nothing
+    '    End Try
+
+    'End Function
 
     Public Function PopulateModelsAndLocationsFromDB(ByRef con As SQLite.SQLiteConnection) As Boolean
         Try

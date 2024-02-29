@@ -90,15 +90,26 @@ Public Class frmClassifyGroundwaterHBV
 
             My.Settings.Save()
 
-            'set the parameters that need to be classified
-            Dim parameters As New List(Of GeneralFunctions.enmModelParameter)
-            If chkLZ.Checked Then parameters.Add(enmModelParameter.lz)
-            If chkUZ.Checked Then parameters.Add(enmModelParameter.uz)
-            If chkSM.Checked Then parameters.Add(enmModelParameter.sm)
+            dlgFolder.Description = "Uitvoermap voor de grondwaterklassen."
+            dlgFolder.ShowDialog()
+            Dim ExportDir As String = dlgFolder.SelectedPath
+            Me.Setup.Settings.SetExportDirs(ExportDir, True, True, False, False, False)
 
-            If parameters.Count = 0 Then
-                MsgBox("Selecteer welke modelparameter of parameters te classificeren.")
-                Exit Sub
+            Dim ModelParametersClass As clsModelParameterClass
+            If chkLZ.Checked Then
+                'if the lower zone is checked this will become the first level of classification
+                If chkUZ.Checked Then
+                    'primary parameter is lower zone, secondary parameter is upper zone, with soil moisture as side parameter
+                    ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.lz, New List(Of enmModelParameter), enmModelParameter.uz, New List(Of enmModelParameter) From {enmModelParameter.sm})
+                Else
+                    'primary parameter is lower zone, no secondary parameter. Upper zone and Soil moisture are side parameters on the top level
+                    ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.lz, New List(Of enmModelParameter) From {enmModelParameter.uz, enmModelParameter.sm}, enmModelParameter.none, New List(Of enmModelParameter))
+                End If
+            ElseIf chkUZ.Checked Then
+                'primary parameter is upper zone, soil moisture and lower zone are side parameters
+                ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.uz, New List(Of enmModelParameter) From {enmModelParameter.sm, enmModelParameter.lz}, enmModelParameter.none, New List(Of enmModelParameter))
+            Else
+                Throw New Exception("No valid combination of model parameters selected.")
             End If
 
             'initialize the progress bar on this form
@@ -119,21 +130,22 @@ Public Class frmClassifyGroundwaterHBV
             'Dim LocationsList As New List(Of String) ' = Setup.SOBEKData.ActiveProject.ActiveCase.RRResults.UPFLODT.ReadAllLocations(False)
 
             'POT analysis settings
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Initializing...", 0, 10, True)
             Setup.InitializeTijdreeksStatistiek()
             Setup.TijdreeksStatistiek.MinTimeStepsBetweenEvents = Setup.GeneralFunctions.ForceNumeric(txtMinTimestepsBetweenEvents.Text, "Minimum aantal tijdstappen tussen events", 0, enmMessageType.ErrorMessage)
             Setup.TijdreeksStatistiek.POTFrequency = 10
 
             'now it's time to read the timeseries from the Excel file. We'll do this for each worksheet
             Dim HBVReport As New clsExcelBook(Me.Setup, txtExcelFile.Text, False)
+
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading HBV Report...", 1, 10, True)
+            Me.Cursor = Cursors.WaitCursor
             HBVReport.Read()
+            Me.Cursor = Cursors.Default
 
             'read the timeseries from the Excel file. Each catchment gets its own timeseries
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Building timeseries from HBV Report...", 2, 10, True)
             If Not Me.Setup.TijdreeksStatistiek.addDataSeriesFromHBVReport(HBVReport) Then Throw New Exception("Error reading timeseries from Excel file.")
-
-            dlgFolder.Description = "Uitvoermap voor de grondwaterklassen."
-            dlgFolder.ShowDialog()
-            Dim ExportDir As String = dlgFolder.SelectedPath
-            Me.Setup.Settings.SetExportDirs(ExportDir, True, True, False, False, False)
 
             Dim seizoen As enmSeason
 
@@ -157,7 +169,7 @@ Public Class frmClassifyGroundwaterHBV
                             seizoen = enmSeason.hydrowinterhalfyear
                             Seizoensnaam = "winter"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(parameters, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(ModelParametersClass, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
                     Next
                 ElseIf radGroeiseizoen.Checked Then
 
@@ -171,14 +183,14 @@ Public Class frmClassifyGroundwaterHBV
                             seizoen = enmSeason.outsidegrowthseason
                             Seizoensnaam = "buitengroeiseizoen"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(parameters, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(ModelParametersClass, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
                     Next
 
                 ElseIf radJaarRond.Checked Then
 
                     seizoen = enmSeason.yearround
                     Seizoensnaam = "jaarrond"
-                    Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(parameters, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                    Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(ModelParametersClass, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
 
                 ElseIf radAprilAugust.Checked Then
                     For i = 1 To 2
@@ -190,7 +202,7 @@ Public Class frmClassifyGroundwaterHBV
                             seizoen = enmSeason.septemberthroughmarch
                             Seizoensnaam = "winter"
                         End If
-                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(parameters, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
+                        Call Me.Setup.StochastenAnalyse.ClassifyGroundwaterHBVBySeason(ModelParametersClass, enmTimestepStatistic.first, seizoen, cmbDuration.Text, txtExcelFile.Text, grGrondwaterKlassen, Seizoensnaam, Dates, ExportDir)
                     Next
                 End If
             End If
@@ -218,6 +230,6 @@ Public Class frmClassifyGroundwaterHBV
     End Sub
 
     Private Sub btnGrootheden_Click(sender As Object, e As EventArgs) Handles btnGrootheden.Click
-        MsgBox("Keuze welke grootheid of grootheden te classificeren: lz (lower zone), uz (upper zone) of lz en uz (beide). In het geval van beide wordt de afhankelijkheid tussen upper zone en lower zone expliciet vastgelegd maar resulteert dit in meer klassen.")
+        MsgBox("Keuze welke grootheid of grootheden te classificeren: lz (lower zone) en/of uz (upper zone) + sm (soil moisture). In het geval van beide wordt de afhankelijkheid tussen upper zone + soil moisture en lower zone expliciet vastgelegd maar resulteert dit wel in meer klassen dan het opgegeven aantal.")
     End Sub
 End Class
