@@ -9,6 +9,7 @@ Public Class clsStochastenRuns
 
     'index numbers for all columns in the run grid
     Public IDCol As Integer
+    Public IDxCol As Integer
     Public DurationCol As Integer
     Public SeasonCol As Integer, SeasonPCol As Integer
     Public VolumeCol As Integer, VolumePCol As Integer
@@ -99,6 +100,7 @@ Public Class clsStochastenRuns
             For i = 0 To dt.Rows.Count - 1
                 myRun = New clsStochastenRun(Setup, Me.StochastenAnalyse)
                 myRun.ID = dt.Rows(i)("RUNID")
+                myRun.Idx = dt.Rows(i)("RUNIDX")
                 myRun.RelativeDir = dt.Rows(i)("RELATIVEDIR")
                 myRun.InputFilesDir = Setup.StochastenAnalyse.InputFilesDir & "\" & myRun.RelativeDir
                 myRun.OutputFilesDir = Setup.StochastenAnalyse.OutputFilesDir & "\" & myRun.RelativeDir
@@ -169,6 +171,7 @@ Public Class clsStochastenRuns
 
                         'set the column index number for all columns to be written to the Runs gridview
                         IDCol = GetSetColumn(dt, "ID", Type.GetType("System.String"))
+                        IDxCol = GetSetColumn(dt, "Idx", Type.GetType("System.Int32"))
                         DurationCol = GetSetColumn(dt, "duur", Type.GetType("System.Int32"))
                         SeasonCol = GetSetColumn(dt, "Seizoen", Type.GetType("System.String"))
                         SeasonPCol = GetSetColumn(dt, "P(seizoen)", Type.GetType("System.Double"))
@@ -224,7 +227,7 @@ Public Class clsStochastenRuns
                             myRun = New clsStochastenRun(Setup, StochastenAnalyse)
 
                             'create a query to write this run to the database
-                            cmd.CommandText = "INSERT INTO RUNS (KLIMAATSCENARIO, DUUR, SEIZOEN, SEIZOEN_P, GW, GW_P, PATROON, PATROON_P, VOLUME, VOLUME_P, BOUNDARY, BOUNDARY_P, WIND, WIND_P, EXTRA1, EXTRA1_P, EXTRA2, EXTRA2_P, EXTRA3, EXTRA3_P, EXTRA4, EXTRA4_P, P, RELATIVEDIR, RUNID) VALUES ("
+                            cmd.CommandText = "INSERT INTO RUNS (KLIMAATSCENARIO, DUUR, SEIZOEN, SEIZOEN_P, GW, GW_P, PATROON, PATROON_P, VOLUME, VOLUME_P, BOUNDARY, BOUNDARY_P, WIND, WIND_P, EXTRA1, EXTRA1_P, EXTRA2, EXTRA2_P, EXTRA3, EXTRA3_P, EXTRA4, EXTRA4_P, P, RELATIVEDIR, RUNID, RUNIDX) VALUES ("
 
                             myRun.Klimaatscenario = StochastenAnalyse.KlimaatScenario
                             myRun.duur = StochastenAnalyse.Duration
@@ -376,9 +379,11 @@ Public Class clsStochastenRuns
                             If Not Directory.Exists(myRun.InputFilesDir) Then Directory.CreateDirectory(myRun.InputFilesDir)
                             If Not Directory.Exists(myRun.OutputFilesDir) Then Directory.CreateDirectory(myRun.OutputFilesDir)
 
-                            cmd.CommandText &= "," & myRun.P & ",'" & myRun.RelativeDir & "','" & myRun.ID & "');"
+                            myRun.Idx = Runs.Count 'assign an index number to this run
+                            cmd.CommandText &= "," & myRun.P & ",'" & myRun.RelativeDir & "','" & myRun.ID & "'," & myRun.Idx & ");"
 
                             dt.Rows(r)(IDCol) = myRun.ID
+                            dt.Rows(r)(IDxCol) = myRun.Idx
                             dt.Rows(r)(DoneCol) = False
                             dt.Rows(r)(PCol) = myRun.P
 
@@ -398,7 +403,7 @@ Public Class clsStochastenRuns
             'close the database
             Me.Setup.SqliteCon.Close()
 
-            'populate the datagridview with the content of th edatatable
+            'populate the datagridview with the content of the datatable
             grRuns.DataSource = dt
 
             'fit the column widths to the data contained

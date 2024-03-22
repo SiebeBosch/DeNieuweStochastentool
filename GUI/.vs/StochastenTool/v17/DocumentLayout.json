@@ -3,19 +3,48 @@
   "WorkspaceRootPath": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsrainfallevents.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\dimr\\clsfouncfile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenanalyse.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
+      "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\frmclassifygroundwaterhbv.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsextremevaluesstatistics.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\files\\clscsvfile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\general\\generalfunctions.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenruns.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenrun.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\frmclassifygroundwaterhbv.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clspercentileclassification.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clspercentileclassifications.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clspercentileclassification.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsrainfallevents.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clspercentileclass.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
@@ -27,19 +56,10 @@
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsmodelparameterset.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\general\\generalfunctions.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clsduration.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\tijdreeksstatistiek\\clstijdreeksstatistiek.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\frmclassifygroundwaterhbv.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenrun.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsparameterpercentilecombination.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
@@ -58,7 +78,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -74,72 +94,187 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "clsExtremeValuesStatistics.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsExtremeValuesStatistics.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsExtremeValuesStatistics.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsExtremeValuesStatistics.vb",
+              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsExtremeValuesStatistics.vb",
+              "ViewState": "AQIAAOQAAAAAAAAAAAAuwAIBAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-22T05:38:41.943Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "clsStochastenAnalyse.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
+              "ViewState": "AQIAAF4FAAAAAAAAAAAEwGwFAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-21T09:39:14.233Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "frmStochastenTool.vb [Design]",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
+              "RelativeDocumentMoniker": "frmStochastenTool.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb [Design]",
+              "RelativeToolTip": "frmStochastenTool.vb [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-11T12:19:33.184Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 4,
+              "Title": "frmClassifyGroundwaterHBV.vb [Design]",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb [Design]",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-23T15:10:05.435Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "frmStochastenTool.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
+              "RelativeDocumentMoniker": "frmStochastenTool.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
+              "RelativeToolTip": "frmStochastenTool.vb",
+              "ViewState": "AQIAAD8SAAAAAAAAAAD4v0gSAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-11T12:19:41.263Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "clsFouNCFile.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\DIMR\\clsFouNCFile.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\DIMR\\clsFouNCFile.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\DIMR\\clsFouNCFile.vb",
+              "RelativeToolTip": "..\\DLL\\DIMR\\clsFouNCFile.vb",
+              "ViewState": "AQIAAOsAAAAAAAAAAAAIwPYAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-11T12:20:41.366Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "clsStochastenRun.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "ViewState": "AQIAAAMAAAAAAAAAAIAwwBEAAAA4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-28T05:56:50.351Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "clsCSVFile.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Files\\clsCSVFile.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Files\\clsCSVFile.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Files\\clsCSVFile.vb",
+              "RelativeToolTip": "..\\DLL\\Files\\clsCSVFile.vb",
+              "ViewState": "AQIAAIoAAAAAAAAAAAAAAIoAAAA6AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-22T05:38:40.665Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "GeneralFunctions.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\General\\GeneralFunctions.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\General\\GeneralFunctions.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\General\\GeneralFunctions.vb",
+              "RelativeToolTip": "..\\DLL\\General\\GeneralFunctions.vb",
+              "ViewState": "AQIAADIOAAAAAAAAAAAAADIOAABKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-29T18:48:56.059Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "clsStochastenRuns.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRuns.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRuns.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRuns.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRuns.vb",
+              "ViewState": "AQIAAIoAAAAAAAAAAIAwwJ0AAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-03-21T10:51:30.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "clspercentileClassification.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassification.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clspercentileClassification.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassification.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clspercentileClassification.vb",
-              "ViewState": "AQIAAC8AAAAAAAAAAAASwDwAAAAPAAAA",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAiwBUAAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-02-29T20:41:02.84Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 12,
               "Title": "clspercentileClassifications.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassifications.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clspercentileClassifications.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassifications.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clspercentileClassifications.vb",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAABFAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAzAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-02-29T20:38:58.212Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "clsRainfallEvents.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
-              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
-              "ViewState": "AQIAAEwAAAAAAAAAAAAkwHwAAAAtAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-25T10:12:21.769Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "clsStochastenAnalyse.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "ViewState": "AQIAAMABAAAAAAAAAAASwMwBAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-25T10:11:09.432Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 10,
               "Title": "frmClassifyGroundwaterHBV.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
-              "ViewState": "AQIAAKgAAAAAAAAAAAASwLkAAAAYAAAA",
+              "ViewState": "AQIAAMEAAAAAAAAAAAAqwMkAAABFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-02-25T10:10:19.753Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 13,
+              "Title": "clsRainfallEvents.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvents.vb",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-02-25T10:12:21.769Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
               "Title": "clsModelParameterClass.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsModelParameterClass.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsModelParameterClass.vb",
@@ -152,46 +287,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
               "Title": "clsModelParameterSet.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsModelParameterSet.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsModelParameterSet.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsModelParameterSet.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsModelParameterSet.vb",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAIAAAAAAAAA",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAmwAIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-02-29T15:22:07.809Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "GeneralFunctions.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\General\\GeneralFunctions.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\General\\GeneralFunctions.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\General\\GeneralFunctions.vb",
-              "RelativeToolTip": "..\\DLL\\General\\GeneralFunctions.vb",
-              "ViewState": "AQIAAB8AAAAAAAAAAAASwDIAAAAOAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-29T18:48:56.059Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 14,
               "Title": "clsPercentileClass.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsPercentileClass.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsPercentileClass.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsPercentileClass.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsPercentileClass.vb",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAkAAAAKAAAA",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAqwAkAAAAKAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-02-25T20:12:29.268Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 17,
               "Title": "clsDuration.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
               "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
@@ -199,23 +321,12 @@
               "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsDuration.vb",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAiAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-25T10:15:58.905Z"
+              "WhenOpened": "2024-02-25T10:15:58.905Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "frmClassifyGroundwaterHBV.vb [Design]",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb [Design]",
-              "RelativeToolTip": "..\\DLL\\Stochasten\\frmClassifyGroundwaterHBV.vb [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-23T15:10:05.435Z",
-              "EditorCaption": " [Design]"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 19,
               "Title": "clsParameterPercentileCombination.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsParameterPercentileCombination.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsParameterPercentileCombination.vb",
@@ -223,11 +334,12 @@
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsParameterPercentileCombination.vb",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-26T20:46:42.978Z"
+              "WhenOpened": "2024-02-26T20:46:42.978Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 18,
               "Title": "clsTijdreeksStatistiek.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
               "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
@@ -235,24 +347,12 @@
               "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsTijdreeksStatistiek.vb",
               "ViewState": "AQIAAB4AAAAAAAAAAAAAwB8AAABHAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-25T10:15:58.905Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "clsStochastenRun.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
-              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
-              "ViewState": "AQIAAIkDAAAAAAAAAAAAAKEDAAAMAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-28T05:56:50.351Z",
+              "WhenOpened": "2024-02-25T10:15:58.905Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 20,
               "Title": "clsPercentileClasses.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsPercentileClasses.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsPercentileClasses.vb",
@@ -260,11 +360,12 @@
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsPercentileClasses.vb",
               "ViewState": "AQIAABsAAAAAAAAAAAAqwCcAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-25T19:55:56.993Z"
+              "WhenOpened": "2024-02-25T19:55:56.993Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 21,
               "Title": "clsRainfallEvent.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
               "RelativeDocumentMoniker": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
@@ -272,7 +373,8 @@
               "RelativeToolTip": "..\\DLL\\TijdreeksStatistiek\\clsRainfallEvent.vb",
               "ViewState": "AQIAAB0AAAAAAAAAAAAuwDIAAAAWAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-02-25T10:36:43.371Z"
+              "WhenOpened": "2024-02-25T10:36:43.371Z",
+              "EditorCaption": ""
             }
           ]
         }

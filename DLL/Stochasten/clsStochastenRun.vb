@@ -15,6 +15,7 @@ Public Class clsStochastenRun
     '----------------------------------------------------------------------------------------
 
     Public ID As String
+    Public Idx As Integer   'the index number of our run
     Public P As Double  'the resulting probability of all underlying stochastic classes
 
     Public IDexceptVolume As String

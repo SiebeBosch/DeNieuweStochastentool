@@ -11,9 +11,9 @@ Public Class clspercentileClassifications
 
     Public Function Add(myClassifications As List(Of clsPercentileClass)) As Boolean
         Try
-            Dim myClassification As New clspercentileClassification
+            Dim myClassification As New clspercentileClassification(Me.Setup)
             For Each MyPercentileClass As clsPercentileClass In myClassifications
-                myClassification.Name &= MyPercentileClass.Name & "_"
+                myClassification.Name &= MyPercentileClass.Parameter.ToString & MyPercentileClass.Name & "_"
                 myClassification.Classes.Add(MyPercentileClass)
             Next
 

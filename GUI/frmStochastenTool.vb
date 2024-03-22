@@ -2824,6 +2824,7 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "KLIMAATSCENARIO") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, "RUNS_KLIMAATIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "DUUR", enmSQLiteDataType.SQLITEINT, "RUNS_DUURIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "RUNID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "RUNID", enmSQLiteDataType.SQLITETEXT, "RUNS_RUNIDX")
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "RUNIDX") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "RUNIDX", enmSQLiteDataType.SQLITEINT, "RUNS_RUNIDXIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "RELATIVEDIR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "RELATIVEDIR", enmSQLiteDataType.SQLITETEXT, "RUNS_DIRIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "SEIZOEN") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "SEIZOEN", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "RUNS", "SEIZOEN_P") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "RUNS", "SEIZOEN_P", enmSQLiteDataType.SQLITEREAL)
@@ -2893,12 +2894,13 @@ Public Class frmStochasten
         Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
         Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
         Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+        Fields.Add("PARAMETER", New clsSQLiteField("PARAMETER", enmSQLiteDataType.SQLITETEXT, True))
         Fields.Add("MINVAL", New clsSQLiteField("MINVAL", enmSQLiteDataType.SQLITEREAL, False))
         Fields.Add("MAXVAL", New clsSQLiteField("MAXVAL", enmSQLiteDataType.SQLITEREAL, False))
         Fields.Add("AVGVAL", New clsSQLiteField("AVGVAL", enmSQLiteDataType.SQLITEREAL, False))
         Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "RESULTATEN2D", Fields)
 
-        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "FEATUREIDX", "RUNID"}
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "FEATUREIDX", "RUNID", "PARAMETER"}
         Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "RESULTATEN2D", CompositeIndex)
 
         'upgrade all old climate scenario names
@@ -2920,6 +2922,7 @@ Public Class frmStochasten
         Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
         Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
         Fields.Add("LOCATIENAAM", New clsSQLiteField("LOCATIENAAM", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
         Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
         Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
         Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
@@ -2934,7 +2937,7 @@ Public Class frmStochasten
         Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
         Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", Fields)
 
-        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM"}
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "LOCATIENAAM", "RUNID"}
         Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "HERHALINGSTIJDEN", CompositeIndex)
         '--------------------------------------------------------------------------------
     End Sub
@@ -2951,7 +2954,10 @@ Public Class frmStochasten
         Fields = New Dictionary(Of String, clsSQLiteField)
         Fields.Add("KLIMAATSCENARIO", New clsSQLiteField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT, True))
         Fields.Add("DUUR", New clsSQLiteField("DUUR", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("PARAMETER", New clsSQLiteField("PARAMETER", enmSQLiteDataType.SQLITETEXT, True))
         Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("RUNIDX", New clsSQLiteField("RUNIDX", enmSQLiteDataType.SQLITEINT, True))
         Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
         Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
         Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
@@ -2966,8 +2972,12 @@ Public Class frmStochasten
         Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
         Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D", Fields)
 
-        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "FEATUREIDX"}
+        Dim CompositeIndex As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "PARAMETER", "FEATUREIDX", "RUNID"}
         Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D", CompositeIndex)
+
+        Dim CompositeIndex2 As New List(Of String) From {"KLIMAATSCENARIO", "DUUR", "PARAMETER", "FEATUREIDX", "RUNIDX"}
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D", CompositeIndex2)
+
         '--------------------------------------------------------------------------------
     End Sub
 
@@ -3390,7 +3400,7 @@ Public Class frmStochasten
         End If
 
         If chk2D.Checked Then
-            Call Setup.StochastenAnalyse.ExportResults2D()
+            Call Setup.StochastenAnalyse.ExportResults2D(GeneralFunctions.enm2DParameter.waterlevel)
         End If
 
         Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"
@@ -4662,14 +4672,12 @@ Public Class frmStochasten
             Call WriteStochastsJSON(ViewerDir & "\js\stochasts.js")
             Call WriteSubcatchmentsJSON(ViewerDir & "\js\subcatchments.js")
 
+            Setup.StochastenAnalyse.WriteStochasticRunsJSON(ViewerDir & "\js\runs.js", cmbClimate.Text, cmbDuration.Text)
+
             If chk2D.Checked Then
                 'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
                 Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", cmbClimate.Text, cmbDuration.Text)
-
-                'If radFou.Checked Then
-                '    Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js")
-                '    Call WriteFouTopographyJSON(ViewerDir & "\js\Mesh.js")
-                'End If
+                Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js")
             End If
 
             If chk1D.Checked Then
@@ -5065,7 +5073,7 @@ Public Class frmStochasten
             Dim Klimaat As String, Seizoen As String, Volume As String, Patroon As String, Init As String, Boundary As String, Wind As String, Extra1 As String, Extra2 As String, Extra3 As String, Extra4 As String
             Dim resultsString As String
 
-            query = "SELECT RUNID, KLIMAATSCENARIO, SEIZOEN,VOLUME,PATROON,GW,BOUNDARY,WIND,EXTRA1,EXTRA2,EXTRA3,EXTRA4 FROM RUNS WHERE DUUR=" & cmbDuration.Text & " AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
+            query = "SELECT RUNID, RUNIDX, KLIMAATSCENARIO, SEIZOEN,VOLUME,PATROON,GW,BOUNDARY,WIND,EXTRA1,EXTRA2,EXTRA3,EXTRA4 FROM RUNS WHERE DUUR=" & cmbDuration.Text & " AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
             Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, runsdt, False)
 
             query = "SELECT DISTINCT LOCATIENAAM FROM RESULTATEN WHERE DUUR=" & cmbDuration.Text & ";"
@@ -5075,9 +5083,9 @@ Public Class frmStochasten
             Using resultsWriter As New StreamWriter(path)
 
                 resultsString = "let results = {"
-                resultsWriter.WriteLine(resultsString.Replace("%", Chr(34)))
-                resultsString = "  %runs%: ["
-                resultsWriter.WriteLine(resultsString.Replace("%", Chr(34)))
+                resultsWriter.WriteLine(resultsString)
+                resultsString = "  ""runs"": ["
+                resultsWriter.WriteLine(resultsString)
 
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Writing results to JSON...", 0, 10, True)
                 For runidx = 0 To runsdt.Rows.Count - 1
@@ -5096,29 +5104,30 @@ Public Class frmStochasten
                     If runsdt.Rows(runidx)("EXTRA4") = "" Then Extra4 = "null" Else Extra4 = runsdt.Rows(runidx)("EXTRA4")
 
                     'write the runID and the stochasts
-                    resultsString = "    {%ID%: %" & runsdt.Rows(runidx)("RUNID") & "%, "
-                    resultsString &= "%Klimaat%: %" & Klimaat & "%, "
-                    resultsString &= "%Seizoen%: %" & Seizoen & "%, "
-                    resultsString &= "%Volume%: " & Volume & ", "
-                    resultsString &= "%Patroon%: %" & Patroon & "%, "
-                    resultsString &= "%Init%: %" & Init & "%, "
-                    resultsString &= "%Boundary%: %" & Boundary & "%, "
-                    resultsString &= "%Wind%: %" & Wind & "%, "
-                    resultsString &= "%Extra1%: %" & Extra1 & "%, "
-                    resultsString &= "%Extra2%: %" & Extra2 & "%, "
-                    resultsString &= "%Extra3%: %" & Extra3 & "%, "
-                    resultsString &= "%Extra4%: %" & Extra4 & "%, "
-                    resultsString &= "%results%: ["
-                    resultsWriter.WriteLine(resultsString.Replace("%", Chr(34)))
+                    resultsString = "    {""ID"": """ & runsdt.Rows(runidx)("RUNID") & """, "
+                    resultsString &= """RUNIDX"": """ & runsdt.Rows(runidx)("RUNIDX") & """, "
+                    resultsString &= """Klimaat"": """ & Klimaat & """, "
+                    resultsString &= """Seizoen"": """ & Seizoen & """, "
+                    resultsString &= """Volume"": " & Volume & ", "
+                    resultsString &= """Patroon"": """ & Patroon & """, "
+                    resultsString &= """Init"": """ & Init & """, "
+                    resultsString &= """Boundary"": """ & Boundary & """, "
+                    resultsString &= """Wind"": """ & Wind & """, "
+                    resultsString &= """Extra1"": """ & Extra1 & """, "
+                    resultsString &= """Extra2"": """ & Extra2 & """, "
+                    resultsString &= """Extra3"": """ & Extra3 & """, "
+                    resultsString &= """Extra4"": """ & Extra4 & """, "
+                    resultsString &= """results"": ["
+                    resultsWriter.WriteLine(resultsString)
 
                     'write the result for each location for this run
                     query = "SELECT LOCATIENAAM, MAXVAL FROM RESULTATEN WHERE RUNID='" & runsdt.Rows(runidx)("RUNID") & "' AND DUUR = " & cmbDuration.Text & ";"
                     Dim resdt As New DataTable
                     Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, resdt, False)
                     For residx = 0 To resdt.Rows.Count - 1
-                        resultsString = "     {%location%: %" & resdt.Rows(residx)(0) & "%,%value%:" & resdt.Rows(residx)(1) & "}"
+                        resultsString = "     {""location"": """ & resdt.Rows(residx)(0) & """,""value"":" & resdt.Rows(residx)(1) & "}"
                         If residx < resdt.Rows.Count - 1 Then resultsString &= ","
-                        resultsWriter.WriteLine(resultsString.Replace("%", Chr(34)))
+                        resultsWriter.WriteLine(resultsString)
                     Next
                     resultsWriter.WriteLine("    ]")
                     resultsString = "  }"

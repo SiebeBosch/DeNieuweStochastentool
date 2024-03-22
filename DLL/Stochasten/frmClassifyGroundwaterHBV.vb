@@ -96,20 +96,20 @@ Public Class frmClassifyGroundwaterHBV
             Me.Setup.Settings.SetExportDirs(ExportDir, True, True, False, False, False)
 
             Dim ModelParametersClass As clsModelParameterClass
-            If chkLZ.Checked Then
-                'if the lower zone is checked this will become the first level of classification
-                If chkUZ.Checked Then
-                    'primary parameter is lower zone, secondary parameter is upper zone, with soil moisture as side parameter
-                    ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.lz, New List(Of enmModelParameter), enmModelParameter.uz, New List(Of enmModelParameter) From {enmModelParameter.sm})
-                Else
-                    'primary parameter is lower zone, no secondary parameter. Upper zone and Soil moisture are side parameters on the top level
-                    ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.lz, New List(Of enmModelParameter) From {enmModelParameter.uz, enmModelParameter.sm}, enmModelParameter.none, New List(Of enmModelParameter))
-                End If
-            ElseIf chkUZ.Checked Then
-                'primary parameter is upper zone, soil moisture and lower zone are side parameters
+            If cmbHBVPars.Text = "lz" Then
+                'primary parameter is lower zone, no secondary parameter. Upper zone and Soil moisture are side parameters on the top level
+                ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.lz, New List(Of enmModelParameter) From {enmModelParameter.uz, enmModelParameter.sm}, enmModelParameter.none, New List(Of enmModelParameter))
+            ElseIf cmbHBVPars.Text = "uz" Then
+                'primary parameter is lower zone; soil moisture and lower zone are side parameters
                 ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.uz, New List(Of enmModelParameter) From {enmModelParameter.sm, enmModelParameter.lz}, enmModelParameter.none, New List(Of enmModelParameter))
+            ElseIf cmbHBVPars.Text = "sm" Then
+                'primary parameter is soil moisture, upper zone and lower zone are side parameters
+                ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.sm, New List(Of enmModelParameter) From {enmModelParameter.uz, enmModelParameter.lz}, enmModelParameter.none, New List(Of enmModelParameter))
+            ElseIf cmbHBVPars.Text = "lz + sm" Then
+                'primary parameter is lower zone, secondary parameter is soil moisture, with upper zone as side parameter. Reason for this order is that soil moisture has more diverse values and uz can be zero
+                ModelParametersClass = New clsModelParameterClass(Me.Setup, enmModelParameter.lz, New List(Of enmModelParameter), enmModelParameter.sm, New List(Of enmModelParameter) From {enmModelParameter.uz})
             Else
-                Throw New Exception("No valid combination of model parameters selected.")
+                Throw New Exception("No valid combination of model parameters selected for classification.")
             End If
 
             'initialize the progress bar on this form
@@ -150,7 +150,7 @@ Public Class frmClassifyGroundwaterHBV
             Dim seizoen As enmSeason
 
             If cmbDuration.Text = "" Then
-                MsgBox("Selecteer welke neerslagduur van toepassing is.")
+                MsgBox("Selecteer welke neerslagduur van toepassing Is.")
             ElseIf grGrondwaterKlassen.Rows.Count = 0 Then
                 MsgBox("Maak eerst grondwaterklassen aan.")
             Else
@@ -216,7 +216,7 @@ Public Class frmClassifyGroundwaterHBV
             Me.Close()
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
-            MsgBox("Error: could not classify groundwater levels from hisfile contents.")
+            MsgBox("Error: could Not classify groundwater levels from hisfile contents.")
         End Try
 
     End Sub

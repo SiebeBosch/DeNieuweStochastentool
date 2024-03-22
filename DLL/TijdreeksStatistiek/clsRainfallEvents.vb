@@ -1,25 +1,26 @@
 ﻿Imports DocumentFormat.OpenXml.Spreadsheet
 Imports STOCHLIB.General
 Public Class clsRainfallEvents
+    Private Setup As clsSetup
 
     Public Events As New Dictionary(Of Integer, clsTimeSeriesEvent)
 
     'for the classification of parameters by percentile it is possible to use multiple parameters
     'e.g. primary parameter is the HBV parameter lz (lower zone) and secondary is uz (upper zone) with a side parameter sm (soil moisture)
-    Public PercentileClassifications As New clspercentileClassifications(Me.Setup) ' Dictionary(Of String, List(Of clsPercentileClass))
+    Public PercentileClassifications As clspercentileClassifications ' Dictionary(Of String, List(Of clsPercentileClass))
 
     Public PlottingPositions As DataTable
 
     Private Series As clsModelTimeSeries     'the underlying timeseries with precipitation
     Private Season As clsSeason
     Private Duration As clsDuration
-    Private Setup As clsSetup
 
     Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByRef mySeason As clsSeason, ByRef myDuration As clsDuration)
         Setup = mySetup
         Series = mySeries
         Season = mySeason
         Duration = myDuration
+        PercentileClassifications = New clspercentileClassifications(Setup)
     End Sub
 
     Public Sub New(ByRef mySetup As clsSetup, ByRef mySeries As clsModelTimeSeries, ByRef mySeason As clsSeason)
@@ -94,26 +95,26 @@ Public Class clsRainfallEvents
                             ParameterValues2.Add(Events.Values(newClass.EventIdxNums(i)).GetParameterValue(ModelParameters.SecondaryParameter, TimestepStatistic))
                         Next
 
-                        'now calculate the percentile values for our primary parameter
+                        'now calculate the percentile values for our secondary parameter
                         newClass2.RepresentativeValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues2, myPercentileClass2.RepresentativePercentile)
                         newClass2.LBoundValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues2, myPercentileClass2.LBoundPercentile)
                         newClass2.UboundValue = Setup.GeneralFunctions.PercentileFromList(ParameterValues2, myPercentileClass2.UboundPercentile)
 
                         'and add the index numbers of the events that fall within this percentile class to the list
-                        For i = 0 To Events.Count - 1
-                            If ParameterValues(i) >= newClass.LBoundValue And ParameterValues(i) <= newClass.UboundValue Then
+                        For i = 0 To newClass.EventIdxNums.Count - 1
+                            If ParameterValues2(i) >= newClass2.LBoundValue And ParameterValues2(i) <= newClass2.UboundValue Then
                                 newClass2.EventIdxNums.Add(i)
                             End If
                         Next
 
                         'now for the side parameters within this class we calculate the median over all events that fall within this class
                         For Each mySideParameter As GeneralFunctions.enmModelParameter In ModelParameters.SecondarySideParameters
-                            Dim SideParameterValues As New List(Of Double)
+                            Dim SideParameterValues2 As New List(Of Double)
 
                             For i = 0 To newClass2.EventIdxNums.Count - 1
-                                SideParameterValues.Add(Events.Values(newClass2.EventIdxNums(i)).GetParameterValue(mySideParameter, TimestepStatistic))
+                                SideParameterValues2.Add(Events.Values(newClass2.EventIdxNums(i)).GetParameterValue(mySideParameter, TimestepStatistic))
                             Next
-                            newClass2.SideParameterValues.Add(mySideParameter, Setup.GeneralFunctions.PercentileFromList(SideParameterValues, 0.5))
+                            newClass2.SideParameterValues.Add(mySideParameter, Setup.GeneralFunctions.PercentileFromList(SideParameterValues2, 0.5))
                         Next
 
                         PercentileClassifications.Add(New List(Of clsPercentileClass) From {newClass, newClass2})

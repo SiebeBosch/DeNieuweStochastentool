@@ -11,10 +11,18 @@ Public Class clspercentileClassification
     Public Name As String
     Public Classes As New List(Of clsPercentileClass)
 
+    Public Sub New(ByRef mySetup As clsSetup)
+        Me.Setup = mySetup
+    End Sub
+
     Public Function WriteInstateDatFile(path As String) As Boolean
         'this function writes an instate.dat file (HBV initial state) for the given classification
         Try
-            If Not System.IO.Directory.Exists(path) Then System.IO.Directory.CreateDirectory(path)
+            'first make sure the directory exists
+            Dim directoryPath As String = Me.Setup.GeneralFunctions.DirFromFileName(path)
+            If Not System.IO.Directory.Exists(directoryPath) Then System.IO.Directory.CreateDirectory(directoryPath)
+
+            'then write the file
             Using datWriter As New StreamWriter(path)
                 For i = 1 To 64
                     datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
@@ -57,7 +65,8 @@ Public Class clspercentileClassification
                 datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
             End Using
         Catch ex As Exception
-
+            Me.Setup.Log.AddError("Error writing instate.dat file for classification " & Me.Name & ": " & ex.Message)
+            Return False
         End Try
     End Function
 

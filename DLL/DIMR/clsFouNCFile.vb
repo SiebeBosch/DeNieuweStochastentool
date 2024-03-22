@@ -60,9 +60,14 @@ Public Class clsFouNCFile
         Setup = mySetup
     End Sub
 
-    Public Function get2DMaximumWaterDepths() As Double()
+    Public Function get2DMaxima(Parameter As GeneralFunctions.enm2DParameter) As Double()
         'returns the maximum water level per 2D cell
-        Return Mesh2d_fourier002_max_depth
+        Select Case Parameter
+            Case GeneralFunctions.enm2DParameter.depth
+                Return Mesh2d_fourier002_max_depth
+            Case GeneralFunctions.enm2DParameter.waterlevel
+                Return Mesh2d_fourier002_max
+        End Select
     End Function
 
     Public Function Read() As Boolean
@@ -235,29 +240,35 @@ Public Class clsFouNCFile
                 For i = 0 To UBound(Mesh2d_face_nodes, 1)
 
                     'we will only generate the cells for which the exceedance level for the highest return period exceeds the level for the lowest return period
-                    Dim waterLevels As List(Of Double) = ExceedanceValues(i)
-                    If waterLevels.Max() > waterLevels.Min() Then
+                    Dim waterLevels As List(Of Double)
 
-                        Dim featureStr As String = "            { ""type"": ""Feature"", ""properties"": {"
-                        featureStr &= """T" & ReturnPeriods(0) & """:" & Format(ExceedanceValues(i)(0), "0.00")
-                        For j = 1 To ReturnPeriods.Count - 1
-                            featureStr &= ", ""T" & ReturnPeriods(j) & """:" & Format(ExceedanceValues(i)(j), "0.00")
-                        Next
-                        featureStr &= "}, ""geometry"": { ""type"": ""Polygon"", ""coordinates"": [["
+                    'only those cells have been written to the database that have a difference in water levels between the return periods
+                    If ExceedanceValues.ContainsKey(i) Then
+                        waterLevels = ExceedanceValues(i)
+                        If waterLevels.Max() > waterLevels.Min() Then
 
-                        'write its coordinates. Notice that the coordinates are written counterclockwise as they should be
-                        Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
-                        featureStr &= "[" & Lng & "," & Lat & "]"
-                        For j = 1 To UBound(Mesh2d_face_nodes, 2)
-                            If Mesh2d_face_nodes(i, j) > -999 Then
-                                Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Lat, Lng)
-                                featureStr &= ",[" & Lng & "," & Lat & "]"
-                            End If
-                        Next
-                        Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
-                        featureStr &= ",[" & Lng & "," & Lat & "]]]}}"
-                        features.Add(featureStr)
+                            Dim featureStr As String = "            { ""type"": ""Feature"", ""properties"": {"
+                            featureStr &= """T" & ReturnPeriods(0) & """:" & Format(ExceedanceValues(i)(0), "0.00")
+                            For j = 1 To ReturnPeriods.Count - 1
+                                featureStr &= ", ""T" & ReturnPeriods(j) & """:" & Format(ExceedanceValues(i)(j), "0.00")
+                            Next
+                            featureStr &= "}, ""geometry"": { ""type"": ""Polygon"", ""coordinates"": [["
+
+                            'write its coordinates. Notice that the coordinates are written counterclockwise as they should be
+                            Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                            featureStr &= "[" & Lng & "," & Lat & "]"
+                            For j = 1 To UBound(Mesh2d_face_nodes, 2)
+                                If Mesh2d_face_nodes(i, j) > -999 Then
+                                    Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, j) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                                    featureStr &= ",[" & Lng & "," & Lat & "]"
+                                End If
+                            Next
+                            Me.Setup.GeneralFunctions.RD2WGS84(Mesh2d_node_x(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Mesh2d_node_y(Mesh2d_face_nodes(i, 0) - Mesh2d_face_nodes_start_index), Lat, Lng)
+                            featureStr &= ",[" & Lng & "," & Lat & "]]]}}"
+                            features.Add(featureStr)
+                        End If
                     End If
+
                 Next
 
                 'write all records but the last with a comma
