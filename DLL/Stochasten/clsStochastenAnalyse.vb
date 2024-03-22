@@ -248,10 +248,10 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function WriteExceedanceData2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer) As Boolean
+    Public Function WriteExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer) As Boolean
         Try
             Dim locdt As New DataTable
-            Dim query As String = "SELECT DISTINCT FEATUREIDX FROM HERHALINGSTIJDEN2D WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Dim query As String = "SELECT DISTINCT FEATUREIDX FROM HERHALINGSTIJDEN2D WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " AND PARAMETER='" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "';"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
 
             'write the dataset to json
@@ -266,8 +266,13 @@ Public Class clsStochastenAnalyse
                 For i = 0 To locdt.Rows.Count - 1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
 
+                    If locdt.Rows.Count = 0 Then
+                        Me.Setup.Log.AddError("Unable to write exceedance levels 2D to JSON for featureidx " & locdt.Rows(i)("FEATUREIDX") & ": no data found.")
+                        Continue For
+                    End If
+
                     'add the exceedance data to the excedancedata.js file
-                    exceedanceWriter.WriteLine("            ""IDX"": """ & locdt.Rows(i)("FEATUREIDX") & """,")
+                    exceedanceWriter.WriteLine("            ""idx"": """ & locdt.Rows(i)("FEATUREIDX") & """,")
 
                     Dim herhStr As String = "            ""T"": ["
                     Dim levelStr As String = "            ""h"": ["
@@ -275,7 +280,7 @@ Public Class clsStochastenAnalyse
 
                     'for this location we will retrieve the exceedance table
                     Dim dtHerh As New DataTable
-                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM HERHALINGSTIJDEN2D WHERE FEATUREIDX='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " AND PARAMETER='" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "' ORDER BY HERHALINGSTIJD;"
+                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM HERHALINGSTIJDEN2D WHERE FEATUREIDX=" & locdt.Rows(i)("FEATUREIDX") & " AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " AND PARAMETER='" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "' ORDER BY HERHALINGSTIJD;"
                     Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
                     Dim n As Integer = dtHerh.Rows.Count
 
@@ -1881,35 +1886,32 @@ Public Class clsStochastenAnalyse
             Dim MaxLevels As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.waterlevel)
 
             'now we have to write these maxima to the database. use the index number as location ID
-
-
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
             Using myCmd As New SQLite.SQLiteCommand
                 myCmd.Connection = Me.Setup.SqliteCon
                 Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
+                    'the MaxDepths array contains the maximum depth for each cell. Hence the index number is also the feature index number.
+                    'We will now write these to the database
                     For j = 0 To MaxDepths.Count - 1
-                        Dim ID As String = j.ToString       'the index number of each cell is also considered its ID
                         Max = MaxDepths(j)
                         Min = 0
                         Avg = 0
                         'add the outcome of this run to the dictionary of results
-                        myCmd.CommandText = "INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & "," & j.ToString & ",'" & myRun.ID & "','" & GeneralFunctions.enm2DParameter.depth.ToString & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                        myCmd.CommandText = "INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & "," & j & ",'" & myRun.ID & "','" & GeneralFunctions.enm2DParameter.depth.ToString & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
                         myCmd.ExecuteNonQuery()
                     Next
 
                     For j = 0 To MaxLevels.Count - 1
-                        Dim ID As String = j.ToString       'the index number of each cell is also considered its ID
                         Max = MaxLevels(j)
                         Min = 0
                         Avg = 0
                         'add the outcome of this run to the dictionary of results
-                        myCmd.CommandText = "INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & "," & j.ToString & ",'" & myRun.ID & "','" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+                        myCmd.CommandText = "INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & "," & j & ",'" & myRun.ID & "','" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
                         myCmd.ExecuteNonQuery()
                     Next
 
-
-                    'insert the resulta for all locations at once
+                    'insert the results for all locations at once
                     transaction.Commit() 'this is where the bulk insert is finally executed.
                 End Using
             End Using
