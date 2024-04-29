@@ -527,8 +527,44 @@ Public Class clsStochastenAnalyse
 
                 'finally we will write the instate.dat files for each combination percentile classes
                 For Each myKey As String In myDuration.POTEvents.PercentileClassifications.Classifications.Keys
-                    Dim mypath As String = ExportDir & "\" & myDuration.DurationHours.ToString & "\" & seizoen.ToString & "\" & myKey & "\instate.dat"
-                    myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteInstateDatFile(mypath)
+                    Dim instatepath As String = ExportDir & "\" & myDuration.DurationHours.ToString & "\" & seizoen.ToString & "\" & myKey & "\" & mySeries.Name & "\instate.dat"
+                    Dim state01path As String = ExportDir & "\" & myDuration.DurationHours.ToString & "\" & seizoen.ToString & "\" & myKey & "\" & mySeries.Name & "\state_01.dat"
+
+                    Select Case seizoen
+                        Case GeneralFunctions.enmSeason.yearround
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 1, 1))
+                        Case GeneralFunctions.enmSeason.meteowinterhalfyear
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 1, 1))
+                        Case GeneralFunctions.enmSeason.meteosummerhalfyear
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 6, 1))
+                        Case GeneralFunctions.enmSeason.meteosummerquarter
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 8, 10))
+                        Case GeneralFunctions.enmSeason.meteoautumnquarter
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 11, 10))
+                        Case GeneralFunctions.enmSeason.meteowinterquarter
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 2, 10))
+                        Case GeneralFunctions.enmSeason.meteospringquarter
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 5, 10))
+                        Case GeneralFunctions.enmSeason.hydrosummerhalfyear
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 6, 1))
+                        Case GeneralFunctions.enmSeason.hydrowinterhalfyear
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 1, 1))
+                        Case GeneralFunctions.enmSeason.marchthroughoctober
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 6, 1))
+                        Case GeneralFunctions.enmSeason.novemberthroughfebruary
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 1, 1))
+                        Case GeneralFunctions.enmSeason.aprilthroughaugust
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 6, 15))
+                        Case GeneralFunctions.enmSeason.septemberthroughmarch
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 12, 15))
+                        Case GeneralFunctions.enmSeason.growthseason
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2010, 6, 1))
+                        Case GeneralFunctions.enmSeason.outsidegrowthseason
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2010, 1, 1))
+                        Case Else
+                            myDuration.POTEvents.PercentileClassifications.Classifications.Item(myKey).WriteHBVStateFiles(instatepath, state01path, New Date(2000, 1, 1))
+                    End Select
+
                 Next
             Next
 
@@ -854,11 +890,18 @@ Public Class clsStochastenAnalyse
 
                             'add the groundwater classes that are in use
                             Dim grGroundwater As DataGridView = GroundwaterGrids.Item(i)
-                            Dim FileNames As String = "", FileName As String = ""
+                            Dim FileNames As String = "", FileName As String = "", RootFolder
                             Setup.GeneralFunctions.UpdateProgressBar("Populating groundwater for " & mySeason.Name, 2, 10, True)
                             For Each GwRow As DataGridViewRow In grGroundwater.Rows
                                 If GwRow.Cells("USE").Value = 1 Then
                                     myGW = New clsStochasticGroundwaterClass(GwRow.Cells("NAAM").Value, GwRow.Cells("KANS").Value)
+
+                                    'v2.205: introducing multi-file support for this stochast. Also introduce distinction between RR, Flow and RTC
+                                    If Not IsDBNull(GwRow.Cells("FOLDER").Value) Then
+                                        RootFolder = GwRow.Cells("FOLDER").Value
+                                        myGW.SetFolder(RootFolder)
+                                    End If
+
 
                                     'v2.205: introducing multi-file support for this stochast. Also introduce distinction between RR, Flow and RTC
                                     If Not IsDBNull(GwRow.Cells("RRFILES").Value) Then

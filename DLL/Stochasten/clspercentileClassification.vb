@@ -15,55 +15,102 @@ Public Class clspercentileClassification
         Me.Setup = mySetup
     End Sub
 
-    Public Function WriteInstateDatFile(path As String) As Boolean
+    Public Function WriteHBVStateFiles(instatepath As String, state_01path As String, EventStartDate As Date) As Boolean
         'this function writes an instate.dat file (HBV initial state) for the given classification
         Try
             'first make sure the directory exists
-            Dim directoryPath As String = Me.Setup.GeneralFunctions.DirFromFileName(path)
+            Dim directoryPath As String = Me.Setup.GeneralFunctions.DirFromFileName(instatepath)
             If Not System.IO.Directory.Exists(directoryPath) Then System.IO.Directory.CreateDirectory(directoryPath)
 
+            EventStartDate = EventStartDate.Subtract(New TimeSpan(0, 1, 0, 0)) 'subtract one hour to make sure the initial state is set before our event starts
+
             'then write the file
-            Using datWriter As New StreamWriter(path)
+            Using instateWriter As New StreamWriter(instatepath)
                 For i = 1 To 64
-                    datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
+                    instateWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
                 Next
-                datWriter.WriteLine("'state' 1")
-                datWriter.WriteLine("'year' 1900")
-                datWriter.WriteLine("'month' 1")
-                datWriter.WriteLine("'hour' 1")
-                datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
+                instateWriter.WriteLine("'state' 1")
+                instateWriter.WriteLine($"'year' {Year(EventStartDate)}")
+                instateWriter.WriteLine($"'month' {Month(EventStartDate)}")
+                instateWriter.WriteLine($"'day' {Day(EventStartDate)}")
+                instateWriter.WriteLine($"'hour' {Hour(EventStartDate)}")
+                instateWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
 
                 'figure out in which class our soil moisture value resides and write it to the file
                 For i = 0 To Classes.Count - 1
                     If Classes(i).Parameter = GeneralFunctions.enmModelParameter.sm Then
-                        datWriter.WriteLine("'sm' 1 " & Classes(i).RepresentativeValue)
+                        instateWriter.WriteLine("'sm' 1 " & Strings.Format(Classes(i).RepresentativeValue, "0.00000"))
                     ElseIf Classes(i).SideParameterValues.ContainsKey(GeneralFunctions.enmModelParameter.sm) Then
-                        datWriter.WriteLine("'sm' 1 " & Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.sm))
+                        instateWriter.WriteLine("'sm' 1 " & Strings.Format(Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.sm), "0.00000"))
                     End If
                 Next
 
                 'figure out in which class our upper zone parameter value resides and write it to the file
                 For i = 0 To Classes.Count - 1
                     If Classes(i).Parameter = GeneralFunctions.enmModelParameter.uz Then
-                        datWriter.WriteLine("'uz' 1 " & Classes(i).RepresentativeValue)
+                        instateWriter.WriteLine("'uz' 1 " & Strings.Format(Classes(i).RepresentativeValue, "0.00000"))
                     ElseIf Classes(i).SideParameterValues.ContainsKey(GeneralFunctions.enmModelParameter.uz) Then
-                        datWriter.WriteLine("'uz' 1 " & Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.uz))
+                        instateWriter.WriteLine("'uz' 1 " & Strings.Format(Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.uz), "0.00000"))
                     End If
                 Next
 
                 'figure out in which class our lower zone parameter value resides and write it to the file
                 For i = 0 To Classes.Count - 1
                     If Classes(i).Parameter = GeneralFunctions.enmModelParameter.lz Then
-                        datWriter.WriteLine("'lz' 1 " & Classes(i).RepresentativeValue)
+                        instateWriter.WriteLine("'lz' 1 " & Strings.Format(Classes(i).RepresentativeValue, "0.00000"))
                     ElseIf Classes(i).SideParameterValues.ContainsKey(GeneralFunctions.enmModelParameter.lz) Then
-                        datWriter.WriteLine("'lz' 1 " & Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.lz))
+                        instateWriter.WriteLine("'lz' 1 " & Strings.Format(Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.lz), "0.00000"))
                     End If
                 Next
 
-                datWriter.WriteLine("'wcomp' 1 0.00000")
-                datWriter.WriteLine("'wstr' 1 0.00000")
-                datWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
+                instateWriter.WriteLine("'wcomp' 1 0.00000")
+                instateWriter.WriteLine("'wstr' 1 0.00000")
+                instateWriter.WriteLine("'!!'        ") 'honestly, no clue what this is for
             End Using
+
+            Using state01Writer As New StreamWriter(state_01path)
+                state01Writer.WriteLine("'state' 0")
+                state01Writer.WriteLine($"'year' {Year(EventStartDate)}")
+                state01Writer.WriteLine($"'month' {Month(EventStartDate)}")
+                state01Writer.WriteLine($"'day' {Day(EventStartDate)}")
+                state01Writer.WriteLine($"'hour' {Hour(EventStartDate)}")
+                state01Writer.WriteLine($"'sp'            1         1.10000")
+                state01Writer.WriteLine($"'wc'            1         0.00000")
+                'figure out in which class our soil moisture value resides and write it to the file
+                For i = 0 To Classes.Count - 1
+                    If Classes(i).Parameter = GeneralFunctions.enmModelParameter.sm Then
+                        state01Writer.WriteLine("'sm'            1       " & Strings.Format(Classes(i).RepresentativeValue, "0.00000"))
+                    ElseIf Classes(i).SideParameterValues.ContainsKey(GeneralFunctions.enmModelParameter.sm) Then
+                        state01Writer.WriteLine("'sm'            1       " & Strings.Format(Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.sm), "0.00000"))
+                    End If
+                Next
+
+                'figure out in which class our upper zone parameter value resides and write it to the file
+                For i = 0 To Classes.Count - 1
+                    If Classes(i).Parameter = GeneralFunctions.enmModelParameter.uz Then
+                        state01Writer.WriteLine("'uz'            1         " & Strings.Format(Classes(i).RepresentativeValue, "0.00000"))
+                    ElseIf Classes(i).SideParameterValues.ContainsKey(GeneralFunctions.enmModelParameter.uz) Then
+                        state01Writer.WriteLine("'uz'            1         " & Strings.Format(Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.uz), "0.00000"))
+                    End If
+                Next
+
+                'figure out in which class our lower zone parameter value resides and write it to the file
+                For i = 0 To Classes.Count - 1
+                    If Classes(i).Parameter = GeneralFunctions.enmModelParameter.lz Then
+                        state01Writer.WriteLine("'lz'            1        " & Strings.Format(Classes(i).RepresentativeValue, "0.00000"))
+                    ElseIf Classes(i).SideParameterValues.ContainsKey(GeneralFunctions.enmModelParameter.lz) Then
+                        state01Writer.WriteLine("'lz'            1        " & Strings.Format(Classes(i).SideParameterValues.Item(GeneralFunctions.enmModelParameter.lz), "0.00000"))
+                    End If
+                Next
+
+                state01Writer.WriteLine($"'wcomp'         1         0.00000")
+                state01Writer.WriteLine($"'wstr'          1         0.00000")
+                state01Writer.WriteLine($"'qcomp0'        1         0.00000")
+
+            End Using
+
+
+
         Catch ex As Exception
             Me.Setup.Log.AddError("Error writing instate.dat file for classification " & Me.Name & ": " & ex.Message)
             Return False

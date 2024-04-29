@@ -93,7 +93,8 @@ Public Class frmClassifyGroundwaterHBV
             dlgFolder.Description = "Uitvoermap voor de grondwaterklassen."
             dlgFolder.ShowDialog()
             Dim ExportDir As String = dlgFolder.SelectedPath
-            Me.Setup.Settings.SetExportDirs(ExportDir, True, True, False, False, False)
+            Me.Setup.Settings.SetExportDirs(ExportDir, False, False, False, False, False)
+            Me.Setup.ExcelFile.Path = ExportDir & "\grondwaterclassificatie.xlsx"
 
             Dim ModelParametersClass As clsModelParameterClass
             If cmbHBVPars.Text = "lz" Then

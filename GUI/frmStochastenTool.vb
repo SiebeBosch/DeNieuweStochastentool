@@ -1471,12 +1471,22 @@ Public Class frmStochasten
                                         Next
                                         myGroundwaterGrid.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = FileNames
                                     End If
+                                ElseIf myGroundwaterGrid.Columns(eventargs2.ColumnIndex).Name = "FOLDER" Then
+                                    Dim dlgOpen As New FolderBrowserDialog
+                                    'initialize the dialog with the last used directory
+                                    dlgOpen.SelectedPath = Setup.Settings.RootDir
+                                    Dim Result As DialogResult = dlgOpen.ShowDialog()
+                                    If Result = DialogResult.OK Then
+                                        Dim FolderName As String = ""
+                                        Setup.GeneralFunctions.AbsoluteToRelativePath(Setup.Settings.RootDir, dlgOpen.SelectedPath, FolderName)
+                                        myGroundwaterGrid.Rows(eventargs2.RowIndex).Cells(eventargs2.ColumnIndex).Value = FolderName
+                                    End If
                                 End If
                             End Sub
 
                         AddHandler addButton.Click,
                             Sub(sender2, eventargs2)
-                                query = "INSERT INTO GRONDWATER (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, RRFILES, FLOWFILES, RTCFILES, KANS) VALUES ('" & cmbClimate.Text & "','" & mySeason & "',''," & False & ",'','','',0);"
+                                query = "INSERT INTO GRONDWATER (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, FOLDER, RRFILES, FLOWFILES, RTCFILES, KANS) VALUES ('" & cmbClimate.Text & "','" & mySeason & "',''," & False & ",'','','','',0);"
                                 Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
                                 ReadGroundwaterClasses(mySeason, dt)    're-populate the groundwater grid by re-reading the datatable from database
                             End Sub
@@ -1498,6 +1508,7 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 'with this option we will copy the settings from another climate scenario to our current one
                                 Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField)
+                                myFields.Add("FOLDERS", New STOCHLIB.clsDataField("FOLDERS", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("RRFILES", New STOCHLIB.clsDataField("RRFILES", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("FLOWFILES", New STOCHLIB.clsDataField("FLOWFILES", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
                                 myFields.Add("RTCFILES", New STOCHLIB.clsDataField("RTCFILES", STOCHLIB.GeneralFunctions.enmSQLiteDataType.SQLITETEXT))
@@ -1542,7 +1553,7 @@ Public Class frmStochasten
         Try
             Dim query As String
             dt.Clear()
-            query = "SELECT NAAM,RRFILES,FLOWFILES,RTCFILES,USE,KANS FROM GRONDWATER WHERE SEIZOEN='" & Season & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
+            query = "SELECT NAAM,FOLDER,RRFILES,FLOWFILES,RTCFILES,USE,KANS FROM GRONDWATER WHERE SEIZOEN='" & Season & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
             Dim da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
             Return True
@@ -1569,7 +1580,7 @@ Public Class frmStochasten
             Checksum = 0
             For Each myRow As DataGridViewRow In gwGrid.Rows
                 Checksum += myRow.Cells("KANS").Value
-                query = "INSERT INTO GRONDWATER (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, RRFILES, FLOWFILES, RTCFILES, KANS) VALUES ('" & KlimaatScenario & "','" & Season & "','" & myRow.Cells("NAAM").Value & "'," & myRow.Cells("USE").Value & ",'" & myRow.Cells("RRFILES").Value & "','" & myRow.Cells("FLOWFILES").Value & "','" & myRow.Cells("RTCFILES").Value & "'," & myRow.Cells("KANS").Value & ");"
+                query = "INSERT INTO GRONDWATER (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, FOLDER, RRFILES, FLOWFILES, RTCFILES, KANS) VALUES ('" & KlimaatScenario & "','" & Season & "','" & myRow.Cells("NAAM").Value & "'," & myRow.Cells("USE").Value & ",'" & myRow.Cells("FOLDER").Value & "','" & myRow.Cells("RRFILES").Value & "','" & myRow.Cells("FLOWFILES").Value & "','" & myRow.Cells("RTCFILES").Value & "'," & myRow.Cells("KANS").Value & ");"
                 Dim newCommand = New SQLite.SQLiteCommand(query, Me.Setup.SqliteCon)
                 nAffected = newCommand.ExecuteNonQuery()
             Next
@@ -1673,6 +1684,11 @@ Public Class frmStochasten
             Dim dtBND As New DataTable
             daBND.Fill(dtBND)
             grBoundaryNodes.DataSource = dtBND
+
+            For Each column As DataGridViewColumn In grBoundaryNodes.Columns
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+            Next
+
             Me.Setup.SqliteCon.Close()
         End If
     End Sub
@@ -3314,6 +3330,7 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "SEIZOEN") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "SEIZOEN", enmSQLiteDataType.SQLITETEXT, "GW_SEASONIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "NAAM") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "NAAM", enmSQLiteDataType.SQLITETEXT, "GW_NAAMIDX")
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "USE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "USE", enmSQLiteDataType.SQLITEINT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "FOLDER") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "FOLDER", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "RRFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "RRFILES", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "FLOWFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "FLOWFILES", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "GRONDWATER", "RTCFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "GRONDWATER", "RTCFILES", enmSQLiteDataType.SQLITETEXT)
@@ -3916,7 +3933,7 @@ Public Class frmStochasten
                         Else
                             kans = 0
                         End If
-                        query = "INSERT INTO GRONDWATER (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, RRFILES, FLOWFILES, RTCFILES, KANS) VALUES ('" & curClimate & "','" & dtGW.Rows(i)("SEIZOEN") & "','" & dtGW.Rows(i)("NAAM") & "'," & dtGW.Rows(i)("USE") & ",'" & dtGW.Rows(i)("RRFILES") & "','" & dtGW.Rows(i)("FLOWFILES") & "','" & dtGW.Rows(i)("RTCFILES") & "'," & kans & ");"
+                        query = "INSERT INTO GRONDWATER (KLIMAATSCENARIO, SEIZOEN, NAAM, USE, FOLDER, RRFILES, FLOWFILES, RTCFILES, KANS) VALUES ('" & curClimate & "','" & dtGW.Rows(i)("SEIZOEN") & "','" & dtGW.Rows(i)("NAAM") & "'," & dtGW.Rows(i)("USE") & ",'" & dtGW.Rows(i)("FOLDER") & "','" & dtGW.Rows(i)("RRFILES") & "','" & dtGW.Rows(i)("FLOWFILES") & "','" & dtGW.Rows(i)("RTCFILES") & "'," & kans & ");"
                         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                     End If
                 Next

@@ -1717,6 +1717,37 @@ Public Class GeneralFunctions
 
     End Function
 
+
+    Public Function getMonthAverageTemperatureDeBilt(curDate As Date) As Double
+        Select Case Month(curDate)
+            Case 1
+                Return 3.6
+            Case 2
+                Return 3.9
+            Case 3
+                Return 6.5
+            Case 4
+                Return 9.9
+            Case 5
+                Return 13.4
+            Case 6
+                Return 16.1
+            Case 7
+                Return 18.2
+            Case 8
+                Return 17.8
+            Case 9
+                Return 14.7
+            Case 10
+                Return 10.9
+            Case 11
+                Return 7.0
+            Case 12
+                Return 4.2
+        End Select
+    End Function
+
+
     Public Function Peilscheidend(TargetlevelsHigh As clsTargetLevels, TargetLevelsLow As clsTargetLevels) As Boolean
         'this function decides whether two areas have separated target levels. For this we compare the outlet targetlevels
         If TargetlevelsHigh.OutletHasValue AndAlso TargetLevelsLow.OutletHasValue Then

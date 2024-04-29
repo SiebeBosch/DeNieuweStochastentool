@@ -438,6 +438,7 @@
     <Compile Include="HBV\clsHBVResDatFile.vb" />
     <Compile Include="HBV\clsHBVResultsSeriesRecord.vb" />
     <Compile Include="HBV\clsHBVSubBasin.vb" />
+    <Compile Include="HBV\clsHBVTempHourlyFile.vb" />
     <Compile Include="METEOBASE\clsIDF.vb" />
     <Compile Include="METEOBASE\clsIDFs.vb" />
     <Compile Include="SOBEK\cls2DDomain.vb" />

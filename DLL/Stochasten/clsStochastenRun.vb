@@ -5,6 +5,7 @@ Imports STOCHLIB.GeneralFunctions
 Imports System.Threading
 Imports System.Runtime.InteropServices
 Imports Microsoft.Win32
+Imports System.Runtime.InteropServices.ComTypes
 
 Public Class clsStochastenRun
 
@@ -371,6 +372,7 @@ Public Class clsStochastenRun
 
                 '--------------------------------------------------------------------------------------------------------------------
                 'copy the groundwater file(s)
+                '--------------------------------------------------------------------------------------------------------------------
                 If GWClass IsNot Nothing Then
                     If GWClass.RRFiles.Count > 0 Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
@@ -501,7 +503,7 @@ Public Class clsStochastenRun
 
             '--------------------------------------------------------------------------------------------------------------------
             'create the boundary file
-            If Not WLClass Is Nothing Then
+            If WLClass IsNot Nothing Then
                 Setup.GeneralFunctions.UpdateProgressBar("Copying file for boundaries.", 0, 10, True)
                 If Not BuildWaterLevelBoundaries(myModel, rundir) Then Throw New Exception("Fout bij het aanmaken van het randvoorwaardenbestand.")
             End If
@@ -628,27 +630,36 @@ Public Class clsStochastenRun
 
             If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir, Startdate, Enddate) Then Throw New Exception("Error: could not clone HBV model for running from the command line.")
 
+            'create a series of temperatures for this run
+            Dim temp_Hourly As New clsHBVTempHourlyFile(Me.Setup)
+            temp_Hourly.Build(Startdate, StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd)
+            temp_Hourly.Write(runDir & "\temp_hourly.txt")
+
             'initialize a new project object from the new location
             myProject = New clsHBVProject(Me.Setup, runDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), False)
 
-            ''--------------------------------------------------------------------------------------------------------------------
-            ''copy the groundwater file
-            'If GWClass IsNot Nothing Then
-            '    If GWClass.RRFiles.Count > 0 Then
-            '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-            '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-            '    End If
-            '    If GWClass.FlowFiles.Count > 0 Then
-            '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-            '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-            '    End If
-            '    If GWClass.RTCFiles.Count > 0 Then
-            '        Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-            '        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
-            '    End If
+            '--------------------------------------------------------------------------------------------------------------------
+            'copy the groundwater files and/or folder
+            If GWClass IsNot Nothing Then
+                If GWClass.RootFolder.Length > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater folder.", 0, 10, True)
+                    If Not CopyHBVGroundwaterFolder(myModel, runDir, GWClass.RootFolder, "") Then Throw New Exception("Fout bij het kopieren van de map met grondwaterbestanden.")
+                End If
+                If GWClass.RRFiles.Count > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                End If
+                If GWClass.FlowFiles.Count > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                End If
+                If GWClass.RTCFiles.Count > 0 Then
+                    Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
+                    If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, "") Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                End If
 
-            'End If
-            ''--------------------------------------------------------------------------------------------------------------------
+            End If
+            '--------------------------------------------------------------------------------------------------------------------
 
             ''--------------------------------------------------------------------------------------------------------------------
             ''create the boundary file
@@ -852,6 +863,40 @@ Public Class clsStochastenRun
         sw.Stop()
     End Sub
 
+    Public Function CopyHBVGroundwaterFolder(ByRef myModel As clsSimulationModel, RunDir As String, SourceFolder As String, ModelSubdir As String) As Boolean
+        Try
+            Dim SourceFolderAbsolute As String = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(SourceFolder, Setup.Settings.RootDir)
+
+            'iterate throuh each subdir in the specified RootFolder
+            For Each SourceSubDir As String In Directory.GetDirectories(SourceFolderAbsolute)
+                Dim SourceSubDirName As String = Me.Setup.GeneralFunctions.FileNameFromPath(SourceSubDir)
+
+                'since every catchment may have multiple subcatchments, starting with the same name as our SubDirName, we will now make a collection of all subdirs in RunDir &"\" & ModelSuDir that start with SubDirName
+                Dim ModelInputDirs As String() = Directory.GetDirectories(RunDir & "\" & ModelSubdir)
+                For Each ModelInputDir As String In ModelInputDirs
+
+                    Dim PartOfPath As String
+                    If ModelSubdir.Length > 0 Then
+                        PartOfPath = RunDir & "\" & ModelSubdir & "\" & SourceSubDirName
+                    Else
+                        PartOfPath = RunDir & "\" & SourceSubDirName
+                    End If
+
+                    If ModelInputDir.StartsWith(PartOfPath) Then
+                        'we found a match. Copy the contents of the subdirectory to the new location
+                        For Each File As String In Directory.GetFiles(SourceSubDir)
+                            FileCopy(File, ModelInputDir & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(File))
+                        Next
+                    End If
+                Next
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function CopyHBVGroundwaterFolder of class clsStochastenRun: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
     Public Function CopyGroundwaterFiles(ByRef myModel As clsSimulationModel, RunDir As String, FileNames As List(Of String), ModelSubdir As String) As Boolean
         Dim fromFile As String, toFile As String, toStochastDir As String
 
@@ -949,6 +994,8 @@ Public Class clsStochastenRun
         Dim query As String
 
         Try
+            cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
+            If Not cn.State = ConnectionState.Open Then cn.Open()
 
             If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
                 Dim myBoundaryDat As New clsBoundaryDatFLBORecords(Me.Setup)
@@ -965,10 +1012,6 @@ Public Class clsStochastenRun
 
                         'query the database to retrieve the water level boundary timeseries
                         If SeasonClass.WaterLevelsUse Then
-                            cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
-                            'cn.ConnectionString = "Provider=Microsoft.Jet.OleDb.4.0; Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";"
-                            'cn.ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0; Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";"
-                            cn.Open()
                             query = "SELECT MINUUT, " & myNode & " from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " ORDER BY MINUUT;"
                             da = New SQLite.SQLiteDataAdapter(query, cn)
                             dt = New DataTable
@@ -1015,9 +1058,6 @@ Public Class clsStochastenRun
                         'see if this boundary has a record inside BoundariesBC
                         If BoundariesBC.BoundaryConditions.ContainsKey(NodeID.Trim.ToUpper) Then
                             'we found the matching record! Now replace it with the requested series from our database
-                            cn.ConnectionString = "Data Source=" & Me.Setup.StochastenAnalyse.StochastsConfigFile & ";Version=3;"
-                            cn.Open()
-
 
                             query = "SELECT MINUUT, WAARDE from RANDREEKSEN where NAAM='" & WLClass.ID & "' AND DUUR=" & Me.Setup.StochastenAnalyse.Duration & " AND NODEID='" & NodeID & "' ORDER BY MINUUT;"
                             da = New SQLite.SQLiteDataAdapter(query, cn)
@@ -1046,6 +1086,7 @@ Public Class clsStochastenRun
                 Throw New Exception("Error: models other than SOBEK or DIMR are not yet supported for adjusting boundary values")
             End If
 
+            cn.Close()
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)

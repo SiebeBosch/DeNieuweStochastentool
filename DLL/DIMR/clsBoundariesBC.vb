@@ -86,14 +86,26 @@ Public Class clsBoundariesBC
                     bcWriter.WriteLine("[Forcing]")
                     bcWriter.WriteLine("name       = " & myBC.name)
                     bcWriter.WriteLine("function   = " & myBC.bcfunction)
-                    bcWriter.WriteLine("timeInterpolation = " & myBC.timeInterpolation)
-                    bcWriter.WriteLine("quantity   = time")
-                    bcWriter.WriteLine("unit       = minutes since " & Format(StartDate, "yyyy-MM-dd HH:mm:ss"))
-                    bcWriter.WriteLine("quantity   = waterlevelbnd")
-                    bcWriter.WriteLine("unit       = m")
-                    For i = 0 To myBC.DataTable.XValues.Count - 1
-                        bcWriter.WriteLine(myBC.DataTable.XValues.Values(i) & "    " & myBC.DataTable.Values1.Values(i))
-                    Next
+                    If myBC.bcfunction = "constant" Then
+                        bcWriter.WriteLine("quantity   = " & myBC.quantities.Values(0).name)
+                        bcWriter.WriteLine("unit       = " & myBC.quantities.Values(0).unit)
+                        bcWriter.WriteLine(myBC.DataTable.XValues.Values(0))
+                    Else
+                        bcWriter.WriteLine("timeInterpolation = " & myBC.timeInterpolation)
+                        bcWriter.WriteLine("quantity   = " & myBC.quantities.Values(0).name)
+                        bcWriter.WriteLine("unit       = minutes since " & Format(StartDate, "yyyy-MM-dd HH:mm:ss"))
+                        bcWriter.WriteLine("quantity   = " & myBC.quantities.Values(1).name)
+                        bcWriter.WriteLine("unit       = " & myBC.quantities.Values(1).unit)
+                        'bcWriter.WriteLine("quantity   = time")
+                        'bcWriter.WriteLine("unit       = minutes since " & Format(StartDate, "yyyy-MM-dd HH:mm:ss"))
+                        'bcWriter.WriteLine("quantity   = waterlevelbnd")
+                        'bcWriter.WriteLine("unit       = m")
+                        For i = 0 To myBC.DataTable.XValues.Count - 1
+                            bcWriter.WriteLine(myBC.DataTable.XValues.Values(i) & "    " & myBC.DataTable.Values1.Values(i))
+                        Next
+
+                    End If
+
                 Next
             End Using
             Return True

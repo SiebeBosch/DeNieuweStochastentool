@@ -198,26 +198,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="683392">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="684416">
       <assemblyIdentity name="StochastenTool" version="2.4.1.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ZERn/fDsv/Pm1hlIUwi8TrrRMJJF54RU83AjDvttF+c=</dsig:DigestValue>
+        <dsig:DigestValue>fx/RtD7tJQExSaxF7d9VzfhxMIZeQOA7RZN9+DJpans=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3252224">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3258368">
       <assemblyIdentity name="STOCHLIB" version="2.4.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>rGkh/kyUp31R6tQBxQpg3shSokU6s8BXlhNrn9zqNhQ=</dsig:DigestValue>
+        <dsig:DigestValue>Q/CsHjnPwuPKnQxdi6Xpo3W4+O2P8bh3z6t8oP3yzbU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
