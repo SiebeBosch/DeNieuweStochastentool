@@ -2,6 +2,7 @@ licenses/*
 InnoSetup/*.exe
 
 !.gitignore
+GUI/.vs/*
 Keys/*
 Example/*
 hydamo_shp/*
