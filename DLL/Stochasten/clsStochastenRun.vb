@@ -635,6 +635,11 @@ Public Class clsStochastenRun
             temp_Hourly.Build(Startdate, StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd)
             temp_Hourly.Write(runDir & "\temp_hourly.txt")
 
+            'create seq.par file which contains the start- and end date of our simulation
+            Dim seqPar As New clsHBVSeqParFile(Me.Setup)
+            seqPar.Build(Startdate, Enddate)
+            seqPar.Write(runDir & "\seq.par")
+
             'initialize a new project object from the new location
             myProject = New clsHBVProject(Me.Setup, runDir, Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec), False)
 
