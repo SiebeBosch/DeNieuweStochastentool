@@ -205,19 +205,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>3zSQAtHWWzNAqvZHmGUZz0wYGoEp/5VwuOVI0lSUKX8=</dsig:DigestValue>
+        <dsig:DigestValue>r0YBhyFPaxbJ40t7fvtolIniCt8979HmijCxnkpnBJA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3259904">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3260416">
       <assemblyIdentity name="STOCHLIB" version="2.4.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>LuFfrtczqSv975fCs2ad5cNJlmj/kC2VEjXuAxYivo4=</dsig:DigestValue>
+        <dsig:DigestValue>17BXvAvr0Ko5u9NPXxs4ypeD8Y52Z2w+bXakc2DIOf4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

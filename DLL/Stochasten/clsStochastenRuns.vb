@@ -72,16 +72,23 @@ Public Class clsStochastenRuns
 
 
     End Sub
-
-    Public Function GetSetColumn(ByRef dt As DataTable, ByVal ID As String, ByVal myType As System.Type) As Integer
+    Public Function GetSetColumn(ByRef dt As DataTable, ByVal ID As String, ByVal myType As System.Type, Optional ByVal AutoSize As Boolean = False) As Integer
         Dim c As Integer
         For c = 0 To dt.Columns.Count - 1
             If dt.Columns(c).ColumnName = ID Then Return c
         Next
         dt.Columns.Add(ID, myType)
+
+        ' Check for the AutoSize option and apply it
+        If AutoSize Then
+            ' You will handle this in the PopulateFromDataGridView subroutine
+            If Not dt.ExtendedProperties.ContainsKey(ID) Then
+                dt.ExtendedProperties.Add(ID, True)
+            End If
+        End If
+
         Return dt.Columns.Count - 1
     End Function
-
 
     Public Function PopulateFromDB(con As SQLite.SQLiteConnection) As Boolean
         Try
@@ -170,7 +177,7 @@ Public Class clsStochastenRuns
                         mySeasonClass.MileageCounter.Initialize()
 
                         'set the column index number for all columns to be written to the Runs gridview
-                        IDCol = GetSetColumn(dt, "ID", Type.GetType("System.String"))
+                        IDCol = GetSetColumn(dt, "ID", Type.GetType("System.String"), True)
                         IDxCol = GetSetColumn(dt, "Idx", Type.GetType("System.Int32"))
                         DurationCol = GetSetColumn(dt, "duur", Type.GetType("System.Int32"))
                         SeasonCol = GetSetColumn(dt, "Seizoen", Type.GetType("System.String"))
@@ -401,20 +408,26 @@ Public Class clsStochastenRuns
             End Using
 
             'close the database
+
             Me.Setup.SqliteCon.Close()
 
             'populate the datagridview with the content of the datatable
             grRuns.DataSource = dt
 
+            Debug.Print("Width is now " & grRuns.Columns(0).Width)
+
             'fit the column widths to the data contained
-            grRuns.Columns(0).AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+            grRuns.Columns(0).AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader
             'For i = 0 To grRuns.Columns.Count - 1
             'Next
+
+            Debug.Print("Width is now " & grRuns.Columns(0).Width)
 
             'finally assign numbers to the datagrid's row headers
             For i = 0 To grRuns.Rows.Count - 1
                 grRuns.Rows(i).HeaderCell.Value = String.Format("{0}", i + 1)
             Next
+            Debug.Print("Width is now " & grRuns.Columns(0).Width)
 
         Catch ex As Exception
             Me.Setup.Log.Errors.Add("Error populating runs from datagridview")

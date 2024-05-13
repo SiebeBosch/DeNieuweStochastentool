@@ -1395,6 +1395,7 @@ Public Class GeneralFunctions
         STOWA2019_2050WL_CENTER = 15 'STOWA '19 scenario 2050WL center
         STOWA2019_2050GH_CENTER = 16 'STOWA '19 scenario 2050GH center
         STOWA2019_2050WH_CENTER = 17 'STOWA '19 scenario 2050WH center
+        STOWA2024_HUIDIG = 18 'STOWA '24 scenario HUIDIG (zichtjaar 2024)
     End Enum
 
     Public Enum enmNeerslagPatroon
