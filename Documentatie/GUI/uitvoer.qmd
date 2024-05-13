@@ -1,0 +1,37 @@
+---
+title: "Tabblad Uitvoer"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Het tabblad 'Uitvoer' is bedoeld om op te geven voor welke locaties en parameters de modeluitkomsten moeten worden uitgelezen en opgeslagen zodat ze verderop in het proces kunnen worden verwerkt tot overschrijdingsgrafieken.
+
+![Modeluitvoer specificeren](img/uitvoer.png "Uitvoer")
+
+
+::: {.columns}
+::: {.column width="50%"}
+Belangrijk om te weten is dat op het tabblad 'Algemeen' moet worden aangevinkt of 1D-modelresultaten en/of 2D-modelresultaten moeten worden nabewerkt. 
+
+Als de gebruiker dit heeft gedaan is het mogelijk om de lijsten met uitvoerlocaties en -parameters automatisch te vullen. Ga hiervoor naar het menu Modellen - Uitvoerlocaties - Importeren. 
+
+:::
+::: {.column width="50%"}
+
+![Uitvoerlocaties van model(len) importeren.](img/mnu_uitvoerlocaties_importeren.png)
+
+
+:::
+:::
+
+
+
+::: {.columns}
+::: {.column width="50%"}
+![Uitvoerlocaties van model(len) importeren.](img/frm_uitvoerlocaties.png)
+
+:::
+::: {.column width="50%"}
+In het formulier wat vervolgens getoond wordt kan de gebruiker selecteren voor welk model de uitvoerlocaties moeten worden uitgelezen en of voor die locatie(s) het gesimuleerde minimum, maximum of gemiddelde van iedere simulatie de gewenste grootheid is. Zeker bij een hoogwaterstudie zal het meestal om het maximum gaan. Desgewenst kan de gebruiker middels een filter een deelselectie van uitvoerlocaties importeren.
+:::
+:::

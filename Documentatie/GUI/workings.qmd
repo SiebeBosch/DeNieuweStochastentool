@@ -46,7 +46,7 @@ Iedere simulatie heeft zijn eigen submap in de tijdelijke werkmap. In de tijdeli
 ## simulaties doorrekenen
 Tot voor kort konden alle simulaties ook vanuit De Nieuwe Stochastentool zelf worden aangestuurd en gestart. Hier zijn we vanaf gestapt om verschillende redenen. 
 
-Sinds kort worden de simulaties gestart met het programma BAT_RUNR.EXE. Als argument geven we het pad naar het bestand simulations.txt mee. Dit bestand geeft een lijst van alle simulaties die moeten worden uitgevoerd.
+Sinds kort worden de simulaties gestart met het programma BAT_RUNR.EXE. Als argument geven we het pad naar het bestand simulations.txt mee. Dit bestand geeft een lijst van alle simulaties die moeten worden uitgevoerd. Voor BAT_RUNR leveren we in de release een apart installatiebestand mee. We merken op dat, om BAT_RUNR te kunnen draaien het .NET framework 7.0 op de computer moet zijn geïnstalleerd. 
 
 ## resultaten kopiëren
 Als de simulaties gereed zijn, kan De Nieuwe Stochastentool de resultaatbestanden uit de tijdelijke werkmap ophalen en in de eigen resultatenmap plaatsen.

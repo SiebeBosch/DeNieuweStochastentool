@@ -46,7 +46,6 @@ C:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.application
 C:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.pdb
 C:\GITHUB\DeNieuweStochastentool\bin\x64\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.AssemblyReference.cache
-C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.SuggestedBindingRedirects.cache
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\Interop.MapWinGIS.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.ResolveComReference.cache
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmAbout.resources
@@ -65,8 +64,8 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.CoreC
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.TrustInfo.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.exe.manifest
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.application
-C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.CopyComplete
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.pdb
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmAddVolume.resources
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\Stochast.F6662CE2.Up2Date

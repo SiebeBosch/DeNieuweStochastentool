@@ -87,6 +87,14 @@ STOCHLIB
  </summary>
  <remarks></remarks>
 </member>
+<member name="T:STOCHLIB.clsMatFile">
+ <summary>
+ This class describes a Matlab .mat file. It is used to read the file and extract the data.
+ The class is used to read the results of a Sumaqua simulation.
+ In HydroToolbox we used the csmatio library; however this library is not capable of reading the opaque datasets as present in Sumaqua results files
+ Therefore we switched to the MatFilehandler library
+ </summary>
+</member>
 <member name="T:STOCHLIB.clsEvpFile">
  <summary>
  Geen constructor nodig

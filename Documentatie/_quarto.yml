@@ -28,6 +28,12 @@ website:
           - GUI/volume.qmd
           - GUI/patterns.qmd
           - GUI/extra.qmd
+          - href: GUI/uitvoer.qmd
+            text: Tabblad Uitvoer
+          - href: GUI/simulaties.qmd
+            text: Tabblad Simulaties
+          - href: BAT_RUNR/inleiding.qmd
+            text: Simuleren in batch
       - section: "Technische documentatie"
       - section: "Praktijkcases"
         contents:

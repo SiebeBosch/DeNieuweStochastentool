@@ -1,0 +1,25 @@
+---
+title: "Inleiding"
+---
+
+Dit hoofdstuk behandelt de stand-alone tool BAT_RUNR waarmee grote aantallen simulaties los van De Nieuwe Stochastentool kunnen worden uitgevoerd; op meerdere cores gelijktijdig.
+
+
+
+::: {.columns}
+::: {.column width="50%"}
+Wanneer de gebruiker in De Nieuwe Stochastentool op "Bouwen" klikt, zullen de geselecteerde modelruns worden klaargezet in de tijdelijke werkmap zoals ingesteld voor het onderhavige simulatiemodel. 
+
+Iedere modelrun krijgt zijn eigen submap. Daarnaast wordt ook een bestand simulations.txt weggeschreven. Dit bestand kan worden gebruikt door BAT_RUNR.EXE om de simulaties helemaal los van De Nieuwe Stochastentool te draaien. 
+:::
+::: {.column width="50%"}
+
+![Simulaties bouwen in De Nieuwe Stochastentool resulteert in een lijst met mappen met modelschematisaties in de tijdelijke werkmap en een bestand simulations.txt.](../img/simulaties_bouwen.png)
+
+
+:::
+:::
+
+
+
+

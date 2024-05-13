@@ -1,50 +1,5 @@
 [
   {
-    "objectID": "technical_docs/seizoen.html",
-    "href": "technical_docs/seizoen.html",
-    "title": "Seizoen",
-    "section": "",
-    "text": "Het ‘seizoen’ is strikt genomen geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een zeer sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
-    "crumbs": [
-      "Tutorial",
-      "Technische documentatie",
-      "Seizoen"
-    ]
-  },
-  {
-    "objectID": "user_manual/usermanual.html",
-    "href": "user_manual/usermanual.html",
-    "title": "Gebruikshandleiding",
-    "section": "",
-    "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
-  },
-  {
-    "objectID": "technical_docs/technicaldocumentation.html",
-    "href": "technical_docs/technicaldocumentation.html",
-    "title": "Technische documentatie",
-    "section": "",
-    "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "Over",
-    "section": "",
-    "text": "Deze website beschrijft de werking van het programma ‘De Nieuwe Stochastentool’, hierna aangeduid als ‘De Stochastentool’. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode.\nHet programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki door Hydroconsult opensource gemaakt en gepubliceerd op Github: https://github.com/SiebeBosch/DeNieuweStochastentool."
-  },
-  {
-    "objectID": "literature.html",
-    "href": "literature.html",
-    "title": "Literatuur",
-    "section": "",
-    "text": "STOWA, 2004, STATISTIEK VAN EXTREME NEERSLAG IN NEDERLAND, Rapportnummer 2004-26, ISBN 90-5773-261-0",
-    "crumbs": [
-      "Tutorial",
-      "Literatuur",
-      "Literatuur"
-    ]
-  },
-  {
     "objectID": "tutorial/tutorial.html",
     "href": "tutorial/tutorial.html",
     "title": "Tutorial",
@@ -61,6 +16,54 @@
     "title": "De Nieuwe Stochastentool",
     "section": "",
     "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
+  },
+  {
+    "objectID": "GUI/volume.html",
+    "href": "GUI/volume.html",
+    "title": "Tabblad Volume",
+    "section": "",
+    "text": "Met ‘Volume’ bedoelen we in een stochastencontext doorgaans het ‘neerslagvolume’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Volume’ ook staan voor een stochast zoals ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Volume staat voor neerslagvolume.\n\n\n\nVolumes\n\n\nBij het inladen van het .xml configuratiebestand zal De Nieuwe Stochastentool eerst achterhalen welke seizoenen er zijn gedefinieerd (database: tabel SEASONS). Voor ieder seizoen verschijnt dan een grid met volumes en hun bijbehorende kansen (eigenlijk: frequenties). Deze waarden komen uit de database: tabel VOLUMES.\nDe waarden zijn uitgedrukt als het gemiddeld aantal gebeurtenissen per jaar wat in de betreffende klasse valt. De som van de frequenties uit alle klassen moet gelijk zijn aan 365.25 * 24/duur. Hiermee dwingen we af dat de stochastenklassen samen alle mogelijke gebeurtenissen vertegenwoordigen die in een jaar kunnen voorkomen. Anders gezegd: de som der kansen is 1.\nDoor in de grids de waarden onder USE aan te passen van 0 naar 1 of andersom is het mogelijk om klassen uit- danwel in te schakelen. De kans van een uitgeschakelde klasse wordt eerlijk herverdeeld over zijn twee nog actieve buren.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Volume"
+    ]
+  },
+  {
+    "objectID": "GUI/uitvoer.html",
+    "href": "GUI/uitvoer.html",
+    "title": "Tabblad Uitvoer",
+    "section": "",
+    "text": "Het tabblad ‘Uitvoer’ is bedoeld om op te geven voor welke locaties en parameters de modeluitkomsten moeten worden uitgelezen en opgeslagen zodat ze verderop in het proces kunnen worden verwerkt tot overschrijdingsgrafieken.\n\n\n\nModeluitvoer specificeren\n\n\n\n\nBelangrijk om te weten is dat op het tabblad ‘Algemeen’ moet worden aangevinkt of 1D-modelresultaten en/of 2D-modelresultaten moeten worden nabewerkt.\nAls de gebruiker dit heeft gedaan is het mogelijk om de lijsten met uitvoerlocaties en -parameters automatisch te vullen. Ga hiervoor naar het menu Modellen - Uitvoerlocaties - Importeren.\n\n\n\n\nUitvoerlocaties van model(len) importeren.\n\n\n\n\n\n\n\n\n\nUitvoerlocaties van model(len) importeren.\n\n\n\nIn het formulier wat vervolgens getoond wordt kan de gebruiker selecteren voor welk model de uitvoerlocaties moeten worden uitgelezen en of voor die locatie(s) het gesimuleerde minimum, maximum of gemiddelde van iedere simulatie de gewenste grootheid is. Zeker bij een hoogwaterstudie zal het meestal om het maximum gaan. Desgewenst kan de gebruiker middels een filter een deelselectie van uitvoerlocaties importeren.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Uitvoer"
+    ]
+  },
+  {
+    "objectID": "GUI/simulaties.html",
+    "href": "GUI/simulaties.html",
+    "title": "Tabblad Simulaties",
+    "section": "",
+    "text": "Het tabblad ‘Simulaties’ is waar uiteindelijk alle stochasten worden samengesteld tot simulaties, waar de rekenresultaten worden uitgelezen, nabewerkt en gepubliceerd.\n\n\n\nHet tabblad Simulaties\n\n\nHieronder bespreken we één voor één de verschillende knoppen die zich op dit tabblad bevinden.\n\n\n\n\n\nButton ‘Samenstellen’.\n\n\n\nDe eerste actie die moet worden uitgevoerd nadat alle stochasten zijn geconfigureerd is het samenstellen van de simulaties. Alle combinaties van stochastenklassen resulteren in een aparte simulatie. Ter illustratie: een configuratie met 10 klassen met neerlagvolumes, 7 klassen met neerslagpatronen en 3 klassen met hydrologische voorgeschiedenis zal resulteren in 10 x 7 x 3 = 210 simulaties.\nElk van deze simulaties wordt na het samenstellen getoond in het datagrid op het tabblad Simulaties.\n\n\n\n\n\n\n\nButton ‘Wissen’.\n\n\n\nDeze button is bedoeld om simulatieresultaten te wissen van geselecteerde simulaties. Het selecteren van een of meerdere simulaties kan door op de rij-header vóór iedere simulatie te klikken. Wanneer het resultaat van een simulatie is gewist, toont zich dit in het datagrid doordat het vinkje onder ‘DONE’ verdwijnt.\n\n\n\n\n\n\n\nButton ‘Bouwen’.\n\n\n\nDeze button zorgt ervoor dat in de tijdelijke werkmap zoals opgegeven bij het simulatiemodel een kopie van de modelschematisatie komt te staan voor iedere simulatie. In die kopie worden vervolgens alle bestanden geïnjecteerd die specifiek bij de onderhavige simulatie horen: neerslagvolume, neerslagpatroon, initieel grondwater, randvoorwaarden etc. etc.\nAlleen voor geselecteerde rijen wordt een kopie van de modelschematisatie geschreven. Selecteren van een of meer simulaties kan door op de rij-header van een simulatie te klikken.\n\n\n\n\n\n\n\nButton ‘Simuleren’.\n\n\n\nDeze button is op dit moment onklaar gemaakt omdat het aansturen van DIMR-simulaties om onduidelijke redenen niet werkte wanneer dit vanuit De Nieuwe Stochastentool werd gedaan. Hier is ook samen met Deltares naar gekeken maar een oplossing werd niet gevonden.\nDaarom is een alternatieve aanpak ontwikkeld om de simulaties te kunnen uitvoeren: via de tool BAT_RUNR.EXE. Het installatiebestand voor deze tool bieden we aan op de github-pagina van De Nieuwe Stochastentool. De simulaties die zijn klaargezet door op de button ‘Bouwen’ te drukken kunnen in batch worden doorgerekend met het programma BAT_RUNR.EXE. We merken op dat voor het installeren van BAT_RUNR het .NET framework 7.0 op de pc geïnstalleerd moet zijn.\n\n\n\n\n\n\n\nButton ‘Kopiëren’.\n\n\n\nAls de simulaties succesvol zijn doorgerekend met BAT_RUNR, is het tijd om de resultaatbestanden te kopieren uit de tijdelijke werkmap, naar de stochastenmap. Dit gebeurt door op deze button te klikken.\n\n\n\n\n\n\n\nButton ‘Uitlezen’.\n\n\n\nDeze knop leest de modeluitkomsten uit de gekopieerde resultaatbestanden en schrijft ze naar de database. Hierna is het mogelijk om de resultaten na te bewerken tot overschrijdingsgrafieken.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Simulaties"
+    ]
+  },
+  {
+    "objectID": "GUI/patterns.html",
+    "href": "GUI/patterns.html",
+    "title": "Tabblad Patronen",
+    "section": "",
+    "text": "Met de stochast ‘Patronen’ bedoelen we in een stochastencontext doorgaans het ‘tijdsverloop van de neerslag’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Patronen’ ook staan voor het tijdsverloop van ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Patroon staat voor het tijdsverloop van de neerslag. Meer specifiek: doorgaans onderscheiden we hier de zeven buipatronen volgens (STOWA 2004).\n\n\n\nDe stochast ‘Patronen’\n\n\nHet staat iedereen echter vrij om eigen patronen te definiëren en daar een kans aan te verbinden. Dit kan allemaal in de database, in de volgende tabellen:\n\nPATRONEN: bevat de naam van ieder patroon en zijn kans\nNEERSLAGVERLOOP: bevat het tijdsverloop van ieder patroon, als fractie van de neerslagsom per tijdstap\n\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Patronen"
+    ]
   },
   {
     "objectID": "GUI/general.html",
@@ -147,30 +150,6 @@
     ]
   },
   {
-    "objectID": "GUI/models.html",
-    "href": "GUI/models.html",
-    "title": "Tabblad Modellen",
-    "section": "",
-    "text": "Het tabblad ‘Modellen’ geeft een lijst met modelschematisaties die achtereenvolgens moeten worden doorgerekend in een stochastenanalyse.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Modellen"
-    ]
-  },
-  {
-    "objectID": "GUI/models.html#modelschematisatie-toevoegen",
-    "href": "GUI/models.html#modelschematisatie-toevoegen",
-    "title": "Tabblad Modellen",
-    "section": "Modelschematisatie toevoegen",
-    "text": "Modelschematisatie toevoegen\nDoor op de &lt;+&gt; button te drukken verschijnt een nieuw formulier. Hierop kan de gebruiker aangeven welk type modelschematisatie moet worden toegevoegd, waar de modelbestanden en de executable staan en welke resultaatbestanden door het programma moeten worden bewaard.\n\n\n\n\nModel type: keuze voor het type model. Bijvoorbeeld DIMR of SOBEK\nExecutable: het pad naar de executable (of .bat file) waarmee het simulatieprogramma wordt gestart.\nArguments: eventuele argumenten die moeten worden meegegeven aan de executable.\nModelDir: de map waarin zich het referentiemodel bevindt waarmee de stochastenanalyse moet worden uitgevoerd. Bijvoorbeeld: c:.lit of c:_Config.xml.\nCasename: de naam van de case die moet worden doorgerekend. Dit is essentiëel voor SOBEK-modelschematisaties, maar niet voor bijv. DIMR-configuraties omdat dat type geen onderscheid maakt tussen projecten en cases. In dat geval staat het vrij om een eigen naam te verzinnen.\nWorkdir: een tijdelijke werkmap waarin de diverse modelruns kunnen worden weggeschreven.\nResultsfiles RR: Een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de neerslag-afvoermodule van het model. Bijvoorbeeld: upflowdt.his;pvstordt.his.\nResultsfiles Flow: een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de Flow-module. Bijvoorbeeld: model_his.nc;model_fou.nc.\n\nDoor op de button &lt; Add&gt; te drukken wordt de modelschematisatie met al zijn instellingen toegevoegd aan de tabel SIMULATIONMODELS in de database. Het datagrid op het formulier wordt ook meteen ververst.\nEen modelschematisatie kan ook worden verwijderd. Selecteer daartoe de rij(en) met modelschematisatie(s) die verwijderd moeten worden en druk op de &lt;-&gt;-button.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Modellen"
-    ]
-  },
-  {
     "objectID": "GUI/general.html#berekeningen",
     "href": "GUI/general.html#berekeningen",
     "title": "Tabblad Algemeen",
@@ -204,6 +183,152 @@
       "Tutorial",
       "Gebruikshandleiding",
       "Tabblad Algemeen"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html",
+    "href": "cases/denbosch.html",
+    "title": "Den Bosch",
+    "section": "",
+    "text": "Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.\n\n\n\nOppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel\n\n\nDe modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#inleiding",
+    "href": "cases/denbosch.html#inleiding",
+    "title": "Den Bosch",
+    "section": "",
+    "text": "Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.\n\n\n\nOppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel\n\n\nDe modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#opgave",
+    "href": "cases/denbosch.html#opgave",
+    "title": "Den Bosch",
+    "section": "Opgave",
+    "text": "Opgave\nDe opdracht was om te onderzoeken in hoeverre de de volgende twee grootheden relevant zijn als stochast:\n\ninitiële vulling van het oppervlaktewatersysteem van Den Bosch\nde lokale beekinstromingen en riooloverstorten binnen het Bossche gebied\n\nZouden dit namelijk geen relevante stochasten blijken, dan zou dit een complete stochastenanalyse voor Den Bosch vele malen eenvoudiger maken. De opdracht werd daarmee feitelijk: het uitvoeren van een gevoeligheidsanalyse om te achterhalen of (een van) beide grootheden als stochast moeten worden meegenomen in een hoogwaterstudie voor Den Bosch.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#de-modelschematisatie",
+    "href": "cases/denbosch.html#de-modelschematisatie",
+    "title": "Den Bosch",
+    "section": "De modelschematisatie",
+    "text": "De modelschematisatie\nDe modellen van Sumaqua draaien als stand-alone executable. Voorwaarde om ze te kunnen draaien is dat de Matlab Runtime versie 4.19 op het systeem geïnstalleerd is. Input van de modellen gaat via twee Matlab-bestanden (.mat):\n\nInit_V_GL + naam + .mat: bevat de initiële vulling van het systeem\nInput_ + naam + .mat: bevat de hydraulische randvoorwaarden, zowel debiet als waterhoogte",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "cases/denbosch.html#uitdagingen",
+    "href": "cases/denbosch.html#uitdagingen",
+    "title": "Den Bosch",
+    "section": "Uitdagingen",
+    "text": "Uitdagingen\nOm modelschematisaties van dit type te kunnen ondersteunen was een aantal aanpassingen aan De Nieuwe Stochastentool nodig. Om te beginnen moesten er lees- en schrijfroutines komen voor de .mat files. Dit maakten we mogelijk door gebruik te maken van de library csmatio.\nMaar de belangrijkste uitdaging was eigenlijk dat deze modellen data voor de stochast ‘buitenwater’ en ‘beekafvoer’ combineren in één bestand. Om dit te implementeren in De Nieuwe Stochastentool zouden we per stochast moeten kunnen aangeven in welke kolom in dat bestand de tijdreeks moest worden geschreven.\nEen dergelijk grote doorontwikkeling viel buiten de scope van het project. Daarom is het klaarzetten van de combinaties van beekafvoer en maaswaterstand een stuk voorbewerking geworden. Met behulp van het programma HydroToolbox (Hydroconsult) deden we de tijdreeksanalyse en classificatie en schreven het resultaat naar een groot aantal .mat files.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Den Bosch"
+    ]
+  },
+  {
+    "objectID": "BAT_RUNR/inleiding.html",
+    "href": "BAT_RUNR/inleiding.html",
+    "title": "Inleiding",
+    "section": "",
+    "text": "Dit hoofdstuk behandelt de stand-alone tool BAT_RUNR waarmee grote aantallen simulaties los van De Nieuwe Stochastentool kunnen worden uitgevoerd; op meerdere cores gelijktijdig.\n\n\nWanneer de gebruiker in De Nieuwe Stochastentool op “Bouwen” klikt, zullen de geselecteerde modelruns worden klaargezet in de tijdelijke werkmap zoals ingesteld voor het onderhavige simulatiemodel.\nIedere modelrun krijgt zijn eigen submap. Daarnaast wordt ook een bestand simulations.txt weggeschreven. Dit bestand kan worden gebruikt door BAT_RUNR.EXE om de simulaties helemaal los van De Nieuwe Stochastentool te draaien.\n\n\n\n\nSimulaties bouwen in De Nieuwe Stochastentool resulteert in een lijst met mappen met modelschematisaties in de tijdelijke werkmap en een bestand simulations.txt.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Simuleren in batch"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "Over",
+    "section": "",
+    "text": "Deze website beschrijft de werking van het programma ‘De Nieuwe Stochastentool’, hierna aangeduid als ‘De Stochastentool’. De Stochastentool is een desktopapplicatie voor het uitvoeren van hoogwateranalyses, gebruikmakend van de stochastenmethode.\nHet programma werd oorspronkelijk ontwikkeld door Siebe Bosch (Hydroconsult) en is geschreven in VB.NET. De Stochastentool is in het kader van een zogeheten TKI-project https://www.rvo.nl/subsidies-financiering/pps-toeslag-onderzoek-en-innovatie/pps-programmatoeslag-tki door Hydroconsult opensource gemaakt en gepubliceerd op Github: https://github.com/SiebeBosch/DeNieuweStochastentool."
+  },
+  {
+    "objectID": "cases/cases.html",
+    "href": "cases/cases.html",
+    "title": "Praktijkcases",
+    "section": "",
+    "text": "Dit hoofdstuk behandelt een aantal praktijkcases waarin we De Nieuwe Stochastentool toepasten.\n\nDen Bosch met het CM-model van Sumaqua"
+  },
+  {
+    "objectID": "GUI/extra.html",
+    "href": "GUI/extra.html",
+    "title": "Tabblad Extra",
+    "section": "",
+    "text": "Het tabblad ‘Extra’ is bedoeld voor extra stochasten zoals hydraulische ruwheid en kunstwerkfalen. Het tabblad is generiek opgezet.\nWe illustreren de generieke opzet van deze extra stochasten aan de hand van het bovenstaande voorbeeld. Daar zijn twee extra stochasten te zien: onderhoudstoestand en kunstwerkfalen.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Extra"
+    ]
+  },
+  {
+    "objectID": "GUI/extra.html#extra-stochast-onderhoudstoestand",
+    "href": "GUI/extra.html#extra-stochast-onderhoudstoestand",
+    "title": "Tabblad Extra",
+    "section": "Extra stochast onderhoudstoestand",
+    "text": "Extra stochast onderhoudstoestand\nIn het geval van onderhoudstoestand zien we twee klassen: ruw en glad. Beide klassen verwijzen naar een eigen versie van het invoerbestand friction.dat (SOBEK-bestand).\nOmdat we onderscheid maken tussen zomer en winter, is het bovendien mogelijk om in de zomer een andere kansverdeling toe te kennen dan in de winter. Hier geven we aan dat de kans op ruwe watergangen in de zomer 0.8 is en in de winter 0.2. In de winter is dit precies andersom!",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Extra"
+    ]
+  },
+  {
+    "objectID": "GUI/extra.html#extra-stochast-kunstwerkfalen",
+    "href": "GUI/extra.html#extra-stochast-kunstwerkfalen",
+    "title": "Tabblad Extra",
+    "section": "Extra stochast kunstwerkfalen",
+    "text": "Extra stochast kunstwerkfalen\nIn het geval van kunstwerkfalen zien we eveneens twee klassen: faalt en faalt_niet. Ook hier verwijzen beide klassen naar een eigen invoerbestand; ditmaal control.def.\nIn dit geval hebben we geacht dat de kans op kunstwerkfalen in de zomer identiek is aan die in de winter, namelijk 0.001 per gebeurtenis.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Extra"
+    ]
+  },
+  {
+    "objectID": "GUI/models.html",
+    "href": "GUI/models.html",
+    "title": "Tabblad Modellen",
+    "section": "",
+    "text": "Het tabblad ‘Modellen’ geeft een lijst met modelschematisaties die achtereenvolgens moeten worden doorgerekend in een stochastenanalyse.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Modellen"
+    ]
+  },
+  {
+    "objectID": "GUI/models.html#modelschematisatie-toevoegen",
+    "href": "GUI/models.html#modelschematisatie-toevoegen",
+    "title": "Tabblad Modellen",
+    "section": "Modelschematisatie toevoegen",
+    "text": "Modelschematisatie toevoegen\nDoor op de &lt;+&gt; button te drukken verschijnt een nieuw formulier. Hierop kan de gebruiker aangeven welk type modelschematisatie moet worden toegevoegd, waar de modelbestanden en de executable staan en welke resultaatbestanden door het programma moeten worden bewaard.\n\n\n\n\nModel type: keuze voor het type model. Bijvoorbeeld DIMR of SOBEK\nExecutable: het pad naar de executable (of .bat file) waarmee het simulatieprogramma wordt gestart.\nArguments: eventuele argumenten die moeten worden meegegeven aan de executable.\nModelDir: de map waarin zich het referentiemodel bevindt waarmee de stochastenanalyse moet worden uitgevoerd. Bijvoorbeeld: c:.lit of c:_Config.xml.\nCasename: de naam van de case die moet worden doorgerekend. Dit is essentiëel voor SOBEK-modelschematisaties, maar niet voor bijv. DIMR-configuraties omdat dat type geen onderscheid maakt tussen projecten en cases. In dat geval staat het vrij om een eigen naam te verzinnen.\nWorkdir: een tijdelijke werkmap waarin de diverse modelruns kunnen worden weggeschreven.\nResultsfiles RR: Een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de neerslag-afvoermodule van het model. Bijvoorbeeld: upflowdt.his;pvstordt.his.\nResultsfiles Flow: een lijst, gescheiden door puntkomma, met namen van resultaatbestanden uit de Flow-module. Bijvoorbeeld: model_his.nc;model_fou.nc.\n\nDoor op de button &lt; Add&gt; te drukken wordt de modelschematisatie met al zijn instellingen toegevoegd aan de tabel SIMULATIONMODELS in de database. Het datagrid op het formulier wordt ook meteen ververst.\nEen modelschematisatie kan ook worden verwijderd. Selecteer daartoe de rij(en) met modelschematisatie(s) die verwijderd moeten worden en druk op de &lt;-&gt;-button.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Tabblad Modellen"
     ]
   },
   {
@@ -274,66 +399,6 @@
     "text": "Deze gebruikershandleiding beschrijft de volgende aspecten:\n\nDe structuur van een stochastenconfiguratie\nDe werking van De Nieuwe Stochastentool\nHet toevoegen van modelschematisaties\nSeizoen instellen als ‘stochast’\nDe stochast ‘Volume’ instellen\nDe stochast ‘Patroon’ instellen\nDe ‘extra’ stochasten instellen"
   },
   {
-    "objectID": "GUI/volume.html",
-    "href": "GUI/volume.html",
-    "title": "Tabblad Volume",
-    "section": "",
-    "text": "Met ‘Volume’ bedoelen we in een stochastencontext doorgaans het ‘neerslagvolume’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Volume’ ook staan voor een stochast zoals ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Volume staat voor neerslagvolume.\n\n\n\nVolumes\n\n\nBij het inladen van het .xml configuratiebestand zal De Nieuwe Stochastentool eerst achterhalen welke seizoenen er zijn gedefinieerd (database: tabel SEASONS). Voor ieder seizoen verschijnt dan een grid met volumes en hun bijbehorende kansen (eigenlijk: frequenties). Deze waarden komen uit de database: tabel VOLUMES.\nDe waarden zijn uitgedrukt als het gemiddeld aantal gebeurtenissen per jaar wat in de betreffende klasse valt. De som van de frequenties uit alle klassen moet gelijk zijn aan 365.25 * 24/duur. Hiermee dwingen we af dat de stochastenklassen samen alle mogelijke gebeurtenissen vertegenwoordigen die in een jaar kunnen voorkomen. Anders gezegd: de som der kansen is 1.\nDoor in de grids de waarden onder USE aan te passen van 0 naar 1 of andersom is het mogelijk om klassen uit- danwel in te schakelen. De kans van een uitgeschakelde klasse wordt eerlijk herverdeeld over zijn twee nog actieve buren.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Volume"
-    ]
-  },
-  {
-    "objectID": "GUI/patterns.html",
-    "href": "GUI/patterns.html",
-    "title": "Tabblad Patronen",
-    "section": "",
-    "text": "Met de stochast ‘Patronen’ bedoelen we in een stochastencontext doorgaans het ‘tijdsverloop van de neerslag’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Patronen’ ook staan voor het tijdsverloop van ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Patroon staat voor het tijdsverloop van de neerslag. Meer specifiek: doorgaans onderscheiden we hier de zeven buipatronen volgens (STOWA 2004).\n\n\n\nDe stochast ‘Patronen’\n\n\nHet staat iedereen echter vrij om eigen patronen te definiëren en daar een kans aan te verbinden. Dit kan allemaal in de database, in de volgende tabellen:\n\nPATRONEN: bevat de naam van ieder patroon en zijn kans\nNEERSLAGVERLOOP: bevat het tijdsverloop van ieder patroon, als fractie van de neerslagsom per tijdstap\n\n\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Patronen"
-    ]
-  },
-  {
-    "objectID": "GUI/extra.html",
-    "href": "GUI/extra.html",
-    "title": "Tabblad Extra",
-    "section": "",
-    "text": "Het tabblad ‘Extra’ is bedoeld voor extra stochasten zoals hydraulische ruwheid en kunstwerkfalen. Het tabblad is generiek opgezet.\nWe illustreren de generieke opzet van deze extra stochasten aan de hand van het bovenstaande voorbeeld. Daar zijn twee extra stochasten te zien: onderhoudstoestand en kunstwerkfalen.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Extra"
-    ]
-  },
-  {
-    "objectID": "GUI/extra.html#extra-stochast-onderhoudstoestand",
-    "href": "GUI/extra.html#extra-stochast-onderhoudstoestand",
-    "title": "Tabblad Extra",
-    "section": "Extra stochast onderhoudstoestand",
-    "text": "Extra stochast onderhoudstoestand\nIn het geval van onderhoudstoestand zien we twee klassen: ruw en glad. Beide klassen verwijzen naar een eigen versie van het invoerbestand friction.dat (SOBEK-bestand).\nOmdat we onderscheid maken tussen zomer en winter, is het bovendien mogelijk om in de zomer een andere kansverdeling toe te kennen dan in de winter. Hier geven we aan dat de kans op ruwe watergangen in de zomer 0.8 is en in de winter 0.2. In de winter is dit precies andersom!",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Extra"
-    ]
-  },
-  {
-    "objectID": "GUI/extra.html#extra-stochast-kunstwerkfalen",
-    "href": "GUI/extra.html#extra-stochast-kunstwerkfalen",
-    "title": "Tabblad Extra",
-    "section": "Extra stochast kunstwerkfalen",
-    "text": "Extra stochast kunstwerkfalen\nIn het geval van kunstwerkfalen zien we eveneens twee klassen: faalt en faalt_niet. Ook hier verwijzen beide klassen naar een eigen invoerbestand; ditmaal control.def.\nIn dit geval hebben we geacht dat de kans op kunstwerkfalen in de zomer identiek is aan die in de winter, namelijk 0.001 per gebeurtenis.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Tabblad Extra"
-    ]
-  },
-  {
     "objectID": "GUI/workings.html",
     "href": "GUI/workings.html",
     "title": "Werking",
@@ -370,6 +435,18 @@
     ]
   },
   {
+    "objectID": "GUI/workings.html#stochasten-definieren",
+    "href": "GUI/workings.html#stochasten-definieren",
+    "title": "Werking",
+    "section": "stochasten definieren",
+    "text": "stochasten definieren\nDe gebruiker definieert stochasten en classificeert die. Iedere klasse van een stochast krijgt een representatieve waarde waarmee het model kan rekenen én een bijbehorende kans toegewezen. Al deze informatie komt in de database te staan.",
+    "crumbs": [
+      "Tutorial",
+      "Gebruikshandleiding",
+      "Werking"
+    ]
+  },
+  {
     "objectID": "GUI/workings.html#uitvoerlocaties-definieren",
     "href": "GUI/workings.html#uitvoerlocaties-definieren",
     "title": "Werking",
@@ -398,19 +475,7 @@
     "href": "GUI/workings.html#simulaties-doorrekenen",
     "title": "Werking",
     "section": "simulaties doorrekenen",
-    "text": "simulaties doorrekenen\nTot voor kort konden alle simulaties ook vanuit De Nieuwe Stochastentool zelf worden aangestuurd en gestart. Hier zijn we vanaf gestapt om verschillende redenen.\nSinds kort worden de simulaties gestart met het programma BAT_RUNR.EXE. Als argument geven we het pad naar het bestand simulations.txt mee. Dit bestand geeft een lijst van alle simulaties die moeten worden uitgevoerd.",
-    "crumbs": [
-      "Tutorial",
-      "Gebruikshandleiding",
-      "Werking"
-    ]
-  },
-  {
-    "objectID": "GUI/workings.html#stochasten-definieren",
-    "href": "GUI/workings.html#stochasten-definieren",
-    "title": "Werking",
-    "section": "stochasten definieren",
-    "text": "stochasten definieren\nDe gebruiker definieert stochasten en classificeert die. Iedere klasse van een stochast krijgt een representatieve waarde waarmee het model kan rekenen én een bijbehorende kans toegewezen. Al deze informatie komt in de database te staan.",
+    "text": "simulaties doorrekenen\nTot voor kort konden alle simulaties ook vanuit De Nieuwe Stochastentool zelf worden aangestuurd en gestart. Hier zijn we vanaf gestapt om verschillende redenen.\nSinds kort worden de simulaties gestart met het programma BAT_RUNR.EXE. Als argument geven we het pad naar het bestand simulations.txt mee. Dit bestand geeft een lijst van alle simulaties die moeten worden uitgevoerd. Voor BAT_RUNR leveren we in de release een apart installatiebestand mee. We merken op dat, om BAT_RUNR te kunnen draaien het .NET framework 7.0 op de computer moet zijn geïnstalleerd.",
     "crumbs": [
       "Tutorial",
       "Gebruikshandleiding",
@@ -466,77 +531,10 @@
     ]
   },
   {
-    "objectID": "cases.html",
-    "href": "cases.html",
-    "title": "Praktijkcases",
+    "objectID": "technical_docs/technicaldocumentation.html",
+    "href": "technical_docs/technicaldocumentation.html",
+    "title": "Technische documentatie",
     "section": "",
-    "text": "Dit hoofdstuk behandelt een aantal praktijkcases waarbij we De Nieuwe Stochastentool hebben toegepast.\n\nDen Bosch met het CM-model van Sumaqua"
-  },
-  {
-    "objectID": "cases/cases.html",
-    "href": "cases/cases.html",
-    "title": "Praktijkcases",
-    "section": "",
-    "text": "Dit hoofdstuk behandelt een aantal praktijkcases waarbij we De Nieuwe Stochastentool hebben toegepast.\n\nDen Bosch met het CM-model van Sumaqua"
-  },
-  {
-    "objectID": "cases/denbosch.html",
-    "href": "cases/denbosch.html",
-    "title": "Den Bosch",
-    "section": "",
-    "text": "Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.\n\n\n\nOppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel\n\n\nDe modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.",
-    "crumbs": [
-      "Tutorial",
-      "Praktijkcases",
-      "Den Bosch"
-    ]
-  },
-  {
-    "objectID": "cases/denbosch.html#inleiding",
-    "href": "cases/denbosch.html#inleiding",
-    "title": "Den Bosch",
-    "section": "",
-    "text": "Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.\n\n\n\nOppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel\n\n\nDe modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.",
-    "crumbs": [
-      "Tutorial",
-      "Praktijkcases",
-      "Den Bosch"
-    ]
-  },
-  {
-    "objectID": "cases/denbosch.html#opgave",
-    "href": "cases/denbosch.html#opgave",
-    "title": "Den Bosch",
-    "section": "Opgave",
-    "text": "Opgave\nDe opdracht was om te onderzoeken in hoeverre de de volgende twee grootheden relevant zijn als stochast:\n\ninitiële vulling van het oppervlaktewatersysteem van Den Bosch\nde lokale beekinstromingen en riooloverstorten binnen het Bossche gebied\n\nZouden dit namelijk geen relevante stochasten blijken, dan zou dit een complete stochastenanalyse voor Den Bosch vele malen eenvoudiger maken. De opdracht werd daarmee feitelijk: het uitvoeren van een gevoeligheidsanalyse om te achterhalen of (een van) beide grootheden als stochast moeten worden meegenomen in een hoogwaterstudie voor Den Bosch.",
-    "crumbs": [
-      "Tutorial",
-      "Praktijkcases",
-      "Den Bosch"
-    ]
-  },
-  {
-    "objectID": "cases/denbosch.html#de-modelschematisatie",
-    "href": "cases/denbosch.html#de-modelschematisatie",
-    "title": "Den Bosch",
-    "section": "De modelschematisatie",
-    "text": "De modelschematisatie\nDe modellen van Sumaqua draaien als stand-alone executable. Voorwaarde om ze te kunnen draaien is dat de Matlab Runtime versie 4.19 op het systeem geïnstalleerd is. Input van de modellen gaat via twee Matlab-bestanden (.mat):\n\nInit_V_GL + naam + .mat: bevat de initiële vulling van het systeem\nInput_ + naam + .mat: bevat de hydraulische randvoorwaarden, zowel debiet als waterhoogte",
-    "crumbs": [
-      "Tutorial",
-      "Praktijkcases",
-      "Den Bosch"
-    ]
-  },
-  {
-    "objectID": "cases/denbosch.html#uitdagingen",
-    "href": "cases/denbosch.html#uitdagingen",
-    "title": "Den Bosch",
-    "section": "Uitdagingen",
-    "text": "Uitdagingen\nOm modelschematisaties van dit type te kunnen ondersteunen was een aantal aanpassingen aan De Nieuwe Stochastentool nodig. Om te beginnen moesten er lees- en schrijfroutines komen voor de .mat files. Dit maakten we mogelijk door gebruik te maken van de library csmatio.\nMaar de belangrijkste uitdaging was eigenlijk dat deze modellen data voor de stochast ‘buitenwater’ en ‘beekafvoer’ combineren in één bestand. Om dit te implementeren in De Nieuwe Stochastentool zouden we per stochast moeten kunnen aangeven in welke kolom in dat bestand de tijdreeks moest worden geschreven.\nEen dergelijk grote doorontwikkeling viel buiten de scope van het project. Daarom is het klaarzetten van de combinaties van beekafvoer en maaswaterstand een stuk voorbewerking geworden. Met behulp van het programma HydroToolbox (Hydroconsult) deden we de tijdreeksanalyse en classificatie en schreven het resultaat naar een groot aantal .mat files.",
-    "crumbs": [
-      "Tutorial",
-      "Praktijkcases",
-      "Den Bosch"
-    ]
+    "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
   }
 ]

@@ -72,7 +72,7 @@ C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyGroundw
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyTidesByStatistics.resources
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.GenerateResource.cache
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CoreCompileInputs.cache
-C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.CopyComplete
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.frmClassifyGroundwaterHBV.resources
+C:\GITHUB\DeNieuweStochastentool\DLL\obj\x64\Release\STOCHLIB.vbproj.Up2Date

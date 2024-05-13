@@ -30,4 +30,7 @@ C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0\HtmlAgilityPack.pdb
 C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0\HtmlAgilityPack.xml
 C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0\Newtonsoft.Json.xml
 C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0\DynamicInterop.xml
-C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\obj\Release\net7.0\BAT_RUNR.vbproj.CopyComplete
+C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0\MatFileHandler.dll
+C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0\MatFileHandler.xml
+C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\obj\Release\net7.0\BAT_RUNR.sourcelink.json
+C:\GITHUB\DeNieuweStochastentool\BAT_RUNR\obj\Release\net7.0\BAT_RUNR.vbproj.Up2Date

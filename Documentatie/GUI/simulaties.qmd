@@ -1,0 +1,82 @@
+---
+title: "Tabblad Simulaties"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Het tabblad 'Simulaties' is waar uiteindelijk alle stochasten worden samengesteld tot simulaties, waar de rekenresultaten worden uitgelezen, nabewerkt en gepubliceerd.
+
+![Het tabblad Simulaties](img/frm_simulaties.png "Simulaties")
+
+Hieronder bespreken we één voor één de verschillende knoppen die zich op dit tabblad bevinden.
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Samenstellen'.](img/btn_samenstellen.png)
+:::
+::: {.column width="70%"}
+De eerste actie die moet worden uitgevoerd nadat alle stochasten zijn geconfigureerd is het samenstellen van de simulaties. Alle combinaties van stochastenklassen resulteren in een aparte simulatie. Ter illustratie: een configuratie met 10 klassen met neerlagvolumes, 7 klassen met neerslagpatronen en 3 klassen met hydrologische voorgeschiedenis zal resulteren in 10 x 7 x 3 = 210 simulaties.
+
+Elk van deze simulaties wordt na het samenstellen getoond in het datagrid op het tabblad Simulaties.
+:::
+:::
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Wissen'.](img/btn_wissen.png)
+:::
+::: {.column width="70%"}
+Deze button is bedoeld om simulatieresultaten te wissen van geselecteerde simulaties. Het selecteren van een of meerdere simulaties kan door op de rij-header vóór iedere simulatie te klikken. Wanneer het resultaat van een simulatie is gewist, toont zich dit in het datagrid doordat het vinkje onder 'DONE' verdwijnt.
+:::
+:::
+
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Bouwen'.](img/btn_bouwen.png)
+:::
+::: {.column width="70%"}
+Deze button zorgt ervoor dat in de tijdelijke werkmap zoals opgegeven bij het simulatiemodel een kopie van de modelschematisatie komt te staan voor iedere simulatie. In die kopie worden vervolgens alle bestanden geïnjecteerd die specifiek bij de onderhavige simulatie horen: neerslagvolume, neerslagpatroon, initieel grondwater, randvoorwaarden etc. etc.
+
+Alleen voor geselecteerde rijen wordt een kopie van de modelschematisatie geschreven. Selecteren van een of meer simulaties kan door op de rij-header van een simulatie te klikken.
+:::
+:::
+
+
+
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Simuleren'.](img/btn_simuleren.png)
+:::
+::: {.column width="70%"}
+Deze button is op dit moment onklaar gemaakt omdat het aansturen van DIMR-simulaties om onduidelijke redenen niet werkte wanneer dit vanuit De Nieuwe Stochastentool werd gedaan. Hier is ook samen met Deltares naar gekeken maar een oplossing werd niet gevonden. 
+
+Daarom is een alternatieve aanpak ontwikkeld om de simulaties te kunnen uitvoeren: via de tool BAT_RUNR.EXE. Het installatiebestand voor deze tool bieden we aan op de github-pagina van De Nieuwe Stochastentool. De simulaties die zijn klaargezet door op de button 'Bouwen' te drukken kunnen in batch worden doorgerekend met het programma BAT_RUNR.EXE. We merken op dat voor het installeren van BAT_RUNR het .NET framework 7.0 op de pc geïnstalleerd moet zijn.
+:::
+:::
+
+
+
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Kopiëren'.](img/btn_kopieren.png)
+:::
+::: {.column width="70%"}
+Als de simulaties succesvol zijn doorgerekend met BAT_RUNR, is het tijd om de resultaatbestanden te kopieren uit de tijdelijke werkmap, naar de stochastenmap. Dit gebeurt door op deze button te klikken.
+
+:::
+:::
+
+
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Uitlezen'.](img/btn_uitlezen.png)
+:::
+::: {.column width="70%"}
+Deze knop leest de modeluitkomsten uit de gekopieerde resultaatbestanden en schrijft ze naar de database. Hierna is het mogelijk om de resultaten na te bewerken tot overschrijdingsgrafieken.
+:::
+:::
+
