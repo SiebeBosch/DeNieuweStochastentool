@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>De Nieuwe Stochastentool - Gebruikershandleiding</title>
+<title>De Nieuwe Stochastentool - Den Bosch</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,7 +119,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Gebruikershandleiding</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cases/denbosch.html">Praktijkcases</a></li><li class="breadcrumb-item"><a href="../cases/denbosch.html">Den Bosch</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -248,7 +248,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../cases/denbosch.html" class="sidebar-item-text sidebar-link">
+  <a href="../cases/denbosch.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Den Bosch</span></a>
   </div>
 </li>
@@ -260,14 +260,23 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#inleiding" id="toc-inleiding" class="nav-link active" data-scroll-target="#inleiding">Inleiding</a></li>
+  <li><a href="#opgave" id="toc-opgave" class="nav-link" data-scroll-target="#opgave">Opgave</a></li>
+  <li><a href="#de-modelschematisatie" id="toc-de-modelschematisatie" class="nav-link" data-scroll-target="#de-modelschematisatie">De modelschematisatie</a></li>
+  <li><a href="#uitdagingen" id="toc-uitdagingen" class="nav-link" data-scroll-target="#uitdagingen">Uitdagingen</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cases/denbosch.html">Praktijkcases</a></li><li class="breadcrumb-item"><a href="../cases/denbosch.html">Den Bosch</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Gebruikershandleiding</h1>
+<h1 class="title">Den Bosch</h1>
 </div>
 
 
@@ -284,18 +293,42 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Deze gebruikershandleiding beschrijft de volgende aspecten:</p>
-<ol type="1">
-<li><a href="../GUI/structure.html">De structuur van een stochastenconfiguratie</a></li>
-<li><a href="../GUI/workings.html">De werking van De Nieuwe Stochastentool</a></li>
-<li><a href="../GUI/models.html">Het toevoegen van modelschematisaties</a></li>
-<li><a href="../GUI/seizoenen.html">Seizoen instellen als ‘stochast’</a></li>
-<li><a href="../GUI/volume.html">De stochast ‘Volume’ instellen</a></li>
-<li><a href="../GUI/patterns.html">De stochast ‘Patroon’ instellen</a></li>
-<li><a href="../GUI/extra.html">De ‘extra’ stochasten instellen</a></li>
-</ol>
+<section id="inleiding" class="level2">
+<h2 class="anchored" data-anchor-id="inleiding">Inleiding</h2>
+<p>Hier beschrijven we een casus met het CM-model van het Vlaamse bedrijf Sumaqua (een spin-off van de KU Leuven). Sumaqua vervaardigde een zeer snel rekenend hydraulische modelschematisatie van het watersysteem rond ‘s-Hertogenbosch. Het betreft een soort ’meta-model’ in de zin dat het werd geijkt aan de resultaten van een gedetailleerd D-Hydro 1D2D-model van de regio.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/denbosch_poly.png" title="Den Bosch" class="img-fluid figure-img"></p>
+<figcaption>Oppervlaktes van het Den Bosch-model: 12 polygonen waarvoor de relaties tussen afvoeren en waterhoogtes zijn geijkt aan de uitkomsten van een detailmodel</figcaption>
+</figure>
+</div>
+<p>De modelschematisatie bevat geen neerslag-afvoercomponent en hij wordt dan ook gevoed met de uitkomsten van een op zichzelf staand Wageningenmodel.</p>
+</section>
+<section id="opgave" class="level2">
+<h2 class="anchored" data-anchor-id="opgave">Opgave</h2>
+<p>De opdracht was om te onderzoeken in hoeverre de de volgende twee grootheden relevant zijn als stochast:</p>
+<ul>
+<li>initiële vulling van het oppervlaktewatersysteem van Den Bosch</li>
+<li>de lokale beekinstromingen en riooloverstorten binnen het Bossche gebied</li>
+</ul>
+<p>Zouden dit namelijk geen relevante stochasten blijken, dan zou dit een complete stochastenanalyse voor Den Bosch vele malen eenvoudiger maken. De opdracht werd daarmee feitelijk: het uitvoeren van een gevoeligheidsanalyse om te achterhalen of (een van) beide grootheden als stochast moeten worden meegenomen in een hoogwaterstudie voor Den Bosch.</p>
+</section>
+<section id="de-modelschematisatie" class="level2">
+<h2 class="anchored" data-anchor-id="de-modelschematisatie">De modelschematisatie</h2>
+<p>De modellen van Sumaqua draaien als stand-alone executable. Voorwaarde om ze te kunnen draaien is dat de Matlab Runtime versie 4.19 op het systeem geïnstalleerd is. Input van de modellen gaat via twee Matlab-bestanden (.mat):</p>
+<ul>
+<li>Init_V_GL + naam + .mat: bevat de initiële vulling van het systeem</li>
+<li>Input_ + naam + .mat: bevat de hydraulische randvoorwaarden, zowel debiet als waterhoogte</li>
+</ul>
+</section>
+<section id="uitdagingen" class="level2">
+<h2 class="anchored" data-anchor-id="uitdagingen">Uitdagingen</h2>
+<p>Om modelschematisaties van dit type te kunnen ondersteunen was een aantal aanpassingen aan De Nieuwe Stochastentool nodig. Om te beginnen moesten er lees- en schrijfroutines komen voor de .mat files. Dit maakten we mogelijk door gebruik te maken van de library csmatio.</p>
+<p>Maar de belangrijkste uitdaging was eigenlijk dat deze modellen data voor de stochast ‘buitenwater’ en ‘beekafvoer’ combineren in één bestand. Om dit te implementeren in De Nieuwe Stochastentool zouden we per stochast moeten kunnen aangeven in welke kolom in dat bestand de tijdreeks moest worden geschreven.</p>
+<p>Een dergelijk grote doorontwikkeling viel buiten de scope van het project. Daarom is het klaarzetten van de combinaties van beekafvoer en maaswaterstand een stuk voorbewerking geworden. Met behulp van het programma HydroToolbox (Hydroconsult) deden we de tijdreeksanalyse en classificatie en schreven het resultaat naar een groot aantal .mat files.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

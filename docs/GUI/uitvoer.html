@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>De Nieuwe Stochastentool - Gebruikershandleiding</title>
+<title>De Nieuwe Stochastentool - Tabblad Uitvoer</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -119,7 +119,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Gebruikershandleiding</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../GUI/structure.html">Gebruikshandleiding</a></li><li class="breadcrumb-item"><a href="../GUI/uitvoer.html">Tabblad Uitvoer</a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -215,7 +215,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../GUI/uitvoer.html" class="sidebar-item-text sidebar-link">
+  <a href="../GUI/uitvoer.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Tabblad Uitvoer</span></a>
   </div>
 </li>
@@ -265,9 +265,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../GUI/structure.html">Gebruikshandleiding</a></li><li class="breadcrumb-item"><a href="../GUI/uitvoer.html">Tabblad Uitvoer</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Gebruikershandleiding</h1>
+<h1 class="title">Tabblad Uitvoer</h1>
 </div>
 
 
@@ -284,16 +284,38 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Deze gebruikershandleiding beschrijft de volgende aspecten:</p>
-<ol type="1">
-<li><a href="../GUI/structure.html">De structuur van een stochastenconfiguratie</a></li>
-<li><a href="../GUI/workings.html">De werking van De Nieuwe Stochastentool</a></li>
-<li><a href="../GUI/models.html">Het toevoegen van modelschematisaties</a></li>
-<li><a href="../GUI/seizoenen.html">Seizoen instellen als ‘stochast’</a></li>
-<li><a href="../GUI/volume.html">De stochast ‘Volume’ instellen</a></li>
-<li><a href="../GUI/patterns.html">De stochast ‘Patroon’ instellen</a></li>
-<li><a href="../GUI/extra.html">De ‘extra’ stochasten instellen</a></li>
-</ol>
+<p>Het tabblad ‘Uitvoer’ is bedoeld om op te geven voor welke locaties en parameters de modeluitkomsten moeten worden uitgelezen en opgeslagen zodat ze verderop in het proces kunnen worden verwerkt tot overschrijdingsgrafieken.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/uitvoer.png" title="Uitvoer" class="img-fluid figure-img"></p>
+<figcaption>Modeluitvoer specificeren</figcaption>
+</figure>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Belangrijk om te weten is dat op het tabblad ‘Algemeen’ moet worden aangevinkt of 1D-modelresultaten en/of 2D-modelresultaten moeten worden nabewerkt.</p>
+<p>Als de gebruiker dit heeft gedaan is het mogelijk om de lijsten met uitvoerlocaties en -parameters automatisch te vullen. Ga hiervoor naar het menu Modellen - Uitvoerlocaties - Importeren.</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/mnu_uitvoerlocaties_importeren.png" class="img-fluid figure-img"></p>
+<figcaption>Uitvoerlocaties van model(len) importeren.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/frm_uitvoerlocaties.png" class="img-fluid figure-img"></p>
+<figcaption>Uitvoerlocaties van model(len) importeren.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<p>In het formulier wat vervolgens getoond wordt kan de gebruiker selecteren voor welk model de uitvoerlocaties moeten worden uitgelezen en of voor die locatie(s) het gesimuleerde minimum, maximum of gemiddelde van iedere simulatie de gewenste grootheid is. Zeker bij een hoogwaterstudie zal het meestal om het maximum gaan. Desgewenst kan de gebruiker middels een filter een deelselectie van uitvoerlocaties importeren.</p>
+</div>
+</div>
 
 
 
