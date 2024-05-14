@@ -2338,7 +2338,7 @@ Public Class clsStochastenAnalyse
 
     End Sub
 
-    Public Function getBuiVerloop(ByVal Patroon As String) As Double()
+    Public Function getBuiVerloop(ByVal Patroon As String, SimulationModel As GeneralFunctions.enmSimulationModel) As Double()
 
         '------------------------------------------------------------------------
         'Author: Siebe Bosch
@@ -2346,9 +2346,18 @@ Public Class clsStochastenAnalyse
         'Description: gets the pattern for a rainfall event from the database
         '------------------------------------------------------------------------
 
+
         'duration must already have been set, and also the path to the database
         Dim myPatroon As Double()
-        ReDim myPatroon(Duration - 1)
+
+        'we add one extra timestep after the event, hence not duration -1
+        Select Case SimulationModel
+            Case GeneralFunctions.enmSimulationModel.HBV
+                'for HBV we'll add one extra (empty) timestep after the event in order to match with the start- and end date of the event
+                ReDim myPatroon(Duration)
+            Case Else
+                ReDim myPatroon(Duration - 1)
+        End Select
         Dim query As String, i As Integer
 
         'connect to the database and retrieve the values
@@ -2365,9 +2374,18 @@ Public Class clsStochastenAnalyse
             da.Fill(dt)
             cn.Close()
 
-            For i = 0 To Duration - 1
-                myPatroon(i) = dt.Rows(i)(0)
-            Next
+            Select Case SimulationModel
+                Case GeneralFunctions.enmSimulationModel.HBV
+                    For i = 0 To Duration - 1
+                        myPatroon(i) = dt.Rows(i)(0)
+                    Next
+                    myPatroon(Duration) = 0 'add an empty timestep after the event. let op: dit is een extra tijdstap na de bui, maar het is nog maar de vraag of het volume van elke tijdstap representatief is voor de tijdstap vóór de datum of juist ná de datum
+                Case Else
+                    For i = 0 To Duration - 1
+                        myPatroon(i) = dt.Rows(i)(0)
+                    Next
+            End Select
+
             Return myPatroon
         Catch err As Exception
             Me.Setup.Log.AddError(err.Message)

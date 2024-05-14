@@ -289,7 +289,7 @@ Public Class clsStochastenRun
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
 
                 'for each run we need to create a unique subdirectory to myModel.TempWorkDir
-                Dim runDir As String = myModel.TempWorkDir & "\" & ID
+                Dim runDir As String = myModel.TempWorkDir & "\DAT\" & ID
                 If Not System.IO.Directory.Exists(runDir) Then System.IO.Directory.CreateDirectory(runDir)
 
                 '--------------------------------------------------------------------------------------------
@@ -303,7 +303,7 @@ Public Class clsStochastenRun
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
                     BuildSobekModelRun(myModel, runDir)
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.HBV Then
-                    BuildHBVModelRun(myModel, runDir)
+                    BuildHBVModelRun(myModel, myModel.TempWorkDir, runDir, ID)
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SUMAQUA Then
                     BuildSumaquaModelRun(myModel, runDir)
                 End If
@@ -345,7 +345,7 @@ Public Class clsStochastenRun
 
                 Dim myBui As New clsBuiFile(Me.Setup)
                 Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-                Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+                Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
                 For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                     If Station.StationType = enmMeteoStationType.precipitation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
@@ -552,7 +552,7 @@ Public Class clsStochastenRun
             'write the precipitation file and make a backup in the stochast directory
             Dim myBui As New clsBuiFile(Me.Setup)
             Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
                     Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
@@ -614,7 +614,7 @@ Public Class clsStochastenRun
         End Try
     End Function
 
-    Public Function BuildHBVModelRun(ByRef myModel As clsSimulationModel, runDir As String) As Boolean
+    Public Function BuildHBVModelRun(ByRef myModel As clsSimulationModel, parDir As String, runDir As String, runID As String) As Boolean
         Try
 
             'copy the original project to the temporary work dir and then read it from the new location
@@ -627,6 +627,13 @@ Public Class clsStochastenRun
             'v2.040: changed mymodel.exec to mymodel.ModelDir. This fixes a bug for users who have their models on a different drive than their program
             Dim Startdate As Date = SeasonClass.EventStart
             Dim Enddate As Date = SeasonClass.EventStart.AddHours(StochastenAnalyse.Duration + StochastenAnalyse.DurationAdd)
+
+            'create a runDir .par file
+            Using parWriter As New StreamWriter(parDir & "\" & runID & ".par")
+                parWriter.WriteLine("fileformat 1")
+                parWriter.WriteLine($"district '{runID}'")
+                parWriter.WriteLine($"Directory 'DAT\{runID}\'")
+            End Using
 
             If Not myProject.CloneAndAdjustCaseForCommandLineRun(runDir, Startdate, Enddate) Then Throw New Exception("Error: could not clone HBV model for running from the command line.")
 
@@ -719,7 +726,7 @@ Public Class clsStochastenRun
 
             'Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
             'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon)
+            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
                     Dim myBui As New clsBuiFile(Me.Setup)

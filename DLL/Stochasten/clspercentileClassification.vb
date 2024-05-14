@@ -22,7 +22,7 @@ Public Class clspercentileClassification
             Dim directoryPath As String = Me.Setup.GeneralFunctions.DirFromFileName(instatepath)
             If Not System.IO.Directory.Exists(directoryPath) Then System.IO.Directory.CreateDirectory(directoryPath)
 
-            EventStartDate = EventStartDate.Subtract(New TimeSpan(0, 1, 0, 0)) 'subtract one hour to make sure the initial state is set before our event starts
+            'EventStartDate = EventStartDate.Subtract(New TimeSpan(0, 1, 0, 0)) 'subtract one hour to make sure the initial state is set before our event starts
 
             'then write the file
             Using instateWriter As New StreamWriter(instatepath)
