@@ -291,7 +291,18 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Het tabblad Simulaties</figcaption>
 </figure>
 </div>
-<p>Hieronder bespreken we één voor één de verschillende knoppen die zich op dit tabblad bevinden.</p>
+<p>Hieronder bespreken we één voor één de verschillende knoppen die zich op dit tabblad bevinden. De gedachte achter deze buttons is dat ze van boven naar beneden moeten worden uitgevoerd:</p>
+<ul>
+<li>Simulaties samenstellen door alle stochasten en hun klassen te combineren.</li>
+<li>Eventueel oude resultaten wissen</li>
+<li>De simulaties opbouwen, dwz: een kopie van de schematisatie maken en daar de benodigde bestanden in kopiëren</li>
+<li>Het daadwerkelijk simuleren</li>
+<li>Resultaatbestanden uit de tijdelijke werkmappen kopiëren naar de projectmap</li>
+<li>Resultaten uitlezen uit de bestanden en naar de database schrijven</li>
+<li>Resultaten statistisch nabewerken tot overschrijdingsgrafieken</li>
+<li>Overschrijdingsgrafieken publiceren in de interactieve webviewer</li>
+<li>Overschrijdingsgrafieken exporteren naar Excel</li>
+</ul>
 <div class="columns">
 <div class="column" style="width:30%;">
 <div class="quarto-figure quarto-figure-center">
@@ -301,7 +312,7 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 </div><div class="column" style="width:70%;">
-<p>De eerste actie die moet worden uitgevoerd nadat alle stochasten zijn geconfigureerd is het samenstellen van de simulaties. Alle combinaties van stochastenklassen resulteren in een aparte simulatie. Ter illustratie: een configuratie met 10 klassen met neerlagvolumes, 7 klassen met neerslagpatronen en 3 klassen met hydrologische voorgeschiedenis zal resulteren in 10 x 7 x 3 = 210 simulaties.</p>
+<p>De eerste actie die moet worden uitgevoerd. Nadat alle stochasten zijn geconfigureerd óf er een aanpassing is doorgevoerd in de classificatie van één van de stochasten, moeten de simulaties opnieuw worden samengesteld. Alle combinaties van stochastenklassen resulteren in een aparte simulatie. Ter illustratie: een configuratie met 10 klassen met neerlagvolumes, 7 klassen met neerslagpatronen en 3 klassen met hydrologische voorgeschiedenis zal resulteren in 10 x 7 x 3 = 210 simulaties.</p>
 <p>Elk van deze simulaties wordt na het samenstellen getoond in het datagrid op het tabblad Simulaties.</p>
 </div>
 </div>
@@ -364,7 +375,43 @@ ul.task-list li input[type="checkbox"] {
 </figure>
 </div>
 </div><div class="column" style="width:70%;">
-<p>Deze knop leest de modeluitkomsten uit de gekopieerde resultaatbestanden en schrijft ze naar de database. Hierna is het mogelijk om de resultaten na te bewerken tot overschrijdingsgrafieken.</p>
+<p>Deze knop leest de modeluitkomsten uit de gekopieerde resultaatbestanden en schrijft ze naar de database, tabellen RESULTATEN en/of RESULTATEN2D. Hierna is het mogelijk om de resultaten na te bewerken tot overschrijdingsgrafieken. Zie daarvoor de button ‘Nabewerken’.</p>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/btn_nabewerken.png" class="img-fluid figure-img"></p>
+<figcaption>Button ‘Nabewerken’.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:70%;">
+<p>Onder deze knop worden de rekenresultaten zoals ingelezen in de database statistisch nabewerkt tot overschrijdingsgrafieken. Deze overschrijdingsgrafieken worden intern weggeschreven naar de database, tabellen HERHALINGSTIJDEN en/of HERHALINGSTIJDEN2D.</p>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/btn_publiceren.png" class="img-fluid figure-img"></p>
+<figcaption>Button ‘Publiceren’.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:70%;">
+<p>Hiermee kunt u de rekenresultaten publiceren in de interactieve webvbiewer! De resultaatlocaties worden op een kaart geplot en door erop te klikken verschijnt de bijbehorende overschrijdingsgrafiek. In het geval van 2D-resultaten wordt ook de waterdiepte bij verschillende herhalingstijden op de kaart getoond.</p>
+</div>
+</div>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/btn_exporteren.png" class="img-fluid figure-img"></p>
+<figcaption>Button ‘Exporteren’.</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:70%;">
+<p>De laatste knop is voor het exporteren van de berekende overschrijdingsgrafieken naar Excel.</p>
 </div>
 </div>
 

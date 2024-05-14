@@ -8,14 +8,24 @@ Het tabblad 'Simulaties' is waar uiteindelijk alle stochasten worden samengestel
 
 ![Het tabblad Simulaties](img/frm_simulaties.png "Simulaties")
 
-Hieronder bespreken we één voor één de verschillende knoppen die zich op dit tabblad bevinden.
+Hieronder bespreken we één voor één de verschillende knoppen die zich op dit tabblad bevinden. De gedachte achter deze buttons is dat ze van boven naar beneden moeten worden uitgevoerd:
+
+* Simulaties samenstellen door alle stochasten en hun klassen te combineren.
+* Eventueel oude resultaten wissen
+* De simulaties opbouwen, dwz: een kopie van de schematisatie maken en daar de benodigde bestanden in kopiëren
+* Het daadwerkelijk simuleren
+* Resultaatbestanden uit de tijdelijke werkmappen kopiëren naar de projectmap
+* Resultaten uitlezen uit de bestanden en naar de database schrijven
+* Resultaten statistisch nabewerken tot overschrijdingsgrafieken
+* Overschrijdingsgrafieken publiceren in de interactieve webviewer
+* Overschrijdingsgrafieken exporteren naar Excel
 
 ::: {.columns}
 ::: {.column width="30%"}
 ![Button 'Samenstellen'.](img/btn_samenstellen.png)
 :::
 ::: {.column width="70%"}
-De eerste actie die moet worden uitgevoerd nadat alle stochasten zijn geconfigureerd is het samenstellen van de simulaties. Alle combinaties van stochastenklassen resulteren in een aparte simulatie. Ter illustratie: een configuratie met 10 klassen met neerlagvolumes, 7 klassen met neerslagpatronen en 3 klassen met hydrologische voorgeschiedenis zal resulteren in 10 x 7 x 3 = 210 simulaties.
+De eerste actie die moet worden uitgevoerd. Nadat alle stochasten zijn geconfigureerd óf er een aanpassing is doorgevoerd in de classificatie van één van de stochasten, moeten de simulaties opnieuw worden samengesteld. Alle combinaties van stochastenklassen resulteren in een aparte simulatie. Ter illustratie: een configuratie met 10 klassen met neerlagvolumes, 7 klassen met neerslagpatronen en 3 klassen met hydrologische voorgeschiedenis zal resulteren in 10 x 7 x 3 = 210 simulaties.
 
 Elk van deze simulaties wordt na het samenstellen getoond in het datagrid op het tabblad Simulaties.
 :::
@@ -76,7 +86,35 @@ Als de simulaties succesvol zijn doorgerekend met BAT_RUNR, is het tijd om de re
 ![Button 'Uitlezen'.](img/btn_uitlezen.png)
 :::
 ::: {.column width="70%"}
-Deze knop leest de modeluitkomsten uit de gekopieerde resultaatbestanden en schrijft ze naar de database. Hierna is het mogelijk om de resultaten na te bewerken tot overschrijdingsgrafieken.
+Deze knop leest de modeluitkomsten uit de gekopieerde resultaatbestanden en schrijft ze naar de database, tabellen RESULTATEN en/of RESULTATEN2D. Hierna is het mogelijk om de resultaten na te bewerken tot overschrijdingsgrafieken. Zie daarvoor de button 'Nabewerken'.
 :::
 :::
 
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Nabewerken'.](img/btn_nabewerken.png)
+:::
+::: {.column width="70%"}
+Onder deze knop worden de rekenresultaten zoals ingelezen in de database statistisch nabewerkt tot overschrijdingsgrafieken. Deze overschrijdingsgrafieken worden intern weggeschreven naar de database, tabellen HERHALINGSTIJDEN en/of HERHALINGSTIJDEN2D.
+:::
+:::
+
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Publiceren'.](img/btn_publiceren.png)
+:::
+::: {.column width="70%"}
+Hiermee kunt u de rekenresultaten publiceren in de interactieve webvbiewer! De resultaatlocaties worden op een kaart geplot en door erop te klikken verschijnt de bijbehorende overschrijdingsgrafiek. In het geval van 2D-resultaten wordt ook de waterdiepte bij verschillende herhalingstijden op de kaart getoond.
+:::
+:::
+
+::: {.columns}
+::: {.column width="30%"}
+![Button 'Exporteren'.](img/btn_exporteren.png)
+:::
+::: {.column width="70%"}
+De laatste knop is voor het exporteren van de berekende overschrijdingsgrafieken naar Excel.
+:::
+:::
