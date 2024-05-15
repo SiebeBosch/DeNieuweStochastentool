@@ -9,7 +9,7 @@ Public Class clsHBVSeqParFile
     Dim eMonth As Integer
     Dim eDay As Integer
     Dim eHour As Integer
-    Dim instate As Integer = 7
+    Dim instate As Integer = 1
     Dim outstate As Integer = 1
     Dim numseq As Integer = 1
     Dim iType As String = "'sim'"

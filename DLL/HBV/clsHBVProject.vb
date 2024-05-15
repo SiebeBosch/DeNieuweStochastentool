@@ -99,6 +99,33 @@ Public Class clsHBVProject
             'let's copy the entire project, so all files and subdirectories and their contents to our new directory
             My.Computer.FileSystem.CopyDirectory(ProjectDir, SimulationDir, True)
 
+            'read the comptmp.key file, adjust the dates in it and write the resulting file
+            Dim comptKeyRecord As String
+            Dim comptReader As New StreamReader(ProjectDir & "\comptmp.key")
+            Using comptWriter As New StreamWriter(SimulationDir & "\comptmp.key")
+                While Not comptReader.EndOfStream
+                    comptKeyRecord = comptReader.ReadLine
+                    If comptKeyRecord.Contains("'byear'") Then
+                        comptKeyRecord = " 'byear'        " & StartDate.Year
+                    ElseIf comptKeyRecord.Contains("'bmonth'") Then
+                        comptKeyRecord = " 'bmonth'        " & StartDate.Month
+                    ElseIf comptKeyRecord.Contains("'bday'") Then
+                        comptKeyRecord = " 'bday'        " & StartDate.Day
+                    ElseIf comptKeyRecord.Contains("'bhour'") Then
+                        comptKeyRecord = " 'bhour'        " & StartDate.Hour
+                    ElseIf comptKeyRecord.Contains("'eyear'") Then
+                        comptKeyRecord = " 'eyear'        " & EndDate.Year
+                    ElseIf comptKeyRecord.Contains("'emonth'") Then
+                        comptKeyRecord = " 'emonth'        " & EndDate.Month
+                    ElseIf comptKeyRecord.Contains("'eday'") Then
+                        comptKeyRecord = " 'eday'        " & EndDate.Day
+                    ElseIf comptKeyRecord.Contains("'ehour'") Then
+                        comptKeyRecord = " 'ehour'        " & EndDate.Hour
+                    End If
+                    comptWriter.WriteLine(comptKeyRecord)
+                End While
+            End Using
+
             'now, for each subbasin we must write an adjusted comp.key file, containing the start and end date of the simulation
             For Each basin As clsHBVSubBasin In BasinFile.Basins.Values
                 Dim CompKeyFile As String = Path.Combine(SimulationDir, basin.BasinDir, "comp.key")

@@ -3,7 +3,13 @@
   "WorkspaceRootPath": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\hbv\\clshbvproject.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenrun.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\hbv\\clshbvseqparfile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clspercentileclassification.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
@@ -32,9 +38,6 @@
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\general\\generalfunctions.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\hbv\\clshbvseqparfile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\hbv\\clshbvtemphourlyfile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     }
   ],
@@ -45,7 +48,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -61,31 +64,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "clspercentileClassification.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassification.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clspercentileClassification.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassification.vb",
-              "RelativeToolTip": "..\\DLL\\Stochasten\\clspercentileClassification.vb",
-              "ViewState": "AQIAAA0AAAAAAAAAAIA9wBsAAAAMAAAA",
+              "DocumentIndex": 0,
+              "Title": "clsHBVProject.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVProject.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\HBV\\clsHBVProject.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVProject.vb",
+              "RelativeToolTip": "..\\DLL\\HBV\\clsHBVProject.vb",
+              "ViewState": "AQIAAHcAAAAAAAAAAAApwIEAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-05-14T14:11:32.745Z",
+              "WhenOpened": "2024-05-15T13:13:19.108Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "BAT_RUNR",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\BAT_RUNR.vbproj",
               "RelativeDocumentMoniker": "..\\BAT_RUNR\\BAT_RUNR.vbproj",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\BAT_RUNR.vbproj",
               "RelativeToolTip": "..\\BAT_RUNR\\BAT_RUNR.vbproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003380|",
-              "WhenOpened": "2024-05-13T19:34:45.967Z"
+              "WhenOpened": "2024-05-13T19:34:45.967Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "StochastenTool",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\StochastenTool.vbproj",
               "RelativeDocumentMoniker": "StochastenTool.vbproj",
@@ -96,7 +100,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "clsStochastenAnalyse.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
@@ -109,20 +113,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "clsStochastenRun.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
-              "ViewState": "AQIAAGcCAAAAAAAAAIAwwHgCAAAAAAAA",
+              "ViewState": "AQIAAG4CAAAAAAAAAAAhwH0CAAAuAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-04-29T06:09:48.116Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "frmStochastenTool.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeDocumentMoniker": "frmStochastenTool.vb",
@@ -135,7 +139,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 2,
+              "Title": "clsHBVSeqParFile.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVSeqParFile.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\HBV\\clsHBVSeqParFile.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVSeqParFile.vb",
+              "RelativeToolTip": "..\\DLL\\HBV\\clsHBVSeqParFile.vb",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAEAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-04-29T09:25:24.329Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "clspercentileClassification.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassification.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clspercentileClassification.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clspercentileClassification.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\clspercentileClassification.vb",
+              "ViewState": "AQIAAA4AAAAAAAAAAAApwBsAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2024-05-14T14:11:32.745Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "frmStochastenTool.vb [Design]",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeDocumentMoniker": "frmStochastenTool.vb",
@@ -147,7 +177,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "clsStochastenRuns.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRuns.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRuns.vb",
@@ -155,23 +185,12 @@
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRuns.vb",
               "ViewState": "AQIAAG0CAAAAAAAAAAAtwHoCAAArAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-05-13T17:34:52.645Z"
+              "WhenOpened": "2024-05-13T17:34:52.645Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "clsHBVSeqParFile.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVSeqParFile.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\HBV\\clsHBVSeqParFile.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVSeqParFile.vb",
-              "RelativeToolTip": "..\\DLL\\HBV\\clsHBVSeqParFile.vb",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABYAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-04-29T09:25:24.329Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "GeneralFunctions.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\General\\GeneralFunctions.vb",
               "RelativeDocumentMoniker": "..\\DLL\\General\\GeneralFunctions.vb",
@@ -179,11 +198,12 @@
               "RelativeToolTip": "..\\DLL\\General\\GeneralFunctions.vb",
               "ViewState": "AQIAAF8FAAAAAAAAAAAEwHQFAABGAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-04-29T06:00:59.107Z"
+              "WhenOpened": "2024-04-29T06:00:59.107Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "clsHBVTempHourlyFile.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\HBV\\clsHBVTempHourlyFile.vb",
               "RelativeDocumentMoniker": "..\\DLL\\HBV\\clsHBVTempHourlyFile.vb",
@@ -191,7 +211,8 @@
               "RelativeToolTip": "..\\DLL\\HBV\\clsHBVTempHourlyFile.vb",
               "ViewState": "AQIAAAAAAAAAAAAAAAAqwAEAAAAhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-04-29T05:52:34.714Z"
+              "WhenOpened": "2024-04-29T05:52:34.714Z",
+              "EditorCaption": ""
             }
           ]
         }
