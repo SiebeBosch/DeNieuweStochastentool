@@ -289,7 +289,8 @@ Public Class clsStochastenRun
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
 
                 'for each run we need to create a unique subdirectory to myModel.TempWorkDir
-                Dim runDir As String = myModel.TempWorkDir & "\DAT\" & ID
+                'in case of a HBV model we need to include a DAT subdirectory
+                Dim runDir As String = If(myModel.ModelType = enmSimulationModel.HBV, myModel.TempWorkDir & "\DAT\" & ID, myModel.TempWorkDir & "\" & ID)
                 If Not System.IO.Directory.Exists(runDir) Then System.IO.Directory.CreateDirectory(runDir)
 
                 '--------------------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmClassifyGroundwaterHBV
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmClassifyGroundwaterHBV
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmClassifyGroundwaterHBV))
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
@@ -33,6 +33,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.txtExcelFile = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Instellingen = New System.Windows.Forms.GroupBox()
+        Me.cmbHBVPars = New System.Windows.Forms.ComboBox()
         Me.btnGrootheden = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.btnGroeiseizoenHelp = New System.Windows.Forms.Button()
@@ -56,7 +57,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.btnDeleteGroundwaterClass = New System.Windows.Forms.Button()
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
-        Me.cmbHBVPars = New System.Windows.Forms.ComboBox()
+        Me.btnPercentilesHelp = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -172,6 +173,15 @@ Partial Class frmClassifyGroundwaterHBV
         Me.Instellingen.TabIndex = 21
         Me.Instellingen.TabStop = False
         Me.Instellingen.Text = "Classificeren voor:"
+        '
+        'cmbHBVPars
+        '
+        Me.cmbHBVPars.FormattingEnabled = True
+        Me.cmbHBVPars.Items.AddRange(New Object() {"lz", "uz", "sm", "lz + sm"})
+        Me.cmbHBVPars.Location = New System.Drawing.Point(335, 90)
+        Me.cmbHBVPars.Name = "cmbHBVPars"
+        Me.cmbHBVPars.Size = New System.Drawing.Size(117, 24)
+        Me.cmbHBVPars.TabIndex = 33
         '
         'btnGrootheden
         '
@@ -317,6 +327,7 @@ Partial Class frmClassifyGroundwaterHBV
         '
         'GroupBox2
         '
+        Me.GroupBox2.Controls.Add(Me.btnPercentilesHelp)
         Me.GroupBox2.Controls.Add(Me.grGrondwaterKlassen)
         Me.GroupBox2.Controls.Add(Me.btnAddGroundwaterClass)
         Me.GroupBox2.Controls.Add(Me.btnDeleteGroundwaterClass)
@@ -388,14 +399,15 @@ Partial Class frmClassifyGroundwaterHBV
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
         '
-        'cmbHBVPars
+        'btnPercentilesHelp
         '
-        Me.cmbHBVPars.FormattingEnabled = True
-        Me.cmbHBVPars.Items.AddRange(New Object() {"lz", "uz", "sm", "lz + sm"})
-        Me.cmbHBVPars.Location = New System.Drawing.Point(335, 90)
-        Me.cmbHBVPars.Name = "cmbHBVPars"
-        Me.cmbHBVPars.Size = New System.Drawing.Size(117, 24)
-        Me.cmbHBVPars.TabIndex = 33
+        Me.btnPercentilesHelp.BackColor = System.Drawing.Color.Gold
+        Me.btnPercentilesHelp.Location = New System.Drawing.Point(497, 104)
+        Me.btnPercentilesHelp.Name = "btnPercentilesHelp"
+        Me.btnPercentilesHelp.Size = New System.Drawing.Size(33, 31)
+        Me.btnPercentilesHelp.TabIndex = 34
+        Me.btnPercentilesHelp.Text = "?"
+        Me.btnPercentilesHelp.UseVisualStyleBackColor = False
         '
         'frmClassifyGroundwaterHBV
         '
@@ -456,4 +468,5 @@ Partial Class frmClassifyGroundwaterHBV
     Friend WithEvents Label5 As Windows.Forms.Label
     Friend WithEvents btnGrootheden As Windows.Forms.Button
     Friend WithEvents cmbHBVPars As Windows.Forms.ComboBox
+    Friend WithEvents btnPercentilesHelp As Windows.Forms.Button
 End Class

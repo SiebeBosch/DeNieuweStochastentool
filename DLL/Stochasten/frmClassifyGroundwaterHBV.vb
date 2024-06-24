@@ -29,6 +29,7 @@ Public Class frmClassifyGroundwaterHBV
 
 
         cmbDuration.Items.Clear()
+        cmbDuration.Items.Add(12)
         cmbDuration.Items.Add(24)
         cmbDuration.Items.Add(48)
         cmbDuration.Items.Add(96)
@@ -80,6 +81,15 @@ Public Class frmClassifyGroundwaterHBV
         Dim Dates As New List(Of Date)
 
         Try
+
+            'v2.4.3: error handling for wrong percentile classes
+            For i = 0 To grGrondwaterKlassen.Rows.Count - 1
+                If grGrondwaterKlassen.Rows(i).Cells(1).Value > 1 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+                If grGrondwaterKlassen.Rows(i).Cells(1).Value < 0 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+                If grGrondwaterKlassen.Rows(i).Cells(2).Value > 1 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+                If grGrondwaterKlassen.Rows(i).Cells(2).Value < 0 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+            Next
+
             'store the settings
             My.Settings.GroundwaterClasses = New System.Collections.Specialized.StringCollection
             For i = 0 To grGrondwaterKlassen.Rows.Count - 1
@@ -232,5 +242,9 @@ Public Class frmClassifyGroundwaterHBV
 
     Private Sub btnGrootheden_Click(sender As Object, e As EventArgs) Handles btnGrootheden.Click
         MsgBox("Keuze welke grootheid of grootheden te classificeren: lz (lower zone) en/of uz (upper zone) + sm (soil moisture). In het geval van beide wordt de afhankelijkheid tussen upper zone + soil moisture en lower zone expliciet vastgelegd maar resulteert dit wel in meer klassen dan het opgegeven aantal.")
+    End Sub
+
+    Private Sub btnPercentilesHelp_Click(sender As Object, e As EventArgs) Handles btnPercentilesHelp.Click
+        MsgBox("Definieer hier klassen voor de initiële grondwaterstand. Hanteer getallen tussen 0 en 1 voor de percentielwaarden. Voorbeeld: klasse 'nat' van percentiel 0.75 tot 1.00.")
     End Sub
 End Class

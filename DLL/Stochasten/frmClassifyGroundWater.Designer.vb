@@ -53,6 +53,7 @@ Partial Class frmClassifyGroundWater
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkSeepage = New System.Windows.Forms.CheckBox()
+        Me.btnHelpSobekPercentiles = New System.Windows.Forms.Button()
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -293,6 +294,7 @@ Partial Class frmClassifyGroundWater
         '
         'GroupBox1
         '
+        Me.GroupBox1.Controls.Add(Me.btnHelpSobekPercentiles)
         Me.GroupBox1.Controls.Add(Me.grGrondwaterKlassen)
         Me.GroupBox1.Controls.Add(Me.btnAddGroundwaterClass)
         Me.GroupBox1.Controls.Add(Me.btnDeleteGroundwaterClass)
@@ -359,6 +361,16 @@ Partial Class frmClassifyGroundWater
         Me.chkSeepage.Text = "Classificeer kwel eveneens"
         Me.chkSeepage.UseVisualStyleBackColor = True
         '
+        'btnHelpSobekPercentiles
+        '
+        Me.btnHelpSobekPercentiles.BackColor = System.Drawing.Color.Yellow
+        Me.btnHelpSobekPercentiles.Location = New System.Drawing.Point(497, 102)
+        Me.btnHelpSobekPercentiles.Name = "btnHelpSobekPercentiles"
+        Me.btnHelpSobekPercentiles.Size = New System.Drawing.Size(33, 31)
+        Me.btnHelpSobekPercentiles.TabIndex = 27
+        Me.btnHelpSobekPercentiles.Text = "?"
+        Me.btnHelpSobekPercentiles.UseVisualStyleBackColor = False
+        '
         'frmClassifyGroundWater
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -417,4 +429,5 @@ Partial Class frmClassifyGroundWater
     Friend WithEvents btnGroeiseizoenHelp As Windows.Forms.Button
     Friend WithEvents GroupBox2 As Windows.Forms.GroupBox
     Friend WithEvents chkSeepage As Windows.Forms.CheckBox
+    Friend WithEvents btnHelpSobekPercentiles As Windows.Forms.Button
 End Class

@@ -117,6 +117,7 @@ Public Class clsTijdreeksStatistiek
             Dim myReader As New clsHisFileBinaryReader(HisFilePath, Me.Setup)
             If Not myReader.ReadAddLocationResultsToArray(LocID, PartOfParameterName, Dates, Values, Multiplier) Then Throw New Exception("Error reading " & PartOfParameterName & " results for " & LocID & "from hisfile " & HisFilePath)
             Dim newSeries As New clsModelTimeSeries(Me.Setup)
+            newSeries.Values.Add(GeneralFunctions.enmModelParameter.precipitation, New List(Of Single))
             newSeries.Name = PartOfParameterName
             n = Dates.Count - 1
             For i = 0 To Dates.Count - 1

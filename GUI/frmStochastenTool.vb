@@ -502,7 +502,7 @@ Public Class frmStochasten
     End Sub
 
     Private Sub FrmStochasten_FormClosed(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosedEventArgs) Handles Me.FormClosed
-        If Not Me.Setup.SqliteCon Is Nothing Then
+        If Me.Setup.SqliteCon IsNot Nothing Then
             If Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Close()
         End If
     End Sub
@@ -513,6 +513,7 @@ Public Class frmStochasten
             'set the license
             ToonPolygonenToolStripMenuItem.Checked = My.Settings.ShowPolygons
 
+            cmbDuration.Items.Add("12")
             cmbDuration.Items.Add("24")
             cmbDuration.Items.Add("48")
             cmbDuration.Items.Add("72")
@@ -4359,11 +4360,10 @@ Public Class frmStochasten
 
                 Dim myList As New List(Of String)
                 Dim myVals As New List(Of String)
-                Dim myBools As New List(Of Boolean)
                 myList.Add("Flow1D")
                 myList.Add("Flow2D")
-                myBools.Add(chk1D.Checked)
-                myBools.Add(chk2D.Checked)
+                myVals.Add(chk1D.Checked)
+                myVals.Add(chk2D.Checked)
                 Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "resultatenmodules", 4, myList, myVals)
 
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)

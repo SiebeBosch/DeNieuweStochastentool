@@ -46,6 +46,14 @@ Public Class frmClassifyGroundWater
         Dim Dates As New List(Of Date)
 
         Try
+            'v2.4.3: error handling for wrong percentile classes
+            For i = 0 To grGrondwaterKlassen.Rows.Count - 1
+                If grGrondwaterKlassen.Rows(i).Cells(1).Value > 1 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+                If grGrondwaterKlassen.Rows(i).Cells(1).Value < 0 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+                If grGrondwaterKlassen.Rows(i).Cells(2).Value > 1 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+                If grGrondwaterKlassen.Rows(i).Cells(2).Value < 0 Then Throw New Exception("Percentielklassen moeten tussen 0 en 1 liggen.")
+            Next
+
             'store the settings
             My.Settings.GroundwaterClasses = New System.Collections.Specialized.StringCollection
             For i = 0 To grGrondwaterKlassen.Rows.Count - 1
