@@ -164,6 +164,21 @@ Public Class clsStochastenRun
         Console.ReadKey()
     End Function
 
+    Public Function DeleteRun() As Boolean
+        Try
+            For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
+                Dim runDir As String = getRunDir(myModel) ' myModel.TempWorkDir & "\" & ID
+                'delete the run directory and its contents
+                If System.IO.Directory.Exists(runDir) Then
+                    System.IO.Directory.Delete(runDir, True)
+                End If
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError($"Unable to delete simulation: {ID}:" & ex.Message)
+            Return False
+        End Try
+    End Function
     Public Function CopyResultsFiles(Optional ByVal runIdx As Long = 0, Optional ByVal nRuns As Long = 1) As Boolean
         '------------------------------------------------------------------------
         'author: Siebe Bosch
@@ -172,7 +187,7 @@ Public Class clsStochastenRun
         '------------------------------------------------------------------------
         Dim fromFile As String = String.Empty, fromFile2 As String = String.Empty
         Dim toFile As String, toFile2 As String
-
+        Dim nErrors As Integer = 0
         Try
 
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
@@ -214,7 +229,8 @@ Public Class clsStochastenRun
                         If File.Exists(fromFile) Then
                             Call FileCopy(fromFile, toFile)
                         Else
-                            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                            Me.Setup.Log.AddError("Fout: uitvoerbestand niet gevonden: " & fromFile & ". Check of de uitvoerbestanden van het model juist gedefinieerd zijn.")
+                            nErrors += 1
                         End If
                     Next
 
@@ -241,13 +257,15 @@ Public Class clsStochastenRun
                             If File.Exists(fromFile) Then
                                 Call FileCopy(fromFile, toFile)
                             Else
-                                Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                                Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile & ". Check of de uitvoerbestanden van het model juist gedefinieerd zijn.")
+                                nErrors += 1
                             End If
 
                             If File.Exists(fromFile2) Then
                                 Call FileCopy(fromFile2, toFile2)
                             Else
                                 Me.Setup.Log.AddWarning("Uitvoerbestand bestaat niet: " & fromFile2 & ". resultaten voor ID's langer dan 20 karakters kunnen daarom niet correct worden uitgelezen.")
+                                nErrors += 1
                             End If
 
                         Next
@@ -263,13 +281,15 @@ Public Class clsStochastenRun
                         If File.Exists(fromFile) Then
                             Call FileCopy(fromFile, toFile)
                         Else
-                            Me.Setup.Log.AddError("Fout: uitvoerbestand bestaat niet: " & fromFile)
+                            Me.Setup.Log.AddError("Fout: uitvoerbestand niet gevonden: " & fromFile & ". Check of de uitvoerbestanden van het model juist gedefinieerd zijn.")
+                            nErrors += 1
                         End If
 
                     Next
                 End If
             Next
-            Return True
+
+            If nErrors > 0 Then Return False Else Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error copying results files: " & ex.Message)
             Return False

@@ -761,6 +761,8 @@ Public Class frmStochasten
                         End If
                     ElseIf n_node.Name.Trim.ToLower = "resultatengecrashtesommentoestaan" Then
                         chkUseCrashedResults.Checked = Me.Setup.GeneralFunctions.BooleanFromText(n_node.InnerText)
+                    ElseIf n_node.Name.Trim.ToLower = "simulatieverwijderennakopierenresultaten" Then
+                        chkRemoveSimulationAfterCopyingResultsFiles.Checked = Me.Setup.GeneralFunctions.BooleanFromText(n_node.InnerText)
                     ElseIf n_node.Name.Trim.ToLower = "leesresultatenvanafpercentage" Then
                         txtResultsStartPercentage.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "volumesalsfrequenties" Then
@@ -4382,6 +4384,7 @@ Public Class frmStochasten
                 myVals.Add(cmbZomerpeil.Text)
                 Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "peilgebieden", 4, myList, myVals)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatengecrashtesommentoestaan", chkUseCrashedResults.Checked, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "simulatieverwijderennakopierenresultaten", chkRemoveSimulationAfterCopyingResultsFiles.Checked, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "leesresultatenvanafpercentage", txtResultsStartPercentage.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "volumesalsfrequenties", "TRUE", 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "bestaanderesultatenvervangen", "FALSE", 4)
@@ -4884,7 +4887,7 @@ Public Class frmStochasten
 
             'copy the results to the results directory
             If grRuns.SelectedRows.Count > 0 Then
-                If Not Me.Setup.StochastenAnalyse.Runs.CopyResultsFromSelected(grRuns, btnPostprocessing) Then
+                If Not Me.Setup.StochastenAnalyse.Runs.CopyResultsFromSelected(grRuns, btnPostprocessing, chkRemoveSimulationAfterCopyingResultsFiles.Checked) Then
                     MsgBox("Fouten bij het uitlezen van de geselecteerde runs. Controleer de logfile voor meldingen.")
                     Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
                 End If

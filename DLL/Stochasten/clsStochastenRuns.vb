@@ -548,7 +548,7 @@ Public Class clsStochastenRuns
         End Try
     End Function
 
-    Public Function CopyResultsFromSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
+    Public Function CopyResultsFromSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button, RemoveSimulationAfterCopyingResults As Boolean) As Boolean
 
         '------------------------------------------------------------------------------------------------------------------------------
         'this routine copies the requested results from the selected runs to the output directory
@@ -575,6 +575,8 @@ Public Class clsStochastenRuns
 
                     'copy the results files
                     If Not myRun.CopyResultsFiles(i, n) Then Me.Setup.Log.AddError("Error copying model results for stochast combination " & ID)
+
+                    If RemoveSimulationAfterCopyingResults Then myRun.deleteRun()
 
                     'set "DONE"to true if all output files for this run are present
                     Done = True
