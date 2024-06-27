@@ -74,7 +74,6 @@ Partial Class frmStochasten
         Me.AlleResultatenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BetafunctiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.LeesFOUFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LeesMATFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tabStochastentool = New System.Windows.Forms.TabControl()
         Me.tabSettings = New System.Windows.Forms.TabPage()
@@ -86,6 +85,7 @@ Partial Class frmStochasten
         Me.grMeteoStations = New System.Windows.Forms.DataGridView()
         Me.btnAddMeteoStation = New System.Windows.Forms.Button()
         Me.grNabewerking = New System.Windows.Forms.GroupBox()
+        Me.chkRemoveSimulationAfterCopyingResultsFiles = New System.Windows.Forms.CheckBox()
         Me.chkUseCrashedResults = New System.Windows.Forms.CheckBox()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.txtResultsStartPercentage = New System.Windows.Forms.TextBox()
@@ -279,7 +279,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.chkRemoveSimulationAfterCopyingResultsFiles = New System.Windows.Forms.CheckBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -372,19 +371,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -668,21 +667,15 @@ Partial Class frmStochasten
         '
         'BetafunctiesToolStripMenuItem
         '
-        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesFOUFileToolStripMenuItem, Me.LeesMATFileToolStripMenuItem})
+        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesMATFileToolStripMenuItem})
         Me.BetafunctiesToolStripMenuItem.Name = "BetafunctiesToolStripMenuItem"
-        Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(104, 24)
-        Me.BetafunctiesToolStripMenuItem.Text = "Betafuncties"
-        '
-        'LeesFOUFileToolStripMenuItem
-        '
-        Me.LeesFOUFileToolStripMenuItem.Name = "LeesFOUFileToolStripMenuItem"
-        Me.LeesFOUFileToolStripMenuItem.Size = New System.Drawing.Size(183, 26)
-        Me.LeesFOUFileToolStripMenuItem.Text = "Lees FOU file"
+        Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(81, 24)
+        Me.BetafunctiesToolStripMenuItem.Text = "Sandbox"
         '
         'LeesMATFileToolStripMenuItem
         '
         Me.LeesMATFileToolStripMenuItem.Name = "LeesMATFileToolStripMenuItem"
-        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(183, 26)
+        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.LeesMATFileToolStripMenuItem.Text = "Lees .MAT file"
         '
         'tabStochastentool
@@ -835,6 +828,17 @@ Partial Class frmStochasten
         Me.grNabewerking.TabIndex = 39
         Me.grNabewerking.TabStop = False
         Me.grNabewerking.Text = "Nabewerking"
+        '
+        'chkRemoveSimulationAfterCopyingResultsFiles
+        '
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.AutoSize = True
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.Location = New System.Drawing.Point(12, 129)
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.Name = "chkRemoveSimulationAfterCopyingResultsFiles"
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.Size = New System.Drawing.Size(348, 20)
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.TabIndex = 38
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.Text = "Simulatie verwijderen na kopiëren resultaatbestanden"
+        Me.chkRemoveSimulationAfterCopyingResultsFiles.UseVisualStyleBackColor = True
         '
         'chkUseCrashedResults
         '
@@ -2901,17 +2905,6 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1674, 28)
         Me.prProgress.TabIndex = 24
         '
-        'chkRemoveSimulationAfterCopyingResultsFiles
-        '
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.AutoSize = True
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.Location = New System.Drawing.Point(12, 129)
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.Margin = New System.Windows.Forms.Padding(4)
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.Name = "chkRemoveSimulationAfterCopyingResultsFiles"
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.Size = New System.Drawing.Size(348, 20)
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.TabIndex = 38
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.Text = "Simulatie verwijderen na kopiëren resultaatbestanden"
-        Me.chkRemoveSimulationAfterCopyingResultsFiles.UseVisualStyleBackColor = True
-        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -3253,7 +3246,6 @@ Partial Class frmStochasten
     Friend WithEvents SOBEKToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DHydroToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BetafunctiesToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents LeesFOUFileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents btnDeleteModel As Button
     Friend WithEvents btnAddModel As Button
     Friend WithEvents btnOutputDir As Button

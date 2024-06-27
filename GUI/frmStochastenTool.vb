@@ -4615,18 +4615,6 @@ Public Class frmStochasten
         Dim myForm As New STOCHLIB.frmClassifyGroundwaterHBV(Me.Setup)
         myForm.Show()
     End Sub
-    Private Sub LeesFOUFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LeesFOUFileToolStripMenuItem.Click
-        Dim path As String = "c:\temp\BOM_2022_v200_2DTest_v01_1D2D_ABC_rr_winter_VB_fou.nc"
-        If Not System.IO.File.Exists(path) Then
-            MsgBox("File does not exist: " & path)
-        Else
-            Dim FouFile As New clsFouNCFile(path, Me.Setup)
-            If System.IO.File.Exists(path) Then
-                FouFile.Read()
-            End If
-        End If
-
-    End Sub
 
     Private Sub btnAddModel_Click(sender As Object, e As EventArgs) Handles btnAddModel.Click
         Dim myForm As New frmAddModel(Me.Setup)
