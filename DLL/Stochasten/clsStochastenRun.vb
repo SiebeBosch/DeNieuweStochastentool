@@ -196,6 +196,7 @@ Public Class clsStochastenRun
                 Dim runDir As String = getRunDir(myModel) ' myModel.TempWorkDir & "\" & ID
                 If Not System.IO.Directory.Exists(runDir) Then
                     Me.Setup.Log.AddError("Unable to copy simulation results to the results directory. The directory " & runDir & " which should contain the results does not exist.")
+                    nErrors += 1
                     Continue For
                 End If
 

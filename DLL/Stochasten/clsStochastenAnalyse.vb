@@ -2111,22 +2111,58 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Private Sub InsertBatch(cmd As SQLite.SQLiteCommand, data As Double(), parameter As GeneralFunctions.enm2DParameter, myRun As clsStochastenRun)
-        Dim sb As New StringBuilder()
-        For j = 0 To data.Length - 1
-            sb.AppendLine($"(@KlimaatScenario,@Duration,{j},@RunID,@Parameter,{data(j)},0,0,@P),")
-        Next
-        Dim batchInsert = $"INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES {sb.ToString().TrimEnd(",")}"
+    'Private Sub InsertBatch(cmd As SQLite.SQLiteCommand, data As Double(), parameter As GeneralFunctions.enm2DParameter, myRun As clsStochastenRun)
+    '    Dim sb As New StringBuilder()
+    '    For j = 0 To data.Length - 1
+    '        sb.AppendLine($"(@KlimaatScenario,@Duration,{j},@RunID,@Parameter,{data(j)},0,0,@P),")
+    '    Next
+    '    Dim batchInsert = $"INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES {sb.ToString().TrimEnd(",")}"
 
-        cmd.CommandText = batchInsert
+    '    cmd.CommandText = batchInsert
+    '    cmd.Parameters.AddWithValue("@KlimaatScenario", Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper)
+    '    cmd.Parameters.AddWithValue("@Duration", Setup.StochastenAnalyse.Duration)
+    '    cmd.Parameters.AddWithValue("@RunID", myRun.ID)
+    '    cmd.Parameters.AddWithValue("@Parameter", parameter.ToString)
+    '    cmd.Parameters.AddWithValue("@P", myRun.P)
+
+    '    cmd.ExecuteNonQuery()
+    'End Sub
+
+    Private Sub InsertBatch(cmd As SQLite.SQLiteCommand, data As Double(), parameter As GeneralFunctions.enm2DParameter, myRun As clsStochastenRun)
+        Const BatchSize As Integer = 100 ' Adjust this value as needed
+
         cmd.Parameters.AddWithValue("@KlimaatScenario", Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper)
         cmd.Parameters.AddWithValue("@Duration", Setup.StochastenAnalyse.Duration)
         cmd.Parameters.AddWithValue("@RunID", myRun.ID)
         cmd.Parameters.AddWithValue("@Parameter", parameter.ToString)
         cmd.Parameters.AddWithValue("@P", myRun.P)
 
-        cmd.ExecuteNonQuery()
+        Dim sb As New StringBuilder()
+        sb.Append("INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ")
+
+        For i As Integer = 0 To data.Length - 1 Step BatchSize
+            sb.Clear()
+            sb.Append("INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ")
+
+            For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
+                sb.AppendLine($"(@KlimaatScenario, @Duration, {j}, @RunID, @Parameter, @Val{j}, 0, 0, @P),")
+                cmd.Parameters.AddWithValue($"@Val{j}", data(j))
+            Next
+
+            ' Remove the trailing comma and add semicolon
+            sb.Length -= 3
+            sb.Append(";"c)
+
+            cmd.CommandText = sb.ToString()
+            cmd.ExecuteNonQuery()
+
+            ' Clear the batch-specific parameters
+            For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
+                cmd.Parameters.RemoveAt($"@Val{j}")
+            Next
+        Next
     End Sub
+
 
     Public Function ExportResults1D() As Boolean
         Try

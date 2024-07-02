@@ -574,9 +574,12 @@ Public Class clsStochastenRuns
                     myRun = Runs.Item(ID.Trim.ToUpper)
 
                     'copy the results files
-                    If Not myRun.CopyResultsFiles(i, n) Then Me.Setup.Log.AddError("Error copying model results for stochast combination " & ID)
-
-                    If RemoveSimulationAfterCopyingResults Then myRun.deleteRun()
+                    If Not myRun.CopyResultsFiles(i, n) Then
+                        Dim ErrorStr As String = "Error copying model results for stochast combination " & ID & "."
+                        If RemoveSimulationAfterCopyingResults Then ErrorStr &= " Simulation will NOT be removed to allow you to make the necessary adjustments and retry."
+                    Else
+                        If RemoveSimulationAfterCopyingResults Then myRun.DeleteRun()
+                    End If
 
                     'set "DONE"to true if all output files for this run are present
                     Done = True
@@ -692,6 +695,13 @@ Public Class clsStochastenRuns
             cumP += myRun.calcP
         Next
         Return cumP
+    End Function
+
+    Public Function VolumesInUse() As Boolean
+        For Each myRun As clsStochastenRun In Runs.Values
+            If myRun.SeasonClass.VolumeUse Then Return True
+        Next
+        Return False
     End Function
 
 End Class

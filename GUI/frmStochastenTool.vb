@@ -3601,7 +3601,8 @@ Public Class frmStochasten
 
             Setup.GeneralFunctions.UpdateProgressBar("Calculating checksum...", 5, 10, True)
             CheckSum = Setup.StochastenAnalyse.Runs.calcCheckSum()
-            If Setup.StochastenAnalyse.VolumesAsFrequencies Then
+            'if volumes are inuse then the checksum should be divided by the duration of the simulation
+            If Setup.StochastenAnalyse.VolumesAsFrequencies AndAlso Setup.StochastenAnalyse.Runs.VolumesInuse Then
                 CheckSum = CheckSum * Setup.StochastenAnalyse.Duration / (365.25 * 24)
             End If
             CheckSum = Math.Round(CheckSum, 5)
@@ -4889,7 +4890,7 @@ Public Class frmStochasten
             Me.Setup.Log.write(Me.Setup.Settings.RootDir & "\" & logfile, True)
 
         Catch ex As Exception
-
+            Me.Setup.Log.AddError("Error in function btnCopyResults: " & ex.Message)
         End Try
 
     End Sub
