@@ -2750,7 +2750,9 @@ Public Class frmStochasten
             ColSchema = Me.Setup.SqliteCon.GetSchema("COLUMNS")
             TableSchema = Me.Setup.SqliteCon.GetSchema("TABLES")
 
-            Call UpdateSeasonsTable(1)       'adds all required columns to the seasons table
+            Call UpdateClimateScenariosTable(1)
+            Call UpdateDurationsTable(2)
+            Call UpdateSeasonsTable(3)       'adds all required columns to the seasons table
             Call UpdateVolumesTable(5)       'adds all required columns to the volumes table and reorganizes the data inside
             Call UpdatePatternsTable(10)      'adds all required columns to the patterns table and reorganizes the data inside
             Call UpdateNeerslagverloopTable(15) 'adds all required columns to the neerslagverloop table
@@ -2759,6 +2761,9 @@ Public Class frmStochasten
             Call UpdateExtraTables()        'adds all required columns to the 'extra' tables and reorganizes the data inside
             Call UpdateResultsTable(35)       'adds all required columns to the results table
             Call UpdateResults2DTable(40)       'adds all required columns to the results table
+            Call UpdateMaxDepths2DTables(41)
+            Call UpdateMaxLevels2DTables(42)
+
             Call UpdateRunsTable(45)          'adds all reaquired columns to the runs table
             Call UpdateSimulationModelsTable(50)
             Call UpdateOutputLocationsTableStructure(55)
@@ -2898,11 +2903,91 @@ Public Class frmStochasten
         '--------------------------------------------------------------------------------
     End Sub
 
+    Public Sub UpdateMaxDepths2DTables(progress As Integer)
+        '------------------------------------------------------------------------------------
+        ' UPDATE TABELS MAXDEPTH2D: one for each climate scenario and duration a unique table
+        '------------------------------------------------------------------------------------
+
+        Dim kt As New DataTable
+        Dim dt As New DataTable
+
+        Dim i As Integer, j As Integer
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT NAAM FROM KLIMAATSCENARIOS;", kt, True)
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT DUUR FROM DUREN;", dt, True)
+
+        For i = 0 To kt.Rows.Count - 1
+            For j = 0 To dt.Rows.Count - 1
+                Dim TableName As String = kt(i)(0) & "_" & dt(j)(0) & "_MAXDIEPTE2D"
+                If Not Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
+
+                Setup.GeneralFunctions.UpdateProgressBar($"Updating table {TableName}", progress, 100, True)
+                Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+                'Upgrade our MAXDIEPTE2D table
+                Fields = New Dictionary(Of String, clsSQLiteField)
+                Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+                Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+                Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+                Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, TableName, Fields)
+
+                Dim CompositeIndex As New List(Of String) From {"FEATUREIDX", "RUNID"}
+                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, TableName, CompositeIndex)
+            Next
+        Next
+
+        '--------------------------------------------------------------------------------
+
+    End Sub
+
+
+    Public Sub UpdateMaxLevels2DTables(progress As Integer)
+        '------------------------------------------------------------------------------------
+        ' UPDATE TABELS MAXDEPTH2D: one for each climate scenario and duration a unique table
+        '------------------------------------------------------------------------------------
+
+        Dim kt As New DataTable
+        Dim dt As New DataTable
+
+        Dim i As Integer, j As Integer
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT NAAM FROM KLIMAATSCENARIOS;", kt, True)
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT DUUR FROM DUREN;", dt, True)
+
+        For i = 0 To kt.Rows.Count - 1
+            For j = 0 To dt.Rows.Count - 1
+                Dim TableName As String = kt(i)(0) & "_" & dt(j)(0) & "_MAXHOOGTE2D"
+                If Not Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
+
+                Setup.GeneralFunctions.UpdateProgressBar($"Updating table {TableName}", progress, 100, True)
+                Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+                'Upgrade our MAXDIEPTE2D table
+                Fields = New Dictionary(Of String, clsSQLiteField)
+                Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+                Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+                Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+                Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, TableName, Fields)
+
+                Dim CompositeIndex As New List(Of String) From {"FEATUREIDX", "RUNID"}
+                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, TableName, CompositeIndex)
+            Next
+        Next
+
+        '--------------------------------------------------------------------------------
+
+    End Sub
+
 
     Public Sub UpdateResults2DTable(progress As Integer)
         '------------------------------------------------------------------------------------
-        '               UPDATE TABEL RESULTATEN
+        '               UPDATE TABEL RESULTATEN2D
         '------------------------------------------------------------------------------------
+
+        'DROP TABLE RESULTATEN2D. We will now store the results in separate tables for each parameter and statistic
+        If Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "RESULTATEN2D") Then Me.Setup.GeneralFunctions.SQLiteDropTable(Me.Setup.SqliteCon, "RESULTATEN2D")
+        Exit Sub
+
         Setup.GeneralFunctions.UpdateProgressBar("Updating table RESULTATEN2D", progress, 100, True)
         Dim Fields As New Dictionary(Of String, clsSQLiteField)
 
@@ -3178,6 +3263,77 @@ Public Class frmStochasten
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "DUUR", enmSQLiteDataType.SQLITEINT, "VERLOOP_DUURIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "UUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "UUR", enmSQLiteDataType.SQLITEINT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE", enmSQLiteDataType.SQLITEREAL)
+    End Sub
+
+    Public Sub UpdateClimateScenariosTable(progress As Integer)
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL KLIMAATSCENARIOS
+        '------------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table KLIMAATSCENARIOS", progress, 100, True)
+
+        ' Ensure table exists
+        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "KLIMAATSCENARIOS") Then
+            Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "KLIMAATSCENARIOS")
+        End If
+
+        ' Ensure NAAM column exists
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "KLIMAATSCENARIOS", "NAAM") Then
+            Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "KLIMAATSCENARIOS", "NAAM", enmSQLiteDataType.SQLITETEXT, "CLIMIDX")
+        End If
+
+        ' Insert or update the record for STOWA20214_HUIDIG
+        Dim sql As String = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_HUIDIG')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        ' Insert or update the record for STOWA20214_HUIDIG
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2033L')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2050L')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2050M')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2050H')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2100L')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2100M')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2100H')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2150L')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2150M')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2150H')"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+    End Sub
+
+
+    Public Sub UpdateDurationsTable(progress As Integer)
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL DUREN
+        '------------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table DUREN", progress, 100, True)
+
+        ' Ensure table exists
+        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "DUREN") Then
+            Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "DUREN")
+        End If
+
+        ' Ensure NAAM column exists
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "DUREN", "DUUR") Then
+            Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "DUREN", "DUUR", enmSQLiteDataType.SQLITEINT, "DURIDX")
+        End If
+
+        Dim sql As String = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (24)"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (48)"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (96)"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (192)"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
+        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (216)"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
     End Sub
 
     Public Sub UpdateSeasonsTable(progress As Integer)

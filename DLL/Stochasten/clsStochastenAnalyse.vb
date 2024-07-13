@@ -13,6 +13,11 @@ Imports System.Text
 Imports GemBox.Spreadsheet
 Imports DocumentFormat.OpenXml.Spreadsheet
 Imports MapWinGIS
+Imports Apache.Arrow
+Imports Apache.Arrow.Ipc
+Imports Apache.Arrow.Types
+Imports Apache.Arrow.Memory
+
 'Imports Ionic.Zip
 
 Public Class clsStochastenAnalyse
@@ -1149,19 +1154,9 @@ Public Class clsStochastenAnalyse
             Dim myQuery As String = ""
             Dim Loc As Integer
             Dim i As Integer = 0
-            Dim ValuesField As String = ""
+            Dim ValuesField As String = "WAARDE"
 
             Dim prevVal As Double, curVal As Double
-
-            Select Case Filter.Trim.ToUpper
-                Case "MAX", "MAXVAL"
-                    ValuesField = "MAXVAL"
-                Case "MIN", "MINVAL"
-                    ValuesField = "MINVAL"
-                Case Else
-                    Throw New ArgumentException("Timeseries filter on results not supported: " & Filter)
-            End Select
-
 
             Dim dtTemp As New Dictionary(Of Integer, DataTable)
             Dim finalList As New List(Of Integer)
@@ -1175,11 +1170,8 @@ Public Class clsStochastenAnalyse
                 dtTemp.Add(Loc, dt)
             Next
 
-            myQuery = "SELECT " & LocationField & ", RUNID, " & ValuesField & ", P FROM " & ResultsTableName & " WHERE " & LocationField & " In (" & String.Join(",", locationList.Select(Function(l) l)) & $") AND PARAMETER = @Parameter AND KLIMAATSCENARIO = @KlimaatScenario AND DUUR = @Duration ORDER BY " & LocationField & ", " & ValuesField & " ASC;"
+            myQuery = "SELECT " & LocationField & ", RUNID, " & ValuesField & ", P FROM " & ResultsTableName & " WHERE " & LocationField & " In (" & String.Join(",", locationList.Select(Function(l) l)) & $") ORDER BY " & LocationField & ", " & ValuesField & " ASC;"
             Using cmd As New SQLiteCommand(myQuery, Me.Setup.SqliteCon)
-                cmd.Parameters.AddWithValue("@KlimaatScenario", Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper)
-                cmd.Parameters.AddWithValue("@Duration", Setup.StochastenAnalyse.Duration)
-                cmd.Parameters.AddWithValue("@Parameter", Parameter.ToString)
                 Using reader As SQLiteDataReader = cmd.ExecuteReader()
                     Dim pCumDict As New Dictionary(Of Integer, Double)
                     For Each Loc In locationList
@@ -1543,8 +1535,11 @@ Public Class clsStochastenAnalyse
             Dim Loc As Integer
             Dim locdt As New DataTable, locIdx As Integer
 
+            Dim TableName As String
+            TableName = get2DResultsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+
             'now only read results locations
-            query = "SELECT DISTINCT FEATUREIDX FROM RESULTATEN2D;"
+            query = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
 
             'clear existing exceedance tables for this location and climate
@@ -1567,7 +1562,7 @@ Public Class clsStochastenAnalyse
                 Next
 
                 'retrieve all data for the current duration and climate scenario
-                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "MAXVAL", parameter, dtHerh, "RESULTATEN2D", "FEATUREIDX") Then
+                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, TableName, "FEATUREIDX") Then
                     Using transaction = Me.Setup.SqliteCon.BeginTransaction
                         Dim myCmd As New SQLite.SQLiteCommand
                         myCmd.Connection = Me.Setup.SqliteCon
@@ -1693,8 +1688,15 @@ Public Class clsStochastenAnalyse
 
             If results2D Then
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten uitlezen 2D...", 4, 10, True)
+
                 'remove the existing simulationresults from the database for selected climate and duration
-                query = "DELETE FROM RESULTATEN2D WHERE KLIMAATSCENARIO = '" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR = " & Setup.StochastenAnalyse.Duration.ToString.Trim & ";"
+                Dim TableName As String = get2DResultsTableName(GeneralFunctions.enm2DParameter.depth, Setup.StochastenAnalyse.KlimaatScenario.ToString, Setup.StochastenAnalyse.Duration)
+                query = $"DELETE FROM {TableName} WHERE KLIMAATSCENARIO = '" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR = " & Setup.StochastenAnalyse.Duration.ToString.Trim & ";"
+                Setup.GeneralFunctions.SQLiteNoQuery(con, query)
+
+                'remove the existing simulationresults from the database for selected climate and duration
+                TableName = get2DResultsTableName(GeneralFunctions.enm2DParameter.waterlevel, Setup.StochastenAnalyse.KlimaatScenario.ToString, Setup.StochastenAnalyse.Duration)
+                query = $"DELETE FROM {TableName} WHERE KLIMAATSCENARIO = '" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR = " & Setup.StochastenAnalyse.Duration.ToString.Trim & ";"
                 Setup.GeneralFunctions.SQLiteNoQuery(con, query)
 
                 readResults2D()
@@ -1720,6 +1722,21 @@ Public Class clsStochastenAnalyse
 
     End Function
 
+
+    Public Function get2DResultsTableName(parameter As GeneralFunctions.enm2DParameter, ClimateScenario As String, Duration As Integer) As String
+        Try
+            Select Case parameter
+                Case GeneralFunctions.enm2DParameter.depth
+                    Return ClimateScenario & "_" & Duration.ToString & "_MAXDIEPTE2D"
+                Case GeneralFunctions.enm2DParameter.waterlevel
+                    Return ClimateScenario & "_" & Duration.ToString & "_MAXHOOGTE2D"
+                Case Else
+                    Return Nothing
+            End Select
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
 
     Public Function readResults1D() As Boolean
         Try
@@ -1996,6 +2013,7 @@ Public Class clsStochastenAnalyse
         End Using
     End Sub
 
+
     Public Function readResults2D() As Boolean
         Try
             Dim i As Long, n As Long
@@ -2131,21 +2149,20 @@ Public Class clsStochastenAnalyse
     Private Sub InsertBatch(cmd As SQLite.SQLiteCommand, data As Double(), parameter As GeneralFunctions.enm2DParameter, myRun As clsStochastenRun)
         Const BatchSize As Integer = 100 ' Adjust this value as needed
 
-        cmd.Parameters.AddWithValue("@KlimaatScenario", Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper)
-        cmd.Parameters.AddWithValue("@Duration", Setup.StochastenAnalyse.Duration)
+        Dim TableName As String
+        TableName = get2DResultsTableName(parameter, Setup.StochastenAnalyse.KlimaatScenario.ToString, Setup.StochastenAnalyse.Duration)
+
         cmd.Parameters.AddWithValue("@RunID", myRun.ID)
-        cmd.Parameters.AddWithValue("@Parameter", parameter.ToString)
         cmd.Parameters.AddWithValue("@P", myRun.P)
 
         Dim sb As New StringBuilder()
-        sb.Append("INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ")
 
         For i As Integer = 0 To data.Length - 1 Step BatchSize
             sb.Clear()
-            sb.Append("INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ")
+            sb.Append($"INSERT INTO {TableName} (FEATUREIDX, RUNID, WAARDE, P) VALUES ")
 
             For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
-                sb.AppendLine($"(@KlimaatScenario, @Duration, {j}, @RunID, @Parameter, @Val{j}, 0, 0, @P),")
+                sb.AppendLine($"({j}, @RunID, @Val{j}, @P),")
                 cmd.Parameters.AddWithValue($"@Val{j}", data(j))
             Next
 
@@ -2385,7 +2402,7 @@ Public Class clsStochastenAnalyse
                     Next
 
                     ' Calculate an exceedance table for this location
-                    If Not CalcExceedanceTables2D(locationChunk, "MAXVAL", parameter, dtHerh, "RESULTATEN2D", "FEATUREIDX") Then
+                    If Not CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, "MAXHOOGTE2D", "FEATUREIDX") Then
                         Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
                     Else
                         Dim j As Integer = i
@@ -2471,7 +2488,7 @@ Public Class clsStochastenAnalyse
         Return dtLoc
     End Function
     Public Function GetUnique2DLocationNamesFromDB() As DataTable
-        Dim query As String = "SELECT DISTINCT FEATUREIDX FROM RESULTATEN2D;"
+        Dim query As String = "SELECT DISTINCT FEATUREIDX FROM MAXHOOGTE2D;"
         Dim dtLoc As New DataTable
         Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLoc, False)
         Return dtLoc

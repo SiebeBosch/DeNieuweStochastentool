@@ -145,6 +145,7 @@ C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Permiss
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Principal.Windows.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\alglibnet2.dll
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\MatFileHandler.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\Newtonsoft.Json.dll
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\STOCHLIB.pdb
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\STOCHLIB.xml
@@ -160,13 +161,13 @@ C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Permiss
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\System.Security.Principal.Windows.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.pdb
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\HtmlAgilityPack.xml
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\MatFileHandler.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\x64\Debug\Newtonsoft.Json.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.AssemblyReference.cache
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.SuggestedBindingRedirects.cache
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.Resources.resources
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.GenerateResource.cache
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.CoreCompileInputs.cache
-C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.CopyComplete
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.vbproj.Up2Date
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.exe
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\x64\Debug\DIMR_RUNR.pdb
