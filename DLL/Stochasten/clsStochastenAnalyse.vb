@@ -257,7 +257,8 @@ Public Class clsStochastenAnalyse
     Public Function WriteExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer) As Boolean
         Try
             Dim locdt As New DataTable
-            Dim query As String = "SELECT DISTINCT FEATUREIDX FROM HERHALINGSTIJDEN2D WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " AND PARAMETER='" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "';"
+            Dim TableName As String = get2DReturnPeriodsTableName(GeneralFunctions.enm2DParameter.waterlevel, KlimaatScenario.ToString, Duration)
+            Dim query As String = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
 
             'write the dataset to json
@@ -286,7 +287,7 @@ Public Class clsStochastenAnalyse
 
                     'for this location we will retrieve the exceedance table
                     Dim dtHerh As New DataTable
-                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM HERHALINGSTIJDEN2D WHERE FEATUREIDX=" & locdt.Rows(i)("FEATUREIDX") & " AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " AND PARAMETER='" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "' ORDER BY HERHALINGSTIJD;"
+                    query = $"SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM {TableName} WHERE FEATUREIDX=" & locdt.Rows(i)("FEATUREIDX") & " ORDER BY HERHALINGSTIJD;"
                     Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
                     Dim n As Integer = dtHerh.Rows.Count
 
@@ -1364,9 +1365,10 @@ Public Class clsStochastenAnalyse
     Public Function GetExceedanceValues2D(returnPeriods As List(Of Integer), ClimateScenario As String, Duration As Integer, parameter As GeneralFunctions.enm2DParameter) As Dictionary(Of Integer, List(Of Double))
         Try
             Dim returnDictionary As New Dictionary(Of Integer, List(Of Double))()
+            Dim TableName As String = get2DReturnPeriodsTableName(parameter, KlimaatScenario.ToString, Duration)
 
             Dim dtLoc = New DataTable
-            Dim query As String = "SELECT DISTINCT FEATUREIDX FROM HERHALINGSTIJDEN2D;"
+            Dim query As String = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLoc, True)
 
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
@@ -1376,7 +1378,7 @@ Public Class clsStochastenAnalyse
                 Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, dtLoc.Rows.Count)
 
                 Dim dtHerh As New DataTable
-                query = "SELECT HERHALINGSTIJD, WAARDE FROM HERHALINGSTIJDEN2D WHERE FEATUREIDX=" & dtLoc.Rows(i)("FEATUREIDX") & " AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " AND PARAMETER='" & parameter.ToString & "' ORDER BY HERHALINGSTIJD;"
+                query = $"SELECT HERHALINGSTIJD, WAARDE FROM {TableName} WHERE FEATUREIDX=" & dtLoc.Rows(i)("FEATUREIDX") & " ORDER BY HERHALINGSTIJD;"
                 Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
 
                 If dtHerh.Rows.Count > 0 Then
@@ -1535,15 +1537,17 @@ Public Class clsStochastenAnalyse
             Dim Loc As Integer
             Dim locdt As New DataTable, locIdx As Integer
 
-            Dim TableName As String
-            TableName = get2DResultsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+            Dim ResultsTableName As String
+            ResultsTableName = get2DResultsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+            Dim HerhTableName As String
+            HerhTableName = get2DReturnPeriodsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
 
             'now only read results locations
-            query = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
+            query = $"SELECT DISTINCT FEATUREIDX FROM {ResultsTableName};"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
 
             'clear existing exceedance tables for this location and climate
-            query = "DELETE FROM HERHALINGSTIJDEN2D WHERE DUUR=" & Duration & " AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND PARAMETER='" & parameter.ToString & "';"
+            query = $"DELETE FROM {HerhTableName};"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
             'for each location in our results table we will now create an exceedance table and write it to the database
@@ -1562,14 +1566,12 @@ Public Class clsStochastenAnalyse
                 Next
 
                 'retrieve all data for the current duration and climate scenario
-                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, TableName, "FEATUREIDX") Then
+                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, ResultsTableName, "FEATUREIDX") Then
                     Using transaction = Me.Setup.SqliteCon.BeginTransaction
                         Dim myCmd As New SQLite.SQLiteCommand
                         myCmd.Connection = Me.Setup.SqliteCon
 
                         Dim params As New Dictionary(Of String, Object) From {
-                    {"@klimaatscenario", ""},
-                    {"@duration", 0},
                     {"@featureidx", ""},
                     {"@runid", ""},
                     {"@runidx", ""},
@@ -1584,18 +1586,14 @@ Public Class clsStochastenAnalyse
                     {"@extra1", ""},
                     {"@extra2", ""},
                     {"@extra3", ""},
-                    {"@extra4", ""},
-                    {"@parameter", parameter.ToString}
+                    {"@extra4", ""}
                 }
-
                         For Each Loc In locationChunk
                             Dim dt As DataTable = dtHerh(Loc)
                             For i = 0 To dt.Rows.Count - 1
                                 Dim RunID As String = dt.Rows(i)("RUNID")
                                 Dim RowIdx As Integer = RunsList.Item(RunID)
 
-                                params("@klimaatscenario") = Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper
-                                params("@duration") = Setup.StochastenAnalyse.Duration
                                 params("@featureidx") = Loc
                                 params("@runid") = rundt.Rows(RowIdx)("RUNID")
                                 params("@runidx") = rundt.Rows(RowIdx)("RUNIDX")
@@ -1611,9 +1609,8 @@ Public Class clsStochastenAnalyse
                                 params("@extra2") = rundt.Rows(RowIdx)("EXTRA2")
                                 params("@extra3") = rundt.Rows(RowIdx)("EXTRA3")
                                 params("@extra4") = rundt.Rows(RowIdx)("EXTRA4")
-                                params("@parameter") = parameter.ToString
 
-                                If Not InsertRecordWithParameters2D(myCmd, params, "HERHALINGSTIJDEN2D") Then Throw New Exception("Error inserting record with parameters 2D.")
+                                If Not InsertRecordWithParameters2D(myCmd, params, HerhTableName) Then Throw New Exception("Error inserting record with parameters 2D.")
                             Next
                         Next
 
@@ -1632,7 +1629,7 @@ Public Class clsStochastenAnalyse
 
     Private Function InsertRecordWithParameters2D(ByRef myCmd As SQLite.SQLiteCommand, ByVal params As Dictionary(Of String, Object), ByVal tableName As String) As Boolean
         Try
-            Dim query As String = "INSERT INTO " & tableName & " (KLIMAATSCENARIO, DUUR, PARAMETER, FEATUREIDX, RUNID, RUNIDX, HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4) VALUES (@klimaatscenario, @duration, @parameter, @featureidx, @runid, @runidx, @herhalingstijd, @waarde, @seizoen, @volume, @patroon, @gw, @boundary, @wind, @extra1, @extra2, @extra3, @extra4);"
+            Dim query As String = "INSERT INTO " & tableName & " (FEATUREIDX, RUNID, RUNIDX, HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4) VALUES (@featureidx, @runid, @runidx, @herhalingstijd, @waarde, @seizoen, @volume, @patroon, @gw, @boundary, @wind, @extra1, @extra2, @extra3, @extra4);"
 
             myCmd.CommandText = query
             myCmd.Parameters.Clear()
@@ -1730,6 +1727,21 @@ Public Class clsStochastenAnalyse
                     Return ClimateScenario & "_" & Duration.ToString & "_MAXDIEPTE2D"
                 Case GeneralFunctions.enm2DParameter.waterlevel
                     Return ClimateScenario & "_" & Duration.ToString & "_MAXHOOGTE2D"
+                Case Else
+                    Return Nothing
+            End Select
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function get2DReturnPeriodsTableName(parameter As GeneralFunctions.enm2DParameter, ClimateScenario As String, Duration As Integer) As String
+        Try
+            Select Case parameter
+                Case GeneralFunctions.enm2DParameter.depth
+                    Return ClimateScenario & "_" & Duration.ToString & "_HERHDIEPTE2D"
+                Case GeneralFunctions.enm2DParameter.waterlevel
+                    Return ClimateScenario & "_" & Duration.ToString & "_HERHHOOGTE2D"
                 Case Else
                     Return Nothing
             End Select

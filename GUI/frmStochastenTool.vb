@@ -2564,6 +2564,8 @@ Public Class frmStochasten
 
         Me.Setup.SetProgress(prProgress, lblProgress)
 
+        Call UpdateHerhalingstijdenTables2D(0)         'return periods for 2D results (depths and levels) for the climate scenario and duration
+
         'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
         Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
@@ -2761,8 +2763,6 @@ Public Class frmStochasten
             Call UpdateExtraTables()        'adds all required columns to the 'extra' tables and reorganizes the data inside
             Call UpdateResultsTable(35)       'adds all required columns to the results table
             Call UpdateResults2DTable(40)       'adds all required columns to the results table
-            Call UpdateMaxDepths2DTables(41)
-            Call UpdateMaxLevels2DTables(42)
 
             Call UpdateRunsTable(45)          'adds all reaquired columns to the runs table
             Call UpdateSimulationModelsTable(50)
@@ -2903,37 +2903,41 @@ Public Class frmStochasten
         '--------------------------------------------------------------------------------
     End Sub
 
-    Public Sub UpdateMaxDepths2DTables(progress As Integer)
+    Public Sub UpdateResultsTables2D(progress As Integer)
         '------------------------------------------------------------------------------------
-        ' UPDATE TABELS MAXDEPTH2D: one for each climate scenario and duration a unique table
+        ' UPDATE TABELS MAXDEPTH2D and MAXLEVEL: one for each climate scenario and duration a unique table
         '------------------------------------------------------------------------------------
 
         Dim kt As New DataTable
         Dim dt As New DataTable
 
-        Dim i As Integer, j As Integer
+        Dim k As Integer
+        Dim parameter As enm2DParameter
         Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT NAAM FROM KLIMAATSCENARIOS;", kt, True)
         Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT DUUR FROM DUREN;", dt, True)
 
-        For i = 0 To kt.Rows.Count - 1
-            For j = 0 To dt.Rows.Count - 1
-                Dim TableName As String = kt(i)(0) & "_" & dt(j)(0) & "_MAXDIEPTE2D"
-                If Not Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
+        For k = 0 To 1
+            If k = 0 Then parameter = enm2DParameter.waterlevel Else parameter = enm2DParameter.depth
+            Dim TableName As String = Me.Setup.StochastenAnalyse.get2DResultsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+            If Not Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
 
-                Setup.GeneralFunctions.UpdateProgressBar($"Updating table {TableName}", progress, 100, True)
-                Dim Fields As New Dictionary(Of String, clsSQLiteField)
+            Setup.GeneralFunctions.UpdateProgressBar($"Updating table {TableName}", progress, 100, True)
 
-                'Upgrade our MAXDIEPTE2D table
-                Fields = New Dictionary(Of String, clsSQLiteField)
-                Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
-                Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
-                Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
-                Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
-                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, TableName, Fields)
+            'clear the table before proceeding
+            Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "DELETE FROM " & TableName & ";", False)
 
-                Dim CompositeIndex As New List(Of String) From {"FEATUREIDX", "RUNID"}
-                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, TableName, CompositeIndex)
-            Next
+            Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+            'Upgrade our MAXDIEPTE2D table
+            Fields = New Dictionary(Of String, clsSQLiteField)
+            Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+            Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+            Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
+            Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+            Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, TableName, Fields)
+
+            Dim CompositeIndex As New List(Of String) From {"FEATUREIDX", "RUNID"}
+            Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, TableName, CompositeIndex)
         Next
 
         '--------------------------------------------------------------------------------
@@ -2941,42 +2945,6 @@ Public Class frmStochasten
     End Sub
 
 
-    Public Sub UpdateMaxLevels2DTables(progress As Integer)
-        '------------------------------------------------------------------------------------
-        ' UPDATE TABELS MAXDEPTH2D: one for each climate scenario and duration a unique table
-        '------------------------------------------------------------------------------------
-
-        Dim kt As New DataTable
-        Dim dt As New DataTable
-
-        Dim i As Integer, j As Integer
-        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT NAAM FROM KLIMAATSCENARIOS;", kt, True)
-        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT DUUR FROM DUREN;", dt, True)
-
-        For i = 0 To kt.Rows.Count - 1
-            For j = 0 To dt.Rows.Count - 1
-                Dim TableName As String = kt(i)(0) & "_" & dt(j)(0) & "_MAXHOOGTE2D"
-                If Not Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
-
-                Setup.GeneralFunctions.UpdateProgressBar($"Updating table {TableName}", progress, 100, True)
-                Dim Fields As New Dictionary(Of String, clsSQLiteField)
-
-                'Upgrade our MAXDIEPTE2D table
-                Fields = New Dictionary(Of String, clsSQLiteField)
-                Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
-                Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
-                Fields.Add("P", New clsSQLiteField("P", enmSQLiteDataType.SQLITEREAL, False))
-                Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
-                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, TableName, Fields)
-
-                Dim CompositeIndex As New List(Of String) From {"FEATUREIDX", "RUNID"}
-                Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, TableName, CompositeIndex)
-            Next
-        Next
-
-        '--------------------------------------------------------------------------------
-
-    End Sub
 
 
     Public Sub UpdateResults2DTable(progress As Integer)
@@ -3047,7 +3015,67 @@ Public Class frmStochasten
     End Sub
 
 
+    Public Sub UpdateHerhalingstijdenTables2D(progress As Integer)
+
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL RESULTATEN
+        '------------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Tabellen bijwerken voor herhalingstijden 2D", progress, 100, True)
+
+        Dim kt As New DataTable
+        Dim dt As New DataTable
+
+        Dim k As Integer
+        Dim parameter As enm2DParameter
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT NAAM FROM KLIMAATSCENARIOS;", kt, True)
+        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, "SELECT DISTINCT DUUR FROM DUREN;", dt, True)
+
+        For k = 0 To 1
+            If k = 1 Then parameter = enm2DParameter.depth Else parameter = enm2DParameter.waterlevel
+            Dim TableName As String = Me.Setup.StochastenAnalyse.get2DReturnPeriodsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+            If Not Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, TableName) Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, TableName)
+
+            Setup.GeneralFunctions.UpdateProgressBar($"Updating table {TableName}", progress, 100, True)
+
+            'clear the table before proceeding
+            Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "DELETE FROM " & TableName & ";", False)
+
+            Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+            'Upgrade our HERHALINGSTIJDEN2D table
+            Fields = New Dictionary(Of String, clsSQLiteField)
+            Fields.Add("FEATUREIDX", New clsSQLiteField("FEATUREIDX", enmSQLiteDataType.SQLITEINT, True))
+            Fields.Add("RUNID", New clsSQLiteField("RUNID", enmSQLiteDataType.SQLITETEXT, True))
+            Fields.Add("RUNIDX", New clsSQLiteField("RUNIDX", enmSQLiteDataType.SQLITEINT, True))
+            Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITEREAL, False))
+            Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("GW", New clsSQLiteField("GW", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("BOUNDARY", New clsSQLiteField("BOUNDARY", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("WIND", New clsSQLiteField("WIND", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, False))
+            Fields.Add("HERHALINGSTIJD", New clsSQLiteField("HERHALINGSTIJD", enmSQLiteDataType.SQLITEREAL, False))
+            Fields.Add("WAARDE", New clsSQLiteField("WAARDE", enmSQLiteDataType.SQLITEREAL, False))
+            Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, TableName, Fields)
+
+            Dim CompositeIndex As New List(Of String) From {"FEATUREIDX", "RUNID"}
+            Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteCompositeIndex(Me.Setup.SqliteCon, TableName, CompositeIndex)
+
+        Next
+
+
+        '--------------------------------------------------------------------------------
+    End Sub
+
     Public Sub UpdateHerhalingstijdenTable2D(progress As Integer)
+
+        'table depricated
+        If Me.Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D") Then Me.Setup.GeneralFunctions.SQLiteDropTable(Me.Setup.SqliteCon, "HERHALINGSTIJDEN2D")
+        Exit Sub
+
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL RESULTATEN
         '------------------------------------------------------------------------------------
@@ -4630,6 +4658,7 @@ Public Class frmStochasten
         txtInputDir.Text = dlgFolder.SelectedPath
     End Sub
 
+
     Private Sub btnUitlezen_Click(sender As Object, e As EventArgs) Handles btnUitlezen.Click
 
         Me.Setup.SetProgress(prProgress, lblProgress)
@@ -4638,6 +4667,9 @@ Public Class frmStochasten
 
         'first populate our list of models & assoaciated results
         'Setup.StochastenAnalyse.PopulateModelsAndLocationsFromDB(Me.Setup.SqliteCon)
+
+        'make sure the results tables are up to date
+        Call UpdateResultsTables2D(0)                  'raw results 2D (depths and levels) for each climate scenario and duration
 
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
