@@ -371,19 +371,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -675,7 +675,7 @@ Partial Class frmStochasten
         'LeesMATFileToolStripMenuItem
         '
         Me.LeesMATFileToolStripMenuItem.Name = "LeesMATFileToolStripMenuItem"
-        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(183, 26)
         Me.LeesMATFileToolStripMenuItem.Text = "Lees .MAT file"
         '
         'tabStochastentool

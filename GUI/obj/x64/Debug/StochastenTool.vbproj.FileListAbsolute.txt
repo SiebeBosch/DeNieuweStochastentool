@@ -212,3 +212,4 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\Stochast.F6662CE2.Up2Date
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.pdb
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmPublish.resources

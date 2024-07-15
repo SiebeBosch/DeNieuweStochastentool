@@ -17,6 +17,7 @@ Imports Apache.Arrow
 Imports Apache.Arrow.Ipc
 Imports Apache.Arrow.Types
 Imports Apache.Arrow.Memory
+Imports Newtonsoft.Json.Linq
 
 'Imports Ionic.Zip
 
@@ -155,19 +156,23 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function WriteStochasticRunsJSON(runspath As String, ClimateScenario As String, Duration As Integer) As Boolean
+    Public Function WriteStochasticRunsJSON(runspath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
         Try
             Dim dt As New DataTable
             Dim query As String = "SELECT RUNID, RUNIDX, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dt, True)
             Me.Setup.GeneralFunctions.UpdateProgressBar("Writing runs...", 0, 10, True)
 
+
             'write the dataset to json
             If System.IO.File.Exists(runspath) Then System.IO.File.Delete(runspath)
             Using exceedanceWriter As New StreamWriter(runspath)
                 exceedanceWriter.WriteLine("let runs = {")
-                exceedanceWriter.WriteLine("    " & Chr(34) & "runs" & Chr(34) & ": [")
 
+                exceedanceWriter.WriteLine("  ""scenarios"": [")
+                exceedanceWriter.WriteLine("    {")
+                exceedanceWriter.WriteLine($"      ""ID"":""{configurationName}"",")
+                exceedanceWriter.WriteLine("        ""runs"": [")
                 Dim jsonStr As String = ""
                 For i As Integer = 0 To dt.Rows.Count - 1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", i, dt.Rows.Count)
@@ -190,7 +195,9 @@ Public Class clsStochastenAnalyse
                     End If
                 Next
                 exceedanceWriter.WriteLine(jsonStr)
-                exceedanceWriter.WriteLine("    ]")
+                exceedanceWriter.WriteLine("      ]")
+                exceedanceWriter.WriteLine("    }")
+                exceedanceWriter.WriteLine("  ]")
                 exceedanceWriter.WriteLine("};")
             End Using
 
@@ -202,7 +209,69 @@ Public Class clsStochastenAnalyse
     End Function
 
 
-    Public Function WriteExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer) As Boolean
+    Public Function AddStochasticRunsJSON(runspath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+        'this function adds a new configuration to the existing runs.json file
+        Try
+            'first we'll read the existing runs.json file
+            Dim dt As New DataTable
+            Dim query As String = "SELECT RUNID, RUNIDX, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dt, True)
+
+            Dim jsonStr As String
+            Using jsonReader As New StreamReader(runspath)
+                jsonStr = jsonReader.ReadToEnd                      'read the entire file
+                jsonStr = jsonStr.Replace("let runs = ", "").Trim   'remove our javascript variable declaration and any line breaks
+                jsonStr = jsonStr.Substring(0, jsonStr.Length - 1)            'remove the trailing semicolon which is a javascript thing
+            End Using
+
+            Dim jsonObject As JObject = JObject.Parse(jsonStr)
+
+            ' Create a new scenario object
+            Dim newScenario As New JObject()
+            newScenario("ID") = configurationName
+            newScenario("runs") = New JArray()
+
+            For i As Integer = 0 To dt.Rows.Count - 1
+                Dim newRun As New JObject()
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", i, dt.Rows.Count)
+                newRun("runid") = dt.Rows(i)("RUNID").ToString()
+                newRun("runidx") = dt.Rows(i)("RUNIDX").ToString()
+                newRun("seizoen") = dt.Rows(i)("SEIZOEN").ToString()
+                newRun("volume") = dt.Rows(i)("VOLUME").ToString()
+                newRun("patroon") = dt.Rows(i)("PATROON").ToString()
+                newRun("gw") = dt.Rows(i)("GW").ToString()
+                newRun("boundary") = dt.Rows(i)("BOUNDARY").ToString()
+                newRun("wind") = dt.Rows(i)("WIND").ToString()
+                newRun("extra1") = If(dt.Rows(i)("EXTRA1") Is DBNull.Value, dt.Rows(i)("EXTRA1").ToString(), "")
+                newRun("extra2") = If(dt.Rows(i)("EXTRA2") Is DBNull.Value, dt.Rows(i)("EXTRA2").ToString(), "")
+                newRun("extra3") = If(dt.Rows(i)("EXTRA3") Is DBNull.Value, dt.Rows(i)("EXTRA3").ToString(), "")
+                newRun("extra4") = If(dt.Rows(i)("EXTRA4") Is DBNull.Value, dt.Rows(i)("EXTRA4").ToString(), "")
+                CType(newScenario("runs"), JArray).Add(newRun)
+            Next
+
+            ' Add the new scenario to the existing scenarios array
+            CType(jsonObject("scenarios"), JArray).Add(newScenario)
+
+            ' Serialize the updated object back to JSON
+            Dim updatedJsonString As String = jsonObject.ToString(Formatting.Indented)
+
+            ' Print or use the updated JSON string
+            Console.WriteLine("let runs = " & updatedJsonString & ";")
+
+            ' Write the updated JSON string back to the file
+            Using jsonWriter As New StreamWriter(runspath)
+                jsonWriter.WriteLine("let runs = " & updatedJsonString & ";")
+            End Using
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteStochasticRunsJSON: " & ex.Message)
+            Return False
+        End Try
+    End Function
+
+
+    Public Function WriteExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
         Try
             Dim locdt As New DataTable
             Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
@@ -212,7 +281,10 @@ Public Class clsStochastenAnalyse
             If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
             Using exceedanceWriter As New StreamWriter(exceedancedatapath)
                 exceedanceWriter.WriteLine("let exceedancedata = {")
-                exceedanceWriter.WriteLine("    " & Chr(34) & "locations" & Chr(34) & ": [")
+                exceedanceWriter.WriteLine("  ""scenarios"": [")
+                exceedanceWriter.WriteLine("    {")
+                exceedanceWriter.WriteLine($"      ""ID"":""{configurationName}"",")
+                exceedanceWriter.WriteLine("      ""locations"": [")
                 exceedanceWriter.WriteLine("        {")
 
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Writing results...", 0, 10, True)
@@ -244,8 +316,13 @@ Public Class clsStochastenAnalyse
                         exceedanceWriter.WriteLine("        }, {") 'prepare for the next location to be written
                     End If
                 Next
+
                 exceedanceWriter.WriteLine("        }") 'closing statement for the last location
-                exceedanceWriter.WriteLine("    ]")
+                exceedanceWriter.WriteLine("      ]")
+
+                exceedanceWriter.WriteLine("    }") 'closing statement for the last scenario
+                exceedanceWriter.WriteLine("  ]") 'closing statement for the last scenario
+
                 exceedanceWriter.WriteLine("};")
 
             End Using
@@ -254,7 +331,85 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function WriteExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer) As Boolean
+
+    Public Function AddExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+        'this function adds a new configuration to the existing EXCEEDANCEDATA1D.JS FILE    
+        Try
+            Dim locdt As New DataTable
+            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+            'first read our existing exceedance data file
+            Dim jsonStr As String
+            Using jsonReader As New StreamReader(exceedancedatapath)
+                jsonStr = jsonReader.ReadToEnd                      'read the entire file
+                jsonStr = jsonStr.Replace("let exceedancedata = ", "").Trim   'remove our javascript variable declaration and any line breaks
+                jsonStr = jsonStr.Substring(0, jsonStr.Length - 1)            'remove the trailing semicolon which is a javascript thing
+            End Using
+
+            'parse the exising file
+            Dim jsonObject As JObject = JObject.Parse(jsonStr)
+
+            ' Create a new scenario object
+            Dim newScenario As New JObject()
+            newScenario("ID") = configurationName
+            newScenario("locations") = New JArray()
+
+            For i As Integer = 0 To locdt.Rows.Count - 1
+                Dim newLoc As New JObject()
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+
+                newLoc("ID") = New JValue(locdt.Rows(i)("LOCATIENAAM").ToString())
+                newLoc("data") = New JArray()
+
+                'Retrieve the exceedance table for this location
+                Dim dtHerh As New DataTable
+                query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)("LOCATIENAAM").ToString() & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                'Add exceedance data for this location
+                For j As Integer = 0 To dtHerh.Rows.Count - 1
+                    Dim dataPoint As New JObject()
+                    dataPoint("x") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("HERHALINGSTIJD")), 2))
+                    dataPoint("y") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 2))
+                    dataPoint("stochasts") = New JObject From {
+                    {"SEIZOEN", New JValue(dtHerh.Rows(j)("SEIZOEN").ToString())},
+                    {"VOLUME", New JValue(Convert.ToDouble(dtHerh.Rows(j)("VOLUME")))},
+                    {"PATROON", New JValue(dtHerh.Rows(j)("PATROON").ToString())},
+                    {"GW", New JValue(dtHerh.Rows(j)("GW").ToString())},
+                    {"BOUNDARY", New JValue(dtHerh.Rows(j)("BOUNDARY").ToString())},
+                    {"WIND", New JValue(dtHerh.Rows(j)("WIND").ToString())},
+                    {"EXTRA1", New JValue(dtHerh.Rows(j)("EXTRA1").ToString())},
+                    {"EXTRA2", New JValue(dtHerh.Rows(j)("EXTRA2").ToString())},
+                    {"EXTRA3", New JValue(dtHerh.Rows(j)("EXTRA3").ToString())},
+                    {"EXTRA4", New JValue(dtHerh.Rows(j)("EXTRA4").ToString())}
+        }
+                    CType(newLoc("data"), JArray).Add(dataPoint)
+                Next
+
+                CType(newScenario("locations"), JArray).Add(newLoc)
+            Next
+
+            ' Add the new scenario to the existing scenarios array
+            CType(jsonObject("scenarios"), JArray).Add(newScenario)
+
+            ' Serialize the updated object back to JSON
+            Dim updatedJsonString As String = jsonObject.ToString(Formatting.Indented)
+
+            ' Write the updated JSON string back to the file
+            Using jsonWriter As New StreamWriter(exceedancedatapath)
+                jsonWriter.WriteLine("let exceedancedata = " & updatedJsonString & ";")
+            End Using
+
+            Return True
+
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function AddExceedanceData1DJSON of frmStochasten: " & ex.Message)
+        End Try
+    End Function
+
+    Public Function WriteExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
         Try
             Dim locdt As New DataTable
             Dim TableName As String = get2DReturnPeriodsTableName(GeneralFunctions.enm2DParameter.waterlevel, KlimaatScenario.ToString, Duration)
@@ -265,7 +420,11 @@ Public Class clsStochastenAnalyse
             If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
             Using exceedanceWriter As New StreamWriter(exceedancedatapath)
                 exceedanceWriter.WriteLine("let exceedancedata2D = {")
-                exceedanceWriter.WriteLine("    ""locations"": [")
+
+                exceedanceWriter.WriteLine("  ""scenarios"": [")
+                exceedanceWriter.WriteLine("    {")
+                exceedanceWriter.WriteLine($"      ""ID"":""{configurationName}"",")
+                exceedanceWriter.WriteLine("      ""locations"": [")
                 exceedanceWriter.WriteLine("        {")
 
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten schrijven...", 0, 10, True)
@@ -319,7 +478,12 @@ Public Class clsStochastenAnalyse
                     End If
                 Next
                 exceedanceWriter.WriteLine("        }") 'closing statement for the last location
-                exceedanceWriter.WriteLine("    ]")
+                exceedanceWriter.WriteLine("      ]")
+
+                exceedanceWriter.WriteLine("    }") 'closing statement for the last scenario
+                exceedanceWriter.WriteLine("  ]") 'closing statement for the last scenario
+
+
                 exceedanceWriter.WriteLine("};")
 
             End Using
@@ -328,6 +492,85 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
+    Public Function AddExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+        Try
+            Dim locdt As New DataTable
+            Dim TableName As String = get2DReturnPeriodsTableName(GeneralFunctions.enm2DParameter.waterlevel, KlimaatScenario.ToString, Duration)
+            Dim query As String = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+            'Read existing JSON file
+            Dim jsonStr As String
+            Using jsonReader As New StreamReader(exceedancedatapath)
+                jsonStr = jsonReader.ReadToEnd()
+                jsonStr = jsonStr.Replace("let exceedancedata2D = ", "").Trim()
+                jsonStr = jsonStr.Substring(0, jsonStr.Length - 1) 'remove trailing semicolon
+            End Using
+
+            'Parse existing JSON
+            Dim jsonObject As JObject = JObject.Parse(jsonStr)
+
+            'Create new scenario object
+            Dim newScenario As New JObject()
+            newScenario("ID") = New JValue(configurationName)
+            newScenario("locations") = New JArray()
+
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten schrijven...", 0, 10, True)
+            For i As Integer = 0 To locdt.Rows.Count - 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+
+                If locdt.Rows.Count = 0 Then
+                    Me.Setup.Log.AddError("Unable to write exceedance levels 2D to JSON for featureidx " & locdt.Rows(i)("FEATUREIDX") & ": no data found.")
+                    Continue For
+                End If
+
+                'Retrieve exceedance table for this location
+                Dim dtHerh As New DataTable
+                query = $"SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM {TableName} WHERE FEATUREIDX=" & locdt.Rows(i)("FEATUREIDX") & " ORDER BY HERHALINGSTIJD;"
+                Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+                Dim n As Integer = dtHerh.Rows.Count
+
+                'Only write those locations where the water level is increasing
+                If dtHerh.Rows(n - 1)("WAARDE") > dtHerh.Rows(0)("WAARDE") Then
+                    Dim newLoc As New JObject()
+                    newLoc("idx") = New JValue(locdt.Rows(i)("FEATUREIDX").ToString())
+
+                    Dim herhArray As New JArray()
+                    Dim levelArray As New JArray()
+                    Dim runArray As New JArray()
+
+                    For j As Integer = 0 To dtHerh.Rows.Count - 1
+                        herhArray.Add(New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("HERHALINGSTIJD")), 2)))
+                        levelArray.Add(New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 2)))
+                        runArray.Add(New JValue(Convert.ToInt32(dtHerh.Rows(j)("RUNIDX"))))
+                    Next
+
+                    newLoc("T") = herhArray
+                    newLoc("h") = levelArray
+                    newLoc("runidx") = runArray
+
+                    CType(newScenario("locations"), JArray).Add(newLoc)
+                End If
+            Next
+
+            'Add new scenario to existing scenarios array
+            CType(jsonObject("scenarios"), JArray).Add(newScenario)
+
+            'Serialize updated object back to JSON
+            Dim updatedJsonString As String = jsonObject.ToString(Formatting.Indented)
+
+            'Write updated JSON string back to file
+            Using jsonWriter As New StreamWriter(exceedancedatapath)
+                jsonWriter.WriteLine("let exceedancedata2D = " & updatedJsonString & ";")
+            End Using
+
+            Return True
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function AddExceedanceLevels2DJSON of frmStochasten: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
 
 
@@ -1520,6 +1763,12 @@ Public Class clsStochastenAnalyse
                         'insert the resulta for all return periods at once
                         transaction.Commit() 'this is where the bulk insert is finally executed.
                     End Using
+
+                    'chatGPT Perform WAL checkpoint
+                    Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
+                        cmd.ExecuteNonQuery()
+                    End Using
+
                 End If
             Next
             Return True
@@ -1616,6 +1865,12 @@ Public Class clsStochastenAnalyse
 
                         transaction.Commit()
                     End Using
+
+                    'chatGPT Perform WAL checkpoint
+                    Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
+                        cmd.ExecuteNonQuery()
+                    End Using
+
                 End If
             Next
 
@@ -1661,6 +1916,36 @@ Public Class clsStochastenAnalyse
         myCmd.ExecuteNonQuery()
     End Sub
 
+    Public Sub InitializeDatabaseConnection()
+        If Me.Setup.SqliteCon.State = ConnectionState.Open Then
+            Me.Setup.SqliteCon.Close()
+        End If
+
+        Me.Setup.SqliteCon.Open()
+
+        ' Enable WAL mode
+        Using cmd As New SQLite.SQLiteCommand("PRAGMA journal_mode=WAL;", Me.Setup.SqliteCon)
+            cmd.ExecuteNonQuery()
+        End Using
+
+        ' Set an automatic checkpoint limit (e.g., every 1000 pages)
+        'Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_autocheckpoint=1000;", Me.Setup.SqliteCon)
+        '    cmd.ExecuteNonQuery()
+        'End Using
+    End Sub
+
+    Public Sub CloseDatabaseConnection()
+        If Me.Setup.SqliteCon.State = ConnectionState.Open Then
+            ' Perform a WAL checkpoint before closing
+            Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
+                cmd.ExecuteNonQuery()
+            End Using
+
+            ' Close the database connection
+            Me.Setup.SqliteCon.Close()
+        End If
+    End Sub
+
 
 
     Public Function ReadResults(ByRef con As SQLite.SQLiteConnection, results1D As Boolean, results2D As Boolean)
@@ -1670,7 +1955,6 @@ Public Class clsStochastenAnalyse
             Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten uitlezen...", 0, 10, True)
 
             'first thing to do is clear all results for the current scenario and duration from the database since the results will change by definition when new computations are added
-            If Not con.State = ConnectionState.Open Then con.Open()
             Dim cmd As New SQLite.SQLiteCommand
             cmd.Connection = con
 
@@ -1707,7 +1991,6 @@ Public Class clsStochastenAnalyse
             End If
 
 
-            con.Close()
             Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten met succes uitgelezen.", 10, 10, True)
 
             Return True
@@ -2030,6 +2313,17 @@ Public Class clsStochastenAnalyse
         Try
             Dim i As Long, n As Long
 
+
+            'open the database
+            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then
+                Me.Setup.SqliteCon.Open()
+            End If
+
+            'chatGPT advice to reduce .journal file size: enable WAL mode
+            Using cmd As New SQLite.SQLiteCommand("PRAGMA journal_mode=WAL;", Me.Setup.SqliteCon)
+                cmd.ExecuteNonQuery()
+            End Using
+
             'read the results. For now we will only support Fourier Files
             n = Runs.Runs.Count
             i = 0
@@ -2039,11 +2333,17 @@ Public Class clsStochastenAnalyse
                 For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
                     For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
                         If Right(myFile.FileName, 7).ToLower = "_fou.nc" Then
+                            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
                             readFou(myRun, myFile)
+                            Me.Setup.SqliteCon.Close()
                         End If
                     Next
                 Next
             Next
+
+            'close the database
+            Me.Setup.SqliteCon.Close()
+
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function readResults2D of class clsStochastenAnalyse: " & ex.Message)
@@ -2122,16 +2422,17 @@ Public Class clsStochastenAnalyse
             Dim MaxDepths As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.depth)
             Dim MaxLevels As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.waterlevel)
 
-            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then
-                Me.Setup.SqliteCon.Open()
-            End If
-
             Using transaction = Me.Setup.SqliteCon.BeginTransaction()
                 Using myCmd As New SQLite.SQLiteCommand(Me.Setup.SqliteCon)
                     InsertBatch(myCmd, MaxDepths, GeneralFunctions.enm2DParameter.depth, myRun)
                     InsertBatch(myCmd, MaxLevels, GeneralFunctions.enm2DParameter.waterlevel, myRun)
                 End Using
                 transaction.Commit()
+            End Using
+
+            'chatGPT Perform WAL checkpoint
+            Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
+                cmd.ExecuteNonQuery()
             End Using
 
             Return True
@@ -2158,39 +2459,45 @@ Public Class clsStochastenAnalyse
     '    cmd.ExecuteNonQuery()
     'End Sub
 
-    Private Sub InsertBatch(cmd As SQLite.SQLiteCommand, data As Double(), parameter As GeneralFunctions.enm2DParameter, myRun As clsStochastenRun)
-        Const BatchSize As Integer = 100 ' Adjust this value as needed
+    Private Function InsertBatch(cmd As SQLite.SQLiteCommand, data As Double(), parameter As GeneralFunctions.enm2DParameter, myRun As clsStochastenRun) As Boolean
+        Try
+            Const BatchSize As Integer = 100 ' Adjust this value as needed
 
-        Dim TableName As String
-        TableName = get2DResultsTableName(parameter, Setup.StochastenAnalyse.KlimaatScenario.ToString, Setup.StochastenAnalyse.Duration)
+            Dim TableName As String
+            TableName = get2DResultsTableName(parameter, Setup.StochastenAnalyse.KlimaatScenario.ToString, Setup.StochastenAnalyse.Duration)
 
-        cmd.Parameters.AddWithValue("@RunID", myRun.ID)
-        cmd.Parameters.AddWithValue("@P", myRun.P)
+            cmd.Parameters.AddWithValue("@RunID", myRun.ID)
+            cmd.Parameters.AddWithValue("@P", myRun.P)
 
-        Dim sb As New StringBuilder()
+            Dim sb As New StringBuilder()
 
-        For i As Integer = 0 To data.Length - 1 Step BatchSize
-            sb.Clear()
-            sb.Append($"INSERT INTO {TableName} (FEATUREIDX, RUNID, WAARDE, P) VALUES ")
+            For i As Integer = 0 To data.Length - 1 Step BatchSize
+                sb.Clear()
+                sb.Append($"INSERT INTO {TableName} (FEATUREIDX, RUNID, WAARDE, P) VALUES ")
 
-            For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
-                sb.AppendLine($"({j}, @RunID, @Val{j}, @P),")
-                cmd.Parameters.AddWithValue($"@Val{j}", data(j))
+                For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
+                    sb.AppendLine($"({j}, @RunID, @Val{j}, @P),")
+                    cmd.Parameters.AddWithValue($"@Val{j}", data(j))
+                Next
+
+                ' Remove the trailing comma and add semicolon
+                sb.Length -= 3
+                sb.Append(";"c)
+
+                cmd.CommandText = sb.ToString()
+                cmd.ExecuteNonQuery()
+
+                ' Clear the batch-specific parameters
+                For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
+                    cmd.Parameters.RemoveAt($"@Val{j}")
+                Next
             Next
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
 
-            ' Remove the trailing comma and add semicolon
-            sb.Length -= 3
-            sb.Append(";"c)
-
-            cmd.CommandText = sb.ToString()
-            cmd.ExecuteNonQuery()
-
-            ' Clear the batch-specific parameters
-            For j As Integer = i To Math.Min(i + BatchSize - 1, data.Length - 1)
-                cmd.Parameters.RemoveAt($"@Val{j}")
-            Next
-        Next
-    End Sub
+    End Function
 
 
     Public Function ExportResults1D() As Boolean
