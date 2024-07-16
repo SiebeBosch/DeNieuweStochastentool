@@ -1105,6 +1105,11 @@ Public Class clsStochastenRun
                             Next
 
                             BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).SetDatatable(myData)
+                            BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).bcfunction = "timeseries"
+                            BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).timeInterpolation = "linear"
+                            BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).quantities = New Dictionary(Of String, clsQuantity)
+                            BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).quantities.Add("TIME", New clsQuantity("time", $"minutes since {Strings.Format(SeasonClass.EventStart, "yyyy-MM-dd HH:mm:ss")}"))
+                            BoundariesBC.BoundaryConditions.Item(NodeID.Trim.ToUpper).quantities.Add("WATERLEVELBND", New clsQuantity("waterlevelbnd", "m"))
 
                         End If
 
