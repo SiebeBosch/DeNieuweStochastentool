@@ -781,6 +781,7 @@ Public Class frmStochasten
             '------------------------------------------------------------------------------------
 
             PopulateSimulationModelsGrid()
+            PopulateCombinatiesGrid() 'all combinations of stochasts for which separate files must be copied in the  model
 
             'now repopulate the datagridview based on the output locations
             query = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, ZP, WP FROM OUTPUTLOCATIONS;"
@@ -815,6 +816,12 @@ Public Class frmStochasten
             Col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         Next
 
+    End Sub
+
+    Public Sub PopulateCombinatiesGrid()
+        Dim query As String = "SELECT MODELID, SEIZOEN, VOLUME, PATROON, GRONDWATER, WATERHOOGTE, EXTRA1, EXTRA2, EXTRA3, EXTRA4, RRFILES, FLOWFILES, RTCFILES FROM COMBINATIES;"
+        If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
+        grdCombinaties.DataSource = dtModels
     End Sub
 
     Public Sub PopulateSubCatchmentComboBoxes()
@@ -2686,6 +2693,7 @@ Public Class frmStochasten
             Me.Setup.GeneralFunctions.UpdateProgressBar("Building Extra4 controls...", 12, 20, True)
             Call BuildExtraGrids(4)
             Me.Setup.GeneralFunctions.UpdateProgressBar("Controls successfully created.", 13, 20, True)
+
         End If
     End Sub
 
@@ -2778,7 +2786,9 @@ Public Class frmStochasten
             Call UpdateWindTable(85)          'adds all required columns to the wind table
             Call UpdateWindreeksenTable(90)   'adds all required columns to the windreeksen table
             Call UpdateHerhalingstijdenTable(95)    'adds all required columns to th exceedance table
-            Call UpdateHerhalingstijdenTable2D(100)   'adds all required columns to th exceedance table for 2D results
+            Call UpdateHerhalingstijdenTable2D(98)   'adds all required columns to th exceedance table for 2D results
+
+            Call UpdateCombinatiesTable(100)   'a table for specifying extra files to be copied to the model for each combination of stochasts
 
             Setup.GeneralFunctions.UpdateProgressBar("tables successfully updated", 0, 15, True)
             Me.Setup.SqliteCon.Close()
@@ -3116,7 +3126,37 @@ Public Class frmStochasten
         '--------------------------------------------------------------------------------
     End Sub
 
+    Public Sub UpdateCombinatiesTable(progress As Integer)
 
+
+        '------------------------------------------------------------------------------------
+        '               UPDATE TABEL RESULTATEN
+        '------------------------------------------------------------------------------------
+        'make sure the table exists
+        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "COMBINATIES") Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "COMBINATIES")
+
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table COMBINATIES", progress, 100, True)
+        Dim Fields As New Dictionary(Of String, clsSQLiteField)
+
+        '--------------------------------------------------------------------------------
+        'Upgrade our COMBINATIES table
+        Fields = New Dictionary(Of String, clsSQLiteField)
+        Fields.Add("MODELID", New clsSQLiteField("MODELID", enmSQLiteDataType.SQLITEINT, True))
+        Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("GRONDWATER", New clsSQLiteField("GRONDWATER", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("WATERHOOGTE", New clsSQLiteField("WATERHOOGTE", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("RRFILES", New clsSQLiteField("RRFILES", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("FLOWFILES", New clsSQLiteField("FLOWFILES", enmSQLiteDataType.SQLITETEXT, True))
+        Fields.Add("RTCFILES", New clsSQLiteField("RTCFILES", enmSQLiteDataType.SQLITETEXT, True))
+        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "COMBINATIES", Fields)
+        '--------------------------------------------------------------------------------
+    End Sub
 
 
 
@@ -4676,7 +4716,7 @@ Public Class frmStochasten
         'Setup.StochastenAnalyse.PopulateModelsAndLocationsFromDB(Me.Setup.SqliteCon)
 
         'make sure the results tables are up to date
-        Call UpdateResultsTables2D(0)                  'raw results 2D (depths and levels) for each climate scenario and duration
+        'Call UpdateResultsTables2D(0)                  'raw results 2D (depths and levels) for each climate scenario and duration
 
         'settings regarding postprocessing
         Setup.StochastenAnalyse.ResultsStartPercentage = Me.Setup.GeneralFunctions.ForceNumeric(txtResultsStartPercentage.Text, "Results start percentege", 0)
@@ -4849,6 +4889,14 @@ Public Class frmStochasten
         Dim query As String = "DELETE FROM OUTPUTLOCATIONS;"
         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
         MsgBox("Alle uitvoerlocaties zijn verwijderd.")
+    End Sub
+
+    Private Sub Button15_Click(sender As Object, e As EventArgs) Handles Button15.Click
+        grdCombinaties.Rows.Add()
+    End Sub
+
+    Private Sub grdCombinaties_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grdCombinaties.CellContentClick
+
     End Sub
 
     Private Sub ToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToevoegenToolStripMenuItem.Click
@@ -5092,5 +5140,24 @@ Public Class frmStochasten
         Call RebuildAllGrids()
     End Sub
 
+    Private Sub grdCombinaties_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles grdCombinaties.CellEndEdit
+        'a user has ended an edit session in the grid, so we need to update the database
+
+        'first, clear the existing table
+        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "DELETE FROM COMBINATIES;")
+
+        'then write the content of the grid to the database
+        Dim i As Integer
+        For i = 0 To grdCombinaties.Rows.Count - 1
+            If grdCombinaties.Rows(i).Cells(0).Value <> "" Then
+                Dim query As String = $"INSERT INTO COMBINATIES (MODELID, VOLUME, PATROON, GRONDWATER, WATERHOOGTE, EXTRA1, EXTRA2, EXTRA3, EXTRA4, RRFILES, FLOWFILES, RTCFILES) VALUES ('{grdCombinaties.Rows(i).Cells(0).Value}','{grdCombinaties.Rows(i).Cells(1).Value }','{grdCombinaties.Rows(i).Cells(2).Value }','{grdCombinaties.Rows(i).Cells(3).Value }','{grdCombinaties.Rows(i).Cells(4).Value}','{grdCombinaties.Rows(i).Cells(5).Value}','{grdCombinaties.Rows(i).Cells(6).Value}','{grdCombinaties.Rows(i).Cells(7).Value}','{grdCombinaties.Rows(i).Cells(8).Value}','{grdCombinaties.Rows(i).Cells(9).Value}','{grdCombinaties.Rows(i).Cells(10).Value}','{grdCombinaties.Rows(i).Cells(11).Value}');"
+                Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+            End If
+        Next
+
+
+
+
+    End Sub
 End Class
 

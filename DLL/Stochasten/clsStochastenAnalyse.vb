@@ -28,6 +28,9 @@ Public Class clsStochastenAnalyse
     Public InputFilesDir As String  'directory where all stochastic combinations are written
     Public OutputFilesDir As String 'directory where all results files are written
 
+    Public Levels2DFileName As String = "levels2D.csv"
+    Public Depths2DFileName As String = "depths2D.csv"
+
     'Simulation settings
     Public MaxParallel As Integer
     Public Duration As Integer 'duration of the events in hours
@@ -1278,57 +1281,6 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    'Public Function ReadExceedanceDataAllLocationsFromDatabase(Filter As String, ByRef dtResults As DataTable, ByRef dtHerh As DataTable) As Boolean
-
-    '    'retrieves the results for the current location and generates an exceedance chart
-    '    Try
-    '        Dim myQuery As String
-    '        Dim ValuesField As String
-    '        dtHerh = New DataTable
-    '        Dim dtLocs As New DataTable
-    '        Dim dtRuns As New DataTable
-
-    '        If Filter.Trim.ToUpper = "MAX" OrElse Filter.Trim.ToUpper = "MAXVAL" Then
-    '            ValuesField = "MAXVAL"
-    '        ElseIf Filter.Trim.ToUpper = "MIN" OrElse Filter.Trim.ToUpper = "MINVAL" Then
-    '            ValuesField = "MINVAL"
-    '        Else
-    '            Throw New Exception("Timeseries filter on results not supported: " & Filter)
-    '        End If
-
-    '        'myQuery = "SELECT DISTINCT LOCATIENAAM FROM RESULTATEN WHERE  KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ");"
-    '        'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtLocs, False)
-
-    '        'myQuery = "SELECT DISTINCT RUNID FROM RESULTATEN WHERE  KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ");"
-    '        'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtRuns, False)
-
-    '        'retrieve the values for each on this location, sorted by ascending value
-    '        myQuery = "Select LOCATIENAAM, RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & " ORDER BY LOCATIENAAM, " & ValuesField & " ASC;"
-    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtResults, False)
-
-    '        'now that we have our datatable we will have to rework it to two 2D arrays:
-    '        'array 1: results for locations and runs
-    '        'array 2: probability for locations runs
-
-    '        Dim P As Double, V As Double, LocID As String
-    '        Dim Overschrijdingsgrafieken As New clsOverschrijdingsgrafieken(Me.Setup)
-    '        For i = 0 To dtResults.Rows.Count - 1
-    '            LocID = dtResults.Rows(i)(0)
-    '            V = dtResults.Rows(i)(2)
-    '            P = dtResults.Rows(i)(3)
-    '            Dim Grafiek As clsOverschrijdingsgrafiek = Overschrijdingsgrafieken.getAdd(LocID)
-    '            Grafiek.Add(V, P)
-    '        Next
-
-
-    '        Return True
-    '    Catch ex As Exception
-    '        Me.Setup.Log.AddError("Error in function ReadExceedanceDataFromDatabase: " & ex.Message)
-    '        Return False
-    '    End Try
-
-    'End Function
-
     Public Function CalcExceedanceTable(ByRef LocationName As String, Filter As String, ByRef dtResults As DataTable, ByRef dtHerh As DataTable) As Boolean
 
         'code optimized by ChatGPT plus
@@ -1391,6 +1343,102 @@ Public Class clsStochastenAnalyse
             Return False
         End Try
 
+    End Function
+
+    Public Function CalcExceedanceTables2DFromCSV(ByRef dtHerh As Dictionary(Of Integer, DataTable), Parameter As GeneralFunctions.enm2DParameter) As Boolean
+        Try
+            'set the path to the 2D results
+            Dim csvFile As String = ""
+            Select Case Parameter
+                Case GeneralFunctions.enm2DParameter.waterlevel
+                    csvFile = ResultsDir & "\" & Levels2DFileName
+                Case GeneralFunctions.enm2DParameter.depth
+                    csvFile = ResultsDir & "\" & Depths2DFileName
+                Case Else
+                    Throw New ArgumentException("2D parameter not supported: " & Parameter)
+            End Select
+            If Not System.IO.File.Exists(csvFile) Then Throw New ArgumentException("2D results file not found: " & csvFile)
+
+            'read all relevant information about our runs
+            Dim rt As New DataTable
+            Dim query As String = $"SELECT RUNID, P FROM RUNS WHERE KLIMAATSCENARIO = '{KlimaatScenario}' AND DUUR = {Duration};"
+            Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, rt, True)
+
+            'the csv file is comma-separated and contains no header. The first column contains the RunID, the remaining columns contain the values for each feature in the 2D mesh. FeatureIdx = column number -1
+
+            'Create a temporary dictionary to store raw data
+            Dim rawData As New Dictionary(Of Integer, List(Of Tuple(Of String, Double, Double)))
+
+            'Read the CSV file
+            Using reader As New Microsoft.VisualBasic.FileIO.TextFieldParser(csvFile)
+                reader.TextFieldType = FileIO.FieldType.Delimited
+                reader.SetDelimiters(",")
+
+                While Not reader.EndOfData
+                    Dim fields As String() = reader.ReadFields()
+                    Dim runId As String = fields(0)
+
+                    'Find the corresponding P value for this runId
+                    Dim p As Double = rt.Select($"RUNID = '{runId}'")(0)("P")
+
+                    For i As Integer = 1 To fields.Length - 1
+                        Dim featureIdx As Integer = i - 1
+                        Dim value As Double = Double.Parse(fields(i))
+
+                        If Not rawData.ContainsKey(featureIdx) Then
+                            rawData(featureIdx) = New List(Of Tuple(Of String, Double, Double))
+                        End If
+
+                        rawData(featureIdx).Add(New Tuple(Of String, Double, Double)(runId, value, p))
+                    Next
+                End While
+            End Using
+
+            'Process the raw data into exceedance tables
+            For Each featureIdx In rawData.Keys
+                Dim dt As New DataTable
+                dt.Columns.Add("Herhalingstijd", GetType(Double))
+                dt.Columns.Add("Waarde", GetType(Double))
+                dt.Columns.Add("RUNID", GetType(String))
+                dt.Columns.Add("FeatureIdx", GetType(Integer))
+
+                Dim sortedData = rawData(featureIdx).OrderBy(Function(x) x.Item2).ToList()
+                Dim pCum As Double = 0
+
+                For Each item In sortedData
+                    Dim runId As String = item.Item1
+                    Dim value As Double = item.Item2
+                    Dim p As Double = item.Item3
+
+                    pCum += p
+
+                    Dim herhTijd As Double
+                    If Setup.StochastenAnalyse.VolumesAsFrequencies Then
+                        Dim maxFreq As Double = 365.25 * 24 / Setup.StochastenAnalyse.Duration
+                        If pCum < maxFreq Then
+                            herhTijd = 1 / (maxFreq - pCum)
+                        Else
+                            herhTijd = If(dt.Rows.Count > 0, dt.Rows(dt.Rows.Count - 1)("Herhalingstijd") + 1, 1)
+                        End If
+                    Else
+                        herhTijd = 1 / -Math.Log(pCum)
+                    End If
+
+                    dt.Rows.Add(herhTijd, value, runId, featureIdx)
+                Next
+
+                'Only keep features that have an increase in value
+                If dt.Rows(dt.Rows.Count - 1)("Waarde") > dt.Rows(0)("Waarde") Then
+                    dtHerh(featureIdx) = dt
+                End If
+            Next
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function CalcExceedanceTables2DFromCSV.")
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
     End Function
 
     Public Function CalcExceedanceTables2D(ByRef locationList As List(Of Integer), Filter As String, Parameter As GeneralFunctions.enm2DParameter, ByRef dtHerh As Dictionary(Of Integer, DataTable), ResultsTableName As String, LocationField As String) As Boolean
@@ -1468,77 +1516,12 @@ Public Class clsStochastenAnalyse
 
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function CalcExceedanceTables.")
+            Me.Setup.Log.AddError("Error in function CalcExceedanceTables2D.")
             Me.Setup.Log.AddError(ex.Message)
             Return False
         End Try
     End Function
 
-
-    'Public Function CalcExceedanceTable(ByRef LocationName As String, Filter As String, ByRef dtResults As DataTable, ByRef dtHerh As DataTable) As Boolean
-
-    '    'retrieves the results for the current location and generates an exceedance chart
-
-    '    Try
-    '        Dim myQuery As String
-    '        Dim pCum As Double = 0
-    '        Dim i As Integer
-    '        Dim ValuesField As String
-    '        dtHerh = New DataTable
-
-    '        If Filter.Trim.ToUpper = "MAX" OrElse Filter.Trim.ToUpper = "MAXVAL" Then
-    '            ValuesField = "MAXVAL"
-    '        ElseIf Filter.Trim.ToUpper = "MIN" OrElse Filter.Trim.ToUpper = "MINVAL" Then
-    '            ValuesField = "MINVAL"
-    '        Else
-    '            Throw New Exception("Timeseries filter on results not supported: " & Filter)
-    '        End If
-
-    '        'retrieve the values for each on this location, sorted by ascending value
-    '        myQuery = "Select RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM='" & LocationName & "' AND KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & " ORDER BY " & ValuesField & " ASC;"
-    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtResults, False)
-
-    '        'retrieve all additional information for each run from the RUNS table
-    '        'myQuery = "SELECT * FROM RUNS WHERE KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ";"
-    '        'Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, myQuery, dtRuns, False)
-    '        'If dtRuns.Rows.Count = 0 OrElse dtResults.Rows.Count = 0 Then Throw New Exception("Error retrieving locations from database for location name=" & LocationName)
-
-    '        'add columns to the new datatable
-    '        dtHerh.Columns.Add(New DataColumn("Herhalingstijd", Type.GetType("System.Double")))
-    '        dtHerh.Columns.Add(New DataColumn("Waarde", Type.GetType("System.Double")))
-    '        dtHerh.Columns.Add(New DataColumn("RUNID", Type.GetType("System.String")))
-
-    '        'compute the return period and store in the new table
-    '        'note: skip the last point since that will cause a divisio by zero. hence the count-2
-    '        For i = 0 To dtResults.Rows.Count - 2
-    '            pCum += dtResults.Rows(i)("P")
-
-    '            dtHerh.Rows.Add()
-    '            dtHerh.Rows(i)(1) = dtResults.Rows(i)(ValuesField)      'write the value for this data pair
-    '            dtHerh.Rows(i)(2) = dtResults.Rows(i)("RUNID")          'write the runid for this data pair
-
-    '            If Setup.StochastenAnalyse.VolumesAsFrequencies Then
-    '                Dim maxFreq As Double = 365.25 * 24 / Duration
-    '                If pCum < maxFreq Then
-    '                    dtHerh.Rows(i)(0) = 1 / (maxFreq - pCum)
-    '                Else
-    '                    'de hoogste is niet vast te stellen want maxFreq- fCum = 0, dus deling door nul
-    '                    'daarom hier een eenvoudige benadering door T(i-1) + 1 te nemen
-    '                    'maar in het wegschrijven van de resultaten slaan we deze sowieso over
-    '                    dtHerh.Rows(i)(0) = dtHerh.Rows(i - 1)(0) + 1   'write the return period for this data pair
-    '                End If
-    '            Else
-    '                dtHerh.Rows(i)(0) = 1 / -Math.Log(pCum) 'herhalingstijd = 1/-ln(onderschrijdingskans)
-    '            End If
-    '        Next
-
-    '        Return True
-    '    Catch ex As Exception
-    '        Me.Setup.Log.AddError("Error in function calcExceedanceTable.")
-    '        Me.Setup.Log.AddError(ex.Message)
-    '        Return False
-    '    End Try
-    'End Function
 
     Public Function getLevelsFromLocation(ByRef LocationName As String, TableName As String, ZPField As String, WPField As String, MaxAllowedLevelField As String, SurfaceLevelField As String, ByRef dt As DataTable) As Boolean
 
@@ -1706,8 +1689,10 @@ Public Class clsStochastenAnalyse
             If process1D Then ProcessExceedanceTables1D(RunsList, rundt)
             If process2D Then
                 'we'll create exceedance table twice: once for waterlevel and once for depth
-                ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
-                ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
+                'ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
+                'ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
+                ProcessExceedanceTables2DFromCSV(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
+                ProcessExceedanceTables2DFromCSV(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
             End If
 
             Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen succesvol berekend.", 10, 10, True)
@@ -1777,67 +1762,103 @@ Public Class clsStochastenAnalyse
             Return False
         End Try
     End Function
-    Public Function ProcessExceedanceTables2D(ByRef RunsList As Dictionary(Of String, Integer), ByRef rundt As DataTable, parameter As GeneralFunctions.enm2DParameter) As Boolean
+
+    Public Function ProcessExceedanceTables2DFromCSV(ByRef RunsList As Dictionary(Of String, Integer), ByRef rundt As DataTable, parameter As GeneralFunctions.enm2DParameter) As Boolean
         Try
+            Dim i As Integer, Loc As Integer
+
             Me.Setup.GeneralFunctions.UpdateProgressBar($"Overschrijdingstabellen berekenen voor 2D parameter {parameter.ToString}...", 0, 10, True)
 
-            Dim query As String
-            Dim i As Integer
-            Dim Loc As Integer
-            Dim locdt As New DataTable, locIdx As Integer
-
-            Dim ResultsTableName As String
-            ResultsTableName = get2DResultsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+            'clear existing exceedance tables for this location and climate
             Dim HerhTableName As String
             HerhTableName = get2DReturnPeriodsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
-
-            'now only read results locations
-            query = $"SELECT DISTINCT FEATUREIDX FROM {ResultsTableName};"
-            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
-
-            'clear existing exceedance tables for this location and climate
-            query = $"DELETE FROM {HerhTableName};"
+            Dim query As String = $"DELETE FROM {HerhTableName};"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
-            'for each location in our results table we will now create an exceedance table and write it to the database
-            Dim nLocs As Integer = locdt.Rows.Count
+            'first establish the path to our results file
+            Dim ResultsPath As String = ""
+            Select Case parameter
+                Case GeneralFunctions.enm2DParameter.depth
+                    ResultsPath = ResultsDir & "\" & Depths2DFileName
+                Case GeneralFunctions.enm2DParameter.waterlevel
+                    ResultsPath = ResultsDir & "\" & Levels2DFileName
+            End Select
+
+            If Not System.IO.File.Exists(ResultsPath) Then Throw New Exception("2D results file not found: " & ResultsPath)
+
+            'let's read the data in chunks of 1000 lines
             Dim chunkSize As Integer = 1000
-            For locIdx = 0 To locdt.Rows.Count - 1 Step chunkSize
 
-                Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, nLocs)
+            Using csvReader As New StreamReader(ResultsPath)
+                'read the first line, containing the runIDs
+                Dim runIDs As String() = csvReader.ReadLine().Split(","c).Skip(1).ToArray() 'skip the first column "FEATUREIDX"
+                'read the second line, containing the frequencies associated with each run
+                Dim frequencies As String() = csvReader.ReadLine().Split(","c).Skip(1).ToArray()
 
-                Dim dtHerh As New Dictionary(Of Integer, DataTable)
-
-                ' Get the location names for the current chunk
-                Dim locationChunk As New List(Of Integer)
-                For i = locIdx To Math.Min(locIdx + chunkSize - 1, locdt.Rows.Count - 1)
-                    locationChunk.Add(locdt.Rows(i)("FEATUREIDX"))
+                'create a dictionary to map runIDs to their frequencies
+                Dim runFrequencies As New Dictionary(Of String, Double)
+                For i = 0 To runIDs.Length - 1
+                    runFrequencies(runIDs(i)) = Double.Parse(frequencies(i))
                 Next
 
-                'retrieve all data for the current duration and climate scenario
-                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, ResultsTableName, "FEATUREIDX") Then
+                'process the data in chunks
+                Dim chunk As New List(Of String())
+                Dim locationList As New List(Of Integer)
+                Dim dtHerh As New Dictionary(Of Integer, DataTable)
+
+                While Not csvReader.EndOfStream
+                    'read a chunk of data
+                    For i = 0 To chunkSize - 1
+                        Dim line As String = csvReader.ReadLine()
+                        If line Is Nothing Then Exit For
+                        chunk.Add(line.Split(","c))
+                    Next
+
+                    'process the chunk of data
+                    For Each row In chunk
+                        Dim featureIdx As Integer = Integer.Parse(row(0))
+                        If Not locationList.Contains(featureIdx) Then
+                            locationList.Add(featureIdx)
+                            dtHerh(featureIdx) = New DataTable()
+                            dtHerh(featureIdx).Columns.Add("RUNID", GetType(String))
+                            dtHerh(featureIdx).Columns.Add("P", GetType(Double))
+                            dtHerh(featureIdx).Columns.Add("WAARDE", GetType(Double))
+                            dtHerh(featureIdx).Columns.Add("FEATUREIDX", GetType(Integer))
+                        End If
+
+                        For i = 1 To row.Length - 1
+                            dtHerh(featureIdx).Rows.Add(runIDs(i - 1), runFrequencies(runIDs(i - 1)), Double.Parse(row(i)), featureIdx)
+                        Next
+                    Next
+
+                    'clear the chunk for the next iteration
+                    chunk.Clear()
+                End While
+
+                'calculate exceedance tables
+                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationList, "WAARDE", parameter, dtHerh, "TempResultsTable", "FEATUREIDX") Then
                     Using transaction = Me.Setup.SqliteCon.BeginTransaction
                         Dim myCmd As New SQLite.SQLiteCommand
                         myCmd.Connection = Me.Setup.SqliteCon
 
                         Dim params As New Dictionary(Of String, Object) From {
-                    {"@featureidx", ""},
-                    {"@runid", ""},
-                    {"@runidx", ""},
-                    {"@herhalingstijd", 0},
-                    {"@waarde", 0},
-                    {"@seizoen", ""},
-                    {"@volume", 0},
-                    {"@patroon", ""},
-                    {"@gw", ""},
-                    {"@boundary", ""},
-                    {"@wind", ""},
-                    {"@extra1", ""},
-                    {"@extra2", ""},
-                    {"@extra3", ""},
-                    {"@extra4", ""}
-                }
-                        For Each Loc In locationChunk
+                        {"@featureidx", ""},
+                        {"@runid", ""},
+                        {"@runidx", ""},
+                        {"@herhalingstijd", 0},
+                        {"@waarde", 0},
+                        {"@seizoen", ""},
+                        {"@volume", 0},
+                        {"@patroon", ""},
+                        {"@gw", ""},
+                        {"@boundary", ""},
+                        {"@wind", ""},
+                        {"@extra1", ""},
+                        {"@extra2", ""},
+                        {"@extra3", ""},
+                        {"@extra4", ""}
+                    }
+                        For Each Loc In locationList
                             Dim dt As DataTable = dtHerh(Loc)
                             For i = 0 To dt.Rows.Count - 1
                                 Dim RunID As String = dt.Rows(i)("RUNID")
@@ -1866,20 +1887,126 @@ Public Class clsStochastenAnalyse
                         transaction.Commit()
                     End Using
 
-                    'chatGPT Perform WAL checkpoint
+                    'Perform WAL checkpoint
                     Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
                         cmd.ExecuteNonQuery()
                     End Using
-
                 End If
-            Next
+            End Using
 
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function ProcessExceedanceTables2D of class clsStochastenAnalyse: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function ProcessExceedanceTables2DFromCSV of class clsStochastenAnalyse: " & ex.Message)
             Return False
         End Try
     End Function
+
+
+
+
+    'Public Function ProcessExceedanceTables2D(ByRef RunsList As Dictionary(Of String, Integer), ByRef rundt As DataTable, parameter As GeneralFunctions.enm2DParameter) As Boolean
+    '    Try
+    '        Me.Setup.GeneralFunctions.UpdateProgressBar($"Overschrijdingstabellen berekenen voor 2D parameter {parameter.ToString}...", 0, 10, True)
+
+    '        Dim query As String
+    '        Dim i As Integer
+    '        Dim Loc As Integer
+    '        Dim locdt As New DataTable, locIdx As Integer
+
+    '        Dim ResultsTableName As String
+    '        ResultsTableName = get2DResultsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+    '        Dim HerhTableName As String
+    '        HerhTableName = get2DReturnPeriodsTableName(parameter, Me.Setup.StochastenAnalyse.KlimaatScenario.ToString, Me.Setup.StochastenAnalyse.Duration)
+
+    '        'now only read results locations
+    '        query = $"SELECT DISTINCT FEATUREIDX FROM {ResultsTableName};"
+    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
+
+    '        'clear existing exceedance tables for this location and climate
+    '        query = $"DELETE FROM {HerhTableName};"
+    '        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+
+    '        'for each location in our results table we will now create an exceedance table and write it to the database
+    '        Dim nLocs As Integer = locdt.Rows.Count
+    '        Dim chunkSize As Integer = 1000
+    '        For locIdx = 0 To locdt.Rows.Count - 1 Step chunkSize
+
+    '            Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, nLocs)
+
+    '            Dim dtHerh As New Dictionary(Of Integer, DataTable)
+
+    '            ' Get the location names for the current chunk
+    '            Dim locationChunk As New List(Of Integer)
+    '            For i = locIdx To Math.Min(locIdx + chunkSize - 1, locdt.Rows.Count - 1)
+    '                locationChunk.Add(locdt.Rows(i)("FEATUREIDX"))
+    '            Next
+
+    '            'retrieve all data for the current duration and climate scenario
+    '            If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, ResultsTableName, "FEATUREIDX") Then
+    '                Using transaction = Me.Setup.SqliteCon.BeginTransaction
+    '                    Dim myCmd As New SQLite.SQLiteCommand
+    '                    myCmd.Connection = Me.Setup.SqliteCon
+
+    '                    Dim params As New Dictionary(Of String, Object) From {
+    '                {"@featureidx", ""},
+    '                {"@runid", ""},
+    '                {"@runidx", ""},
+    '                {"@herhalingstijd", 0},
+    '                {"@waarde", 0},
+    '                {"@seizoen", ""},
+    '                {"@volume", 0},
+    '                {"@patroon", ""},
+    '                {"@gw", ""},
+    '                {"@boundary", ""},
+    '                {"@wind", ""},
+    '                {"@extra1", ""},
+    '                {"@extra2", ""},
+    '                {"@extra3", ""},
+    '                {"@extra4", ""}
+    '            }
+    '                    For Each Loc In locationChunk
+    '                        Dim dt As DataTable = dtHerh(Loc)
+    '                        For i = 0 To dt.Rows.Count - 1
+    '                            Dim RunID As String = dt.Rows(i)("RUNID")
+    '                            Dim RowIdx As Integer = RunsList.Item(RunID)
+
+    '                            params("@featureidx") = Loc
+    '                            params("@runid") = rundt.Rows(RowIdx)("RUNID")
+    '                            params("@runidx") = rundt.Rows(RowIdx)("RUNIDX")
+    '                            params("@herhalingstijd") = dt.Rows(i)(0)
+    '                            params("@waarde") = dt.Rows(i)(1)
+    '                            params("@seizoen") = rundt.Rows(RowIdx)("SEIZOEN")
+    '                            params("@volume") = rundt.Rows(RowIdx)("VOLUME")
+    '                            params("@patroon") = rundt.Rows(RowIdx)("PATROON")
+    '                            params("@gw") = rundt.Rows(RowIdx)("GW")
+    '                            params("@boundary") = rundt.Rows(RowIdx)("BOUNDARY")
+    '                            params("@wind") = rundt.Rows(RowIdx)("WIND")
+    '                            params("@extra1") = rundt.Rows(RowIdx)("EXTRA1")
+    '                            params("@extra2") = rundt.Rows(RowIdx)("EXTRA2")
+    '                            params("@extra3") = rundt.Rows(RowIdx)("EXTRA3")
+    '                            params("@extra4") = rundt.Rows(RowIdx)("EXTRA4")
+
+    '                            If Not InsertRecordWithParameters2D(myCmd, params, HerhTableName) Then Throw New Exception("Error inserting record with parameters 2D.")
+    '                        Next
+    '                    Next
+
+    '                    transaction.Commit()
+    '                End Using
+
+    '                'chatGPT Perform WAL checkpoint
+    '                Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
+    '                    cmd.ExecuteNonQuery()
+    '                End Using
+
+    '            End If
+    '        Next
+
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function ProcessExceedanceTables2D of class clsStochastenAnalyse: " & ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
 
 
     Private Function InsertRecordWithParameters2D(ByRef myCmd As SQLite.SQLiteCommand, ByVal params As Dictionary(Of String, Object), ByVal tableName As String) As Boolean
@@ -1980,7 +2107,7 @@ Public Class clsStochastenAnalyse
                 query = $"DELETE FROM {TableName} WHERE KLIMAATSCENARIO = '" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR = " & Setup.StochastenAnalyse.Duration.ToString.Trim & ";"
                 Setup.GeneralFunctions.SQLiteNoQuery(con, query)
 
-                readResults2D()
+                Results2DToCSV()
             End If
 
 
@@ -2308,41 +2435,35 @@ Public Class clsStochastenAnalyse
         End Using
     End Sub
 
-
-    Public Function readResults2D() As Boolean
+    Public Function Results2DToCSV() As Boolean
         Try
             Dim i As Long, n As Long
-
-
-            'open the database
-            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then
-                Me.Setup.SqliteCon.Open()
-            End If
-
-            'chatGPT advice to reduce .journal file size: enable WAL mode
-            Using cmd As New SQLite.SQLiteCommand("PRAGMA journal_mode=WAL;", Me.Setup.SqliteCon)
-                cmd.ExecuteNonQuery()
-            End Using
+            Dim depthResults As New List(Of List(Of Double))()
+            Dim levelResults As New List(Of List(Of Double))()
+            Dim runIDs As New List(Of String)()
+            Dim probabilities As New List(Of Double)()
 
             'read the results. For now we will only support Fourier Files
             n = Runs.Runs.Count
             i = 0
-            For Each myRun As clsStochastenRun In Runs.Runs.Values                        'doorloop alle runs en lees de resultaatbestanden uit
+            For Each myRun As clsStochastenRun In Runs.Runs.Values
                 i += 1
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten lezen voor simulatie " & i & " van " & n, i, n, True)
-                For Each myModel As clsSimulationModel In Models.Values                     'doorloop alle modellen die gedraaid zijn
-                    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values    'doorloop alle bestanden onder dit model
+                runIDs.Add(myRun.ID)
+                probabilities.Add(myRun.P)
+                For Each myModel As clsSimulationModel In Models.Values
+                    For Each myFile As clsResultsFile In myModel.ResultsFiles.Files.Values
                         If Right(myFile.FileName, 7).ToLower = "_fou.nc" Then
                             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                            readFou(myRun, myFile)
-                            Me.Setup.SqliteCon.Close()
+                            FourierToLists(myRun, myFile, depthResults, levelResults)
                         End If
                     Next
                 Next
             Next
 
-            'close the database
-            Me.Setup.SqliteCon.Close()
+            ' Write transposed results to CSV files
+            WriteTransposedCSV(ResultsDir & "\" & Depths2DFileName, runIDs, probabilities, depthResults)
+            WriteTransposedCSV(ResultsDir & "\" & Levels2DFileName, runIDs, probabilities, levelResults)
 
             Return True
         Catch ex As Exception
@@ -2351,62 +2472,57 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
+    Public Function FourierToLists(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile, ByRef depthResults As List(Of List(Of Double)), ByRef levelResults As List(Of List(Of Double))) As Boolean
+        Try
+            Dim path As String = System.IO.Path.Combine(myRun.OutputFilesDir, myFile.FileName)
+            If Not System.IO.File.Exists(path) Then
+                Throw New FileNotFoundException("Fourier file does not exist", path)
+            End If
+            Dim myFouNC As New clsFouNCFile(path, Me.Setup)
+            If Not myFouNC.Read() Then
+                Throw New Exception("Error reading fourier file " & path)
+            End If
+            Dim MaxDepths As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.depth)
+            Dim MaxLevels As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.waterlevel)
 
-    'Public Function readFou(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
-    '    Try
-    '        Dim j As Long
-    '        Dim Min As Double, Max As Double, Avg As Double
+            ' Add results to lists
+            If depthResults.Count = 0 Then
+                For j As Integer = 0 To MaxDepths.Length - 1
+                    depthResults.Add(New List(Of Double)())
+                    levelResults.Add(New List(Of Double)())
+                Next
+            End If
 
-    '        If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+            For j As Integer = 0 To MaxDepths.Length - 1
+                depthResults(j).Add(MaxDepths(j))
+                levelResults(j).Add(MaxLevels(j))
+            Next
 
-    '        Dim path As String = myRun.OutputFilesDir & "\" & myFile.FileName
-    '        Dim myFouNC As New clsFouNCFile(path, Me.Setup)
-    '        If Not System.IO.File.Exists(path) Then Throw New Exception("Fourier file does not exist: " & path)
-    '        If Not myFouNC.Read() Then Throw New Exception("Error reading fourier file " & path)
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function readFouToCSV of class clsStochastenanalyse: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
-    '        'retrieve the maximum water levels from our Fourier file
-    '        Dim MaxDepths As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.depth)
-    '        Dim MaxLevels As Double() = myFouNC.get2DMaxima(GeneralFunctions.enm2DParameter.waterlevel)
+    Private Sub WriteTransposedCSV(fileName As String, runIDs As List(Of String), probabilities As List(Of Double), results As List(Of List(Of Double)))
+        Using writer As New StreamWriter(fileName)
+            ' Write header
+            writer.WriteLine("FEATUREIDX," & String.Join(",", runIDs))
+            writer.WriteLine("P," & String.Join(",", probabilities))
 
-    '        'now we have to write these maxima to the database. use the index number as location ID
-    '        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-    '        Using myCmd As New SQLite.SQLiteCommand
-    '            myCmd.Connection = Me.Setup.SqliteCon
-    '            Using transaction = Me.Setup.SqliteCon.BeginTransaction
+            ' Write data
+            For i As Integer = 0 To results.Count - 1
+                Dim rowBuilder As New StringBuilder(i.ToString())
+                For Each value In results(i)
+                    rowBuilder.Append(",").Append(value)
+                Next
+                writer.WriteLine(rowBuilder.ToString())
+            Next
+        End Using
+    End Sub
 
-    '                'the MaxDepths array contains the maximum depth for each cell. Hence the index number is also the feature index number.
-    '                'We will now write these to the database
-    '                For j = 0 To MaxDepths.Count - 1
-    '                    Max = MaxDepths(j)
-    '                    Min = 0
-    '                    Avg = 0
-    '                    'add the outcome of this run to the dictionary of results
-    '                    myCmd.CommandText = "INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & "," & j & ",'" & myRun.ID & "','" & GeneralFunctions.enm2DParameter.depth.ToString & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-    '                    myCmd.ExecuteNonQuery()
-    '                Next
-
-    '                For j = 0 To MaxLevels.Count - 1
-    '                    Max = MaxLevels(j)
-    '                    Min = 0
-    '                    Avg = 0
-    '                    'add the outcome of this run to the dictionary of results
-    '                    myCmd.CommandText = "INSERT INTO RESULTATEN2D (KLIMAATSCENARIO, DUUR, FEATUREIDX, RUNID, PARAMETER, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & "," & j & ",'" & myRun.ID & "','" & GeneralFunctions.enm2DParameter.waterlevel.ToString & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-    '                    myCmd.ExecuteNonQuery()
-    '                Next
-
-    '                'insert the results for all locations at once
-    '                transaction.Commit() 'this is where the bulk insert is finally executed.
-    '            End Using
-    '        End Using
-
-    '        Return True
-    '    Catch ex As Exception
-    '        Me.Setup.Log.AddError("Error in function readFou of class clsStochastenanalyse: " & ex.Message)
-    '        Return False
-    '    End Try
-    'End Function
-
-    Public Function readFou(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
+    Public Function readFouToSQLite(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
         'this function is the result of refactoring by Claude AI on 2024-06-27
         Try
             Dim path As String = System.IO.Path.Combine(myRun.OutputFilesDir, myFile.FileName)
@@ -2437,7 +2553,7 @@ Public Class clsStochastenAnalyse
 
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function readFou of class clsStochastenanalyse: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function readFouToSQLite of class clsStochastenanalyse: " & ex.Message)
             Return False
         End Try
     End Function
