@@ -3647,7 +3647,7 @@ Public Class frmStochasten
         End If
 
         If chk2D.Checked Then
-            Call Setup.StochastenAnalyse.ExportResults2D(GeneralFunctions.enm2DParameter.waterlevel)
+            'Call Setup.StochastenAnalyse.ExportResults2D(GeneralFunctions.enm2DParameter.waterlevel)
         End If
 
         Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"

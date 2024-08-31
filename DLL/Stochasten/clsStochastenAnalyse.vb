@@ -1441,87 +1441,73 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function CalcExceedanceTables2D(ByRef locationList As List(Of Integer), Filter As String, Parameter As GeneralFunctions.enm2DParameter, ByRef dtHerh As Dictionary(Of Integer, DataTable), ResultsTableName As String, LocationField As String) As Boolean
+    Public Function CalcExceedanceTables2D(ByRef locationList As List(Of Integer), dtResults As Dictionary(Of Integer, DataTable)) As (Boolean, Dictionary(Of Integer, DataTable))
         Try
-            Dim myQuery As String = ""
-            Dim Loc As Integer
-            Dim i As Integer = 0
             Dim ValuesField As String = "WAARDE"
-
-            Dim prevVal As Double, curVal As Double
-
             Dim dtTemp As New Dictionary(Of Integer, DataTable)
             Dim finalList As New List(Of Integer)
 
-            For Each Loc In locationList
+            'for each feature, create a table with the exceedance values
+            For Each Loc As Integer In locationList
                 Dim dt As New DataTable
                 dt.Columns.Add("Herhalingstijd", GetType(Double))
                 dt.Columns.Add("Waarde", GetType(Double))
                 dt.Columns.Add("RUNID", GetType(String))
-                dt.Columns.Add(LocationField, GetType(String))
+                dt.Columns.Add("FEATUREIDX", GetType(String))
                 dtTemp.Add(Loc, dt)
             Next
 
-            myQuery = "SELECT " & LocationField & ", RUNID, " & ValuesField & ", P FROM " & ResultsTableName & " WHERE " & LocationField & " In (" & String.Join(",", locationList.Select(Function(l) l)) & $") ORDER BY " & LocationField & ", " & ValuesField & " ASC;"
-            Using cmd As New SQLiteCommand(myQuery, Me.Setup.SqliteCon)
-                Using reader As SQLiteDataReader = cmd.ExecuteReader()
-                    Dim pCumDict As New Dictionary(Of Integer, Double)
-                    For Each Loc In locationList
-                        pCumDict.Add(Loc, 0)
-                    Next
+            For Each FeatureIdx As Integer In dtResults.Keys
+                Dim myTable As DataTable = dtResults.Item(FeatureIdx)
+                Dim pCum As Double = 0
+                Dim i As Integer = 0
 
-                    Dim previousFeature As Integer = -1
-                    While reader.Read()
-                        Dim FeatureIdx As Integer = reader.GetInt32(reader.GetOrdinal(LocationField))
-                        If previousFeature <> FeatureIdx Then
-                            i = 0 ' Reset the counter when moving to a new location
-                        End If
+                ' Sort the table by WAARDE in ascending order
+                myTable.DefaultView.Sort = ValuesField & " ASC"
+                Dim sortedTable As DataTable = myTable.DefaultView.ToTable()
 
-                        Dim pCum As Double = pCumDict(FeatureIdx) + reader.GetDouble(reader.GetOrdinal("P"))
-                        pCumDict(FeatureIdx) = pCum
-                        Dim value As Double = reader.GetDouble(reader.GetOrdinal(ValuesField))
-                        Dim runId As String = reader.GetString(reader.GetOrdinal("RUNID"))
+                For Each row As DataRow In sortedTable.Rows
+                    Dim value As Double = row(ValuesField)
+                    Dim runId As String = row("RUNID")
+                    Dim p As Double = row("P")
 
-                        Dim herhTijd As Double
-                        If Setup.StochastenAnalyse.VolumesAsFrequencies Then
-                            Dim maxFreq As Double = 365.25 * 24 / Setup.StochastenAnalyse.Duration
-                            If pCum < maxFreq Then
-                                herhTijd = 1 / (maxFreq - pCum)
-                                prevVal = value
-                            Else
-                                herhTijd = dtTemp(FeatureIdx).Rows(i - 1)(0) + 1
-                                curVal = value
-                            End If
+                    pCum += p
+                    Dim herhTijd As Double
+
+                    If Setup.StochastenAnalyse.VolumesAsFrequencies Then
+                        Dim maxFreq As Double = 365.25 * 24 / Setup.StochastenAnalyse.Duration
+                        If pCum < maxFreq Then
+                            herhTijd = 1 / (maxFreq - pCum)
                         Else
-                            herhTijd = 1 / -Math.Log(pCum)
+                            herhTijd = dtTemp(FeatureIdx).Rows(i - 1)("Herhalingstijd") + 1
                         End If
-                        dtTemp(FeatureIdx).Rows.Add(herhTijd, value, runId, FeatureIdx)
-                        i += 1
-                        previousFeature = FeatureIdx
-                    End While
-                End Using
-            End Using
+                    Else
+                        herhTijd = 1 / -Math.Log(pCum)
+                    End If
 
-            'now only keep the features that have an increase in value
+                    dtTemp(FeatureIdx).Rows.Add(herhTijd, value, runId, FeatureIdx)
+                    i += 1
+                Next
+            Next
+
+            ' Now only keep the features that have an increase in value
             For Each featureIdx As Integer In dtTemp.Keys
                 Dim dt As DataTable = dtTemp.Item(featureIdx)
-                If dt.Rows(dt.Rows.Count - 1)("Waarde") > dt.Rows(0)("Waarde") Then
-                    dtHerh.Add(featureIdx, dt)
+                If dt.Rows.Count > 0 AndAlso dt.Rows(dt.Rows.Count - 1)("Waarde") > dt.Rows(0)("Waarde") Then
                     finalList.Add(featureIdx)
                 End If
             Next
 
-            'update the locationList with only those locations that have an increase in value
+            ' Update the locationList with only those locations that have an increase in value
             locationList = finalList
 
-            Return True
+            Return (True, dtTemp)
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function CalcExceedanceTables2D.")
             Me.Setup.Log.AddError(ex.Message)
-            Return False
+            Return (False, Nothing)
         End Try
     End Function
-
 
     Public Function getLevelsFromLocation(ByRef LocationName As String, TableName As String, ZPField As String, WPField As String, MaxAllowedLevelField As String, SurfaceLevelField As String, ByRef dt As DataTable) As Boolean
 
@@ -1801,12 +1787,18 @@ Public Class clsStochastenAnalyse
                     runFrequencies(runIDs(i)) = Double.Parse(frequencies(i))
                 Next
 
-                'process the data in chunks
-                Dim chunk As New List(Of String())
-                Dim locationList As New List(Of Integer)
-                Dim dtHerh As New Dictionary(Of Integer, DataTable)
-
                 While Not csvReader.EndOfStream
+
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", csvReader.BaseStream.Position, csvReader.BaseStream.Length)
+
+                    'process the data in chunks
+                    Dim chunk As New List(Of String())
+                    Dim locationList As New List(Of Integer)
+                    Dim dtResults As Dictionary(Of Integer, DataTable)
+
+                    'create a new dictionary of datatables to store the current chunk of data
+                    dtResults = New Dictionary(Of Integer, DataTable)
+
                     'read a chunk of data
                     For i = 0 To chunkSize - 1
                         Dim line As String = csvReader.ReadLine()
@@ -1817,31 +1809,38 @@ Public Class clsStochastenAnalyse
                     'process the chunk of data
                     For Each row In chunk
                         Dim featureIdx As Integer = Integer.Parse(row(0))
+                        'each feature should get its own datatable  
+                        Dim dt As New DataTable
+                        dt.Columns.Add("RUNID", GetType(String))            'the run ID
+                        dt.Columns.Add("P", GetType(Double))                'the probability associated with this run
+                        dt.Columns.Add("WAARDE", GetType(Double))           'the value associated with this feature and run
+                        dt.Columns.Add("FEATUREIDX", GetType(Integer))      'the index number of the 2D feature
+
+                        'add the feature index to the locations list
                         If Not locationList.Contains(featureIdx) Then
                             locationList.Add(featureIdx)
-                            dtHerh(featureIdx) = New DataTable()
-                            dtHerh(featureIdx).Columns.Add("RUNID", GetType(String))
-                            dtHerh(featureIdx).Columns.Add("P", GetType(Double))
-                            dtHerh(featureIdx).Columns.Add("WAARDE", GetType(Double))
-                            dtHerh(featureIdx).Columns.Add("FEATUREIDX", GetType(Integer))
                         End If
 
+                        'add the new datatable for this feature to the dtResults dictionary
+                        If Not dtResults.ContainsKey(featureIdx) Then
+                            dtResults.Add(featureIdx, dt)
+                        End If
+
+                        'add each pair of runID, probability and value to the datatable
                         For i = 1 To row.Length - 1
-                            dtHerh(featureIdx).Rows.Add(runIDs(i - 1), runFrequencies(runIDs(i - 1)), Double.Parse(row(i)), featureIdx)
+                            dtResults(featureIdx).Rows.Add(runIDs(i - 1), runFrequencies(runIDs(i - 1)), Double.Parse(row(i)), featureIdx)
                         Next
                     Next
 
-                    'clear the chunk for the next iteration
-                    chunk.Clear()
-                End While
+                    'now that we read the chunk of data, calculate the exceedance tables for these features
+                    Dim res As (Boolean, Dictionary(Of Integer, DataTable))
+                    res = Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationList, dtResults)
+                    If res.Item1 Then
+                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+                            Dim myCmd As New SQLite.SQLiteCommand
+                            myCmd.Connection = Me.Setup.SqliteCon
 
-                'calculate exceedance tables
-                If Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationList, "WAARDE", parameter, dtHerh, "TempResultsTable", "FEATUREIDX") Then
-                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
-                        Dim myCmd As New SQLite.SQLiteCommand
-                        myCmd.Connection = Me.Setup.SqliteCon
-
-                        Dim params As New Dictionary(Of String, Object) From {
+                            Dim params As New Dictionary(Of String, Object) From {
                         {"@featureidx", ""},
                         {"@runid", ""},
                         {"@runidx", ""},
@@ -1858,40 +1857,46 @@ Public Class clsStochastenAnalyse
                         {"@extra3", ""},
                         {"@extra4", ""}
                     }
-                        For Each Loc In locationList
-                            Dim dt As DataTable = dtHerh(Loc)
-                            For i = 0 To dt.Rows.Count - 1
-                                Dim RunID As String = dt.Rows(i)("RUNID")
-                                Dim RowIdx As Integer = RunsList.Item(RunID)
+                            For Each Loc In locationList
+                                Dim dt As DataTable = res.Item2(Loc)
+                                For i = 0 To dt.Rows.Count - 1
+                                    Dim RunID As String = dt.Rows(i)("RUNID")
+                                    Dim RowIdx As Integer = RunsList.Item(RunID)
 
-                                params("@featureidx") = Loc
-                                params("@runid") = rundt.Rows(RowIdx)("RUNID")
-                                params("@runidx") = rundt.Rows(RowIdx)("RUNIDX")
-                                params("@herhalingstijd") = dt.Rows(i)(0)
-                                params("@waarde") = dt.Rows(i)(1)
-                                params("@seizoen") = rundt.Rows(RowIdx)("SEIZOEN")
-                                params("@volume") = rundt.Rows(RowIdx)("VOLUME")
-                                params("@patroon") = rundt.Rows(RowIdx)("PATROON")
-                                params("@gw") = rundt.Rows(RowIdx)("GW")
-                                params("@boundary") = rundt.Rows(RowIdx)("BOUNDARY")
-                                params("@wind") = rundt.Rows(RowIdx)("WIND")
-                                params("@extra1") = rundt.Rows(RowIdx)("EXTRA1")
-                                params("@extra2") = rundt.Rows(RowIdx)("EXTRA2")
-                                params("@extra3") = rundt.Rows(RowIdx)("EXTRA3")
-                                params("@extra4") = rundt.Rows(RowIdx)("EXTRA4")
+                                    params("@featureidx") = Loc
+                                    params("@runid") = rundt.Rows(RowIdx)("RUNID")
+                                    params("@runidx") = rundt.Rows(RowIdx)("RUNIDX")
+                                    params("@herhalingstijd") = dt.Rows(i)(0)
+                                    params("@waarde") = dt.Rows(i)(1)
+                                    params("@seizoen") = rundt.Rows(RowIdx)("SEIZOEN")
+                                    params("@volume") = rundt.Rows(RowIdx)("VOLUME")
+                                    params("@patroon") = rundt.Rows(RowIdx)("PATROON")
+                                    params("@gw") = rundt.Rows(RowIdx)("GW")
+                                    params("@boundary") = rundt.Rows(RowIdx)("BOUNDARY")
+                                    params("@wind") = rundt.Rows(RowIdx)("WIND")
+                                    params("@extra1") = rundt.Rows(RowIdx)("EXTRA1")
+                                    params("@extra2") = rundt.Rows(RowIdx)("EXTRA2")
+                                    params("@extra3") = rundt.Rows(RowIdx)("EXTRA3")
+                                    params("@extra4") = rundt.Rows(RowIdx)("EXTRA4")
 
-                                If Not InsertRecordWithParameters2D(myCmd, params, HerhTableName) Then Throw New Exception("Error inserting record with parameters 2D.")
+                                    If Not InsertRecordWithParameters2D(myCmd, params, HerhTableName) Then Throw New Exception("Error inserting record with parameters 2D.")
+                                Next
                             Next
-                        Next
 
-                        transaction.Commit()
-                    End Using
+                            transaction.Commit()
+                        End Using
 
-                    'Perform WAL checkpoint
-                    Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
-                        cmd.ExecuteNonQuery()
-                    End Using
-                End If
+                        'Perform WAL checkpoint
+                        Using cmd As New SQLite.SQLiteCommand("PRAGMA wal_checkpoint(TRUNCATE);", Me.Setup.SqliteCon)
+                            cmd.ExecuteNonQuery()
+                        End Using
+                    End If
+
+                    'clear the chunk for the next iteration
+                    chunk.Clear()
+                End While
+
+
             End Using
 
             Return True
@@ -2764,154 +2769,155 @@ Public Class clsStochastenAnalyse
 
     End Function
 
-    Public Function ExportResults2D(parameter As GeneralFunctions.enm2DParameter) As Boolean
-        Try
-            ' Open the database connection
-            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-            Dim cmd As New SQLite.SQLiteCommand
-            cmd.Connection = Me.Setup.SqliteCon
+    'Public Function ExportResults2D(parameter As GeneralFunctions.enm2DParameter) As Boolean
+    '    Try
+    '        ' Open the database connection
+    '        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+    '        Dim cmd As New SQLite.SQLiteCommand
+    '        cmd.Connection = Me.Setup.SqliteCon
 
-            Dim r As Long = 0, c As Long = 0
-            Dim i As Long, n As Long
-            Dim dtLoc As New DataTable ' Locations
-            Dim dtHerh As New Dictionary(Of Integer, DataTable)
+    '        Dim r As Long = 0, c As Long = 0
+    '        Dim i As Long, n As Long
+    '        Dim dtLoc As New DataTable ' Locations
+    '        Dim dtHerh As New Dictionary(Of Integer, DataTable)
 
-            'prepare a spreadsheet
-            Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
-            ws.ws.Cells(0, 0).Value = "ID"
-            ws.ws.Cells(0, 1).Value = "Alias"
-            ws.ws.Cells(0, 2).Value = 0.01
-            ws.ws.Cells(0, 3).Value = 0.05
-            ws.ws.Cells(0, 4).Value = 0.1
-            ws.ws.Cells(0, 5).Value = 0.5
-            ws.ws.Cells(0, 6).Value = 1
-            ws.ws.Cells(0, 7).Value = 2
-            ws.ws.Cells(0, 8).Value = 3
-            ws.ws.Cells(0, 9).Value = 4
-            ws.ws.Cells(0, 10).Value = 5
-            ws.ws.Cells(0, 11).Value = 6
-            ws.ws.Cells(0, 12).Value = 7
-            ws.ws.Cells(0, 13).Value = 8
-            ws.ws.Cells(0, 14).Value = 9
-            ws.ws.Cells(0, 15).Value = 10
-            ws.ws.Cells(0, 16).Value = 15
-            ws.ws.Cells(0, 17).Value = 20
-            ws.ws.Cells(0, 18).Value = 25
-            ws.ws.Cells(0, 19).Value = 30
-            ws.ws.Cells(0, 20).Value = 35
-            ws.ws.Cells(0, 21).Value = 40
-            ws.ws.Cells(0, 22).Value = 45
-            ws.ws.Cells(0, 23).Value = 50
-            ws.ws.Cells(0, 24).Value = 60
-            ws.ws.Cells(0, 25).Value = 70
-            ws.ws.Cells(0, 26).Value = 80
-            ws.ws.Cells(0, 27).Value = 90
-            ws.ws.Cells(0, 28).Value = 100
-            ws.ws.Cells(0, 29).Value = 200
-            ws.ws.Cells(0, 30).Value = 300
-            ws.ws.Cells(0, 31).Value = 400
-            ws.ws.Cells(0, 32).Value = 500
-            ws.ws.Cells(0, 33).Value = 600
-            ws.ws.Cells(0, 34).Value = 700
-            ws.ws.Cells(0, 35).Value = 800
-            ws.ws.Cells(0, 36).Value = 900
-            ws.ws.Cells(0, 37).Value = 1000
+    '        'prepare a spreadsheet
+    '        Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
+    '        ws.ws.Cells(0, 0).Value = "ID"
+    '        ws.ws.Cells(0, 1).Value = "Alias"
+    '        ws.ws.Cells(0, 2).Value = 0.01
+    '        ws.ws.Cells(0, 3).Value = 0.05
+    '        ws.ws.Cells(0, 4).Value = 0.1
+    '        ws.ws.Cells(0, 5).Value = 0.5
+    '        ws.ws.Cells(0, 6).Value = 1
+    '        ws.ws.Cells(0, 7).Value = 2
+    '        ws.ws.Cells(0, 8).Value = 3
+    '        ws.ws.Cells(0, 9).Value = 4
+    '        ws.ws.Cells(0, 10).Value = 5
+    '        ws.ws.Cells(0, 11).Value = 6
+    '        ws.ws.Cells(0, 12).Value = 7
+    '        ws.ws.Cells(0, 13).Value = 8
+    '        ws.ws.Cells(0, 14).Value = 9
+    '        ws.ws.Cells(0, 15).Value = 10
+    '        ws.ws.Cells(0, 16).Value = 15
+    '        ws.ws.Cells(0, 17).Value = 20
+    '        ws.ws.Cells(0, 18).Value = 25
+    '        ws.ws.Cells(0, 19).Value = 30
+    '        ws.ws.Cells(0, 20).Value = 35
+    '        ws.ws.Cells(0, 21).Value = 40
+    '        ws.ws.Cells(0, 22).Value = 45
+    '        ws.ws.Cells(0, 23).Value = 50
+    '        ws.ws.Cells(0, 24).Value = 60
+    '        ws.ws.Cells(0, 25).Value = 70
+    '        ws.ws.Cells(0, 26).Value = 80
+    '        ws.ws.Cells(0, 27).Value = 90
+    '        ws.ws.Cells(0, 28).Value = 100
+    '        ws.ws.Cells(0, 29).Value = 200
+    '        ws.ws.Cells(0, 30).Value = 300
+    '        ws.ws.Cells(0, 31).Value = 400
+    '        ws.ws.Cells(0, 32).Value = 500
+    '        ws.ws.Cells(0, 33).Value = 600
+    '        ws.ws.Cells(0, 34).Value = 700
+    '        ws.ws.Cells(0, 35).Value = 800
+    '        ws.ws.Cells(0, 36).Value = 900
+    '        ws.ws.Cells(0, 37).Value = 1000
 
-            ' Get all unique location names from the database
-            dtLoc = GetUnique2DLocationNamesFromDB()
+    '        ' Get all unique location names from the database
+    '        dtLoc = GetUnique2DLocationNamesFromDB()
 
-            n = dtLoc.Rows.Count - 1
-            Dim chunkSize As Integer = 1000
-            Setup.GeneralFunctions.UpdateProgressBar("Exporting results per location...", 0, n)
+    '        n = dtLoc.Rows.Count - 1
+    '        Dim chunkSize As Integer = 1000
+    '        Setup.GeneralFunctions.UpdateProgressBar("Exporting results per location...", 0, n)
 
-            ' Create a new ZIP archive
-            If System.IO.File.Exists(ResultsDir & "\Results2D.zip") Then System.IO.File.Delete(ResultsDir & "\Results2D.zip")
-            Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results2D.zip", ZipArchiveMode.Create)
-                While i < dtLoc.Rows.Count
-                    Setup.GeneralFunctions.UpdateProgressBar("", i, n)
+    '        ' Create a new ZIP archive
+    '        If System.IO.File.Exists(ResultsDir & "\Results2D.zip") Then System.IO.File.Delete(ResultsDir & "\Results2D.zip")
+    '        Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results2D.zip", ZipArchiveMode.Create)
+    '            While i < dtLoc.Rows.Count
+    '                Setup.GeneralFunctions.UpdateProgressBar("", i, n)
 
-                    ' Get the location names for the current chunk
-                    Dim locationChunk As New List(Of Integer)
-                    For j As Integer = i To Math.Min(i + chunkSize - 1, dtLoc.Rows.Count - 1)
-                        locationChunk.Add(dtLoc.Rows(j)("FEATUREIDX"))
-                    Next
+    '                ' Get the location names for the current chunk
+    '                Dim locationChunk As New List(Of Integer)
+    '                For j As Integer = i To Math.Min(i + chunkSize - 1, dtLoc.Rows.Count - 1)
+    '                    locationChunk.Add(dtLoc.Rows(j)("FEATUREIDX"))
+    '                Next
 
-                    ' Calculate an exceedance table for this location
-                    If Not CalcExceedanceTables2D(locationChunk, "WAARDE", parameter, dtHerh, "MAXHOOGTE2D", "FEATUREIDX") Then
-                        Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
-                    Else
-                        Dim j As Integer = i
-                        For Each loc As String In locationChunk
-                            Dim locDtHerh As DataTable = dtHerh(loc)
-                            ' Convert DataTable to CSV format and write it to a MemoryStream
-                            Using ms As New MemoryStream()
-                                Using sw As New StreamWriter(ms)
-                                    Setup.GeneralFunctions.DataTable2CSVByStreamWriter(locDtHerh, sw, ";")
-                                    sw.Flush()
-                                    ms.Position = 0
+    '                Dim res As (Boolean, Dictionary(Of Integer, DataTable)) = CalcExceedanceTables2D(locationChunk, dtResults)
+    '                ' Calculate an exceedance table for this location
+    '                If res.Item1 = False Then
+    '                    Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
+    '                Else
+    '                    Dim j As Integer = i
+    '                    For Each loc As String In locationChunk
+    '                        Dim locDtHerh As DataTable = dtHerh(loc)
+    '                        ' Convert DataTable to CSV format and write it to a MemoryStream
+    '                        Using ms As New MemoryStream()
+    '                            Using sw As New StreamWriter(ms)
+    '                                Setup.GeneralFunctions.DataTable2CSVByStreamWriter(locDtHerh, sw, ";")
+    '                                sw.Flush()
+    '                                ms.Position = 0
 
-                                    ' Add the MemoryStream to the ZIP file
-                                    Dim zipEntry As ZipArchiveEntry = zip.CreateEntry(loc & ".csv")
-                                    Using entryStream As Stream = zipEntry.Open()
-                                        ms.CopyTo(entryStream)
-                                    End Using
-                                End Using
-                            End Using
+    '                                ' Add the MemoryStream to the ZIP file
+    '                                Dim zipEntry As ZipArchiveEntry = zip.CreateEntry(loc & ".csv")
+    '                                Using entryStream As Stream = zipEntry.Open()
+    '                                    ms.CopyTo(entryStream)
+    '                                End Using
+    '                            End Using
+    '                        End Using
 
-                            ws.ws.Cells(j + 1, 0).Value = dtLoc.Rows(j)(0)
-                            ws.ws.Cells(j + 1, 1).Value = dtLoc.Rows(j)(0)
-                            ws.ws.Cells(j + 1, 2).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.01, 0, 1)
-                            ws.ws.Cells(j + 1, 3).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.05, 0, 1)
-                            ws.ws.Cells(j + 1, 4).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.1, 0, 1)
-                            ws.ws.Cells(j + 1, 5).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.5, 0, 1)
-                            ws.ws.Cells(j + 1, 6).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 1, 0, 1)
-                            ws.ws.Cells(j + 1, 7).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 2, 0, 1)
-                            ws.ws.Cells(j + 1, 8).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 3, 0, 1)
-                            ws.ws.Cells(j + 1, 9).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 4, 0, 1)
-                            ws.ws.Cells(j + 1, 10).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 5, 0, 1)
-                            ws.ws.Cells(j + 1, 11).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 6, 0, 1)
-                            ws.ws.Cells(j + 1, 12).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 7, 0, 1)
-                            ws.ws.Cells(j + 1, 13).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 8, 0, 1)
-                            ws.ws.Cells(j + 1, 14).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 9, 0, 1)
-                            ws.ws.Cells(j + 1, 15).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 10, 0, 1)
-                            ws.ws.Cells(j + 1, 16).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 15, 0, 1)
-                            ws.ws.Cells(j + 1, 17).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 20, 0, 1)
-                            ws.ws.Cells(j + 1, 18).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 25, 0, 1)
-                            ws.ws.Cells(j + 1, 19).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 30, 0, 1)
-                            ws.ws.Cells(j + 1, 20).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 35, 0, 1)
-                            ws.ws.Cells(j + 1, 21).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 40, 0, 1)
-                            ws.ws.Cells(j + 1, 22).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 45, 0, 1)
-                            ws.ws.Cells(j + 1, 23).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 50, 0, 1)
-                            ws.ws.Cells(j + 1, 24).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 60, 0, 1)
-                            ws.ws.Cells(j + 1, 25).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 70, 0, 1)
-                            ws.ws.Cells(j + 1, 26).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 80, 0, 1)
-                            ws.ws.Cells(j + 1, 27).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 90, 0, 1)
-                            ws.ws.Cells(j + 1, 28).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 100, 0, 1)
-                            ws.ws.Cells(j + 1, 29).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 200, 0, 1)
-                            ws.ws.Cells(j + 1, 30).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 300, 0, 1)
-                            ws.ws.Cells(j + 1, 21).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 400, 0, 1)
-                            ws.ws.Cells(j + 1, 31).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 500, 0, 1)
-                            ws.ws.Cells(j + 1, 32).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 600, 0, 1)
-                            ws.ws.Cells(j + 1, 33).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 700, 0, 1)
-                            ws.ws.Cells(j + 1, 34).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 800, 0, 1)
-                            ws.ws.Cells(j + 1, 35).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 900, 0, 1)
-                            ws.ws.Cells(j + 1, 36).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 1000, 0, 1)
+    '                        ws.ws.Cells(j + 1, 0).Value = dtLoc.Rows(j)(0)
+    '                        ws.ws.Cells(j + 1, 1).Value = dtLoc.Rows(j)(0)
+    '                        ws.ws.Cells(j + 1, 2).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.01, 0, 1)
+    '                        ws.ws.Cells(j + 1, 3).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.05, 0, 1)
+    '                        ws.ws.Cells(j + 1, 4).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.1, 0, 1)
+    '                        ws.ws.Cells(j + 1, 5).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 0.5, 0, 1)
+    '                        ws.ws.Cells(j + 1, 6).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 1, 0, 1)
+    '                        ws.ws.Cells(j + 1, 7).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 2, 0, 1)
+    '                        ws.ws.Cells(j + 1, 8).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 3, 0, 1)
+    '                        ws.ws.Cells(j + 1, 9).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 4, 0, 1)
+    '                        ws.ws.Cells(j + 1, 10).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 5, 0, 1)
+    '                        ws.ws.Cells(j + 1, 11).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 6, 0, 1)
+    '                        ws.ws.Cells(j + 1, 12).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 7, 0, 1)
+    '                        ws.ws.Cells(j + 1, 13).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 8, 0, 1)
+    '                        ws.ws.Cells(j + 1, 14).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 9, 0, 1)
+    '                        ws.ws.Cells(j + 1, 15).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 10, 0, 1)
+    '                        ws.ws.Cells(j + 1, 16).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 15, 0, 1)
+    '                        ws.ws.Cells(j + 1, 17).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 20, 0, 1)
+    '                        ws.ws.Cells(j + 1, 18).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 25, 0, 1)
+    '                        ws.ws.Cells(j + 1, 19).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 30, 0, 1)
+    '                        ws.ws.Cells(j + 1, 20).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 35, 0, 1)
+    '                        ws.ws.Cells(j + 1, 21).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 40, 0, 1)
+    '                        ws.ws.Cells(j + 1, 22).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 45, 0, 1)
+    '                        ws.ws.Cells(j + 1, 23).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 50, 0, 1)
+    '                        ws.ws.Cells(j + 1, 24).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 60, 0, 1)
+    '                        ws.ws.Cells(j + 1, 25).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 70, 0, 1)
+    '                        ws.ws.Cells(j + 1, 26).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 80, 0, 1)
+    '                        ws.ws.Cells(j + 1, 27).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 90, 0, 1)
+    '                        ws.ws.Cells(j + 1, 28).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 100, 0, 1)
+    '                        ws.ws.Cells(j + 1, 29).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 200, 0, 1)
+    '                        ws.ws.Cells(j + 1, 30).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 300, 0, 1)
+    '                        ws.ws.Cells(j + 1, 21).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 400, 0, 1)
+    '                        ws.ws.Cells(j + 1, 31).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 500, 0, 1)
+    '                        ws.ws.Cells(j + 1, 32).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 600, 0, 1)
+    '                        ws.ws.Cells(j + 1, 33).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 700, 0, 1)
+    '                        ws.ws.Cells(j + 1, 34).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 800, 0, 1)
+    '                        ws.ws.Cells(j + 1, 35).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 900, 0, 1)
+    '                        ws.ws.Cells(j + 1, 36).Value = Setup.GeneralFunctions.InterpolateFromDataTable(locDtHerh, 1000, 0, 1)
 
-                            j += 1
-                        Next
-                    End If
+    '                        j += 1
+    '                    Next
+    '                End If
 
-                    i += chunkSize ' Move to the next chunk
-                End While
-            End Using
+    '                i += chunkSize ' Move to the next chunk
+    '            End While
+    '        End Using
 
-            Return True
-        Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function ExportResults2D of class clsStochastenAnalyse.")
-            Me.Setup.Log.AddError(ex.Message)
-            Return False
-        End Try
-    End Function
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function ExportResults2D of class clsStochastenAnalyse.")
+    '        Me.Setup.Log.AddError(ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
 
 
 
