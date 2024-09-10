@@ -22,10 +22,10 @@
       "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenrun.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|StochastenTool||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|StochastenTool||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenrun.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     }
   ],
   "DocumentGroupContainers": [
@@ -61,7 +61,7 @@
               "RelativeDocumentMoniker": "frmPublish.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmPublish.vb",
               "RelativeToolTip": "frmPublish.vb",
-              "ViewState": "AQIAADoAAAAAAAAAAAAewEwAAAAyAAAA",
+              "ViewState": "AQIAAN0AAAAAAAAAAAAjwOoAAABaAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-08-31T22:15:26.865Z",
               "EditorCaption": ""
@@ -80,7 +80,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 5,
               "Title": "StochastenTool",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\StochastenTool.vbproj",
               "RelativeDocumentMoniker": "StochastenTool.vbproj",
@@ -91,7 +91,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "clsStochastenRun.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
@@ -110,7 +110,7 @@
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "ViewState": "AQIAAFMGAAAAAAAAAAAMwGsGAAA0AAAA",
+              "ViewState": "AQIAACQCAAAAAAAAAAASwDACAAAUAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-08-11T13:19:04.383Z",
               "EditorCaption": ""
@@ -123,7 +123,7 @@
               "RelativeDocumentMoniker": "frmStochastenTool.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeToolTip": "frmStochastenTool.vb",
-              "ViewState": "AQIAAP4SAAAAAAAAAAAMwA0TAAAgAAAA",
+              "ViewState": "AQIAAGYSAAAAAAAAAAAIwHISAAAlAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-08-11T13:18:29.472Z",
               "EditorCaption": ""

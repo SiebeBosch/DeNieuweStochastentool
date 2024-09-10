@@ -4,7 +4,7 @@
   <description asmv2:iconFile="HYDRO_ICO_DEF.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="StochastenTool" version="2.5.0.0" language="neutral" processorArchitecture="amd64" />
+    <assemblyIdentity name="StochastenTool" version="2.5.1.0" language="neutral" processorArchitecture="amd64" />
     <commandLine file="StochastenTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -271,25 +271,25 @@
   </dependency>
   <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="816000">
-      <assemblyIdentity name="StochastenTool" version="2.5.0.0" language="neutral" processorArchitecture="amd64" />
+      <assemblyIdentity name="StochastenTool" version="2.5.1.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>huWpKxSxcW/6vucWbs9aQRC0gOJYsRJeNU83TUCk5XM=</dsig:DigestValue>
+        <dsig:DigestValue>voNpNcglPn1uDUeW7vr47dABbiKsAOia3a12ynMHBIo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3279360">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3287040">
       <assemblyIdentity name="STOCHLIB" version="2.4.0.0" language="neutral" processorArchitecture="amd64" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>uVKg5bO78ZuKGAb9tVd5PBSZVVrJnj6jSE+adHTI0Vw=</dsig:DigestValue>
+        <dsig:DigestValue>S604mF2QgY50/TGisATTzOMYZ29Hqehx7jc2HbAR6+A=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

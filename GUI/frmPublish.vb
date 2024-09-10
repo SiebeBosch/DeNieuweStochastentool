@@ -231,7 +231,8 @@ Public Class frmPublish
 
     Public Function WriteExceedanceData2DJSON(path As String, configurationName As String) As Boolean
         Try
-            Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DJSON(path, Climate, Duration, configurationName)
+            Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DFromCSVToJSON(path, configurationName)
+            'Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DFromDBToJSON(path, Climate, Duration, configurationName)
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function WriteFouExceedanceJSON: " & ex.Message)
             Return False
