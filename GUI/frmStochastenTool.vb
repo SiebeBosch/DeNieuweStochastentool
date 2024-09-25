@@ -13,6 +13,10 @@ Imports csmatio.io
 Imports csmatio.types
 Imports System.Security.Cryptography.X509Certificates
 Imports MathNet.Numerics.RootFinding
+Imports Apache.Arrow
+Imports System.Data.Common
+Imports System.Data.SQLite
+Imports System.Collections.ObjectModel
 
 
 '========================================================================================================================
@@ -781,7 +785,6 @@ Public Class frmStochasten
             '------------------------------------------------------------------------------------
 
             PopulateSimulationModelsGrid()
-            PopulateCombinatiesGrid() 'all combinations of stochasts for which separate files must be copied in the  model
 
             'now repopulate the datagridview based on the output locations
             query = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, ZP, WP FROM OUTPUTLOCATIONS;"
@@ -818,11 +821,6 @@ Public Class frmStochasten
 
     End Sub
 
-    Public Sub PopulateCombinatiesGrid()
-        Dim query As String = "SELECT MODELID, SEIZOEN, VOLUME, PATROON, GRONDWATER, WATERHOOGTE, EXTRA1, EXTRA2, EXTRA3, EXTRA4, RRFILES, FLOWFILES, RTCFILES FROM COMBINATIES;"
-        If Not Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtModels, False) Then Throw New Exception("Error retrieving the simulation models from the database.")
-        grdCombinaties.DataSource = dtModels
-    End Sub
 
     Public Sub PopulateSubCatchmentComboBoxes()
         'populate the comboboxes
@@ -2775,6 +2773,7 @@ Public Class frmStochasten
             Call UpdateResultsTable(35)       'adds all required columns to the results table
             Call UpdateResults2DTable(40)       'adds all required columns to the results table
 
+            Call UpdateExtraFilesPerRunsTable(42) 'adds all required columns to the extra files per run table
             Call UpdateRunsTable(45)          'adds all reaquired columns to the runs table
             Call UpdateSimulationModelsTable(50)
             Call UpdateOutputLocationsTableStructure(55)
@@ -2850,6 +2849,19 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RR", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_FLOW", enmSQLiteDataType.SQLITETEXT)
         If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RTC") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SIMULATIONMODELS", "RESULTSFILES_RTC", enmSQLiteDataType.SQLITETEXT)
+    End Sub
+
+    Public Sub UpdateExtraFilesPerRunsTable(progress As Integer)
+        '--------------------------------------------------------------------------------
+        'update the table RUNS
+        '--------------------------------------------------------------------------------
+        Setup.GeneralFunctions.UpdateProgressBar("Updating table EXTRAFILES", progress, 100, True)
+        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "EXTRAFILES") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "EXTRAFILES")
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "EXTRAFILES", "RUNID") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "EXTRAFILES", "RUNID", enmSQLiteDataType.SQLITETEXT, "EXTRAFILES_RUNIDX")
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "EXTRAFILES", "RRFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "EXTRAFILES", "RRFILES", enmSQLiteDataType.SQLITETEXT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "EXTRAFILES", "FLOWFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "EXTRAFILES", "FLOWFILES", enmSQLiteDataType.SQLITETEXT)
+        If Not Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "EXTRAFILES", "RTCFILES") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "EXTRAFILES", "RTCFILES", enmSQLiteDataType.SQLITETEXT)
+        '------------------------------------------------------------------------------------
     End Sub
 
     Public Sub UpdateRunsTable(progress As Integer)
@@ -3647,7 +3659,7 @@ Public Class frmStochasten
         End If
 
         If chk2D.Checked Then
-            Call Setup.StochastenAnalyse.ExportResults2D(GeneralFunctions.enm2DParameter.waterlevel)
+            Call Setup.StochastenAnalyse.ExportResults2DFromCSV(GeneralFunctions.enm2DParameter.waterlevel)
         End If
 
         Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"
@@ -3829,7 +3841,7 @@ Public Class frmStochasten
             Setup.GeneralFunctions.UpdateProgressBar("Calculating checksum...", 5, 10, True)
             CheckSum = Setup.StochastenAnalyse.Runs.calcCheckSum()
             'if volumes are inuse then the checksum should be divided by the duration of the simulation
-            If Setup.StochastenAnalyse.VolumesAsFrequencies AndAlso Setup.StochastenAnalyse.Runs.VolumesInuse Then
+            If Setup.StochastenAnalyse.VolumesAsFrequencies AndAlso Setup.StochastenAnalyse.Runs.VolumesInUse Then
                 CheckSum = CheckSum * Setup.StochastenAnalyse.Duration / (365.25 * 24)
             End If
             CheckSum = Math.Round(CheckSum, 5)
@@ -4891,12 +4903,14 @@ Public Class frmStochasten
         MsgBox("Alle uitvoerlocaties zijn verwijderd.")
     End Sub
 
-    Private Sub Button15_Click(sender As Object, e As EventArgs) Handles Button15.Click
-        grdCombinaties.Rows.Add()
+
+    Private Sub grdCombinaties_CellContentClick(sender As Object, e As DataGridViewCellEventArgs)
+
     End Sub
 
-    Private Sub grdCombinaties_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grdCombinaties.CellContentClick
-
+    Private Sub btnExtraFilesDir_Click(sender As Object, e As EventArgs) Handles btnExtraFilesDir.Click
+        dlgFolder.ShowDialog()
+        txtExtraFilesDir.Text = dlgFolder.SelectedPath
     End Sub
 
     Private Sub ToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToevoegenToolStripMenuItem.Click
@@ -5140,24 +5154,7 @@ Public Class frmStochasten
         Call RebuildAllGrids()
     End Sub
 
-    Private Sub grdCombinaties_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles grdCombinaties.CellEndEdit
-        'a user has ended an edit session in the grid, so we need to update the database
-
-        'first, clear the existing table
-        Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "DELETE FROM COMBINATIES;")
-
-        'then write the content of the grid to the database
-        Dim i As Integer
-        For i = 0 To grdCombinaties.Rows.Count - 1
-            If grdCombinaties.Rows(i).Cells(0).Value <> "" Then
-                Dim query As String = $"INSERT INTO COMBINATIES (MODELID, VOLUME, PATROON, GRONDWATER, WATERHOOGTE, EXTRA1, EXTRA2, EXTRA3, EXTRA4, RRFILES, FLOWFILES, RTCFILES) VALUES ('{grdCombinaties.Rows(i).Cells(0).Value}','{grdCombinaties.Rows(i).Cells(1).Value }','{grdCombinaties.Rows(i).Cells(2).Value }','{grdCombinaties.Rows(i).Cells(3).Value }','{grdCombinaties.Rows(i).Cells(4).Value}','{grdCombinaties.Rows(i).Cells(5).Value}','{grdCombinaties.Rows(i).Cells(6).Value}','{grdCombinaties.Rows(i).Cells(7).Value}','{grdCombinaties.Rows(i).Cells(8).Value}','{grdCombinaties.Rows(i).Cells(9).Value}','{grdCombinaties.Rows(i).Cells(10).Value}','{grdCombinaties.Rows(i).Cells(11).Value}');"
-                Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
-            End If
-        Next
 
 
-
-
-    End Sub
 End Class
 

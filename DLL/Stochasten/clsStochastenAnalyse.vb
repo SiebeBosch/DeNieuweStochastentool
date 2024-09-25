@@ -3119,7 +3119,7 @@ Public Class clsStochastenAnalyse
 
     End Function
 
-    Public Function ExportResults2D(parameter As GeneralFunctions.enm2DParameter) As Boolean
+    Public Function ExportResults2DFromDB(parameter As GeneralFunctions.enm2DParameter) As Boolean
         Try
             ' Open the database connection
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
@@ -3292,6 +3292,109 @@ Public Class clsStochastenAnalyse
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ExportResults2D of class clsStochastenAnalyse.")
+            Me.Setup.Log.AddError(ex.Message)
+            Return False
+        End Try
+    End Function
+
+
+    Public Function ExportResults2DFromCSV(parameter As GeneralFunctions.enm2DParameter) As Boolean
+        Try
+            'Set the paths to the 2D results and the stochasts in csv format
+            Dim ExceedanceTable2DPath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
+            Dim StochastsPath As String = getStochastsPath(ResultsDir)
+
+            'Prepare a spreadsheet
+            Dim rowidx As Integer = 0
+            Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
+
+            'Write header row
+            Dim headerValues() As Double = {0.01, 0.05, 0.1, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000}
+            ws.ws.Cells(rowidx, 0).Value = "FEATUREIDX"
+            ws.ws.Cells(rowidx, 1).Value = "Alias"
+            For i As Integer = 0 To headerValues.Length - 1
+                ws.ws.Cells(rowidx, i + 2).Value = headerValues(i)
+            Next
+
+            'Read the CSV file
+            Dim exceedanceData As New DataTable
+            Using reader As New TextFieldParser(ExceedanceTable2DPath)
+                reader.SetDelimiters(",")
+                reader.HasFieldsEnclosedInQuotes = True
+
+                'Read column names
+                Dim columns() As String = reader.ReadFields()
+                For Each column In columns
+                    exceedanceData.Columns.Add(column)
+                Next
+
+                'Read data
+                While Not reader.EndOfData
+                    exceedanceData.Rows.Add(reader.ReadFields())
+                End While
+            End Using
+
+            'Get all unique location names
+            Dim dtLoc = exceedanceData.DefaultView.ToTable(True, "FEATUREIDX")
+            Dim nLoc As Integer = dtLoc.Rows.Count
+
+            'Create a new ZIP archive
+            If System.IO.File.Exists(ResultsDir & "\Results2D.zip") Then System.IO.File.Delete(ResultsDir & "\Results2D.zip")
+            Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results2D.zip", ZipArchiveMode.Create)
+
+                'We work in chunks of 1000 features
+                Dim chunksize As Integer = 1000
+
+                For chunkStart As Integer = 0 To nLoc - 1 Step chunksize
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", chunkStart, nLoc, False)
+                    Dim chunkEnd As Integer = Math.Min(chunkStart + chunksize - 1, nLoc - 1)
+
+                    'Process each feature in the chunk
+                    For i As Integer = chunkStart To chunkEnd
+                        Dim featureIdx As Integer = CInt(dtLoc.Rows(i)("FEATUREIDX"))
+
+                        'Filter data for this feature
+                        Dim featureData = exceedanceData.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
+
+                        If featureData.Length > 0 Then
+                            'Create a DataTable for this feature
+                            Dim dt As New DataTable()
+                            dt.Columns.Add("HERHALINGSTIJD", GetType(Double))
+                            dt.Columns.Add("WAARDE", GetType(Double))
+                            For Each row In featureData
+                                dt.Rows.Add(CDbl(row("HERHALINGSTIJD")), CDbl(row("WAARDE")))
+                            Next
+
+                            'Write to Excel
+                            rowidx += 1
+                            ws.ws.Cells(rowidx, 0).Value = featureIdx
+                            ws.ws.Cells(rowidx, 1).Value = featureIdx
+                            For j As Integer = 0 To headerValues.Length - 1
+                                ws.ws.Cells(rowidx, j + 2).Value = InterpolateFromDataTable(dt, headerValues(j), "HERHALINGSTIJD", "WAARDE")
+                            Next
+
+                            'Write raw results to CSV in ZIP
+                            Using ms As New MemoryStream()
+                                Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
+                                    Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dt, sw, ";")
+                                    sw.Flush()
+                                    ms.Position = 0
+
+                                    Dim zipEntry As ZipArchiveEntry = zip.CreateEntry($"{featureIdx}.csv")
+                                    Using entryStream As Stream = zipEntry.Open()
+                                        ms.CopyTo(entryStream)
+                                    End Using
+                                End Using
+                            End Using
+                        End If
+                    Next
+                Next
+            End Using
+
+            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, nLoc)
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ExportResults2DFromCSV of class clsStochastenAnalyse.")
             Me.Setup.Log.AddError(ex.Message)
             Return False
         End Try
