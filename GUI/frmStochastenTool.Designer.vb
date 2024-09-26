@@ -99,6 +99,10 @@ Partial Class frmStochasten
         Me.Label4 = New System.Windows.Forms.Label()
         Me.txtMaxParallel = New System.Windows.Forms.TextBox()
         Me.grBestanden = New System.Windows.Forms.GroupBox()
+        Me.hlpExtraFiles = New System.Windows.Forms.LinkLabel()
+        Me.btnExtraFilesDir = New System.Windows.Forms.Button()
+        Me.Label16 = New System.Windows.Forms.Label()
+        Me.txtExtraFilesDir = New System.Windows.Forms.TextBox()
         Me.btnOutputDir = New System.Windows.Forms.Button()
         Me.Label15 = New System.Windows.Forms.Label()
         Me.txtOutputDir = New System.Windows.Forms.TextBox()
@@ -279,9 +283,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.txtExtraFilesDir = New System.Windows.Forms.TextBox()
-        Me.Label16 = New System.Windows.Forms.Label()
-        Me.btnExtraFilesDir = New System.Windows.Forms.Button()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -973,6 +974,7 @@ Partial Class frmStochasten
         '
         Me.grBestanden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.grBestanden.Controls.Add(Me.hlpExtraFiles)
         Me.grBestanden.Controls.Add(Me.btnExtraFilesDir)
         Me.grBestanden.Controls.Add(Me.Label16)
         Me.grBestanden.Controls.Add(Me.txtExtraFilesDir)
@@ -1004,13 +1006,54 @@ Partial Class frmStochasten
         Me.grBestanden.TabStop = False
         Me.grBestanden.Text = "Bestanden en Mappen"
         '
+        'hlpExtraFiles
+        '
+        Me.hlpExtraFiles.AutoSize = True
+        Me.hlpExtraFiles.Location = New System.Drawing.Point(261, 135)
+        Me.hlpExtraFiles.Name = "hlpExtraFiles"
+        Me.hlpExtraFiles.Size = New System.Drawing.Size(14, 16)
+        Me.hlpExtraFiles.TabIndex = 55
+        Me.hlpExtraFiles.TabStop = True
+        Me.hlpExtraFiles.Text = "?"
+        '
+        'btnExtraFilesDir
+        '
+        Me.btnExtraFilesDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnExtraFilesDir.Location = New System.Drawing.Point(1623, 128)
+        Me.btnExtraFilesDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.btnExtraFilesDir.Name = "btnExtraFilesDir"
+        Me.btnExtraFilesDir.Size = New System.Drawing.Size(26, 26)
+        Me.btnExtraFilesDir.TabIndex = 54
+        Me.btnExtraFilesDir.Text = ".."
+        Me.btnExtraFilesDir.UseVisualStyleBackColor = True
+        '
+        'Label16
+        '
+        Me.Label16.AutoSize = True
+        Me.Label16.Location = New System.Drawing.Point(13, 135)
+        Me.Label16.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label16.Name = "Label16"
+        Me.Label16.Size = New System.Drawing.Size(237, 16)
+        Me.Label16.TabIndex = 53
+        Me.Label16.Text = "Map met extra bestanden per simulatie"
+        '
+        'txtExtraFilesDir
+        '
+        Me.txtExtraFilesDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.txtExtraFilesDir.Location = New System.Drawing.Point(282, 132)
+        Me.txtExtraFilesDir.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtExtraFilesDir.Name = "txtExtraFilesDir"
+        Me.txtExtraFilesDir.Size = New System.Drawing.Size(1334, 22)
+        Me.txtExtraFilesDir.TabIndex = 52
+        '
         'btnOutputDir
         '
         Me.btnOutputDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnOutputDir.Location = New System.Drawing.Point(1621, 63)
+        Me.btnOutputDir.Location = New System.Drawing.Point(1623, 62)
         Me.btnOutputDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnOutputDir.Name = "btnOutputDir"
-        Me.btnOutputDir.Size = New System.Drawing.Size(28, 23)
+        Me.btnOutputDir.Size = New System.Drawing.Size(26, 26)
         Me.btnOutputDir.TabIndex = 51
         Me.btnOutputDir.Text = ".."
         Me.btnOutputDir.UseVisualStyleBackColor = True
@@ -1032,16 +1075,16 @@ Partial Class frmStochasten
         Me.txtOutputDir.Location = New System.Drawing.Point(282, 66)
         Me.txtOutputDir.Margin = New System.Windows.Forms.Padding(4)
         Me.txtOutputDir.Name = "txtOutputDir"
-        Me.txtOutputDir.Size = New System.Drawing.Size(1331, 22)
+        Me.txtOutputDir.Size = New System.Drawing.Size(1334, 22)
         Me.txtOutputDir.TabIndex = 49
         '
         'btnInputDir
         '
         Me.btnInputDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnInputDir.Location = New System.Drawing.Point(1621, 34)
+        Me.btnInputDir.Location = New System.Drawing.Point(1623, 32)
         Me.btnInputDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnInputDir.Name = "btnInputDir"
-        Me.btnInputDir.Size = New System.Drawing.Size(28, 23)
+        Me.btnInputDir.Size = New System.Drawing.Size(26, 26)
         Me.btnInputDir.TabIndex = 48
         Me.btnInputDir.Text = ".."
         Me.btnInputDir.UseVisualStyleBackColor = True
@@ -1049,10 +1092,10 @@ Partial Class frmStochasten
         'btnResultsDir
         '
         Me.btnResultsDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnResultsDir.Location = New System.Drawing.Point(1621, 95)
+        Me.btnResultsDir.Location = New System.Drawing.Point(1623, 93)
         Me.btnResultsDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnResultsDir.Name = "btnResultsDir"
-        Me.btnResultsDir.Size = New System.Drawing.Size(28, 23)
+        Me.btnResultsDir.Size = New System.Drawing.Size(26, 26)
         Me.btnResultsDir.TabIndex = 47
         Me.btnResultsDir.Text = ".."
         Me.btnResultsDir.UseVisualStyleBackColor = True
@@ -1060,10 +1103,10 @@ Partial Class frmStochasten
         'btnDatabase
         '
         Me.btnDatabase.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnDatabase.Location = New System.Drawing.Point(1621, 165)
+        Me.btnDatabase.Location = New System.Drawing.Point(1623, 165)
         Me.btnDatabase.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnDatabase.Name = "btnDatabase"
-        Me.btnDatabase.Size = New System.Drawing.Size(28, 23)
+        Me.btnDatabase.Size = New System.Drawing.Size(26, 26)
         Me.btnDatabase.TabIndex = 46
         Me.btnDatabase.Text = ".."
         Me.btnDatabase.UseVisualStyleBackColor = True
@@ -1071,10 +1114,10 @@ Partial Class frmStochasten
         'btnShapefile
         '
         Me.btnShapefile.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnShapefile.Location = New System.Drawing.Point(1621, 197)
+        Me.btnShapefile.Location = New System.Drawing.Point(1623, 197)
         Me.btnShapefile.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnShapefile.Name = "btnShapefile"
-        Me.btnShapefile.Size = New System.Drawing.Size(28, 23)
+        Me.btnShapefile.Size = New System.Drawing.Size(26, 26)
         Me.btnShapefile.TabIndex = 45
         Me.btnShapefile.Text = ".."
         Me.btnShapefile.UseVisualStyleBackColor = True
@@ -1124,7 +1167,7 @@ Partial Class frmStochasten
         Me.txtPeilgebieden.Location = New System.Drawing.Point(282, 197)
         Me.txtPeilgebieden.Margin = New System.Windows.Forms.Padding(4)
         Me.txtPeilgebieden.Name = "txtPeilgebieden"
-        Me.txtPeilgebieden.Size = New System.Drawing.Size(1331, 22)
+        Me.txtPeilgebieden.Size = New System.Drawing.Size(1334, 22)
         Me.txtPeilgebieden.TabIndex = 41
         '
         'Label35
@@ -1144,7 +1187,7 @@ Partial Class frmStochasten
         Me.txtResultatenDir.Location = New System.Drawing.Point(282, 95)
         Me.txtResultatenDir.Margin = New System.Windows.Forms.Padding(4)
         Me.txtResultatenDir.Name = "txtResultatenDir"
-        Me.txtResultatenDir.Size = New System.Drawing.Size(1331, 22)
+        Me.txtResultatenDir.Size = New System.Drawing.Size(1334, 22)
         Me.txtResultatenDir.TabIndex = 39
         '
         'Label11
@@ -1174,7 +1217,7 @@ Partial Class frmStochasten
         Me.txtInputDir.Location = New System.Drawing.Point(282, 34)
         Me.txtInputDir.Margin = New System.Windows.Forms.Padding(4)
         Me.txtInputDir.Name = "txtInputDir"
-        Me.txtInputDir.Size = New System.Drawing.Size(1331, 22)
+        Me.txtInputDir.Size = New System.Drawing.Size(1334, 22)
         Me.txtInputDir.TabIndex = 25
         '
         'txtDatabase
@@ -1184,7 +1227,7 @@ Partial Class frmStochasten
         Me.txtDatabase.Location = New System.Drawing.Point(282, 165)
         Me.txtDatabase.Margin = New System.Windows.Forms.Padding(4)
         Me.txtDatabase.Name = "txtDatabase"
-        Me.txtDatabase.Size = New System.Drawing.Size(1331, 22)
+        Me.txtDatabase.Size = New System.Drawing.Size(1334, 22)
         Me.txtDatabase.TabIndex = 34
         '
         'Label7
@@ -2912,37 +2955,6 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1675, 28)
         Me.prProgress.TabIndex = 24
         '
-        'txtExtraFilesDir
-        '
-        Me.txtExtraFilesDir.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtExtraFilesDir.Location = New System.Drawing.Point(282, 132)
-        Me.txtExtraFilesDir.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtExtraFilesDir.Name = "txtExtraFilesDir"
-        Me.txtExtraFilesDir.Size = New System.Drawing.Size(1331, 22)
-        Me.txtExtraFilesDir.TabIndex = 52
-        '
-        'Label16
-        '
-        Me.Label16.AutoSize = True
-        Me.Label16.Location = New System.Drawing.Point(13, 135)
-        Me.Label16.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label16.Name = "Label16"
-        Me.Label16.Size = New System.Drawing.Size(237, 16)
-        Me.Label16.TabIndex = 53
-        Me.Label16.Text = "Map met extra bestanden per simulatie"
-        '
-        'btnExtraFilesDir
-        '
-        Me.btnExtraFilesDir.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnExtraFilesDir.Location = New System.Drawing.Point(1621, 132)
-        Me.btnExtraFilesDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.btnExtraFilesDir.Name = "btnExtraFilesDir"
-        Me.btnExtraFilesDir.Size = New System.Drawing.Size(28, 23)
-        Me.btnExtraFilesDir.TabIndex = 54
-        Me.btnExtraFilesDir.Text = ".."
-        Me.btnExtraFilesDir.UseVisualStyleBackColor = True
-        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -3310,4 +3322,5 @@ Partial Class frmStochasten
     Friend WithEvents btnExtraFilesDir As Button
     Friend WithEvents Label16 As Label
     Friend WithEvents txtExtraFilesDir As TextBox
+    Friend WithEvents hlpExtraFiles As LinkLabel
 End Class

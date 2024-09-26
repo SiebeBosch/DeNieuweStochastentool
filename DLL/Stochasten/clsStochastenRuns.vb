@@ -145,7 +145,7 @@ Public Class clsStochastenRuns
     End Function
 
 
-    Public Sub PopulateFromDataGridView(ByRef con As SQLite.SQLiteConnection, ByRef grRuns As DataGridView)
+    Public Sub PopulateFromDataGridView(ByRef con As SQLite.SQLiteConnection, ByRef grRuns As DataGridView, ExtraModelInputFilesDir As String)
 
         '-----------------------------------------------------------------------------------------------------------------
         ' this routine populates the dictionary of stochastic runs based on the data currently in the grRuns Datagridview
@@ -244,6 +244,7 @@ Public Class clsStochastenRuns
                             myRun.P = mySeasonClass.P    'start by assigning the season's P
                             myRun.RelativeDir = myRun.SeasonClass.Name & "_" & StochastenAnalyse.Duration & "h"
                             cmd.CommandText &= "'" & StochastenAnalyse.KlimaatScenario.ToString & "'," & StochastenAnalyse.Duration & ",'" & myRun.SeasonClass.Name & "'," & myRun.SeasonClass.P
+
 
                             Digit = -1
                             r += 1
@@ -378,6 +379,12 @@ Public Class clsStochastenRuns
                                 cmd.CommandText &= ",'" & myRun.Extra4Class.ID & "'," & myRun.Extra4Class.p
                             Else
                                 cmd.CommandText &= ",'',1"
+                            End If
+
+                            'create a directory for any extra model input files the user wants to add to the model upon simulating
+                            If System.IO.Directory.Exists(ExtraModelInputFilesDir) Then
+                                myRun.ExtraModelInputFilesDir = ExtraModelInputFilesDir & "\" & myRun.ID
+                                If Not Directory.Exists(myRun.ExtraModelInputFilesDir) Then Directory.CreateDirectory(myRun.ExtraModelInputFilesDir)
                             End If
 
                             myRun.InputFilesDir = StochastenAnalyse.InputFilesDir & "\" & myRun.RelativeDir

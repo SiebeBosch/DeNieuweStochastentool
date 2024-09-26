@@ -738,6 +738,8 @@ Public Class frmStochasten
                         txtOutputDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "resultatenmap" Then
                         txtResultatenDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
+                    ElseIf n_node.Name.Trim.ToLower = "extramodelinputmap" Then
+                        txtExtraFilesDir.Text = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(n_node.InnerText, RootDir)
                     ElseIf n_node.Name.Trim.ToLower = "resultatenmodules" Then
                         Setup.GeneralFunctions.readXMLAttributeBOOL(n_node, "Flow1D", chk1D.Checked)
                         Setup.GeneralFunctions.readXMLAttributeBOOL(n_node, "Flow2D", chk2D.Checked)
@@ -2787,8 +2789,6 @@ Public Class frmStochasten
             Call UpdateHerhalingstijdenTable(95)    'adds all required columns to th exceedance table
             Call UpdateHerhalingstijdenTable2D(98)   'adds all required columns to th exceedance table for 2D results
 
-            Call UpdateCombinatiesTable(100)   'a table for specifying extra files to be copied to the model for each combination of stochasts
-
             Setup.GeneralFunctions.UpdateProgressBar("tables successfully updated", 0, 15, True)
             Me.Setup.SqliteCon.Close()
         Catch ex As Exception
@@ -3137,39 +3137,6 @@ Public Class frmStochasten
 
         '--------------------------------------------------------------------------------
     End Sub
-
-    Public Sub UpdateCombinatiesTable(progress As Integer)
-
-
-        '------------------------------------------------------------------------------------
-        '               UPDATE TABEL RESULTATEN
-        '------------------------------------------------------------------------------------
-        'make sure the table exists
-        If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "COMBINATIES") Then Me.Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "COMBINATIES")
-
-        Setup.GeneralFunctions.UpdateProgressBar("Updating table COMBINATIES", progress, 100, True)
-        Dim Fields As New Dictionary(Of String, clsSQLiteField)
-
-        '--------------------------------------------------------------------------------
-        'Upgrade our COMBINATIES table
-        Fields = New Dictionary(Of String, clsSQLiteField)
-        Fields.Add("MODELID", New clsSQLiteField("MODELID", enmSQLiteDataType.SQLITEINT, True))
-        Fields.Add("SEIZOEN", New clsSQLiteField("SEIZOEN", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("VOLUME", New clsSQLiteField("VOLUME", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("PATROON", New clsSQLiteField("PATROON", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("GRONDWATER", New clsSQLiteField("GRONDWATER", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("WATERHOOGTE", New clsSQLiteField("WATERHOOGTE", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("EXTRA1", New clsSQLiteField("EXTRA1", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("EXTRA2", New clsSQLiteField("EXTRA2", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("EXTRA3", New clsSQLiteField("EXTRA3", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("EXTRA4", New clsSQLiteField("EXTRA4", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("RRFILES", New clsSQLiteField("RRFILES", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("FLOWFILES", New clsSQLiteField("FLOWFILES", enmSQLiteDataType.SQLITETEXT, True))
-        Fields.Add("RTCFILES", New clsSQLiteField("RTCFILES", enmSQLiteDataType.SQLITETEXT, True))
-        Me.Setup.GeneralFunctions.CreateOrUpdateSQLiteTable(Me.Setup.SqliteCon, "COMBINATIES", Fields)
-        '--------------------------------------------------------------------------------
-    End Sub
-
 
 
     Public Sub UpdateMeteostationsTable(progress As Integer)
@@ -3836,7 +3803,7 @@ Public Class frmStochasten
             If Not Setup.StochastenAnalyse.PopulateFromDataGridView() Then Throw New Exception("Error populating stochasts. Check logfile.")
 
             Setup.GeneralFunctions.UpdateProgressBar("Populating runs...", 4, 10, True)
-            Setup.StochastenAnalyse.Runs.PopulateFromDataGridView(Me.Setup.SqliteCon, grRuns)
+            Setup.StochastenAnalyse.Runs.PopulateFromDataGridView(Me.Setup.SqliteCon, grRuns, txtExtraFilesDir.Text)
 
             Setup.GeneralFunctions.UpdateProgressBar("Calculating checksum...", 5, 10, True)
             CheckSum = Setup.StochastenAnalyse.Runs.calcCheckSum()
@@ -4567,6 +4534,7 @@ Public Class frmStochasten
         Dim InputPathRelative As String = ""
         Dim OutputPathRelative As String = ""
         Dim ResultsPathRelative As String = ""
+        Dim ExtraFilesPathRelative As String = ""
         Dim DatabasePathRelative As String = ""
         Dim SubcatchmentsPathRelative As String = ""
         Dim RootDir As String
@@ -4583,6 +4551,7 @@ Public Class frmStochasten
             Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtInputDir.Text, InputPathRelative)
             Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtOutputDir.Text, OutputPathRelative)
             Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtResultatenDir.Text, ResultsPathRelative)
+            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtExtraFilesDir.Text, ExtraFilesPathRelative)
             Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtDatabase.Text, DatabasePathRelative)
             Me.Setup.GeneralFunctions.AbsoluteToRelativePath(RootDir, txtPeilgebieden.Text, SubcatchmentsPathRelative)
 
@@ -4599,6 +4568,7 @@ Public Class frmStochasten
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "invoermap", InputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitvoermap", OutputPathRelative, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "resultatenmap", ResultsPathRelative, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "extramodelinputmap", ExtraFilesPathRelative, 4)
 
                 Dim myList As New List(Of String)
                 Dim myVals As New List(Of String)
@@ -4911,6 +4881,11 @@ Public Class frmStochasten
     Private Sub btnExtraFilesDir_Click(sender As Object, e As EventArgs) Handles btnExtraFilesDir.Click
         dlgFolder.ShowDialog()
         txtExtraFilesDir.Text = dlgFolder.SelectedPath
+    End Sub
+
+    Private Sub hlpExtraFiles_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpExtraFiles.LinkClicked
+        Dim url As String = "https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#map-met-extra-bestanden-per-simulatie"
+        Process.Start(New ProcessStartInfo(url) With {.UseShellExecute = True})
     End Sub
 
     Private Sub ToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToevoegenToolStripMenuItem.Click

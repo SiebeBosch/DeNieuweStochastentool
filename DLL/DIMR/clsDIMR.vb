@@ -242,10 +242,11 @@ Public Class clsDIMR
                 If Not Directory.Exists(ModuleDir) Then Directory.CreateDirectory(ModuleDir)
                 Dim MDUFile As String = DIMRConfig.Flow1D.GetFullDir & "\" & DIMRConfig.Flow1D.GetInputFile
                 Dim AttrVals As List(Of String) = Setup.GeneralFunctions.ReadAttributeValueFromDHydrofile(MDUFile, "OutputDir", "[output]")
-                If AttrVals IsNot Nothing Then
-                    Dim ExcludeDir As String = DIMRConfig.Flow1D.GetFullDir & "\" & AttrVals(0)
-                    Me.Setup.GeneralFunctions.CopyDirectoryContent(DIMRConfig.Flow1D.GetFullDir, ModuleDir, True, ExcludeDir)
+                If AttrVals Is Nothing OrElse AttrVals.Count = 0 Then
+                    Throw New Exception("Error reading OutputDir from MDU file.")
                 End If
+                Dim ExcludeDir As String = DIMRConfig.Flow1D.GetFullDir & "\" & AttrVals(0)
+                Me.Setup.GeneralFunctions.CopyDirectoryContent(DIMRConfig.Flow1D.GetFullDir, ModuleDir, True, ExcludeDir)
 
                 'optionally change the start and end date for this simulation
                 If Not StartDate = Nothing AndAlso Not EndDate = Nothing Then

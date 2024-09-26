@@ -38,6 +38,8 @@ Public Class clsStochastenRun
     Public Klimaatscenario As STOCHLIB.GeneralFunctions.enmKlimaatScenario
     Public duur As Integer
 
+    Public ExtraModelInputFilesDir As String 'directory for all extra model input files
+
     Public BuiFile As String 'path to the bui-file
     Public EvpFile As String 'path to the evp-file
     Public QscFile As String 'path to the evp-file
@@ -330,6 +332,28 @@ Public Class clsStochastenRun
                     BuildSumaquaModelRun(myModel, runDir)
                 End If
 
+                If System.IO.Directory.Exists(ExtraModelInputFilesDir) Then
+                    Dim di As New DirectoryInfo(ExtraModelInputFilesDir)
+                    Dim files As IO.FileInfo() = di.GetFiles("*.*", SearchOption.AllDirectories)
+
+                    For Each file As IO.FileInfo In files
+                        ' Get the relative path of the file
+                        Dim relativePath As String = file.FullName.Substring(ExtraModelInputFilesDir.Length + 1)
+
+                        ' Combine runDir with the relative path to get the new destination
+                        Dim destPath As String = Path.Combine(runDir, relativePath)
+
+                        ' Create the directory structure if it doesn't exist
+                        Dim destDir As String = Path.GetDirectoryName(destPath)
+                        If Not Directory.Exists(destDir) Then
+                            Directory.CreateDirectory(destDir)
+                        End If
+
+                        ' Copy the file to the new destination
+                        System.IO.File.Copy(file.FullName, destPath, True)
+                    Next
+                End If
+
 
                 '----------------------------------------------------------------------------------------
                 'release the database for use by other instances
@@ -467,10 +491,6 @@ Public Class clsStochastenRun
 
             End If
 
-            'new in v2.6.0.0: additional files to be copied for each run
-            CopyAdditionalFiles(myModel, runDir, Me.Setup.DIMRData.DIMRConfig.RR.SubDir, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir)
-
-
             'update the progress bar
             Me.Setup.GeneralFunctions.UpdateProgressBar("Building simulation " & runIdx & " of " & nRuns & ": " & ID, runIdx, nRuns, True)
 
@@ -479,26 +499,6 @@ Public Class clsStochastenRun
         End Try
     End Function
 
-    Public Function CopyAdditionalFiles(ByRef myModel As clsSimulationModel, ByRef runDir As String, RRSubdir As String, FlowSubdir As String, RTCSubdir As String)
-        Try
-            'finally copy any additional files for this combination. Check the COMBINATIES table for such files
-            Dim query As String = $"SELECT RRFILES, FLOWFILES, RTCFILES FROM COMBINATIES WHERE MODELID={myModel.Id} AND SEIZOEN='{SeasonClass.Name}' AND VOLUME={VolumeClass.Volume} AND PATROON='{PatternClass.Patroon}' AND GRONDWATER='{GWClass.ID}' AND WATERHOOGTE='{WLClass.ID}' AND EXTRA1='{Extra1Class.ID}' AND EXTRA2='{Extra2Class.ID}' AND EXTRA3='{Extra3Class.ID}' AND EXTRA4='{Extra4Class.ID}';"
-            Dim et As New DataTable
-            Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, et)
-
-            If et.Rows.Count > 1 Then
-                Me.Setup.Log.AddError($"Error: multiple records found in the COMBINATIES table for the combination {ID}. Only one record per simulation is allowed. Simulation continues with only the firs instance.")
-            End If
-
-            If et.Rows.Count > 0 Then
-                If et.Rows(0).Item("RRFILES") IsNot DBNull.Value Then If Not CopyExtraFiles(myModel, runDir, et.Rows(0).Item("RRFILES"), RRSubdir) Then Throw New Exception($"Fout bij het kopieren van de extra RR-bestanden voor simulatie {ID}.")
-                If et.Rows(0).Item("FLOWFILES") IsNot DBNull.Value Then If Not CopyExtraFiles(myModel, runDir, et.Rows(0).Item("FLOWFILES"), FlowSubdir) Then Throw New Exception($"Fout bij het kopieren van de extra Flow-bestanden voor de simulatie {ID}.")
-                If et.Rows(0).Item("RTCFILES") IsNot DBNull.Value Then If Not CopyExtraFiles(myModel, runDir, et.Rows(0).Item("RTCFILES"), RTCSubdir) Then Throw New Exception($"Fout bij het kopieren van de extra RTC-bestanden voor de simulatie {ID}.")
-            End If
-        Catch ex As Exception
-
-        End Try
-    End Function
 
     Public Function BuildSobekModelRun(ByRef myModel As clsSimulationModel, rundir As String) As Boolean
         Try
