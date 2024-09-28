@@ -37,7 +37,6 @@ Partial Class frmImportOutputlocations
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.chkObservationPoints1D = New System.Windows.Forms.CheckBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.chkFouFiles = New System.Windows.Forms.CheckBox()
         Me.chkOutput0D = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -128,7 +127,7 @@ Partial Class frmImportOutputlocations
         Me.chkCalculationPoints1D.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkCalculationPoints1D.Location = New System.Drawing.Point(11, 60)
         Me.chkCalculationPoints1D.Name = "chkCalculationPoints1D"
-        Me.chkCalculationPoints1D.Size = New System.Drawing.Size(129, 20)
+        Me.chkCalculationPoints1D.Size = New System.Drawing.Size(126, 20)
         Me.chkCalculationPoints1D.TabIndex = 1
         Me.chkCalculationPoints1D.Text = "Rekenpunten 1D"
         Me.chkCalculationPoints1D.UseVisualStyleBackColor = True
@@ -168,7 +167,7 @@ Partial Class frmImportOutputlocations
         Me.chkObservationPoints1D.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkObservationPoints1D.Location = New System.Drawing.Point(11, 86)
         Me.chkObservationPoints1D.Name = "chkObservationPoints1D"
-        Me.chkObservationPoints1D.Size = New System.Drawing.Size(263, 20)
+        Me.chkObservationPoints1D.Size = New System.Drawing.Size(260, 20)
         Me.chkObservationPoints1D.TabIndex = 8
         Me.chkObservationPoints1D.Text = "Observation points 1D (alleen D-Hydro)"
         Me.chkObservationPoints1D.UseVisualStyleBackColor = True
@@ -179,7 +178,6 @@ Partial Class frmImportOutputlocations
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox2.Controls.Add(Me.chkOutput0D)
-        Me.GroupBox2.Controls.Add(Me.chkFouFiles)
         Me.GroupBox2.Controls.Add(Me.chkObservationPoints1D)
         Me.GroupBox2.Controls.Add(Me.chkCalculationPoints1D)
         Me.GroupBox2.Location = New System.Drawing.Point(12, 182)
@@ -189,18 +187,6 @@ Partial Class frmImportOutputlocations
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Objecten"
         '
-        'chkFouFiles
-        '
-        Me.chkFouFiles.AutoSize = True
-        Me.chkFouFiles.Checked = True
-        Me.chkFouFiles.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkFouFiles.Location = New System.Drawing.Point(11, 112)
-        Me.chkFouFiles.Name = "chkFouFiles"
-        Me.chkFouFiles.Size = New System.Drawing.Size(114, 20)
-        Me.chkFouFiles.TabIndex = 10
-        Me.chkFouFiles.Text = "Centroïden 2D"
-        Me.chkFouFiles.UseVisualStyleBackColor = True
-        '
         'chkOutput0D
         '
         Me.chkOutput0D.AutoSize = True
@@ -208,7 +194,7 @@ Partial Class frmImportOutputlocations
         Me.chkOutput0D.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkOutput0D.Location = New System.Drawing.Point(11, 34)
         Me.chkOutput0D.Name = "chkOutput0D"
-        Me.chkOutput0D.Size = New System.Drawing.Size(277, 20)
+        Me.chkOutput0D.Size = New System.Drawing.Size(274, 20)
         Me.chkOutput0D.TabIndex = 11
         Me.chkOutput0D.Text = "Uitvoer 0D (RR en conceptuele modellen)"
         Me.chkOutput0D.UseVisualStyleBackColor = True
@@ -225,7 +211,7 @@ Partial Class frmImportOutputlocations
         Me.Controls.Add(Me.GroupBox1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "frmImportOutputlocations"
-        Me.Text = "Uitvoerlocaties model importeren"
+        Me.Text = "Uitvoerlocaties 0D en 1D importeren"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
@@ -249,6 +235,5 @@ Partial Class frmImportOutputlocations
     Friend WithEvents Label4 As Label
     Friend WithEvents chkObservationPoints1D As CheckBox
     Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents chkFouFiles As CheckBox
     Friend WithEvents chkOutput0D As CheckBox
 End Class

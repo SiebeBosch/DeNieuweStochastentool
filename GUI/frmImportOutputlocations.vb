@@ -290,44 +290,44 @@ Public Class frmImportOutputlocations
             End If
 
 
-            If chkFouFiles.Checked Then
+            'If chkFouFiles.Checked Then
 
-                'we will retrieve our results statistics from the Fourier files
-                Setup.DIMRData.FlowFM.ReadCellCentersFromFouFile()
+            '    'we will retrieve our results statistics from the Fourier files
+            '    Setup.DIMRData.FlowFM.ReadCellCentersFromFouFile()
 
-                Using cmd As New SQLite.SQLiteCommand
-                    cmd.Connection = Me.Setup.SqliteCon
-                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
+            '    Using cmd As New SQLite.SQLiteCommand
+            '        cmd.Connection = Me.Setup.SqliteCon
+            '        If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+            '        Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                        n = Setup.DIMRData.FlowFM.CellCenterpoints2D.Count
-                        For j = 0 To Setup.DIMRData.FlowFM.CellCenterpoints2D.Count - 1
-                            Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
-                            Dim X As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).X
-                            Dim Y As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).Y
+            '            n = Setup.DIMRData.FlowFM.CellCenterpoints2D.Count
+            '            For j = 0 To Setup.DIMRData.FlowFM.CellCenterpoints2D.Count - 1
+            '                Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+            '                Dim X As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).X
+            '                Dim Y As Double = Setup.DIMRData.FlowFM.CellCenterpoints2D(j).Y
 
-                            'compute the map coordinates of our point
-                            Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
+            '                'compute the map coordinates of our point
+            '                Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
 
-                            'retrieve the target levels from our subcatchments shapefile
-                            Dim ShapeIdx As Integer = -1
-                            If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(X, Y)
-                            If ShapeIdx > 0 Then
-                                'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
-                                WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
-                                ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                                cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
-                                cmd.ExecuteNonQuery()
-                            Else
-                                'could not find target levels. Only write the location and parameters
-                                cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
-                                cmd.ExecuteNonQuery()
-                            End If
-                        Next
-                        transaction.Commit() 'this is where the bulk insert is finally executed.
-                    End Using
-                End Using
-            End If
+            '                'retrieve the target levels from our subcatchments shapefile
+            '                Dim ShapeIdx As Integer = -1
+            '                If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(X, Y)
+            '                If ShapeIdx > 0 Then
+            '                    'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+            '                    WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+            '                    ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+            '                    cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+            '                    cmd.ExecuteNonQuery()
+            '                Else
+            '                    'could not find target levels. Only write the location and parameters
+            '                    cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & j.ToString & "','" & j.ToString & "','" & ModelID & "','FLOW2D'," & "'wl'" & ",'" & Me.Setup.DIMRData.FlowFM.GetFouResultsFileName() & "','" & cmbResultsFilter.Text & "'," & X & "," & Y & "," & Lat & "," & Lon & ");"
+            '                    cmd.ExecuteNonQuery()
+            '                End If
+            '            Next
+            '            transaction.Commit() 'this is where the bulk insert is finally executed.
+            '        End Using
+            '    End Using
+            'End If
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("error in function ImportDIMROutputLocations: " & ex.Message)

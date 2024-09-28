@@ -4870,6 +4870,10 @@ Public Class frmStochasten
     Private Sub AlleVerwijderenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleVerwijderenToolStripMenuItem.Click
         Dim query As String = "DELETE FROM OUTPUTLOCATIONS;"
         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
+
+        'repopulate the locations grid
+        PopulateOutputLocationsGrid()
+
         MsgBox("Alle uitvoerlocaties zijn verwijderd.")
     End Sub
 
