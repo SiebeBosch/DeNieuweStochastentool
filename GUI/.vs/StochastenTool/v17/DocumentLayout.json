@@ -68,8 +68,7 @@
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmPublish.vb [Design]",
               "RelativeToolTip": "frmPublish.vb [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-09-27T11:47:43.436Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-09-27T11:47:43.436Z"
             },
             {
               "$type": "Document",
@@ -79,10 +78,9 @@
               "RelativeDocumentMoniker": "frmStochastenTool.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeToolTip": "frmStochastenTool.vb",
-              "ViewState": "AQIAAPESAAAAAAAAAAApwPsSAAAIAAAA",
+              "ViewState": "AQIAAO0SAAAAAAAAAAAowPsSAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-09-27T08:01:51.062Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-27T08:01:51.062Z"
             },
             {
               "$type": "Document",
@@ -116,10 +114,9 @@
               "RelativeDocumentMoniker": "frmPublish.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmPublish.vb",
               "RelativeToolTip": "frmPublish.vb",
-              "ViewState": "AQIAAEIAAAAAAAAAAAAtwEwAAAAUAAAA",
+              "ViewState": "AQIAAGgBAAAAAAAAAAAkwHcBAAA8AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-08-31T22:15:26.865Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-31T22:15:26.865Z"
             },
             {
               "$type": "Document",
@@ -153,7 +150,7 @@
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "ViewState": "AQIAAGAHAAAAAAAAAAAtwFMHAAArAAAA",
+              "ViewState": "AQIAADsBAAAAAAAAAADwv0gBAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2024-08-11T13:19:04.383Z",
               "EditorCaption": ""
@@ -167,8 +164,7 @@
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb [Design]",
               "RelativeToolTip": "frmStochastenTool.vb [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2024-06-28T07:32:05.198Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-06-28T07:32:05.198Z"
             }
           ]
         }

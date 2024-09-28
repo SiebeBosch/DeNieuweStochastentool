@@ -278,7 +278,16 @@ Public Class clsStochastenAnalyse
         Try
             Dim locdt As New DataTable
             Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
-            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
+
+            'Read the runs from our database and turn them into a dictionary for faster lookups
+            Dim rdt As New DataTable
+            query = "SELECT DISTINCT RUNID, RUNIDX FROM RUNS WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, rdt, False)
+            Dim runIdDict As New Dictionary(Of String, Integer)
+            For Each row As DataRow In rdt.Rows
+                runIdDict(row("RUNID").ToString()) = CInt(row("RUNIDX"))
+            Next
 
             'write the dataset to json
             If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
@@ -295,20 +304,34 @@ Public Class clsStochastenAnalyse
                 For i = 0 To locdt.Rows.Count - 1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
 
-
                     'add the exceedance data to the excedancedata.js file
                     exceedanceWriter.WriteLine("            " & Chr(34) & "ID" & Chr(34) & ": " & Chr(34) & locdt.Rows(i)("LOCATIENAAM") & Chr(34) & ",")
                     exceedanceWriter.WriteLine("            " & Chr(34) & "data" & Chr(34) & ": [")
 
                     'for this location we will retrieve the exceedance table
                     Dim dtHerh As New DataTable
-                    query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNID FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
                     Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                    ' Add RUNIDX column if it doesn't exist
+                    If Not dtHerh.Columns.Contains("RUNIDX") Then
+                        dtHerh.Columns.Add("RUNIDX", GetType(Integer))
+                    End If
+
+                    ' Look up the runidx for each runid and add it to our dtHerh table
+                    For Each row As DataRow In dtHerh.Rows
+                        Dim runId As String = row("RUNID").ToString()
+                        If runIdDict.ContainsKey(runId) Then
+                            row("RUNIDX") = runIdDict(runId)
+                        Else
+                            row("RUNIDX") = -999
+                        End If
+                    Next
 
                     'now that we have our exceedance table, we can start writing it to the exceedancedata.js file
                     Dim exceedanceStr As String = ""
                     For j = 0 To dtHerh.Rows.Count - 1
-                        exceedanceStr = "                { %x%: " & Math.Round(dtHerh.Rows(j)(0), 2) & ", %y%: " & Math.Round(dtHerh.Rows(j)(1), 3) & ", %stochasts%:{%SEIZOEN%:%" & dtHerh.Rows(j)("SEIZOEN") & "%, %VOLUME%: " & dtHerh.Rows(j)("VOLUME") & ", %PATROON%: %" & dtHerh.Rows(j)("PATROON") & "%, %GW%: %" & dtHerh.Rows(j)("GW") & "%, %BOUNDARY%:%" & dtHerh.Rows(j)("BOUNDARY") & "%, %WIND%" & ":%" & dtHerh.Rows(j)("WIND") & "%,%EXTRA1%:%" & dtHerh.Rows(j)("EXTRA1") & "%,%EXTRA2%:%" & dtHerh.Rows(j)("EXTRA2") & "%,%EXTRA3%:%" & dtHerh.Rows(j)("EXTRA3") & "%,%EXTRA4%:%" & dtHerh.Rows(j)("EXTRA4") & "%}}"
+                        exceedanceStr = "                { %x%: " & Math.Round(dtHerh.Rows(j)(0), 2) & ", %y%: " & Math.Round(dtHerh.Rows(j)(1), 3) & ", %runidx%: " & dtHerh.Rows(j)("RUNIDX") & "}" ' & ", %stochasts%:{%SEIZOEN%:%" & dtHerh.Rows(j)("SEIZOEN") & "%, %VOLUME%: " & dtHerh.Rows(j)("VOLUME") & ", %PATROON%: %" & dtHerh.Rows(j)("PATROON") & "%, %GW%: %" & dtHerh.Rows(j)("GW") & "%, %BOUNDARY%:%" & dtHerh.Rows(j)("BOUNDARY") & "%, %WIND%" & ":%" & dtHerh.Rows(j)("WIND") & "%,%EXTRA1%:%" & dtHerh.Rows(j)("EXTRA1") & "%,%EXTRA2%:%" & dtHerh.Rows(j)("EXTRA2") & "%,%EXTRA3%:%" & dtHerh.Rows(j)("EXTRA3") & "%,%EXTRA4%:%" & dtHerh.Rows(j)("EXTRA4") & "%}}"
                         If j < dtHerh.Rows.Count - 1 Then exceedanceStr &= ","
                         exceedanceStr = exceedanceStr.Replace("%", Chr(34))
                         exceedanceWriter.WriteLine(exceedanceStr)
