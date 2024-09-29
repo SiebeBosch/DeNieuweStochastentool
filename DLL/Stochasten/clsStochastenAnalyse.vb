@@ -20,6 +20,13 @@ Imports Apache.Arrow.Memory
 Imports Newtonsoft.Json.Linq
 Imports Microsoft.VisualBasic.FileIO
 Imports System.Linq
+Imports ClosedXML.Excel
+Imports System.Threading.Tasks
+
+Imports CsvHelper
+Imports CsvHelper.Configuration
+Imports System.Threading
+
 
 'Imports Ionic.Zip
 
@@ -2086,6 +2093,60 @@ Public Class clsStochastenAnalyse
 
     End Function
 
+
+
+    Public Function MeshActiveCellIndicesToCSV() As Boolean
+        'this function is designed to export our mesh to a GeoJSON for the webviewer. Inside, it will store the exceedance tables
+        Try
+            Dim csvPath As String = getActiveCellsPath(ResultsDir)
+
+            'first thing to do is to read the model's fourier file and turn it into a csv
+            For Each Model As clsSimulationModel In Models.Values
+                Select Case Model.ModelType
+                    Case Is = GeneralFunctions.enmSimulationModel.DHYDRO, GeneralFunctions.enmSimulationModel.DIMR
+
+                        'now we'll pick the results file from the first simulation and use that as a template to generate a geoJSON
+                        Dim resultsFile As clsResultsFile = Model.ResultsFiles.getFourierFile
+                        Dim ResultsFilePath As String = Runs.Runs.Values(0).OutputFilesDir & "\" & resultsFile.FileName
+
+                        'check if the file exists
+                        If resultsFile Is Nothing Then
+                            Throw New Exception("Could Not find a Fourier file in the model results. Unable to generate exceedance mesh for webviewer.")
+                        ElseIf Not System.IO.File.Exists(ResultsFilePath) Then
+                            Throw New Exception("Could Not find a Fourier file in the model results. Unable to generate exceedance mesh for webviewer.")
+                        End If
+
+                        'we must take one of the fourier files as a template, read it and convert it to a geoJSON with exceedance tables
+                        Dim fouFile As New clsFouNCFile(ResultsFilePath, Me.Setup)
+                        If Not fouFile.Read() Then Throw New Exception("Error reading fourier file.")
+
+                        'We'll reuse the function which returns exceedance values and simply write all active cell indices (keys in the dictionary) to a CSV
+                        Dim ReturnPeriods As New List(Of Integer) From {10, 25, 50, 100}
+                        Dim ExceedanceValues As Dictionary(Of Integer, List(Of Double)) = GetExceedanceValues2DFromCSV(ReturnPeriods, GeneralFunctions.enm2DParameter.depth)
+
+                        'write the active cell indices to a CSV
+                        Using writer As New StreamWriter(csvPath)
+                            writer.WriteLine("FeatureIdx")
+                            For Each featureIdx In ExceedanceValues.Keys
+                                writer.WriteLine(featureIdx)
+                            Next
+                        End Using
+
+                    Case Else
+                        Throw New Exception("Model type not yet supported for exporting mesh actice cell indices.")
+                End Select
+            Next
+
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+
+    End Function
+
+
+
+
     Public Function CalculateExceedanceTables(process1D As Boolean, process2D As Boolean) As Boolean
         Try
             Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
@@ -2108,6 +2169,7 @@ Public Class clsStochastenAnalyse
                 'ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
                 'ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
                 '20240910: skipping the database altogether when postprocessing 2D results. Everything goes via CSV now
+                MeshActiveCellIndicesToCSV() 'here we write all active cell indices to a CSV
                 ProcessExceedanceTables2DFromCSVToCSV(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
                 ProcessExceedanceTables2DFromCSVToCSV(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
             End If
@@ -3030,6 +3092,9 @@ Public Class clsStochastenAnalyse
         Return ResultsDir & "\" & $"Stochasts_{Me.Setup.StochastenAnalyse.KlimaatScenario}.csv"
     End Function
 
+    Public Function getActiveCellsPath(ResultsDir As String)
+        Return ResultsDir & "\Activecells.csv"
+    End Function
     Public Function getResults2DPath(ResultsDir As String, Klimaatscenario As GeneralFunctions.enmKlimaatScenario, Parameter As GeneralFunctions.enm2DParameter) As String
         Dim ParStr As String
         Dim ClimStr As String = Klimaatscenario.ToString
@@ -3517,12 +3582,12 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-
     Public Function ExportResults2DFromCSV(parameter As GeneralFunctions.enm2DParameter) As Boolean
         Try
             'Set the paths to the 2D results and the stochasts in csv format
             Dim ExceedanceTable2DPath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
             Dim StochastsPath As String = getStochastsPath(ResultsDir)
+            Dim ActiveCellsPath As String = getActiveCellsPath(ResultsDir)
 
             'Prepare a spreadsheet
             Dim rowidx As Integer = 0
@@ -3539,7 +3604,7 @@ Public Class clsStochastenAnalyse
             'Read the CSV file
             Dim exceedanceData As New DataTable
             Using reader As New TextFieldParser(ExceedanceTable2DPath)
-                reader.SetDelimiters(",")
+                reader.SetDelimiters(";")
                 reader.HasFieldsEnclosedInQuotes = True
 
                 'Read column names
@@ -3554,24 +3619,31 @@ Public Class clsStochastenAnalyse
                 End While
             End Using
 
-            'Get all unique location names
-            Dim dtLoc = exceedanceData.DefaultView.ToTable(True, "FEATUREIDX")
-            Dim nLoc As Integer = dtLoc.Rows.Count
+            'Read active cells from CSV
+            Dim activeCells As New List(Of Integer)
+            Using reader As New StreamReader(ActiveCellsPath)
+                reader.ReadLine() 'Skip header
+                While Not reader.EndOfStream
+                    Dim line As String = reader.ReadLine()
+                    If Integer.TryParse(line, Nothing) Then
+                        activeCells.Add(Integer.Parse(line))
+                    End If
+                End While
+            End Using
 
-            'Create a new ZIP archive
-            If System.IO.File.Exists(ResultsDir & "\Results2D.zip") Then System.IO.File.Delete(ResultsDir & "\Results2D.zip")
-            Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results2D.zip", ZipArchiveMode.Create)
+            'We work in chunks of 1000 features
+            Dim chunksize As Integer = 1000
 
-                'We work in chunks of 1000 features
-                Dim chunksize As Integer = 1000
-
-                For chunkStart As Integer = 0 To nLoc - 1 Step chunksize
-                    Me.Setup.GeneralFunctions.UpdateProgressBar("", chunkStart, nLoc, False)
-                    Dim chunkEnd As Integer = Math.Min(chunkStart + chunksize - 1, nLoc - 1)
+                For chunkStart As Integer = 0 To activeCells.Count - 1 Step chunksize
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", chunkStart, activeCells.Count, False)
+                    Dim chunkEnd As Integer = Math.Min(chunkStart + chunksize - 1, activeCells.Count - 1)
 
                     'Process each feature in the chunk
                     For i As Integer = chunkStart To chunkEnd
-                        Dim featureIdx As Integer = CInt(dtLoc.Rows(i)("FEATUREIDX"))
+                        Dim featureIdx As Integer = activeCells(i)
+
+                        Debug.Print(featureIdx)
+                        If featureIdx = 102665 Then Stop
 
                         'Filter data for this feature
                         Dim featureData = exceedanceData.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
@@ -3595,23 +3667,18 @@ Public Class clsStochastenAnalyse
 
                             'Write raw results to CSV in ZIP
                             Using ms As New MemoryStream()
-                                Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
-                                    Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dt, sw, ";")
-                                    sw.Flush()
-                                    ms.Position = 0
+                            Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
+                                Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dt, sw, ";")
+                                sw.Flush()
+                                ms.Position = 0
 
-                                    Dim zipEntry As ZipArchiveEntry = zip.CreateEntry($"{featureIdx}.csv")
-                                    Using entryStream As Stream = zipEntry.Open()
-                                        ms.CopyTo(entryStream)
-                                    End Using
-                                End Using
                             End Using
+                        End Using
                         End If
                     Next
                 Next
-            End Using
 
-            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, nLoc)
+            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, activeCells.Count)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ExportResults2DFromCSV of class clsStochastenAnalyse.")
@@ -3619,6 +3686,143 @@ Public Class clsStochastenAnalyse
             Return False
         End Try
     End Function
+
+
+
+    'Public Function ExportResults2DFromCSV(parameter As GeneralFunctions.enm2DParameter) As Boolean
+    '    Try
+    '        ' Set the paths to the 2D results and the stochasts in csv format
+    '        Dim ExceedanceTable2DPath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
+    '        Dim StochastsPath As String = getStochastsPath(ResultsDir)
+
+    '        ' Prepare a spreadsheet
+    '        Using workbook As New XLWorkbook()
+    '            Dim ws = workbook.Worksheets.Add("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
+
+    '            ' Write header row
+    '            Dim headerValues() As Double = {0.01, 0.05, 0.1, 0.5, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000}
+    '            ws.Cell(1, 1).Value = "FEATUREIDX"
+    '            ws.Cell(1, 2).Value = "Alias"
+    '            For i As Integer = 0 To headerValues.Length - 1
+    '                ws.Cell(1, i + 3).Value = headerValues(i)
+    '            Next
+
+    '            ' Read the CSV file
+    '            Dim csvConfig As New CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture) With {
+    '            .Delimiter = ";",
+    '            .HasHeaderRecord = True
+    '        }
+    '            Using reader As New StreamReader(ExceedanceTable2DPath)
+    '                Using csv As New CsvReader(reader, csvConfig)
+    '                    Dim records = csv.GetRecords(Of ExceedanceRecord)().ToList()
+
+    '                    ' Get all unique location names
+    '                    Dim uniqueFeatures = records.Select(Function(r) r.FEATUREIDX).Distinct().ToList()
+    '                    Dim nLoc As Integer = uniqueFeatures.Count
+
+    '                    ' Create a new ZIP archive
+    '                    If System.IO.File.Exists(ResultsDir & "\Results2D.zip") Then System.IO.File.Delete(ResultsDir & "\Results2D.zip")
+    '                    Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results2D.zip", ZipArchiveMode.Create)
+    '                        ' We work in chunks of 1000 features
+    '                        Dim chunkSize As Integer = 1000
+
+    '                        ' Track progress with Interlocked
+    '                        Dim progressCounter As Integer = 0
+    '                        Dim totalItems As Integer = nLoc
+    '                        Dim updateFrequency As Integer = Math.Max(1, CInt(totalItems / 100)) ' Update progress about 100 times
+
+    '                        ' Initialize the progress bar
+    '                        Me.Setup.GeneralFunctions.UpdateProgressBar("Exporting 2D results...", 0, 10, True)
+
+    '                        ' Parallel processing of the features
+    '                        Parallel.For(0, CInt(Math.Ceiling(nLoc / CDbl(chunkSize))),
+    '                                 Sub(chunkIndex)
+    '                                     Dim chunkStart As Integer = chunkIndex * chunkSize
+    '                                     Dim chunkEnd As Integer = Math.Min(chunkStart + chunkSize - 1, nLoc - 1)
+
+    '                                     For i As Integer = chunkStart To chunkEnd
+    '                                         Dim featureIdx As Integer = uniqueFeatures(i)
+
+    '                                         ' Filter data for this feature
+    '                                         Dim featureData = records.Where(Function(r) r.FEATUREIDX = featureIdx).OrderBy(Function(r) r.HERHALINGSTIJD).ToList()
+
+    '                                         If featureData.Any() Then
+    '                                             ' Interpolate values
+    '                                             Dim interpolatedValues As New List(Of Double)
+    '                                             For Each headerValue In headerValues
+    '                                                 interpolatedValues.Add(InterpolateValue(featureData, headerValue))
+    '                                             Next
+
+    '                                             ' Write to Excel (using bulk insert later)
+    '                                             SyncLock ws
+    '                                                 Dim rowIdx As Integer = i + 2
+    '                                                 ws.Cell(rowIdx, 1).Value = featureIdx
+    '                                                 ws.Cell(rowIdx, 2).Value = featureIdx
+    '                                                 ws.Cell(rowIdx, 3).InsertData(interpolatedValues)
+    '                                             End SyncLock
+
+    '                                             ' Write raw results to CSV in ZIP
+    '                                             Dim csvContent As New StringBuilder()
+    '                                             csvContent.AppendLine("HERHALINGSTIJD;WAARDE")
+    '                                             For Each record In featureData
+    '                                                 csvContent.AppendLine($"{record.HERHALINGSTIJD};{record.WAARDE}")
+    '                                             Next
+
+    '                                             SyncLock zip
+    '                                                 Dim zipEntry As ZipArchiveEntry = zip.CreateEntry($"{featureIdx}.csv")
+    '                                                 Using entryStream As Stream = zipEntry.Open()
+    '                                                     Using sw As New StreamWriter(entryStream)
+    '                                                         sw.Write(csvContent.ToString())
+    '                                                     End Using
+    '                                                 End Using
+    '                                             End SyncLock
+    '                                         End If
+
+    '                                         ' Safely increment progress and update UI
+    '                                         Dim currentProgress As Integer = Interlocked.Increment(progressCounter)
+    '                                         If currentProgress Mod updateFrequency = 0 OrElse currentProgress = totalItems Then
+    '                                             ' Update progress bar on the main thread
+    '                                             Me.Setup.GeneralFunctions.UpdateProgressBar("", currentProgress, totalItems, True)
+    '                                         End If
+    '                                     Next
+    '                                 End Sub)
+    '                    End Using
+    '                End Using
+    '            End Using
+
+    '            ' Save the Excel file
+    '            workbook.SaveAs(ResultsDir & "\Results2D.xlsx")
+    '        End Using
+
+    '        Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 100, 100)
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function ExportResults2DFromCSV of class clsStochastenAnalyse.")
+    '        Me.Setup.Log.AddError(ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
+
+
+    Private Function InterpolateValue(data As List(Of ExceedanceRecord), target As Double) As Double
+        Dim lower = data.LastOrDefault(Function(r) r.HERHALINGSTIJD <= target)
+        Dim upper = data.FirstOrDefault(Function(r) r.HERHALINGSTIJD >= target)
+
+        If lower Is Nothing Then Return upper?.WAARDE
+        If upper Is Nothing Then Return lower?.WAARDE
+
+        If lower.HERHALINGSTIJD = upper.HERHALINGSTIJD Then Return lower.WAARDE
+
+        Dim slope = (upper.WAARDE - lower.WAARDE) / (upper.HERHALINGSTIJD - lower.HERHALINGSTIJD)
+        Return lower.WAARDE + slope * (target - lower.HERHALINGSTIJD)
+    End Function
+
+    Public Class ExceedanceRecord
+        Public Property FEATUREIDX As Integer
+        Public Property HERHALINGSTIJD As Double
+        Public Property WAARDE As Double
+    End Class
+
 
 
 

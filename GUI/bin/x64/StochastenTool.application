@@ -7,14 +7,14 @@
     <framework targetVersion="4.8" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="StochastenTool.exe.manifest" size="26679">
+    <dependentAssembly dependencyType="install" codebase="StochastenTool.exe.manifest" size="28047">
       <assemblyIdentity name="StochastenTool.exe" version="2.5.1.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="amd64" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>CD6dWrqQ76x1X/LkUC4d7S0nWquECtNkh962IxgzVD0=</dsig:DigestValue>
+        <dsig:DigestValue>wqBz0Zv8lsnR0ICGIaXUsDTKV5tTglaT7ovsj2t1wgc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

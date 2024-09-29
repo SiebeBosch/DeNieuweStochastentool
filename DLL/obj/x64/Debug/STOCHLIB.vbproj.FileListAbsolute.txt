@@ -184,6 +184,7 @@ C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\alglibnet2.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Apache.Arrow.Compression.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Apache.Arrow.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ClosedXML.dll
+C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\CsvHelper.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DocumentFormat.OpenXml.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DynamicInterop.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\EntityFramework.dll
@@ -198,6 +199,7 @@ C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\K4os.Compression.LZ4.Streams.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\K4os.Hash.xxHash.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MatFileHandler.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.Bcl.AsyncInterfaces.dll
+C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.Bcl.HashCode.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Newtonsoft.Json.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Npgsql.dll
@@ -220,6 +222,7 @@ C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ZstdSharp.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Mono.Security.dll
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ClosedXML.pdb
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\ClosedXML.xml
+C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\CsvHelper.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DocumentFormat.OpenXml.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\DynamicInterop.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\EntityFramework.xml
@@ -234,6 +237,7 @@ C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\K4os.Compression.LZ4.Streams.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\K4os.Hash.xxHash.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\MatFileHandler.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.Bcl.AsyncInterfaces.xml
+C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Microsoft.Bcl.HashCode.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Newtonsoft.Json.xml
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Npgsql.pdb
 C:\GITHUB\DeNieuweStochastentool\DLL\bin\x64\Npgsql.xml

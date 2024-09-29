@@ -129,6 +129,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Apache.Arrow.Compression.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Apache.Arrow.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\csmatio.dll
+C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\CsvHelper.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\DynamicInterop.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\HDF.PInvoke.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Ionic.Zip.dll
@@ -137,6 +138,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\K4os.Compression.LZ4.Streams.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\K4os.Hash.xxHash.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\MathNet.Numerics.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Microsoft.Bcl.AsyncInterfaces.dll
+C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Microsoft.Bcl.HashCode.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Newtonsoft.Json.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\protobuf-net.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\ProtoBufRemote.dll
@@ -162,6 +164,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\MatFileHandler.dll
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\STOCHLIB.pdb
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\STOCHLIB.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\STOCHLIB.dll.config
+C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\CsvHelper.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\DynamicInterop.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\HDF.PInvoke.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\HDF.PInvoke.dll.config
@@ -170,6 +173,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\K4os.Compression.LZ4.Streams.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\K4os.Hash.xxHash.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\MathNet.Numerics.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Microsoft.Bcl.AsyncInterfaces.xml
+C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Microsoft.Bcl.HashCode.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\Newtonsoft.Json.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\protobuf-net.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\bin\x64\ScientificDataSet.xml
@@ -201,6 +205,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmEraseYesNo.
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmImportOutputlocations.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmOudeResultatenVervangen.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmPatroon.resources
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmPublish.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmStochasten.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.Resources.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.vbproj.GenerateResource.cache
@@ -212,4 +217,3 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\Stochast.F6662CE2.Up2Date
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.pdb
-C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Debug\StochastenTool.frmPublish.resources

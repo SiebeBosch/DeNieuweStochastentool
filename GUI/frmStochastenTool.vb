@@ -3621,6 +3621,8 @@ Public Class frmStochasten
 
     Private Sub BtnExport_Click(sender As Object, e As EventArgs) Handles btnExport.Click
 
+        Me.Cursor = Cursors.WaitCursor
+
         If chk1D.Checked Then
             Call Setup.StochastenAnalyse.ExportResults1D()
         End If
@@ -3632,6 +3634,12 @@ Public Class frmStochasten
         Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"
         If Me.Setup.ExcelFile.Sheets.Count > 0 Then Me.Setup.ExcelFile.Save(False)
         Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
+
+        Me.Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, 10, True)
+
+        Me.Cursor = Cursors.Default
+
+
     End Sub
 
 
