@@ -3639,6 +3639,7 @@ Public Class frmStochasten
 
         Me.Cursor = Cursors.Default
 
+        Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
 
     End Sub
 

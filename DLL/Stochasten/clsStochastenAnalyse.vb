@@ -3584,6 +3584,8 @@ Public Class clsStochastenAnalyse
 
     Public Function ExportResults2DFromCSV(parameter As GeneralFunctions.enm2DParameter) As Boolean
         Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Normalizing 2D exceedance tables and writing to Excel...", 0, 1, True)
+
             'Set the paths to the 2D results and the stochasts in csv format
             Dim ExceedanceTable2DPath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
             Dim StochastsPath As String = getStochastsPath(ResultsDir)
@@ -3591,6 +3593,9 @@ Public Class clsStochastenAnalyse
 
             'Prepare a spreadsheet
             Dim rowidx As Integer = 0
+
+            Me.Setup.ExcelFile = New clsExcelBook(Me.Setup)
+            Me.Setup.ExcelFile.Initialize(ResultsDir & "\Results2D.xlsx")
             Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
 
             'Write header row
@@ -3620,65 +3625,137 @@ Public Class clsStochastenAnalyse
             End Using
 
             'Read active cells from CSV
-            Dim activeCells As New List(Of Integer)
+            Dim featureIndices As New List(Of Integer)
             Using reader As New StreamReader(ActiveCellsPath)
                 reader.ReadLine() 'Skip header
                 While Not reader.EndOfStream
                     Dim line As String = reader.ReadLine()
                     If Integer.TryParse(line, Nothing) Then
-                        activeCells.Add(Integer.Parse(line))
+                        featureIndices.Add(Integer.Parse(line))
                     End If
                 End While
             End Using
 
-            'We work in chunks of 1000 features
-            Dim chunksize As Integer = 1000
 
-                For chunkStart As Integer = 0 To activeCells.Count - 1 Step chunksize
-                    Me.Setup.GeneralFunctions.UpdateProgressBar("", chunkStart, activeCells.Count, False)
-                    Dim chunkEnd As Integer = Math.Min(chunkStart + chunksize - 1, activeCells.Count - 1)
+            'read all exceedance data to a single datatable
+            ' Initialize DataTable
+            Dim featureIdx As Integer
+            Dim dt As New DataTable
+            dt.Columns.Add("FEATUREIDX", GetType(Integer))
+            dt.Columns.Add("HERHALINGSTIJD", GetType(Double))
+            dt.Columns.Add("WAARDE", GetType(Double))
 
-                    'Process each feature in the chunk
-                    For i As Integer = chunkStart To chunkEnd
-                        Dim featureIdx As Integer = activeCells(i)
+            ' Open the file using StreamReader for efficient file reading
+            Using reader As New StreamReader(ExceedanceTable2DPath)
+                Dim line As String
+                Dim values() As String
+                reader.ReadLine() ' Skip the header line
 
-                        Debug.Print(featureIdx)
-                        If featureIdx = 102665 Then Stop
+                ' Read through each line in the file
+                While Not reader.EndOfStream
+                    line = reader.ReadLine()
 
-                        'Filter data for this feature
-                        Dim featureData = exceedanceData.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
+                    ' Skip empty lines or lines without data
+                    If String.IsNullOrWhiteSpace(line) Then Continue While
 
-                        If featureData.Length > 0 Then
-                            'Create a DataTable for this feature
-                            Dim dt As New DataTable()
-                            dt.Columns.Add("HERHALINGSTIJD", GetType(Double))
-                            dt.Columns.Add("WAARDE", GetType(Double))
-                            For Each row In featureData
-                                dt.Rows.Add(CDbl(row("HERHALINGSTIJD")), CDbl(row("WAARDE")))
-                            Next
+                    ' Split the line based on ';' delimiter
+                    values = line.Split(";"c)
 
-                            'Write to Excel
-                            rowidx += 1
-                            ws.ws.Cells(rowidx, 0).Value = featureIdx
-                            ws.ws.Cells(rowidx, 1).Value = featureIdx
-                            For j As Integer = 0 To headerValues.Length - 1
-                                ws.ws.Cells(rowidx, j + 2).Value = InterpolateFromDataTable(dt, headerValues(j), "HERHALINGSTIJD", "WAARDE")
-                            Next
+                    ' Check if the line has enough columns (4 columns in this case)
+                    If values.Length >= 4 Then
+                        featureIdx = Convert.ToInt32(values(0))
 
-                            'Write raw results to CSV in ZIP
-                            Using ms As New MemoryStream()
-                            Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
-                                Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dt, sw, ";")
-                                sw.Flush()
-                                ms.Position = 0
+                        ' Check if this featureIdx is in the list of feature indices
+                        If featureIndices.Contains(featureIdx) Then
+                            Dim herhalingstijd As Double = Convert.ToDouble(values(2))
+                            Dim waarde As Double = Convert.ToDouble(values(3))
 
-                            End Using
-                        End Using
+                            ' Add the row to the DataTable
+                            dt.Rows.Add(featureIdx, herhalingstijd, waarde)
                         End If
-                    Next
-                Next
+                    End If
+                End While
+            End Using
 
-            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, activeCells.Count)
+            'create a dictionary of interpolators; one for each feature
+            Dim interpolators As New Dictionary(Of Integer, clsInterpolator)()
+
+            ' Preprocess the data
+            For Each featureIdx In featureIndices
+                Dim featureData = dt.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
+                interpolators(featureIdx) = New clsInterpolator(featureData, "HERHALINGSTIJD", "WAARDE")
+            Next
+
+            'now loop through all active cells and retrieve the data for each feature
+            For i = 0 To featureIndices.Count - 1
+                featureIdx = featureIndices(i)
+
+                rowidx += 1
+                ws.ws.Cells(rowidx, 0).Value = featureIdx
+                ws.ws.Cells(rowidx, 1).Value = featureIdx
+                Dim interpolator = interpolators(featureIdx)
+
+                If interpolator._xValues.Count = 0 OrElse interpolator._yValues.Count = 0 Then
+                    Me.Setup.Log.AddError("No data found for feature with index " & featureIdx)
+                    Continue For
+                End If
+
+                For j As Integer = 0 To headerValues.Length - 1
+                    ws.ws.Cells(rowidx, j + 2).Value = interpolator.Interpolate(headerValues(j))
+                Next
+            Next
+
+            ''We work in chunks of 1000 features
+            'Dim chunksize As Integer = 1000
+
+            'For chunkStart As Integer = 0 To featureIndices.Count - 1 Step chunksize
+            '    Me.Setup.GeneralFunctions.UpdateProgressBar("", chunkStart, featureIndices.Count, False)
+            '    Dim chunkEnd As Integer = Math.Min(chunkStart + chunksize - 1, featureIndices.Count - 1)
+
+            '    'Process each feature in the chunk
+            '    For i As Integer = chunkStart To chunkEnd
+            '        Dim featureIdx As Integer = featureIndices(i)
+
+            '        Debug.Print(featureIdx)
+            '        If featureIdx = 102665 Then Stop
+
+            '        'Filter data for this feature
+            '        Dim featureData = exceedanceData.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
+
+            '        If featureData.Length > 0 Then
+            '            'Create a DataTable for this feature
+            '            Dim dt As New DataTable()
+            '            dt.Columns.Add("HERHALINGSTIJD", GetType(Double))
+            '            dt.Columns.Add("WAARDE", GetType(Double))
+            '            For Each row In featureData
+            '                dt.Rows.Add(CDbl(row("HERHALINGSTIJD")), CDbl(row("WAARDE")))
+            '            Next
+
+            '            'Write to Excel
+            '            rowidx += 1
+            '            ws.ws.Cells(rowidx, 0).Value = featureIdx
+            '            ws.ws.Cells(rowidx, 1).Value = featureIdx
+            '            For j As Integer = 0 To headerValues.Length - 1
+            '                ws.ws.Cells(rowidx, j + 2).Value = InterpolateFromDataTable(dt, headerValues(j), "HERHALINGSTIJD", "WAARDE")
+            '            Next
+
+            '            'Write raw results to CSV in ZIP
+            '            Using ms As New MemoryStream()
+            '                Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
+            '                    Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dt, sw, ";")
+            '                    sw.Flush()
+            '                    ms.Position = 0
+
+            '                End Using
+            '            End Using
+            '        End If
+            '    Next
+            'Next
+
+            ' Save the Excel file
+            Me.Setup.ExcelFile.Save(True)
+
+            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, featureIndices.Count)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ExportResults2DFromCSV of class clsStochastenAnalyse.")
@@ -3849,7 +3926,7 @@ Public Class clsStochastenAnalyse
         Dim myQuery As String
 
         myQuery = "SELECT * FROM RESULTATEN WHERE LOCATIENAAM='" & LocationName & "' AND KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ";"
-        Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtResults)
+                    Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtResults)
         Return dtResults
 
     End Function

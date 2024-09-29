@@ -147,7 +147,7 @@ Public Class frmClassifyGroundwaterHBV
             Setup.TijdreeksStatistiek.POTFrequency = 10
 
             'now it's time to read the timeseries from the Excel file. We'll do this for each worksheet
-            Dim HBVReport As New clsExcelBook(Me.Setup, txtExcelFile.Text, False)
+            Dim HBVReport As New clsExcelBook(Me.Setup, txtExcelFile.Text)
 
             Me.Setup.GeneralFunctions.UpdateProgressBar("Reading HBV Report...", 1, 10, True)
             Me.Cursor = Cursors.WaitCursor

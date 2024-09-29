@@ -9,6 +9,8 @@ Public Class clsExcelBook
     Dim oExcel As ExcelFile
     Private Setup As clsSetup
 
+    ' Add a flag to track if the license has been set
+    Private isLicenseSet As Boolean = False
 
     Public Sub New(ByRef mySetup As clsSetup)
         Setup = mySetup
@@ -33,6 +35,7 @@ Public Class clsExcelBook
             Using licenseReader As New System.IO.StreamReader(LicensePath)
                 Dim myLicense As String = licenseReader.ReadToEnd
                 SpreadsheetInfo.SetLicense(myLicense)
+                isLicenseSet = True
             End Using
         Else
             SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
@@ -50,19 +53,23 @@ Public Class clsExcelBook
         Dim LicensePath As String = System.Windows.Forms.Application.StartupPath + "\licenses\gembox.txt"
         Path = myPath
 
-        If System.IO.File.Exists(LicensePath) Then
-            Using licenseReader As New System.IO.StreamReader(LicensePath)
-                Dim myLicense As String = licenseReader.ReadToEnd
-                SpreadsheetInfo.SetLicense(myLicense)
-            End Using
-        ElseIf System.IO.File.Exists("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt") Then
-            Using licenseReader As New System.IO.StreamReader("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt")
-                Dim myLicense As String = licenseReader.ReadToEnd
-                SpreadsheetInfo.SetLicense(myLicense)
-            End Using
-        Else
-            SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
-            Me.Setup.Log.AddError("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
+        If Not isLicenseSet Then
+            If System.IO.File.Exists(LicensePath) Then
+                Using licenseReader As New System.IO.StreamReader(LicensePath)
+                    Dim myLicense As String = licenseReader.ReadToEnd
+                    SpreadsheetInfo.SetLicense(myLicense)
+                    isLicenseSet = True
+                End Using
+            ElseIf System.IO.File.Exists("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt") Then
+                Using licenseReader As New System.IO.StreamReader("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt")
+                    Dim myLicense As String = licenseReader.ReadToEnd
+                    SpreadsheetInfo.SetLicense(myLicense)
+                    isLicenseSet = True
+                End Using
+            Else
+                SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
+                Me.Setup.Log.AddError("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
+            End If
         End If
 
         oExcel = New ExcelFile
@@ -74,42 +81,18 @@ Public Class clsExcelBook
         Dim LicensePath As String = System.Windows.Forms.Application.StartupPath + "\licenses\gembox.txt"
         Path = myPath
 
-        If System.IO.File.Exists(LicensePath) Then
-            Using licenseReader As New System.IO.StreamReader(LicensePath)
-                Dim myLicense As String = licenseReader.ReadToEnd
-                SpreadsheetInfo.SetLicense(myLicense)
-            End Using
-        ElseIf System.IO.File.Exists("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt") Then
-            Using licenseReader As New System.IO.StreamReader("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt")
-                Dim myLicense As String = licenseReader.ReadToEnd
-                SpreadsheetInfo.SetLicense(myLicense)
-            End Using
-        Else
-            SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
-            Me.Setup.Log.AddError("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
-        End If
-
-        oExcel = New ExcelFile
-        Sheets = New Collection
-    End Sub
-
-    Public Sub New(ByRef mySetup As clsSetup, myPath As String, Optional ByVal SetLicense As Boolean = True)
-
-        Dim LicensePath As String = System.Windows.Forms.Application.StartupPath + "\licenses\gembox.txt"
-        Path = myPath
-        Setup = mySetup
-
-        'introduced this clause to avoid the license key to be set twice. Apparently gembox cannot handle that
-        If SetLicense Then
+        If Not isLicenseSet Then
             If System.IO.File.Exists(LicensePath) Then
                 Using licenseReader As New System.IO.StreamReader(LicensePath)
                     Dim myLicense As String = licenseReader.ReadToEnd
                     SpreadsheetInfo.SetLicense(myLicense)
+                    isLicenseSet = True
                 End Using
             ElseIf System.IO.File.Exists("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt") Then
                 Using licenseReader As New System.IO.StreamReader("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt")
                     Dim myLicense As String = licenseReader.ReadToEnd
                     SpreadsheetInfo.SetLicense(myLicense)
+                    isLicenseSet = True
                 End Using
             Else
                 SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
@@ -117,6 +100,35 @@ Public Class clsExcelBook
             End If
         End If
 
+
+        oExcel = New ExcelFile
+        Sheets = New Collection
+    End Sub
+
+    Public Sub New(ByRef mySetup As clsSetup, myPath As String)
+
+        Dim LicensePath As String = System.Windows.Forms.Application.StartupPath + "\licenses\gembox.txt"
+        Path = myPath
+        Setup = mySetup
+
+        If Not isLicenseSet Then
+            If System.IO.File.Exists(LicensePath) Then
+                Using licenseReader As New System.IO.StreamReader(LicensePath)
+                    Dim myLicense As String = licenseReader.ReadToEnd
+                    SpreadsheetInfo.SetLicense(myLicense)
+                    isLicenseSet = True
+                End Using
+            ElseIf System.IO.File.Exists("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt") Then
+                Using licenseReader As New System.IO.StreamReader("d:\GITHUB\DeNieuweStochastentool\licenses\gembox.txt")
+                    Dim myLicense As String = licenseReader.ReadToEnd
+                    SpreadsheetInfo.SetLicense(myLicense)
+                    isLicenseSet = True
+                End Using
+            Else
+                SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY")
+                Me.Setup.Log.AddError("No license detected for Gembox Spreadsheet: please write your key in a text file: " & LicensePath)
+            End If
+        End If
 
         oExcel = New ExcelFile
         Sheets = New Collection

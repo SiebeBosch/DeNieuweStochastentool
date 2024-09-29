@@ -631,6 +631,7 @@
     <Compile Include="TijdreeksStatistiek\clsGenPareto.vb" />
     <Compile Include="TijdreeksStatistiek\clsHydroEvent.vb" />
     <Compile Include="TijdreeksStatistiek\clsHydroEvents.vb" />
+    <Compile Include="TijdreeksStatistiek\clsInterpolator.vb" />
     <Compile Include="TijdreeksStatistiek\clsKNMI14Scenarios.vb" />
     <Compile Include="TijdreeksStatistiek\clsLocationParameterCombination.vb" />
     <Compile Include="TijdreeksStatistiek\clsLocationParameterCombinations.vb" />
