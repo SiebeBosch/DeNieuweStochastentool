@@ -77,6 +77,7 @@ Public Class frmStochasten
     Private ttViewer As New ToolTip()
     Private ttExport As New ToolTip()
 
+
     Private Sub frmStochastenTool_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Set up the delays for the tooltip.
         ttPopulateRuns.AutoPopDelay = 5000
@@ -889,7 +890,7 @@ Public Class frmStochasten
         Dim myLabels As New List(Of Windows.Forms.Label)
 
         'this routine refreshes all datagridview instances that me.Setup.contain stochasts with their selection
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
+        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
             'create a database me.Setup.connection to the SQLite database that me.Setup.contains the me.Setup.configuration of stochasts.
             'the name of the me.Setup.connection is equal to the path to the database file
 
@@ -910,6 +911,7 @@ Public Class frmStochasten
                         'create a new datagridview for the current season
                         Dim mySeason As String = myRow.Cells(0).Value
                         Dim myVolumesGrid = New DataGridView
+
                         myVolumesLabel = New Windows.Forms.Label
 
                         myVolumesGrid.Name = mySeason & "_Volumes"
@@ -2335,7 +2337,6 @@ Public Class frmStochasten
                         .SelectionMode = DataGridViewSelectionMode.RowHeaderSelect
                             }
 
-
                         'add or get groupbox to the tab Extra
                         If ExtraNum = 1 Then
                             myGroupBox = GetAddGroupBox(tabExtra, mySeason, GridIdx)
@@ -2568,21 +2569,34 @@ Public Class frmStochasten
     '========================================================================================================================
 
     Private Sub BtnPostprocessing_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPostprocessing.Click
+        Try
+            Me.Setup.SetProgress(prProgress, lblProgress)
 
-        Me.Setup.SetProgress(prProgress, lblProgress)
+            Me.Setup.StochastenAnalyse.InitializeDatabaseConnection()
 
-        Me.Setup.StochastenAnalyse.InitializeDatabaseConnection()
+            Call UpdateHerhalingstijdenTables2D(0)         'return periods for 2D results (depths and levels) for the climate scenario and duration
 
-        Call UpdateHerhalingstijdenTables2D(0)         'return periods for 2D results (depths and levels) for the climate scenario and duration
+            'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
+            Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
 
-        'make sure our Stochastenanalyse object knows which climate and duration we're analyzing
-        Setup.StochastenAnalyse.SetSettings(cmbClimate.Text, cmbDuration.Text)
+            Me.Cursor = Cursors.WaitCursor
+            If Not Setup.StochastenAnalyse.CalculateExceedanceTables(chk1D.Checked, chk2D.Checked) Then Throw New Exception("Error calculating exceedance tables.")
 
-        Me.Cursor = Cursors.WaitCursor
-        Setup.StochastenAnalyse.CalculateExceedanceTables(chk1D.Checked, chk2D.Checked)
-        Me.Cursor = Cursors.Default
+            'now that our postprocessing is done, we can enable the publishing and export functionalities
+            btnViewer.Enabled = True
+            btnExport.Enabled = True
 
-        Me.Setup.StochastenAnalyse.CloseDatabaseConnection()
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.write(Me.Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
+        Finally
+            Me.Cursor = Cursors.Default
+            Me.Setup.StochastenAnalyse.CloseDatabaseConnection()
+        End Try
+
+
+
+
 
     End Sub
 
@@ -3623,6 +3637,9 @@ Public Class frmStochasten
 
         Me.Cursor = Cursors.WaitCursor
 
+        Me.Setup.ExcelFile = New clsExcelBook(Me.Setup)
+        Me.Setup.ExcelFile.Initialize(Me.Setup.StochastenAnalyse.ResultsDir & $"\{Me.Setup.StochastenAnalyse.KlimaatScenario.ToString}_{Me.Setup.StochastenAnalyse.Duration}_excedancetables_standardized.xlsx")
+
         If chk1D.Checked Then
             Call Setup.StochastenAnalyse.ExportResults1D()
         End If
@@ -3631,8 +3648,11 @@ Public Class frmStochasten
             Call Setup.StochastenAnalyse.ExportResults2DFromCSV(GeneralFunctions.enm2DParameter.waterlevel)
         End If
 
-        Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"
-        If Me.Setup.ExcelFile.Sheets.Count > 0 Then Me.Setup.ExcelFile.Save(False)
+        ' Save the Excel file
+        Me.Setup.ExcelFile.Save(True)
+
+        'Me.Setup.ExcelFile.Path = Setup.StochastenAnalyse.ResultsDir & "\Herhalingstijden_" & Setup.StochastenAnalyse.KlimaatScenario.ToString & "_" & Setup.StochastenAnalyse.Duration.ToString & ".xlsx"
+        'If Me.Setup.ExcelFile.Sheets.Count > 0 Then Me.Setup.ExcelFile.Save(False)
         Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
 
         Me.Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, 10, True)
@@ -4718,6 +4738,9 @@ Public Class frmStochasten
 
         Me.Setup.StochastenAnalyse.CloseDatabaseConnection()
 
+        'now that our model results have been read we can enable the postprocessing button
+        btnPostprocessing.Enabled = True
+
     End Sub
 
     Private Sub ConverterenVanAccessNaarSQLiteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConverterenVanAccessNaarSQLiteToolStripMenuItem.Click
@@ -4901,6 +4924,10 @@ Public Class frmStochasten
         Process.Start(New ProcessStartInfo(url) With {.UseShellExecute = True})
     End Sub
 
+    Private Sub grSeizoenen_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grSeizoenen.CellContentClick
+
+    End Sub
+
     Private Sub ToevoegenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ToevoegenToolStripMenuItem.Click
         Dim myForm As New frmAddModel(Me.Setup)
         myForm.ShowDialog()
@@ -4918,6 +4945,10 @@ Public Class frmStochasten
         query = "DELETE FROM HERHALINGSTIJDEN;"
         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
         Me.Setup.GeneralFunctions.UpdateProgressBar("Cleanup complete.", 0, 10, True)
+    End Sub
+
+    Private Sub grWindKlassen_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grWindKlassen.CellContentClick
+
     End Sub
 
     Public Function WriteFouTopographyJSON(path As String) As Boolean
@@ -5141,8 +5172,6 @@ Public Class frmStochasten
         Setup.StochastenAnalyse.KlimaatScenario = DirectCast([Enum].Parse(GetType(STOCHLIB.GeneralFunctions.enmKlimaatScenario), cmbClimate.Text), STOCHLIB.GeneralFunctions.enmKlimaatScenario)
         Call RebuildAllGrids()
     End Sub
-
-
 
 End Class
 

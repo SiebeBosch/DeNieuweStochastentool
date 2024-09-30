@@ -31,9 +31,10 @@ Partial Class frmEraseYesNo
         '
         Me.btnRun.BackColor = System.Drawing.Color.MediumSeaGreen
         Me.btnRun.DialogResult = System.Windows.Forms.DialogResult.Yes
-        Me.btnRun.Location = New System.Drawing.Point(218, 54)
+        Me.btnRun.Location = New System.Drawing.Point(291, 66)
+        Me.btnRun.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnRun.Name = "btnRun"
-        Me.btnRun.Size = New System.Drawing.Size(113, 56)
+        Me.btnRun.Size = New System.Drawing.Size(151, 69)
         Me.btnRun.TabIndex = 4
         Me.btnRun.Text = "Ja"
         Me.btnRun.UseVisualStyleBackColor = False
@@ -42,21 +43,23 @@ Partial Class frmEraseYesNo
         '
         Me.btnStop.BackColor = System.Drawing.Color.IndianRed
         Me.btnStop.DialogResult = System.Windows.Forms.DialogResult.No
-        Me.btnStop.Location = New System.Drawing.Point(87, 54)
+        Me.btnStop.Location = New System.Drawing.Point(116, 66)
+        Me.btnStop.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnStop.Name = "btnStop"
-        Me.btnStop.Size = New System.Drawing.Size(113, 56)
+        Me.btnStop.Size = New System.Drawing.Size(151, 69)
         Me.btnStop.TabIndex = 25
         Me.btnStop.Text = "Nee"
         Me.btnStop.UseVisualStyleBackColor = False
         '
         'frmEraseYesNo
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(350, 128)
+        Me.ClientSize = New System.Drawing.Size(467, 158)
         Me.Controls.Add(Me.btnStop)
         Me.Controls.Add(Me.btnRun)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmEraseYesNo"
         Me.Text = "Geselecteerde runs wissen?"
         Me.ResumeLayout(False)

@@ -35,67 +35,74 @@ Partial Class frmDirRename
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(7, 9)
+        Me.Label1.Location = New System.Drawing.Point(9, 11)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(47, 13)
+        Me.Label1.Size = New System.Drawing.Size(57, 16)
         Me.Label1.TabIndex = 0
         Me.Label1.Text = "Root dir:"
         '
         'lblRootDir
         '
         Me.lblRootDir.AutoSize = True
-        Me.lblRootDir.Location = New System.Drawing.Point(60, 9)
+        Me.lblRootDir.Location = New System.Drawing.Point(80, 11)
+        Me.lblRootDir.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblRootDir.Name = "lblRootDir"
-        Me.lblRootDir.Size = New System.Drawing.Size(10, 13)
+        Me.lblRootDir.Size = New System.Drawing.Size(11, 16)
         Me.lblRootDir.TabIndex = 1
         Me.lblRootDir.Text = "-"
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(7, 33)
+        Me.Label3.Location = New System.Drawing.Point(9, 41)
+        Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(185, 13)
+        Me.Label3.Size = New System.Drawing.Size(236, 16)
         Me.Label3.TabIndex = 2
         Me.Label3.Text = "Hernoem alle (sub)mappen met naam:"
         '
         'txtFromDir
         '
-        Me.txtFromDir.Location = New System.Drawing.Point(198, 30)
+        Me.txtFromDir.Location = New System.Drawing.Point(264, 37)
+        Me.txtFromDir.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtFromDir.Name = "txtFromDir"
-        Me.txtFromDir.Size = New System.Drawing.Size(106, 20)
+        Me.txtFromDir.Size = New System.Drawing.Size(140, 22)
         Me.txtFromDir.TabIndex = 3
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(310, 33)
+        Me.Label4.Location = New System.Drawing.Point(413, 41)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(31, 13)
+        Me.Label4.Size = New System.Drawing.Size(37, 16)
         Me.Label4.TabIndex = 4
         Me.Label4.Text = "naar:"
         '
         'txtToDir
         '
-        Me.txtToDir.Location = New System.Drawing.Point(349, 30)
+        Me.txtToDir.Location = New System.Drawing.Point(465, 37)
+        Me.txtToDir.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.txtToDir.Name = "txtToDir"
-        Me.txtToDir.Size = New System.Drawing.Size(106, 20)
+        Me.txtToDir.Size = New System.Drawing.Size(140, 22)
         Me.txtToDir.TabIndex = 5
         '
         'btnMultiDirRename
         '
-        Me.btnMultiDirRename.Location = New System.Drawing.Point(380, 67)
+        Me.btnMultiDirRename.Location = New System.Drawing.Point(507, 82)
+        Me.btnMultiDirRename.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnMultiDirRename.Name = "btnMultiDirRename"
-        Me.btnMultiDirRename.Size = New System.Drawing.Size(75, 23)
+        Me.btnMultiDirRename.Size = New System.Drawing.Size(100, 28)
         Me.btnMultiDirRename.TabIndex = 6
         Me.btnMultiDirRename.Text = "Uitvoeren"
         Me.btnMultiDirRename.UseVisualStyleBackColor = True
         '
         'frmDirRename
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(464, 103)
+        Me.ClientSize = New System.Drawing.Size(619, 127)
         Me.Controls.Add(Me.btnMultiDirRename)
         Me.Controls.Add(Me.txtToDir)
         Me.Controls.Add(Me.Label4)
@@ -104,6 +111,7 @@ Partial Class frmDirRename
         Me.Controls.Add(Me.lblRootDir)
         Me.Controls.Add(Me.Label1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmDirRename"
         Me.Text = "Multi Rename Directory"
         Me.ResumeLayout(False)

@@ -219,12 +219,12 @@ Public Class clsStochastenAnalyse
     End Function
 
 
-    Public Function AddStochasticRunsJSON(runspath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+    Public Function AddStochasticRunsJSON(runspath As String, configurationName As String) As Boolean
         'this function adds a new configuration to the existing runs.json file
         Try
             'first we'll read the existing runs.json file
             Dim dt As New DataTable
-            Dim query As String = "SELECT RUNID, RUNIDX, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Dim query As String = "SELECT RUNID, RUNIDX, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM RUNS WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dt, True)
 
             Dim jsonStr As String
@@ -266,11 +266,11 @@ Public Class clsStochastenAnalyse
             Dim updatedJsonString As String = jsonObject.ToString(Formatting.Indented)
 
             ' Print or use the updated JSON string
-            Console.WriteLine("let runs = " & updatedJsonString & ";")
+            'Console.WriteLine("let runs = " & updatedJsonString & ";")
 
             ' Write the updated JSON string back to the file
             Using jsonWriter As New StreamWriter(runspath)
-                jsonWriter.WriteLine("let runs = " & updatedJsonString & ";")
+                jsonWriter.WriteLine("let runs = " & updatedJsonString)
             End Using
 
             Return True
@@ -281,16 +281,25 @@ Public Class clsStochastenAnalyse
     End Function
 
 
-    Public Function WriteExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+    Public Function WriteExceedanceData1DJSON(exceedancedatapath As String, configurationName As String) As Boolean
         Try
             Dim locdt As New DataTable
-            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
+
+            If locdt.Rows.Count = 0 Then
+                Throw New Exception("No return periods for this climate scenario and duration found in the database. Please consider postprocessing (nabewerken) your results first.")
+            End If
 
             'Read the runs from our database and turn them into a dictionary for faster lookups
             Dim rdt As New DataTable
-            query = "SELECT DISTINCT RUNID, RUNIDX FROM RUNS WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            query = "Select DISTINCT RUNID, RUNIDX FROM RUNS WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, rdt, False)
+
+            If rdt.Rows.Count = 0 Then
+                Throw New Exception("No simulations for this climate scenario and duration found in the database.")
+            End If
+
             Dim runIdDict As New Dictionary(Of String, Integer)
             For Each row As DataRow In rdt.Rows
                 runIdDict(row("RUNID").ToString()) = CInt(row("RUNIDX"))
@@ -317,7 +326,7 @@ Public Class clsStochastenAnalyse
 
                     'for this location we will retrieve the exceedance table
                     Dim dtHerh As New DataTable
-                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNID FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNID FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
                     Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
 
                     ' Add RUNIDX column if it doesn't exist
@@ -356,31 +365,117 @@ Public Class clsStochastenAnalyse
                 exceedanceWriter.WriteLine("    }") 'closing statement for the last scenario
                 exceedanceWriter.WriteLine("  ]") 'closing statement for the last scenario
 
-                exceedanceWriter.WriteLine("};")
+                exceedanceWriter.WriteLine("}")
 
             End Using
+            Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function WriteExceedanceDataJSON of frmStochasten: " & ex.Message)
+            Return False
         End Try
     End Function
 
 
-    Public Function AddExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
-        'this function adds a new configuration to the existing EXCEEDANCEDATA1D.JS FILE    
+    'Public Function AddExceedanceData1DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+    '    'this function adds a new configuration to the existing EXCEEDANCEDATA1D.JS FILE    
+    '    Try
+    '        Dim locdt As New DataTable
+    '        Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+    '        'first read our existing exceedance data file
+    '        Dim jsonStr As String
+    '        Using jsonReader As New StreamReader(exceedancedatapath)
+    '            jsonStr = jsonReader.ReadToEnd                      'read the entire file
+    '            jsonStr = jsonStr.Replace("let exceedancedata = ", "").Trim   'remove our javascript variable declaration and any line breaks
+    '            jsonStr = jsonStr.Substring(0, jsonStr.Length - 1)            'remove the trailing semicolon which is a javascript thing
+    '        End Using
+
+    '        'parse the exising file
+    '        Dim jsonObject As JObject = JObject.Parse(jsonStr)
+
+    '        ' Create a new scenario object
+    '        Dim newScenario As New JObject()
+    '        newScenario("ID") = configurationName
+    '        newScenario("locations") = New JArray()
+
+    '        For i As Integer = 0 To locdt.Rows.Count - 1
+    '            Dim newLoc As New JObject()
+    '            Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+
+    '            newLoc("ID") = New JValue(locdt.Rows(i)("LOCATIENAAM").ToString())
+    '            newLoc("data") = New JArray()
+
+    '            'Retrieve the exceedance table for this location
+    '            Dim dtHerh As New DataTable
+    '            query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)("LOCATIENAAM").ToString() & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+    '            Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+    '            'Add exceedance data for this location
+    '            For j As Integer = 0 To dtHerh.Rows.Count - 1
+    '                Dim dataPoint As New JObject()
+    '                dataPoint("x") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("HERHALINGSTIJD")), 2))
+    '                dataPoint("y") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 2))
+    '                dataPoint("stochasts") = New JObject From {
+    '                {"SEIZOEN", New JValue(dtHerh.Rows(j)("SEIZOEN").ToString())},
+    '                {"VOLUME", New JValue(Convert.ToDouble(dtHerh.Rows(j)("VOLUME")))},
+    '                {"PATROON", New JValue(dtHerh.Rows(j)("PATROON").ToString())},
+    '                {"GW", New JValue(dtHerh.Rows(j)("GW").ToString())},
+    '                {"BOUNDARY", New JValue(dtHerh.Rows(j)("BOUNDARY").ToString())},
+    '                {"WIND", New JValue(dtHerh.Rows(j)("WIND").ToString())},
+    '                {"EXTRA1", New JValue(dtHerh.Rows(j)("EXTRA1").ToString())},
+    '                {"EXTRA2", New JValue(dtHerh.Rows(j)("EXTRA2").ToString())},
+    '                {"EXTRA3", New JValue(dtHerh.Rows(j)("EXTRA3").ToString())},
+    '                {"EXTRA4", New JValue(dtHerh.Rows(j)("EXTRA4").ToString())}
+    '    }
+    '                CType(newLoc("data"), JArray).Add(dataPoint)
+    '            Next
+
+    '            CType(newScenario("locations"), JArray).Add(newLoc)
+    '        Next
+
+    '        ' Add the new scenario to the existing scenarios array
+    '        CType(jsonObject("scenarios"), JArray).Add(newScenario)
+
+    '        ' Serialize the updated object back to JSON
+    '        Dim updatedJsonString As String = jsonObject.ToString(Formatting.Indented)
+
+    '        ' Write the updated JSON string back to the file
+    '        Using jsonWriter As New StreamWriter(exceedancedatapath)
+    '            jsonWriter.WriteLine("let exceedancedata = " & updatedJsonString)
+    '        End Using
+
+    '        Return True
+
+
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function AddExceedanceData1DJSON of frmStochasten: " & ex.Message)
+    '    End Try
+    'End Function
+
+    Public Function AddExceedanceData1DJSON(exceedancedatapath As String, configurationName As String) As Boolean
         Try
             Dim locdt As New DataTable
-            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & ";"
+            Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+            'Read the runs from our database and turn them into a dictionary for faster lookups
+            Dim rdt As New DataTable
+            query = "SELECT DISTINCT RUNID, RUNIDX FROM RUNS WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, rdt, False)
+            Dim runIdDict As New Dictionary(Of String, Integer)
+            For Each row As DataRow In rdt.Rows
+                runIdDict(row("RUNID").ToString()) = CInt(row("RUNIDX"))
+            Next
 
             'first read our existing exceedance data file
             Dim jsonStr As String
             Using jsonReader As New StreamReader(exceedancedatapath)
                 jsonStr = jsonReader.ReadToEnd                      'read the entire file
                 jsonStr = jsonStr.Replace("let exceedancedata = ", "").Trim   'remove our javascript variable declaration and any line breaks
-                jsonStr = jsonStr.Substring(0, jsonStr.Length - 1)            'remove the trailing semicolon which is a javascript thing
             End Using
 
-            'parse the exising file
+            'parse the existing file
             Dim jsonObject As JObject = JObject.Parse(jsonStr)
 
             ' Create a new scenario object
@@ -397,26 +492,30 @@ Public Class clsStochastenAnalyse
 
                 'Retrieve the exceedance table for this location
                 Dim dtHerh As New DataTable
-                query = "SELECT HERHALINGSTIJD, WAARDE, SEIZOEN, VOLUME, PATROON, GW, BOUNDARY, WIND, EXTRA1, EXTRA2, EXTRA3, EXTRA4 FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)("LOCATIENAAM").ToString() & "' AND KLIMAATSCENARIO='" & ClimateScenario & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
+                query = "SELECT HERHALINGSTIJD, WAARDE, RUNID FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)("LOCATIENAAM").ToString() & "' AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
                 Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                ' Add RUNIDX column if it doesn't exist
+                If Not dtHerh.Columns.Contains("RUNIDX") Then
+                    dtHerh.Columns.Add("RUNIDX", GetType(Integer))
+                End If
+
+                ' Look up the runidx for each runid and add it to our dtHerh table
+                For Each row As DataRow In dtHerh.Rows
+                    Dim runId As String = row("RUNID").ToString()
+                    If runIdDict.ContainsKey(runId) Then
+                        row("RUNIDX") = runIdDict(runId)
+                    Else
+                        row("RUNIDX") = -999
+                    End If
+                Next
 
                 'Add exceedance data for this location
                 For j As Integer = 0 To dtHerh.Rows.Count - 1
                     Dim dataPoint As New JObject()
                     dataPoint("x") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("HERHALINGSTIJD")), 2))
-                    dataPoint("y") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 2))
-                    dataPoint("stochasts") = New JObject From {
-                    {"SEIZOEN", New JValue(dtHerh.Rows(j)("SEIZOEN").ToString())},
-                    {"VOLUME", New JValue(Convert.ToDouble(dtHerh.Rows(j)("VOLUME")))},
-                    {"PATROON", New JValue(dtHerh.Rows(j)("PATROON").ToString())},
-                    {"GW", New JValue(dtHerh.Rows(j)("GW").ToString())},
-                    {"BOUNDARY", New JValue(dtHerh.Rows(j)("BOUNDARY").ToString())},
-                    {"WIND", New JValue(dtHerh.Rows(j)("WIND").ToString())},
-                    {"EXTRA1", New JValue(dtHerh.Rows(j)("EXTRA1").ToString())},
-                    {"EXTRA2", New JValue(dtHerh.Rows(j)("EXTRA2").ToString())},
-                    {"EXTRA3", New JValue(dtHerh.Rows(j)("EXTRA3").ToString())},
-                    {"EXTRA4", New JValue(dtHerh.Rows(j)("EXTRA4").ToString())}
-        }
+                    dataPoint("y") = New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 3))
+                    dataPoint("runidx") = New JValue(dtHerh.Rows(j)("RUNIDX"))
                     CType(newLoc("data"), JArray).Add(dataPoint)
                 Next
 
@@ -431,16 +530,17 @@ Public Class clsStochastenAnalyse
 
             ' Write the updated JSON string back to the file
             Using jsonWriter As New StreamWriter(exceedancedatapath)
-                jsonWriter.WriteLine("let exceedancedata = " & updatedJsonString & ";")
+                jsonWriter.WriteLine("let exceedancedata = " & updatedJsonString)
             End Using
 
             Return True
 
-
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function AddExceedanceData1DJSON of frmStochasten: " & ex.Message)
+            Return False
         End Try
     End Function
+
 
     Public Function WriteExceedanceLevels2DFromDBToJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
         Try
@@ -527,8 +627,8 @@ Public Class clsStochastenAnalyse
     Public Function WriteExceedanceLevels2DFromCSVToJSON(exceedancedatapath As String, configurationName As String) As Boolean
         Try
             'Get the paths for the CSV files
-            Dim ExceedanceData2DPath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, GeneralFunctions.enm2DParameter.waterlevel)
-            Dim StochastsPath As String = getStochastsPath(ResultsDir)
+            Dim ExceedanceData2DPath As String = getExceedanceTable2DPath(ResultsDir, GeneralFunctions.enm2DParameter.waterlevel)
+            Dim StochastsPath As String = getSimulationsPath(ResultsDir)
 
             'Use HashSet for efficient distinct FEATUREIDX tracking
             Dim distinctFeatureIdxSet As New HashSet(Of String)()
@@ -640,7 +740,7 @@ Public Class clsStochastenAnalyse
                 exceedanceWriter.WriteLine("      ]")
                 exceedanceWriter.WriteLine("    }")
                 exceedanceWriter.WriteLine("  ]")
-                exceedanceWriter.WriteLine("};")
+                exceedanceWriter.WriteLine("}")
             End Using
 
             Return True
@@ -774,19 +874,123 @@ Public Class clsStochastenAnalyse
 
 
 
-    Public Function AddExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+    'Public Function AddExceedanceLevels2DJSON(exceedancedatapath As String, ClimateScenario As String, Duration As Integer, configurationName As String) As Boolean
+    '    Try
+    '        Dim locdt As New DataTable
+    '        Dim TableName As String = get2DReturnPeriodsTableName(GeneralFunctions.enm2DParameter.waterlevel, KlimaatScenario.ToString, Duration)
+    '        Dim query As String = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
+    '        Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+
+    '        'Read existing JSON file
+    '        Dim jsonStr As String
+    '        Using jsonReader As New StreamReader(exceedancedatapath)
+    '            jsonStr = jsonReader.ReadToEnd()
+    '            jsonStr = jsonStr.Replace("let exceedancedata2D = ", "").Trim()
+    '            jsonStr = jsonStr.Substring(0, jsonStr.Length - 1) 'remove trailing semicolon
+    '        End Using
+
+    '        'Parse existing JSON
+    '        Dim jsonObject As JObject = JObject.Parse(jsonStr)
+
+    '        'Create new scenario object
+    '        Dim newScenario As New JObject()
+    '        newScenario("ID") = New JValue(configurationName)
+    '        newScenario("locations") = New JArray()
+
+    '        Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten schrijven...", 0, 10, True)
+    '        For i As Integer = 0 To locdt.Rows.Count - 1
+    '            Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+
+    '            If locdt.Rows.Count = 0 Then
+    '                Me.Setup.Log.AddError("Unable to write exceedance levels 2D to JSON for featureidx " & locdt.Rows(i)("FEATUREIDX") & ": no data found.")
+    '                Continue For
+    '            End If
+
+    '            'Retrieve exceedance table for this location
+    '            Dim dtHerh As New DataTable
+    '            query = $"SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM {TableName} WHERE FEATUREIDX=" & locdt.Rows(i)("FEATUREIDX") & " ORDER BY HERHALINGSTIJD;"
+    '            Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+    '            Dim n As Integer = dtHerh.Rows.Count
+
+    '            'Only write those locations where the water level is increasing
+    '            If dtHerh.Rows(n - 1)("WAARDE") > dtHerh.Rows(0)("WAARDE") Then
+    '                Dim newLoc As New JObject()
+    '                newLoc("idx") = New JValue(locdt.Rows(i)("FEATUREIDX").ToString())
+
+    '                Dim herhArray As New JArray()
+    '                Dim levelArray As New JArray()
+    '                Dim runArray As New JArray()
+
+    '                For j As Integer = 0 To dtHerh.Rows.Count - 1
+    '                    herhArray.Add(New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("HERHALINGSTIJD")), 2)))
+    '                    levelArray.Add(New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 2)))
+    '                    runArray.Add(New JValue(Convert.ToInt32(dtHerh.Rows(j)("RUNIDX"))))
+    '                Next
+
+    '                newLoc("T") = herhArray
+    '                newLoc("h") = levelArray
+    '                newLoc("runidx") = runArray
+
+    '                CType(newScenario("locations"), JArray).Add(newLoc)
+    '            End If
+    '        Next
+
+    '        'Add new scenario to existing scenarios array
+    '        CType(jsonObject("scenarios"), JArray).Add(newScenario)
+
+    '        'Serialize updated object back to JSON
+    '        Dim updatedJsonString As String = jsonObject.ToString(Formatting.Indented)
+
+    '        'Write updated JSON string back to file
+    '        Using jsonWriter As New StreamWriter(exceedancedatapath)
+    '            jsonWriter.WriteLine("let exceedancedata2D = " & updatedJsonString)
+    '        End Using
+
+    '        Return True
+
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function AddExceedanceLevels2DJSON of frmStochasten: " & ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
+
+    Public Function AddExceedanceLevels2DJSON(exceedancedatapath As String, configurationName As String) As Boolean
         Try
-            Dim locdt As New DataTable
-            Dim TableName As String = get2DReturnPeriodsTableName(GeneralFunctions.enm2DParameter.waterlevel, KlimaatScenario.ToString, Duration)
-            Dim query As String = $"SELECT DISTINCT FEATUREIDX FROM {TableName};"
-            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, True)
+            'Get the paths for the CSV files
+            Dim ExceedanceData2DPath As String = getExceedanceTable2DPath(ResultsDir, GeneralFunctions.enm2DParameter.waterlevel)
+            Dim StochastsPath As String = getSimulationsPath(ResultsDir)
+
+            'Use HashSet for efficient distinct FEATUREIDX tracking
+            Dim distinctFeatureIdxSet As New HashSet(Of String)()
+
+            'Use Dictionary for efficient RUNID to RUNIDX mapping
+            Dim runIdToIdxMap As New Dictionary(Of String, String)()
+
+            'Read stochasts data for RUNID to RUNIDX mapping
+            Using reader As New TextFieldParser(StochastsPath)
+                reader.SetDelimiters(";")
+                reader.HasFieldsEnclosedInQuotes = True
+                Dim headers = reader.ReadFields() ' Read header once
+                Dim runIdIndex = System.Array.IndexOf(headers, "RUNID")
+                Dim runIdxIndex = System.Array.IndexOf(headers, "RUNIDX")
+
+                If runIdIndex = -1 Or runIdxIndex = -1 Then
+                    Throw New Exception("Required columns 'RUNID' or 'RUNIDX' not found in the stochasts file.")
+                End If
+
+                While Not reader.EndOfData
+                    Dim fields = reader.ReadFields()
+                    If fields IsNot Nothing AndAlso fields.Length > Math.Max(runIdIndex, runIdxIndex) Then
+                        runIdToIdxMap(fields(runIdIndex)) = fields(runIdxIndex)
+                    End If
+                End While
+            End Using
 
             'Read existing JSON file
             Dim jsonStr As String
             Using jsonReader As New StreamReader(exceedancedatapath)
                 jsonStr = jsonReader.ReadToEnd()
                 jsonStr = jsonStr.Replace("let exceedancedata2D = ", "").Trim()
-                jsonStr = jsonStr.Substring(0, jsonStr.Length - 1) 'remove trailing semicolon
             End Using
 
             'Parse existing JSON
@@ -794,46 +998,77 @@ Public Class clsStochastenAnalyse
 
             'Create new scenario object
             Dim newScenario As New JObject()
-            newScenario("ID") = New JValue(configurationName)
+            newScenario("ID") = configurationName
             newScenario("locations") = New JArray()
 
-            Me.Setup.GeneralFunctions.UpdateProgressBar("Resultaten schrijven...", 0, 10, True)
-            For i As Integer = 0 To locdt.Rows.Count - 1
-                Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
+            'Process exceedance data in chunks
+            Const ChunkSize As Integer = 10000
 
-                If locdt.Rows.Count = 0 Then
-                    Me.Setup.Log.AddError("Unable to write exceedance levels 2D to JSON for featureidx " & locdt.Rows(i)("FEATUREIDX") & ": no data found.")
-                    Continue For
+            Using reader As New TextFieldParser(ExceedanceData2DPath)
+                reader.SetDelimiters(";")
+                reader.HasFieldsEnclosedInQuotes = True
+                Dim headers = reader.ReadFields()
+                Dim featureIdxIndex = System.Array.IndexOf(headers, "FEATUREIDX")
+                Dim herhalingstijdIndex = System.Array.IndexOf(headers, "HERHALINGSTIJD")
+                Dim waardeIndex = System.Array.IndexOf(headers, "WAARDE")
+                Dim runIdIndex = System.Array.IndexOf(headers, "RUNID")
+
+                If featureIdxIndex = -1 Or herhalingstijdIndex = -1 Or waardeIndex = -1 Or runIdIndex = -1 Then
+                    Throw New Exception("Required columns not found in the exceedance data file.")
                 End If
 
-                'Retrieve exceedance table for this location
-                Dim dtHerh As New DataTable
-                query = $"SELECT HERHALINGSTIJD, WAARDE, RUNIDX FROM {TableName} WHERE FEATUREIDX=" & locdt.Rows(i)("FEATUREIDX") & " ORDER BY HERHALINGSTIJD;"
-                Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
-                Dim n As Integer = dtHerh.Rows.Count
+                Dim chunk As New List(Of String())(ChunkSize)
+                While Not reader.EndOfData
+                    chunk.Clear()
+                    While chunk.Count < ChunkSize AndAlso Not reader.EndOfData
+                        Dim fields = reader.ReadFields()
+                        If fields IsNot Nothing Then
+                            chunk.Add(fields)
+                        End If
+                    End While
 
-                'Only write those locations where the water level is increasing
-                If dtHerh.Rows(n - 1)("WAARDE") > dtHerh.Rows(0)("WAARDE") Then
-                    Dim newLoc As New JObject()
-                    newLoc("idx") = New JValue(locdt.Rows(i)("FEATUREIDX").ToString())
+                    'Process chunk
+                    Dim groupedData = chunk.GroupBy(Function(fields) fields(featureIdxIndex))
+                    For Each group In groupedData
+                        Dim featureIdx = group.Key
 
-                    Dim herhArray As New JArray()
-                    Dim levelArray As New JArray()
-                    Dim runArray As New JArray()
+                        If distinctFeatureIdxSet.Add(featureIdx) Then
+                            Dim sortedGroup = group.OrderBy(Function(fields) Double.Parse(fields(herhalingstijdIndex))).ToList()
 
-                    For j As Integer = 0 To dtHerh.Rows.Count - 1
-                        herhArray.Add(New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("HERHALINGSTIJD")), 2)))
-                        levelArray.Add(New JValue(Math.Round(Convert.ToDouble(dtHerh.Rows(j)("WAARDE")), 2)))
-                        runArray.Add(New JValue(Convert.ToInt32(dtHerh.Rows(j)("RUNIDX"))))
+                            'Only write those locations where the water level is increasing
+                            If Double.Parse(sortedGroup.Last()(waardeIndex)) > Double.Parse(sortedGroup.First()(waardeIndex)) Then
+                                Dim newLoc As New JObject()
+                                newLoc("idx") = featureIdx
+
+                                Dim herhValues As New JArray()
+                                Dim levelValues As New JArray()
+                                Dim runIdxValues As New JArray()
+
+                                For Each fields In sortedGroup
+                                    Dim herhalingstijd As Double
+                                    Dim waarde As Double
+                                    If Double.TryParse(fields(herhalingstijdIndex), herhalingstijd) AndAlso Double.TryParse(fields(waardeIndex), waarde) Then
+                                        herhValues.Add(Math.Round(herhalingstijd, 2))
+                                        levelValues.Add(Math.Round(waarde, 3))
+                                        Dim runIdxValue As String = ""
+                                        If runIdToIdxMap.TryGetValue(fields(runIdIndex), runIdxValue) Then
+                                            runIdxValues.Add(runIdxValue)
+                                        Else
+                                            runIdxValues.Add("")
+                                        End If
+                                    End If
+                                Next
+
+                                newLoc("T") = herhValues
+                                newLoc("h") = levelValues
+                                newLoc("runidx") = runIdxValues
+
+                                CType(newScenario("locations"), JArray).Add(newLoc)
+                            End If
+                        End If
                     Next
-
-                    newLoc("T") = herhArray
-                    newLoc("h") = levelArray
-                    newLoc("runidx") = runArray
-
-                    CType(newScenario("locations"), JArray).Add(newLoc)
-                End If
-            Next
+                End While
+            End Using
 
             'Add new scenario to existing scenarios array
             CType(jsonObject("scenarios"), JArray).Add(newScenario)
@@ -843,17 +1078,16 @@ Public Class clsStochastenAnalyse
 
             'Write updated JSON string back to file
             Using jsonWriter As New StreamWriter(exceedancedatapath)
-                jsonWriter.WriteLine("let exceedancedata2D = " & updatedJsonString & ";")
+                jsonWriter.WriteLine("let exceedancedata2D = " & updatedJsonString)
             End Using
 
             Return True
 
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function AddExceedanceLevels2DJSON of frmStochasten: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function AddExceedanceLevels2DJSON: " & ex.Message)
             Return False
         End Try
     End Function
-
 
 
     Public Function ClassifyGroundwaterRRBySeason(ByVal seizoen As STOCHLIB.GeneralFunctions.enmSeason, ByVal Duration As Integer, ByRef myCase As ClsSobekCase, ByRef myDataGrid As Windows.Forms.DataGridView, seizoensnaam As String, ByRef Dates As List(Of Date), IncludeSeepage As Boolean, ExportDir As String) As Boolean
@@ -1628,7 +1862,7 @@ Public Class clsStochastenAnalyse
         Try
             'set the path to the 2D results
 
-            Dim csvFile As String = getResults2DPath(ResultsDir, KlimaatScenario, Parameter)
+            Dim csvFile As String = getResults2DPath(ResultsDir, Parameter)
             If Not System.IO.File.Exists(csvFile) Then Throw New ArgumentException("2D results file not found: " & csvFile)
 
             'read all relevant information about our runs
@@ -1888,7 +2122,7 @@ Public Class clsStochastenAnalyse
 
     Public Function GetExceedanceValues2DFromCSV(returnPeriods As List(Of Integer), parameter As GeneralFunctions.enm2DParameter) As Dictionary(Of Integer, List(Of Double))
         Try
-            Dim ExceedanceTable2Dpath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
+            Dim ExceedanceTable2Dpath As String = getExceedanceTable2DPath(ResultsDir, parameter)
             Dim returnDictionary As New Dictionary(Of Integer, List(Of Double))()
 
             Using reader As New StreamReader(ExceedanceTable2Dpath)
@@ -2095,58 +2329,6 @@ Public Class clsStochastenAnalyse
 
 
 
-    Public Function MeshActiveCellIndicesToCSV() As Boolean
-        'this function is designed to export our mesh to a GeoJSON for the webviewer. Inside, it will store the exceedance tables
-        Try
-            Dim csvPath As String = getActiveCellsPath(ResultsDir)
-
-            'first thing to do is to read the model's fourier file and turn it into a csv
-            For Each Model As clsSimulationModel In Models.Values
-                Select Case Model.ModelType
-                    Case Is = GeneralFunctions.enmSimulationModel.DHYDRO, GeneralFunctions.enmSimulationModel.DIMR
-
-                        'now we'll pick the results file from the first simulation and use that as a template to generate a geoJSON
-                        Dim resultsFile As clsResultsFile = Model.ResultsFiles.getFourierFile
-                        Dim ResultsFilePath As String = Runs.Runs.Values(0).OutputFilesDir & "\" & resultsFile.FileName
-
-                        'check if the file exists
-                        If resultsFile Is Nothing Then
-                            Throw New Exception("Could Not find a Fourier file in the model results. Unable to generate exceedance mesh for webviewer.")
-                        ElseIf Not System.IO.File.Exists(ResultsFilePath) Then
-                            Throw New Exception("Could Not find a Fourier file in the model results. Unable to generate exceedance mesh for webviewer.")
-                        End If
-
-                        'we must take one of the fourier files as a template, read it and convert it to a geoJSON with exceedance tables
-                        Dim fouFile As New clsFouNCFile(ResultsFilePath, Me.Setup)
-                        If Not fouFile.Read() Then Throw New Exception("Error reading fourier file.")
-
-                        'We'll reuse the function which returns exceedance values and simply write all active cell indices (keys in the dictionary) to a CSV
-                        Dim ReturnPeriods As New List(Of Integer) From {10, 25, 50, 100}
-                        Dim ExceedanceValues As Dictionary(Of Integer, List(Of Double)) = GetExceedanceValues2DFromCSV(ReturnPeriods, GeneralFunctions.enm2DParameter.depth)
-
-                        'write the active cell indices to a CSV
-                        Using writer As New StreamWriter(csvPath)
-                            writer.WriteLine("FeatureIdx")
-                            For Each featureIdx In ExceedanceValues.Keys
-                                writer.WriteLine(featureIdx)
-                            Next
-                        End Using
-
-                    Case Else
-                        Throw New Exception("Model type not yet supported for exporting mesh actice cell indices.")
-                End Select
-            Next
-
-            Return True
-        Catch ex As Exception
-            Return False
-        End Try
-
-    End Function
-
-
-
-
     Public Function CalculateExceedanceTables(process1D As Boolean, process2D As Boolean) As Boolean
         Try
             Me.Setup.GeneralFunctions.UpdateProgressBar("Overschrijdingstabellen berekenen...", 0, 10, True)
@@ -2169,7 +2351,6 @@ Public Class clsStochastenAnalyse
                 'ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
                 'ProcessExceedanceTables2D(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
                 '20240910: skipping the database altogether when postprocessing 2D results. Everything goes via CSV now
-                MeshActiveCellIndicesToCSV() 'here we write all active cell indices to a CSV
                 ProcessExceedanceTables2DFromCSVToCSV(RunsList, rundt, GeneralFunctions.enm2DParameter.depth)
                 ProcessExceedanceTables2DFromCSVToCSV(RunsList, rundt, GeneralFunctions.enm2DParameter.waterlevel)
             End If
@@ -2255,7 +2436,7 @@ Public Class clsStochastenAnalyse
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
             'first establish the path to our results file
-            Dim ResultsPath As String = getResults2DPath(ResultsDir, KlimaatScenario, parameter)
+            Dim ResultsPath As String = getResults2DPath(ResultsDir, parameter)
             If Not System.IO.File.Exists(ResultsPath) Then Throw New Exception("2D results file not found: " & ResultsPath)
 
             'let's read the data in chunks of 1000 lines
@@ -2395,114 +2576,122 @@ Public Class clsStochastenAnalyse
     Public Function ProcessExceedanceTables2DFromCSVToCSV(ByRef RunsList As Dictionary(Of String, Integer), ByRef rundt As DataTable, parameter As GeneralFunctions.enm2DParameter) As Boolean
         Try
             Dim i As Integer, Loc As Integer
+            Dim activeCellsCSVPath As String = getActiveCellsPath(ResultsDir)
 
-            Me.Setup.GeneralFunctions.UpdateProgressBar($"Overschrijdingstabellen berekenen voor 2D parameter {parameter.ToString}...", 0, 10, True)
+            'apart from the csv file containing our results we will also write the active cells to a separate CSV
+            Using activeCellsWriter As New StreamWriter(activeCellsCSVPath)
+                activeCellsWriter.WriteLine("FeatureIdx")
 
-            'Determine the output CSV file names
-            Dim exceedanceFileName As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
-            Dim stochastsFileName As String = getStochastsPath(ResultsDir)
+                Me.Setup.GeneralFunctions.UpdateProgressBar($"Overschrijdingstabellen berekenen voor 2D parameter {parameter.ToString}...", 0, 10, True)
 
-            'Dim exceedanceFileName As String = $"Overschrijdingstabellen_{parameter.ToString}_{Me.Setup.StochastenAnalyse.KlimaatScenario}_{Me.Setup.StochastenAnalyse.Duration}.csv"
-            Dim stochastsPath As String = Path.Combine(ResultsDir, stochastsFileName)
-            Dim exceedancePath As String = Path.Combine(ResultsDir, exceedanceFileName)
+                'Determine the output CSV file names
+                Dim exceedanceFileName As String = getExceedanceTable2DPath(ResultsDir, parameter)
+                Dim stochastsFileName As String = getSimulationsPath(ResultsDir)
 
-            'Delete existing output files if they exist
-            For Each filePath In {stochastsPath, exceedancePath}
-                If System.IO.File.Exists(filePath) Then
-                    System.IO.File.Delete(filePath)
-                End If
-            Next
+                'Dim exceedanceFileName As String = $"Overschrijdingstabellen_{parameter.ToString}_{Me.Setup.StochastenAnalyse.KlimaatScenario}_{Me.Setup.StochastenAnalyse.Duration}.csv"
+                Dim stochastsPath As String = Path.Combine(ResultsDir, stochastsFileName)
+                Dim exceedancePath As String = Path.Combine(ResultsDir, exceedanceFileName)
 
-            'Determine the input file path
-            Dim ResultsPath As String = getResults2DPath(ResultsDir, KlimaatScenario, parameter)
-            If Not System.IO.File.Exists(ResultsPath) Then Throw New Exception("2D results file not found: " & ResultsPath)
-
-            'Write stochasts file
-            Using stochastsWriter As New StreamWriter(stochastsPath)
-                stochastsWriter.WriteLine("RUNID;RUNIDX;SEIZOEN;VOLUME;PATROON;GW;BOUNDARY;WIND;EXTRA1;EXTRA2;EXTRA3;EXTRA4")
-                For Each row As DataRow In rundt.Rows
-                    stochastsWriter.WriteLine($"{row("RUNID")};{row("RUNIDX")};{row("SEIZOEN")};{row("VOLUME")};{row("PATROON")};{row("GW")};{row("BOUNDARY")};{row("WIND")};{row("EXTRA1")};{row("EXTRA2")};{row("EXTRA3")};{row("EXTRA4")}")
+                'Delete existing output files if they exist
+                For Each filePath In {stochastsPath, exceedancePath}
+                    If System.IO.File.Exists(filePath) Then
+                        System.IO.File.Delete(filePath)
+                    End If
                 Next
-            End Using
 
-            'Let's read the data in chunks of 1000 lines
-            Dim chunkSize As Integer = 1000
+                'Determine the input file path
+                Dim ResultsPath As String = getResults2DPath(ResultsDir, parameter)
+                If Not System.IO.File.Exists(ResultsPath) Then Throw New Exception("2D results file not found: " & ResultsPath)
 
-            Using csvReader As New StreamReader(ResultsPath)
-                Using exceedanceWriter As New StreamWriter(exceedancePath)
-                    'Write the header for the exceedance CSV
-                    exceedanceWriter.WriteLine("FEATUREIDX;RUNID;HERHALINGSTIJD;WAARDE")
-
-                    'Read the first line, containing the runIDs
-                    Dim runIDs As String() = csvReader.ReadLine().Split(";"c).Skip(1).ToArray() 'skip the first column "FEATUREIDX"
-                    'Read the second line, containing the frequencies associated with each run
-                    Dim frequencies As String() = csvReader.ReadLine().Split(";"c).Skip(1).ToArray()
-
-                    'Create a dictionary to map runIDs to their frequencies
-                    Dim runFrequencies As New Dictionary(Of String, Double)
-                    For i = 0 To runIDs.Length - 1
-                        runFrequencies(runIDs(i)) = Double.Parse(frequencies(i))
+                'Write stochasts file
+                Using stochastsWriter As New StreamWriter(stochastsPath)
+                    stochastsWriter.WriteLine("RUNID;RUNIDX;SEIZOEN;VOLUME;PATROON;GW;BOUNDARY;WIND;EXTRA1;EXTRA2;EXTRA3;EXTRA4")
+                    For Each row As DataRow In rundt.Rows
+                        stochastsWriter.WriteLine($"{row("RUNID")};{row("RUNIDX")};{row("SEIZOEN")};{row("VOLUME")};{row("PATROON")};{row("GW")};{row("BOUNDARY")};{row("WIND")};{row("EXTRA1")};{row("EXTRA2")};{row("EXTRA3")};{row("EXTRA4")}")
                     Next
+                End Using
 
-                    While Not csvReader.EndOfStream
-                        Me.Setup.GeneralFunctions.UpdateProgressBar("", csvReader.BaseStream.Position, csvReader.BaseStream.Length)
+                'Let's read the data in chunks of 1000 lines
+                Dim chunkSize As Integer = 1000
 
-                        'Process the data in chunks
-                        Dim chunk As New List(Of String())
-                        Dim locationList As New List(Of Integer)
-                        Dim dtResults As New Dictionary(Of Integer, DataTable)
+                Using csvReader As New StreamReader(ResultsPath)
+                    Using exceedanceWriter As New StreamWriter(exceedancePath)
+                        'Write the header for the exceedance CSV
+                        exceedanceWriter.WriteLine("FEATUREIDX;RUNID;HERHALINGSTIJD;WAARDE")
 
-                        'Read a chunk of data
-                        For i = 0 To chunkSize - 1
-                            Dim line As String = csvReader.ReadLine()
-                            If line Is Nothing Then Exit For
-                            chunk.Add(line.Split(";"c))
+                        'Read the first line, containing the runIDs
+                        Dim runIDs As String() = csvReader.ReadLine().Split(";"c).Skip(1).ToArray() 'skip the first column "FEATUREIDX"
+                        'Read the second line, containing the frequencies associated with each run
+                        Dim frequencies As String() = csvReader.ReadLine().Split(";"c).Skip(1).ToArray()
+
+                        'Create a dictionary to map runIDs to their frequencies
+                        Dim runFrequencies As New Dictionary(Of String, Double)
+                        For i = 0 To runIDs.Length - 1
+                            runFrequencies(runIDs(i)) = Double.Parse(frequencies(i))
                         Next
 
-                        'Process the chunk of data
-                        For Each row In chunk
-                            Dim featureIdx As Integer = Integer.Parse(row(0))
-                            'Each feature should get its own datatable  
-                            Dim dt As New DataTable
-                            dt.Columns.Add("RUNID", GetType(String))
-                            dt.Columns.Add("P", GetType(Double))
-                            dt.Columns.Add("WAARDE", GetType(Double))
-                            dt.Columns.Add("FEATUREIDX", GetType(Integer))
+                        While Not csvReader.EndOfStream
+                            Me.Setup.GeneralFunctions.UpdateProgressBar("", csvReader.BaseStream.Position, csvReader.BaseStream.Length)
 
-                            'Add the feature index to the locations list
-                            If Not locationList.Contains(featureIdx) Then
-                                locationList.Add(featureIdx)
-                            End If
+                            'Process the data in chunks
+                            Dim chunk As New List(Of String())
+                            Dim locationList As New List(Of Integer)
+                            Dim dtResults As New Dictionary(Of Integer, DataTable)
 
-                            'Add the new datatable for this feature to the dtResults dictionary
-                            If Not dtResults.ContainsKey(featureIdx) Then
-                                dtResults.Add(featureIdx, dt)
-                            End If
-
-                            'Add each pair of runID, probability and value to the datatable
-                            For i = 1 To row.Length - 1
-                                dtResults(featureIdx).Rows.Add(runIDs(i - 1), runFrequencies(runIDs(i - 1)), Double.Parse(row(i)), featureIdx)
+                            'Read a chunk of data
+                            For i = 0 To chunkSize - 1
+                                Dim line As String = csvReader.ReadLine()
+                                If line Is Nothing Then Exit For
+                                chunk.Add(line.Split(";"c))
                             Next
-                        Next
 
-                        'Calculate the exceedance tables for these features
-                        Dim res As (Boolean, Dictionary(Of Integer, DataTable))
-                        res = Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationList, dtResults)
+                            'Process the chunk of data
+                            For Each row In chunk
+                                Dim featureIdx As Integer = Integer.Parse(row(0))
+                                'Each feature should get its own datatable  
+                                Dim dt As New DataTable
+                                dt.Columns.Add("RUNID", GetType(String))
+                                dt.Columns.Add("P", GetType(Double))
+                                dt.Columns.Add("WAARDE", GetType(Double))
+                                dt.Columns.Add("FEATUREIDX", GetType(Integer))
 
-                        If res.Item1 Then
-                            For Each Loc In locationList
-                                Dim dt As DataTable = res.Item2(Loc)
-                                For i = 0 To dt.Rows.Count - 1
-                                    Dim RunID As String = dt.Rows(i)("RUNID")
-                                    'Write the data to the exceedance CSV file
-                                    exceedanceWriter.WriteLine($"{Loc};{RunID};{String.Format("{0:N3}", dt.Rows(i)(0))};{String.Format("{0:N4}", dt.Rows(i)(1))}")
+                                'Add the feature index to the locations list
+                                If Not locationList.Contains(featureIdx) Then
+                                    locationList.Add(featureIdx)
+                                End If
+
+                                'Add the new datatable for this feature to the dtResults dictionary
+                                If Not dtResults.ContainsKey(featureIdx) Then
+                                    dtResults.Add(featureIdx, dt)
+                                End If
+
+                                'Add each pair of runID, probability and value to the datatable
+                                For i = 1 To row.Length - 1
+                                    dtResults(featureIdx).Rows.Add(runIDs(i - 1), runFrequencies(runIDs(i - 1)), Double.Parse(row(i)), featureIdx)
                                 Next
                             Next
-                        End If
 
-                        'Clear the chunk for the next iteration
-                        chunk.Clear()
-                    End While
+                            'Calculate the exceedance tables for these features
+                            Dim res As (Boolean, Dictionary(Of Integer, DataTable))
+                            res = Me.Setup.StochastenAnalyse.CalcExceedanceTables2D(locationList, dtResults)
+
+                            If res.Item1 Then
+                                For Each Loc In locationList
+                                    Dim dt As DataTable = res.Item2(Loc)
+                                    For i = 0 To dt.Rows.Count - 1
+                                        Dim RunID As String = dt.Rows(i)("RUNID")
+                                        'Write the data to the exceedance CSV file
+                                        exceedanceWriter.WriteLine($"{Loc};{RunID};{String.Format("{0:N3}", dt.Rows(i)(0))};{String.Format("{0:N4}", dt.Rows(i)(1))}")
+                                    Next
+                                    activeCellsWriter.WriteLine(Loc)
+                                Next
+                            End If
+
+
+                            'Clear the chunk for the next iteration
+                            chunk.Clear()
+                        End While
+                    End Using
                 End Using
             End Using
 
@@ -3074,8 +3263,8 @@ Public Class clsStochastenAnalyse
             Next
 
             ' Write transposed results to CSV files
-            WriteTransposedCSV(getResults2DPath(ResultsDir, KlimaatScenario, GeneralFunctions.enm2DParameter.depth), runIDs, probabilities, depthResults)
-            WriteTransposedCSV(getResults2DPath(ResultsDir, KlimaatScenario, GeneralFunctions.enm2DParameter.waterlevel), runIDs, probabilities, levelResults)
+            WriteTransposedCSV(getResults2DPath(ResultsDir, GeneralFunctions.enm2DParameter.depth), runIDs, probabilities, depthResults)
+            WriteTransposedCSV(getResults2DPath(ResultsDir, GeneralFunctions.enm2DParameter.waterlevel), runIDs, probabilities, levelResults)
 
             Return True
         Catch ex As Exception
@@ -3084,20 +3273,20 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    Public Function getExceedanceTable2DPath(ResultsDir As String, Klimaatscenario As GeneralFunctions.enmKlimaatScenario, Parameter As GeneralFunctions.enm2DParameter)
-        Return ResultsDir & "\" & $"Overschrijdingstabellen_{Parameter.ToString}_{Klimaatscenario}.csv"
+    Public Function getExceedanceTable2DPath(ResultsDir As String, Parameter As GeneralFunctions.enm2DParameter)
+        Return ResultsDir & "\" & $"{KlimaatScenario}_{Parameter.ToString}_Exceedancetables.csv"
     End Function
 
-    Public Function getStochastsPath(ResultsDir As String)
-        Return ResultsDir & "\" & $"Stochasts_{Me.Setup.StochastenAnalyse.KlimaatScenario}.csv"
+    Public Function getSimulationsPath(ResultsDir As String)
+        Return ResultsDir & "\" & $"{KlimaatScenario}_Simulations.csv"
     End Function
 
     Public Function getActiveCellsPath(ResultsDir As String)
-        Return ResultsDir & "\Activecells.csv"
+        Return ResultsDir & "\" & $"{KlimaatScenario}_Active_cells.csv"
     End Function
-    Public Function getResults2DPath(ResultsDir As String, Klimaatscenario As GeneralFunctions.enmKlimaatScenario, Parameter As GeneralFunctions.enm2DParameter) As String
+    Public Function getResults2DPath(ResultsDir As String, Parameter As GeneralFunctions.enm2DParameter) As String
         Dim ParStr As String
-        Dim ClimStr As String = Klimaatscenario.ToString
+        Dim ClimStr As String = KlimaatScenario.ToString
 
         Select Case Parameter
             Case GeneralFunctions.enm2DParameter.depth
@@ -3269,7 +3458,6 @@ Public Class clsStochastenAnalyse
             Dim dtRuns As DataTable 'runs
             Dim dtHerh As DataTable
 
-            'prepare a spreadsheet
             Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("1D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
             ws.ws.Cells(0, 0).Value = "ID"
             ws.ws.Cells(1, 0).Value = "Alias"
@@ -3318,81 +3506,71 @@ Public Class clsStochastenAnalyse
             n = dtLoc.Rows.Count - 1
             Setup.GeneralFunctions.UpdateProgressBar("Exporting results per location...", 0, n)
 
-            ' Create a new ZIP archive to store the CSV files
-            If System.IO.File.Exists(ResultsDir & "\Results1D.zip") Then System.IO.File.Delete(ResultsDir & "\Results1D.zip")
-            Using zip As ZipArchive = ZipFile.Open(ResultsDir & "\Results1D.zip", ZipArchiveMode.Create)
-                For i = 0 To n
+            For i = 0 To n
 
-                    Setup.GeneralFunctions.UpdateProgressBar("", i, n)
+                Setup.GeneralFunctions.UpdateProgressBar("", i, n)
 
-                    'create a worksheet for this location
-                    'ws = Me.Setup.ExcelFile.GetAddSheet(dtLoc.Rows(i)(0))
+                'create a worksheet for this location
+                'ws = Me.Setup.ExcelFile.GetAddSheet(dtLoc.Rows(i)(0))
 
-                    dtRes = New DataTable
-                    dtRuns = New DataTable
-                    dtHerh = New DataTable
+                dtRes = New DataTable
+                dtRuns = New DataTable
+                dtHerh = New DataTable
 
-                    ' Calculate an exceedance table for this location
-                    If Not CalcExceedanceTable(dtLoc.Rows(i)(0), "MAXVAL", dtRes, dtHerh) Then
-                        Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
-                    Else
-                        ' Write the CSV content to a MemoryStream
-                        Using ms As New MemoryStream()
-                            Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
-                                Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dtHerh, sw, ";")
-                                sw.Flush()
-                                ms.Position = 0
-
-                                ' Create a new entry in the ZIP file for the CSV
-                                Dim zipEntry As ZipArchiveEntry = zip.CreateEntry(dtLoc.Rows(i)("LOCATIENAAM") & ".csv")
-                                Using entryStream As Stream = zipEntry.Open()
-                                    ms.CopyTo(entryStream)
-                                End Using
-                            End Using
+                ' Calculate an exceedance table for this location
+                If Not CalcExceedanceTable(dtLoc.Rows(i)(0), "MAXVAL", dtRes, dtHerh) Then
+                    Setup.Log.AddError("Error calculating exceedance table for location: " & dtLoc.Rows(i)("LOCATIENAAM"))
+                Else
+                    ' Write the CSV content to a MemoryStream
+                    Using ms As New MemoryStream()
+                        Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
+                            Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dtHerh, sw, ";")
+                            sw.Flush()
+                            ms.Position = 0
                         End Using
+                    End Using
 
-                        ws.ws.Cells(0, i + 1).Value = dtLoc.Rows(i)(0)
-                        ws.ws.Cells(1, i + 1).Value = dtLoc.Rows(i)(0)
-                        ws.ws.Cells(2, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.01, 0, 1)
-                        ws.ws.Cells(3, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.05, 0, 1)
-                        ws.ws.Cells(4, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.1, 0, 1)
-                        ws.ws.Cells(5, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.5, 0, 1)
-                        ws.ws.Cells(6, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1, 0, 1)
-                        ws.ws.Cells(7, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 2, 0, 1)
-                        ws.ws.Cells(8, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 3, 0, 1)
-                        ws.ws.Cells(9, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 4, 0, 1)
-                        ws.ws.Cells(10, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 5, 0, 1)
-                        ws.ws.Cells(11, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 6, 0, 1)
-                        ws.ws.Cells(12, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 7, 0, 1)
-                        ws.ws.Cells(13, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 8, 0, 1)
-                        ws.ws.Cells(14, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 9, 0, 1)
-                        ws.ws.Cells(15, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 10, 0, 1)
-                        ws.ws.Cells(16, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 15, 0, 1)
-                        ws.ws.Cells(17, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 20, 0, 1)
-                        ws.ws.Cells(18, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 25, 0, 1)
-                        ws.ws.Cells(19, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 30, 0, 1)
-                        ws.ws.Cells(20, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 35, 0, 1)
-                        ws.ws.Cells(21, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 40, 0, 1)
-                        ws.ws.Cells(22, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 45, 0, 1)
-                        ws.ws.Cells(23, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
-                        ws.ws.Cells(24, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 60, 0, 1)
-                        ws.ws.Cells(25, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 70, 0, 1)
-                        ws.ws.Cells(26, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 80, 0, 1)
-                        ws.ws.Cells(27, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 90, 0, 1)
-                        ws.ws.Cells(28, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
-                        ws.ws.Cells(29, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 200, 0, 1)
-                        ws.ws.Cells(30, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 300, 0, 1)
-                        ws.ws.Cells(31, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 400, 0, 1)
-                        ws.ws.Cells(32, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 500, 0, 1)
-                        ws.ws.Cells(33, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 600, 0, 1)
-                        ws.ws.Cells(34, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 700, 0, 1)
-                        ws.ws.Cells(35, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 800, 0, 1)
-                        ws.ws.Cells(36, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 900, 0, 1)
-                        ws.ws.Cells(37, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1000, 0, 1)
+                    ws.ws.Cells(0, i + 1).Value = dtLoc.Rows(i)(0)
+                    ws.ws.Cells(1, i + 1).Value = dtLoc.Rows(i)(0)
+                    ws.ws.Cells(2, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.01, 0, 1)
+                    ws.ws.Cells(3, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.05, 0, 1)
+                    ws.ws.Cells(4, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.1, 0, 1)
+                    ws.ws.Cells(5, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 0.5, 0, 1)
+                    ws.ws.Cells(6, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1, 0, 1)
+                    ws.ws.Cells(7, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 2, 0, 1)
+                    ws.ws.Cells(8, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 3, 0, 1)
+                    ws.ws.Cells(9, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 4, 0, 1)
+                    ws.ws.Cells(10, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 5, 0, 1)
+                    ws.ws.Cells(11, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 6, 0, 1)
+                    ws.ws.Cells(12, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 7, 0, 1)
+                    ws.ws.Cells(13, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 8, 0, 1)
+                    ws.ws.Cells(14, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 9, 0, 1)
+                    ws.ws.Cells(15, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 10, 0, 1)
+                    ws.ws.Cells(16, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 15, 0, 1)
+                    ws.ws.Cells(17, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 20, 0, 1)
+                    ws.ws.Cells(18, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 25, 0, 1)
+                    ws.ws.Cells(19, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 30, 0, 1)
+                    ws.ws.Cells(20, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 35, 0, 1)
+                    ws.ws.Cells(21, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 40, 0, 1)
+                    ws.ws.Cells(22, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 45, 0, 1)
+                    ws.ws.Cells(23, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
+                    ws.ws.Cells(24, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 60, 0, 1)
+                    ws.ws.Cells(25, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 70, 0, 1)
+                    ws.ws.Cells(26, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 80, 0, 1)
+                    ws.ws.Cells(27, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 90, 0, 1)
+                    ws.ws.Cells(28, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
+                    ws.ws.Cells(29, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 200, 0, 1)
+                    ws.ws.Cells(30, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 300, 0, 1)
+                    ws.ws.Cells(31, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 400, 0, 1)
+                    ws.ws.Cells(32, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 500, 0, 1)
+                    ws.ws.Cells(33, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 600, 0, 1)
+                    ws.ws.Cells(34, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 700, 0, 1)
+                    ws.ws.Cells(35, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 800, 0, 1)
+                    ws.ws.Cells(36, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 900, 0, 1)
+                    ws.ws.Cells(37, i + 1).Value = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 1000, 0, 1)
 
-                    End If
-                Next
-            End Using
+                End If
+            Next
 
 
             Return True
@@ -3584,18 +3762,16 @@ Public Class clsStochastenAnalyse
 
     Public Function ExportResults2DFromCSV(parameter As GeneralFunctions.enm2DParameter) As Boolean
         Try
-            Me.Setup.GeneralFunctions.UpdateProgressBar("Normalizing 2D exceedance tables and writing to Excel...", 0, 1, True)
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Interpolating 2D exceedance tables and exporting to Excel...", 0, 1, True)
 
             'Set the paths to the 2D results and the stochasts in csv format
-            Dim ExceedanceTable2DPath As String = getExceedanceTable2DPath(ResultsDir, KlimaatScenario, parameter)
-            Dim StochastsPath As String = getStochastsPath(ResultsDir)
+            Dim ExceedanceTable2DPath As String = getExceedanceTable2DPath(ResultsDir, parameter)
+            Dim StochastsPath As String = getSimulationsPath(ResultsDir)
             Dim ActiveCellsPath As String = getActiveCellsPath(ResultsDir)
 
             'Prepare a spreadsheet
             Dim rowidx As Integer = 0
 
-            Me.Setup.ExcelFile = New clsExcelBook(Me.Setup)
-            Me.Setup.ExcelFile.Initialize(ResultsDir & "\Results2D.xlsx")
             Dim ws As clsExcelSheet = Me.Setup.ExcelFile.GetAddSheet("2D_Herh" & "_" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "_" & Setup.StochastenAnalyse.Duration.ToString)
 
             'Write header row
@@ -3651,9 +3827,14 @@ Public Class clsStochastenAnalyse
                 Dim values() As String
                 reader.ReadLine() ' Skip the header line
 
-                ' Read through each line in the file
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Processing 2D results from csv...", 0, 100, True)
+                Dim totalBytes As Long = reader.BaseStream.Length
+                Dim processedBytes As Long = reader.BaseStream.Position
+
                 While Not reader.EndOfStream
                     line = reader.ReadLine()
+
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", reader.BaseStream.Position, totalBytes, False)
 
                     ' Skip empty lines or lines without data
                     If String.IsNullOrWhiteSpace(line) Then Continue While
@@ -3677,20 +3858,28 @@ Public Class clsStochastenAnalyse
                 End While
             End Using
 
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Applying interpolation for return periods...", 0, 100, True)
+
             'create a dictionary of interpolators; one for each feature
             Dim interpolators As New Dictionary(Of Integer, clsInterpolator)()
+            Dim nFeatures As Long = featureIndices.Count
+            Dim iFeature As Long = 0
 
             ' Preprocess the data
             For Each featureIdx In featureIndices
+                iFeature += 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", iFeature, nFeatures, False)
                 Dim featureData = dt.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
                 interpolators(featureIdx) = New clsInterpolator(featureData, "HERHALINGSTIJD", "WAARDE")
             Next
 
             'now loop through all active cells and retrieve the data for each feature
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Writing to Excel...", 0, 100, True)
             For i = 0 To featureIndices.Count - 1
                 featureIdx = featureIndices(i)
 
                 rowidx += 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", rowidx, nFeatures, False)
                 ws.ws.Cells(rowidx, 0).Value = featureIdx
                 ws.ws.Cells(rowidx, 1).Value = featureIdx
                 Dim interpolator = interpolators(featureIdx)
@@ -3705,57 +3894,7 @@ Public Class clsStochastenAnalyse
                 Next
             Next
 
-            ''We work in chunks of 1000 features
-            'Dim chunksize As Integer = 1000
-
-            'For chunkStart As Integer = 0 To featureIndices.Count - 1 Step chunksize
-            '    Me.Setup.GeneralFunctions.UpdateProgressBar("", chunkStart, featureIndices.Count, False)
-            '    Dim chunkEnd As Integer = Math.Min(chunkStart + chunksize - 1, featureIndices.Count - 1)
-
-            '    'Process each feature in the chunk
-            '    For i As Integer = chunkStart To chunkEnd
-            '        Dim featureIdx As Integer = featureIndices(i)
-
-            '        Debug.Print(featureIdx)
-            '        If featureIdx = 102665 Then Stop
-
-            '        'Filter data for this feature
-            '        Dim featureData = exceedanceData.Select($"FEATUREIDX = {featureIdx}", "HERHALINGSTIJD ASC")
-
-            '        If featureData.Length > 0 Then
-            '            'Create a DataTable for this feature
-            '            Dim dt As New DataTable()
-            '            dt.Columns.Add("HERHALINGSTIJD", GetType(Double))
-            '            dt.Columns.Add("WAARDE", GetType(Double))
-            '            For Each row In featureData
-            '                dt.Rows.Add(CDbl(row("HERHALINGSTIJD")), CDbl(row("WAARDE")))
-            '            Next
-
-            '            'Write to Excel
-            '            rowidx += 1
-            '            ws.ws.Cells(rowidx, 0).Value = featureIdx
-            '            ws.ws.Cells(rowidx, 1).Value = featureIdx
-            '            For j As Integer = 0 To headerValues.Length - 1
-            '                ws.ws.Cells(rowidx, j + 2).Value = InterpolateFromDataTable(dt, headerValues(j), "HERHALINGSTIJD", "WAARDE")
-            '            Next
-
-            '            'Write raw results to CSV in ZIP
-            '            Using ms As New MemoryStream()
-            '                Using sw As New StreamWriter(ms, Encoding.UTF8, 1024, True)
-            '                    Setup.GeneralFunctions.DataTable2CSVByStreamWriter(dt, sw, ";")
-            '                    sw.Flush()
-            '                    ms.Position = 0
-
-            '                End Using
-            '            End Using
-            '        End If
-            '    Next
-            'Next
-
-            ' Save the Excel file
-            Me.Setup.ExcelFile.Save(True)
-
-            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, featureIndices.Count)
+            Setup.GeneralFunctions.UpdateProgressBar("Export complete.", 0, 100, True)
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function ExportResults2DFromCSV of class clsStochastenAnalyse.")
@@ -3926,7 +4065,7 @@ Public Class clsStochastenAnalyse
         Dim myQuery As String
 
         myQuery = "SELECT * FROM RESULTATEN WHERE LOCATIENAAM='" & LocationName & "' AND KLIMAATSCENARIO='" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & ";"
-                    Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtResults)
+        Setup.GeneralFunctions.SQLiteQuery(con, myQuery, dtResults)
         Return dtResults
 
     End Function

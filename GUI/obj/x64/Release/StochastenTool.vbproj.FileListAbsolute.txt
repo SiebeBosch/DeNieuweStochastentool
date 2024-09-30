@@ -58,6 +58,7 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmEraseYesN
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmImportOutputlocations.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmOudeResultatenVervangen.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmPatroon.resources
+C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmPublish.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmStochasten.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.Resources.resources
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.vbproj.GenerateResource.cache
@@ -69,4 +70,3 @@ C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\Stochast.F6662CE2.Up2Date
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.exe
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.xml
 C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.pdb
-C:\GITHUB\DeNieuweStochastentool\GUI\obj\x64\Release\StochastenTool.frmPublish.resources

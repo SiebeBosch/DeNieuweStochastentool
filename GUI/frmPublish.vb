@@ -74,14 +74,14 @@ Public Class frmPublish
 
                 If export2D Then
                     'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
-                    Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", Climate, Duration)
-                    Call WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text)
+                    If Not Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", Climate, Duration) Then Throw New Exception("Error writing exceedance meash.")
+                    If Not WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
                 End If
 
                 If export1D Then
-                    Call WriteLocationsJSON(ViewerDir & "\js\locations.js")
-                    Call WriteResultsJSON(ViewerDir & "\js\results.js")
-                    Call WriteExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js")
+                    If Not WriteLocationsJSON(ViewerDir & "\js\locations.js") Then Throw New Exception("Error writing locations to JSON.")
+                    If Not WriteResultsJSON(ViewerDir & "\js\results.js") Then Throw New Exception("Error writing results to JSON.")
+                    If Not WriteExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js") Then Throw New Exception("Error writing exceedance data for 1D to JSON.")
                 End If
 
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Operation complete.", 0, 10, True)
@@ -100,9 +100,9 @@ Public Class frmPublish
                     If Not Directory.Exists(ViewerDir & "\js") Then Throw New Exception("Error: could not find subdirectory js in selected directory " & ViewerDir)
 
                     'we'll append the run data to the runs.js file
-                    Setup.StochastenAnalyse.AddStochasticRunsJSON(ViewerDir & "\js\runs.js", Climate, Duration, txtConfigurationName.Text)
-                    Setup.StochastenAnalyse.AddExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js", Climate, Duration, txtConfigurationName.Text)
-                    Setup.StochastenAnalyse.AddExceedanceLevels2DJSON(ViewerDir & "\js\exceedancedata2D.js", Climate, Duration, txtConfigurationName.Text)
+                    Setup.StochastenAnalyse.AddStochasticRunsJSON(ViewerDir & "\js\runs.js", txtConfigurationName.Text)
+                    Setup.StochastenAnalyse.AddExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js", txtConfigurationName.Text)
+                    Setup.StochastenAnalyse.AddExceedanceLevels2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text)
 
                     'execute the html file in the default browser
                     System.Diagnostics.Process.Start(ViewerDir & "\index.html")
@@ -373,7 +373,7 @@ Public Class frmPublish
 
     Public Function WriteExceedanceData1DJSON(path As String) As Boolean
         Try
-            Return Me.Setup.StochastenAnalyse.WriteExceedanceData1DJSON(path, Climate, Duration, txtConfigurationName.Text)
+            Return Me.Setup.StochastenAnalyse.WriteExceedanceData1DJSON(path, txtConfigurationName.Text)
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function WriteExceedanceData1DJSON: " & ex.Message)
             Return False

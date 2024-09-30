@@ -52,9 +52,10 @@ Partial Class frmAddModel
         'btnAdd
         '
         Me.btnAdd.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnAdd.Location = New System.Drawing.Point(637, 322)
+        Me.btnAdd.Location = New System.Drawing.Point(566, 258)
+        Me.btnAdd.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnAdd.Name = "btnAdd"
-        Me.btnAdd.Size = New System.Drawing.Size(145, 71)
+        Me.btnAdd.Size = New System.Drawing.Size(129, 57)
         Me.btnAdd.TabIndex = 0
         Me.btnAdd.Text = "Add"
         Me.btnAdd.UseVisualStyleBackColor = True
@@ -62,9 +63,9 @@ Partial Class frmAddModel
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(23, 15)
+        Me.Label2.Location = New System.Drawing.Point(20, 12)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(90, 20)
+        Me.Label2.Size = New System.Drawing.Size(77, 16)
         Me.Label2.TabIndex = 3
         Me.Label2.Text = "Model type:"
         '
@@ -72,171 +73,183 @@ Partial Class frmAddModel
         '
         Me.cmbModelType.AutoCompleteCustomSource.AddRange(New String() {"SOBEK", "DIMR", "DHYDROSERVER", "CUSTOM"})
         Me.cmbModelType.FormattingEnabled = True
-        Me.cmbModelType.Location = New System.Drawing.Point(162, 12)
+        Me.cmbModelType.Location = New System.Drawing.Point(144, 10)
+        Me.cmbModelType.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.cmbModelType.Name = "cmbModelType"
-        Me.cmbModelType.Size = New System.Drawing.Size(137, 28)
+        Me.cmbModelType.Size = New System.Drawing.Size(122, 24)
         Me.cmbModelType.TabIndex = 4
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(23, 50)
+        Me.Label3.Location = New System.Drawing.Point(20, 40)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(92, 20)
+        Me.Label3.Size = New System.Drawing.Size(77, 16)
         Me.Label3.TabIndex = 5
         Me.Label3.Text = "Executable:"
         '
         'txtExecutable
         '
-        Me.txtExecutable.Location = New System.Drawing.Point(162, 47)
+        Me.txtExecutable.Location = New System.Drawing.Point(144, 38)
+        Me.txtExecutable.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtExecutable.Name = "txtExecutable"
-        Me.txtExecutable.Size = New System.Drawing.Size(573, 26)
+        Me.txtExecutable.Size = New System.Drawing.Size(510, 22)
         Me.txtExecutable.TabIndex = 6
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(23, 88)
+        Me.Label4.Location = New System.Drawing.Point(20, 70)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(91, 20)
+        Me.Label4.Size = New System.Drawing.Size(74, 16)
         Me.Label4.TabIndex = 7
         Me.Label4.Text = "Arguments:"
         '
         'txtArguments
         '
-        Me.txtArguments.Location = New System.Drawing.Point(162, 85)
+        Me.txtArguments.Location = New System.Drawing.Point(144, 68)
+        Me.txtArguments.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtArguments.Name = "txtArguments"
-        Me.txtArguments.Size = New System.Drawing.Size(573, 26)
+        Me.txtArguments.Size = New System.Drawing.Size(510, 22)
         Me.txtArguments.TabIndex = 8
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(24, 127)
+        Me.Label5.Location = New System.Drawing.Point(21, 102)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(73, 20)
+        Me.Label5.Size = New System.Drawing.Size(63, 16)
         Me.Label5.TabIndex = 9
         Me.Label5.Text = "Modeldir:"
         '
         'txtModelDir
         '
-        Me.txtModelDir.Location = New System.Drawing.Point(162, 124)
+        Me.txtModelDir.Location = New System.Drawing.Point(144, 99)
+        Me.txtModelDir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtModelDir.Name = "txtModelDir"
-        Me.txtModelDir.Size = New System.Drawing.Size(573, 26)
+        Me.txtModelDir.Size = New System.Drawing.Size(510, 22)
         Me.txtModelDir.TabIndex = 10
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(25, 165)
+        Me.Label6.Location = New System.Drawing.Point(22, 132)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(90, 20)
+        Me.Label6.Size = New System.Drawing.Size(76, 16)
         Me.Label6.TabIndex = 11
         Me.Label6.Text = "Casename:"
         '
         'txtCaseName
         '
-        Me.txtCaseName.Location = New System.Drawing.Point(162, 162)
+        Me.txtCaseName.Location = New System.Drawing.Point(144, 130)
+        Me.txtCaseName.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtCaseName.Name = "txtCaseName"
-        Me.txtCaseName.Size = New System.Drawing.Size(573, 26)
+        Me.txtCaseName.Size = New System.Drawing.Size(510, 22)
         Me.txtCaseName.TabIndex = 12
         '
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(25, 203)
+        Me.Label7.Location = New System.Drawing.Point(22, 162)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(67, 20)
+        Me.Label7.Size = New System.Drawing.Size(57, 16)
         Me.Label7.TabIndex = 13
         Me.Label7.Text = "Workdir:"
         '
         'txtWorkdir
         '
-        Me.txtWorkdir.Location = New System.Drawing.Point(162, 200)
+        Me.txtWorkdir.Location = New System.Drawing.Point(144, 160)
+        Me.txtWorkdir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtWorkdir.Name = "txtWorkdir"
-        Me.txtWorkdir.Size = New System.Drawing.Size(573, 26)
+        Me.txtWorkdir.Size = New System.Drawing.Size(510, 22)
         Me.txtWorkdir.TabIndex = 14
         '
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(24, 278)
+        Me.Label8.Location = New System.Drawing.Point(21, 222)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(264, 20)
+        Me.Label8.Size = New System.Drawing.Size(221, 16)
         Me.Label8.TabIndex = 15
         Me.Label8.Text = "Resultsfiles Flow (use ; as delimiter):"
         '
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(24, 243)
+        Me.Label9.Location = New System.Drawing.Point(21, 194)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(255, 20)
+        Me.Label9.Size = New System.Drawing.Size(213, 16)
         Me.Label9.TabIndex = 16
         Me.Label9.Text = "Resultsfiles RR (use ; as delimiter):"
         '
         'txtResultsdirRR
         '
-        Me.txtResultsdirRR.Location = New System.Drawing.Point(304, 243)
+        Me.txtResultsdirRR.Location = New System.Drawing.Point(270, 194)
+        Me.txtResultsdirRR.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtResultsdirRR.Name = "txtResultsdirRR"
-        Me.txtResultsdirRR.Size = New System.Drawing.Size(431, 26)
+        Me.txtResultsdirRR.Size = New System.Drawing.Size(384, 22)
         Me.txtResultsdirRR.TabIndex = 17
         '
         'txtResultsDirFlow
         '
-        Me.txtResultsDirFlow.Location = New System.Drawing.Point(304, 278)
+        Me.txtResultsDirFlow.Location = New System.Drawing.Point(270, 222)
+        Me.txtResultsDirFlow.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtResultsDirFlow.Name = "txtResultsDirFlow"
-        Me.txtResultsDirFlow.Size = New System.Drawing.Size(431, 26)
+        Me.txtResultsDirFlow.Size = New System.Drawing.Size(384, 22)
         Me.txtResultsDirFlow.TabIndex = 18
         '
         'btnExecutable
         '
-        Me.btnExecutable.Location = New System.Drawing.Point(756, 47)
+        Me.btnExecutable.Location = New System.Drawing.Point(672, 38)
+        Me.btnExecutable.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnExecutable.Name = "btnExecutable"
-        Me.btnExecutable.Size = New System.Drawing.Size(26, 26)
+        Me.btnExecutable.Size = New System.Drawing.Size(23, 21)
         Me.btnExecutable.TabIndex = 19
         Me.btnExecutable.Text = ".."
         Me.btnExecutable.UseVisualStyleBackColor = True
         '
         'btnModeldir
         '
-        Me.btnModeldir.Location = New System.Drawing.Point(756, 121)
+        Me.btnModeldir.Location = New System.Drawing.Point(672, 97)
+        Me.btnModeldir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnModeldir.Name = "btnModeldir"
-        Me.btnModeldir.Size = New System.Drawing.Size(26, 26)
+        Me.btnModeldir.Size = New System.Drawing.Size(23, 21)
         Me.btnModeldir.TabIndex = 21
         Me.btnModeldir.Text = ".."
         Me.btnModeldir.UseVisualStyleBackColor = True
         '
         'btnWorkdir
         '
-        Me.btnWorkdir.Location = New System.Drawing.Point(756, 200)
+        Me.btnWorkdir.Location = New System.Drawing.Point(672, 160)
+        Me.btnWorkdir.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnWorkdir.Name = "btnWorkdir"
-        Me.btnWorkdir.Size = New System.Drawing.Size(26, 26)
+        Me.btnWorkdir.Size = New System.Drawing.Size(23, 21)
         Me.btnWorkdir.TabIndex = 23
         Me.btnWorkdir.Text = ".."
         Me.btnWorkdir.UseVisualStyleBackColor = True
         '
         'prProgress
         '
-        Me.prProgress.Location = New System.Drawing.Point(29, 370)
+        Me.prProgress.Location = New System.Drawing.Point(26, 296)
+        Me.prProgress.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.prProgress.Name = "prProgress"
-        Me.prProgress.Size = New System.Drawing.Size(590, 23)
+        Me.prProgress.Size = New System.Drawing.Size(524, 18)
         Me.prProgress.TabIndex = 24
         '
         'lblProgress
         '
         Me.lblProgress.AutoSize = True
-        Me.lblProgress.Location = New System.Drawing.Point(34, 338)
+        Me.lblProgress.Location = New System.Drawing.Point(30, 270)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(76, 20)
+        Me.lblProgress.Size = New System.Drawing.Size(65, 16)
         Me.lblProgress.TabIndex = 25
         Me.lblProgress.Text = "Progress:"
         '
         'frmAddModel
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 417)
+        Me.ClientSize = New System.Drawing.Size(711, 334)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.btnWorkdir)
@@ -260,6 +273,7 @@ Partial Class frmAddModel
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.btnAdd)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Name = "frmAddModel"
         Me.Text = "Add Model"
         Me.ResumeLayout(False)

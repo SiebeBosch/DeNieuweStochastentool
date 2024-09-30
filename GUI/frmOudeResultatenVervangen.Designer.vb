@@ -32,9 +32,10 @@ Partial Class frmOudeResultatenVervangen
         '
         Me.btnStop.BackColor = System.Drawing.Color.IndianRed
         Me.btnStop.DialogResult = System.Windows.Forms.DialogResult.No
-        Me.btnStop.Location = New System.Drawing.Point(33, 71)
+        Me.btnStop.Location = New System.Drawing.Point(44, 87)
+        Me.btnStop.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnStop.Name = "btnStop"
-        Me.btnStop.Size = New System.Drawing.Size(90, 45)
+        Me.btnStop.Size = New System.Drawing.Size(120, 55)
         Me.btnStop.TabIndex = 27
         Me.btnStop.Text = "Nee"
         Me.btnStop.UseVisualStyleBackColor = False
@@ -43,9 +44,10 @@ Partial Class frmOudeResultatenVervangen
         '
         Me.btnRun.BackColor = System.Drawing.Color.MediumSeaGreen
         Me.btnRun.DialogResult = System.Windows.Forms.DialogResult.Yes
-        Me.btnRun.Location = New System.Drawing.Point(166, 71)
+        Me.btnRun.Location = New System.Drawing.Point(221, 87)
+        Me.btnRun.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.btnRun.Name = "btnRun"
-        Me.btnRun.Size = New System.Drawing.Size(90, 45)
+        Me.btnRun.Size = New System.Drawing.Size(120, 55)
         Me.btnRun.TabIndex = 26
         Me.btnRun.Text = "Ja"
         Me.btnRun.UseVisualStyleBackColor = False
@@ -53,23 +55,25 @@ Partial Class frmOudeResultatenVervangen
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(18, 9)
-        Me.Label1.MaximumSize = New System.Drawing.Size(273, 0)
+        Me.Label1.Location = New System.Drawing.Point(24, 11)
+        Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label1.MaximumSize = New System.Drawing.Size(364, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(265, 39)
+        Me.Label1.Size = New System.Drawing.Size(332, 48)
         Me.Label1.TabIndex = 28
         Me.Label1.Text = "De nabewerking is onder Settings zo ingesteld dat alle bestaande resultaten in de" &
     " database zullen worden vervangen. Doorgaan?"
         '
         'frmOudeResultatenVervangen
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(295, 135)
+        Me.ClientSize = New System.Drawing.Size(393, 166)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.btnStop)
         Me.Controls.Add(Me.btnRun)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.Margin = New System.Windows.Forms.Padding(4, 4, 4, 4)
         Me.Name = "frmOudeResultatenVervangen"
         Me.Text = "Bestaand resultaat vervangen?"
         Me.ResumeLayout(False)
