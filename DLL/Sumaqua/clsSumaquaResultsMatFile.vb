@@ -48,7 +48,7 @@ Public Class clsSumaquaResultsMatFile
                 Next
 
                 ' Now that we have the time series for the current location, calculate the statistics
-                Dim myOutputLocation As New clsSumaquaOutputLocationStatistics(iLoc.ToString) With {
+                Dim myOutputLocation As New clsSumaquaOutputLocationStatistics(iLoc, iLoc.ToString) With {
                 .Max = timeSeries.Max(),
                 .Min = timeSeries.Min(),
                 .First = timeSeries.First(),
@@ -79,9 +79,10 @@ Public Class clsSumaquaResultsMatFile
             Return sortedValues(size \ 2)
         End If
     End Function
-    Friend Function Read(ByRef OutputLocations As Dictionary(Of String, clsSumaquaOutputLocationStatistics)) As Boolean
+    Friend Function Read(ByRef OutputLocations As Dictionary(Of Integer, clsSumaquaOutputLocationStatistics)) As Boolean
         Try
             ' Read the .mat file
+            ' key of the dictionary is the column index
             Dim matFile As IMatFile
             Using fileStream As New FileStream(Path, FileMode.Open)
                 Dim reader = New MatFileReader(fileStream)
@@ -128,7 +129,7 @@ Public Class clsSumaquaResultsMatFile
                 Dim medianValue As Double = CalculateMedian(locationData)
 
                 ' Create a new clsSumaquaOutputLocationStatistics object
-                Dim locationStats As New clsSumaquaOutputLocationStatistics(locIdx.ToString()) With {
+                Dim locationStats As New clsSumaquaOutputLocationStatistics(locIdx, locIdx) With {
                 .Max = locationData.Max(),
                 .Min = locationData.Min(),
                 .First = locationData.First(),
@@ -138,7 +139,7 @@ Public Class clsSumaquaResultsMatFile
             }
 
                 ' Add to OutputLocations dictionary
-                OutputLocations.Add(locationStats.ID, locationStats)
+                OutputLocations.Add(locationStats.ColIdx, locationStats)
             Next
 
             Return True

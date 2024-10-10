@@ -2966,6 +2966,15 @@ Public Class clsStochastenAnalyse
         Try
             Dim i As Long, n As Long
 
+            'fist make a dictionary that relates ID and Name for each location
+            Dim query As String = "SELECT LOCATIEID, LOCATIENAAM FROM OUTPUTLOCATIONS;"
+            Dim dt As New DataTable
+            Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dt, False)
+            Dim LocationNames As New Dictionary(Of String, String)
+            For i = 0 To dt.Rows.Count - 1
+                LocationNames.Add(dt.Rows(i)("LOCATIEID"), dt.Rows(i)("LOCATIENAAM"))
+            Next
+
             'read the results
             n = Runs.Runs.Count
             i = 0
@@ -2979,7 +2988,7 @@ Public Class clsStochastenAnalyse
                         ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
                             readHISNC(myRun, myFile)
                         ElseIf Right(myFile.FileName, 4).ToLower = ".mat" Then
-                            readMAT(myRun, myFile)
+                            readMAT(myRun, myFile, LocationNames)
                         End If
                     Next
                 Next
@@ -3053,27 +3062,29 @@ Public Class clsStochastenAnalyse
     End Function
 
 
-    Public Function readMAT(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
+    Public Function readMAT(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile, LocationNames As Dictionary(Of String, String)) As Boolean
         Try
             If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
             Dim myMatFile As New clsSumaquaResultsMatFile(Me.Setup, myRun.OutputFilesDir & "\" & myFile.FileName)
 
-            Dim Output As New Dictionary(Of String, clsSumaquaOutputLocationStatistics)
+            Dim Output As New Dictionary(Of Integer, clsSumaquaOutputLocationStatistics)
             myMatFile.Read(Output)
 
             Dim resultsList As New List(Of ResultItem)
 
             'we need to define a parameter
-            For Each ID As String In Output.Keys
+            For Each ColIdx As Integer In Output.Keys
                 Dim result As New ResultItem()
-                result.LocationName = ID
-                result.Max = Output.Item(ID).Max
-                result.Min = Output.Item(ID).Min
-                result.Avg = Output.Item(ID).Mean
+                result.ColIdx = ColIdx
+
+                'look up the name of the location in the list provided
+                result.LocationName = LocationNames.Item(result.ColIdx.ToString)
+                result.Max = Output.Item(ColIdx).Max
+                result.Min = Output.Item(ColIdx).Min
+                result.Avg = Output.Item(ColIdx).Mean
                 resultsList.Add(result)
             Next
             InsertResults(resultsList, myRun)
-
 
             Return True
         Catch ex As Exception
@@ -3130,6 +3141,7 @@ Public Class clsStochastenAnalyse
     End Function
 
     Private Structure ResultItem
+        Public ColIdx As Integer
         Public LocationName As String
         Public Max As Double
         Public Min As Double

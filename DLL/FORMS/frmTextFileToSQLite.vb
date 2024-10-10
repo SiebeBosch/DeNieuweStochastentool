@@ -46,6 +46,11 @@ Public Class frmTextFileToSQLite
                 myField.TextFileColIdx = CSV.GetFieldIdx(grFields.Rows(i).Cells(2).Value)
             Next
 
+            'remove all existing data from the table
+            If chkDeleteAllExisting.Checked Then
+                Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, "DELETE FROM " & TableName & ";")
+            End If
+
             'finally we will read the csv content to multiple in-memory datatables
             CSV.ReadToSQLite(SQLiteCon, TableName, RequiredFields)
 

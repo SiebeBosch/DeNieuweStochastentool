@@ -4408,6 +4408,9 @@ Public Class frmStochasten
         }
         Dim myForm As New STOCHLIB.frmTextFileToSQLite(Me.Setup, Me.Setup.SqliteCon, "VOLUMES", myFields)
         myForm.ShowDialog()
+
+        UpdateVolumesTable(0)
+
     End Sub
 
     Public Function AddReferenceLevelToChart(ByRef refLevel As Double, ByVal ColName As String, ByVal SeriesName As String, ByRef dt As DataTable) As Boolean
@@ -4969,6 +4972,16 @@ Public Class frmStochasten
 
     Private Sub SumaquasHertogenboschToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SumaquasHertogenboschToolStripMenuItem.Click
 
+        'first we create a dictionary of integer, string where the key is the column index in the .mat file
+
+        Dim locations As New Dictionary(Of Integer, String)
+
+        ' Split the data into an array of names
+        ' Create the dictionary using LINQ
+        Dim data As String = "Volume_1D Polygoon17;Volume_1D Polygoon23;Volume_1D Polygoon26;Volume_2D Polygoon17;Volume_2D Polygoon23;Volume_2D Polygoon26;Volume1D+Volume_2D Polygoon18;Volume1D+Volume_2D Polygoon19;Volume1D+Volume_2D Polygoon21;Volume1D+Volume_2D Polygoon22;Volume1D+Volume_2D Polygoon24;Volume1D+Volume_2D Polygoon25;Volume1D+Volume_2D Polygoon27;Q_HS AM_Inlaat_WB_DynBeekdal01;Q_HS AM_Inlaat_WB_DynBeekdal02;Q_HS AM_Inlaat_WB_DynBeekdal03;Q_HS inlaat_BBN;Q_HS inlaat_BBZ;Q_HS AM_Normaalregeling_RosmalenseAa;Q_HS AM_INLAAT_HOWABO;Q_HS AM_S116HDW;Q_HS WST_Weir_DO1_st3;Q_HS AM_Crev_Stuw;Q_HS AM_Crev_onderspuier;Q_HS afsluitstuw_BBZ;Q_HS pomp;Q_HS pomp19_21;WL node_ADM_Bossche_Broek;WL node_3686;WL node_3911;WL node_4045;WL node_meas_BBZ;WL node_WST_MS_DO1_st3;WL node_1122;WL node_2728;WL node_AM_mp_VG;WL node_AM_mp_VG3;WL node_AM_mp_VG2;WL node_2316;WL node_AM_M116HDW;WL node_1561;WL node_4036;WL node_4038;WL node_1032;WL node_AM_Crev_boven;WL node_1033;WL node_3813;WL node_3767;WL node_3723;WL node_4002;WL node_4040;WL node_3979;WL node_meas_BBN;WL node_143;WL node_2639;WL node_1837;WL node_4052;WL node_2736;WL node_995;WL node_991;WL node_2499;WL node_985;WL node_AM_Crev_beneden;WL node_2317;WL node_1034;Q_1D2D Polygoon17;Q_1D2D Polygoon23;Q_1D2D Polygoon26;link1D1D_17_19;link1D1D_18_21;link1D1D_23_26;link1D1D_24_27;link1D1D_19_23;Q2d2d_1918;Q2d2d_2423;Q2d2d_2327;Q2d2d_1821;Outfall edge 923;Outfall edge 1598;Outfall edge 986;Outfall edge 2281;GL AM_INLAAT_HOWABO;GL AM_S116HDW;GL AM_Crev_Stuw;GL AM_Crev_onderspuier;GL WST_Weir_DO1_st3;GL inlaat_BBN;GL inlaat_BBZ;GL afsluitstuw_BBZ;GL AM_Inlaat_WB_DynBeekdal01;GL AM_Inlaat_WB_DynBeekdal02;GL AM_Inlaat_WB_DynBeekdal03;GL AM_Normaalregeling_RosmalenseAa;Glel AM_Crev_onderspuier"
+        Dim names As String() = data.Split({";"c}, StringSplitOptions.RemoveEmptyEntries)
+        Dim dict As Dictionary(Of Integer, String) = names.Select(Function(name, index) New With {Key .Key = index, Key .Value = name}).ToDictionary(Function(x) x.Key, Function(x) x.Value)
+
         Using cmd As New SQLite.SQLiteCommand
             cmd.Connection = Me.Setup.SqliteCon
             Me.Setup.SqliteCon.Open()
@@ -4980,20 +4993,29 @@ Public Class frmStochasten
             ' Assuming cmd is your SQLiteCommand object
             Using transaction = Me.Setup.SqliteCon.BeginTransaction()
                 For i = 0 To 93
+
+                    Dim X As Double = 157748
+                    Dim Y As Double = 407503 - 10 * i
+                    Dim Lat As Double
+                    Dim Lon As Double
+                    Dim Name As String = dict.Item(i)
+
+                    Me.Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
+
                     cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, WP, ZP) VALUES (@locId, @locName, @modelId, @module, @modelPar, @resultsFile, @resultsType, @x, @y, @lat, @lon, @wp, @zp);"
 
                     cmd.Parameters.Clear()
-                    cmd.Parameters.AddWithValue("@locId", (i + 1).ToString())
-                    cmd.Parameters.AddWithValue("@locName", (i + 1).ToString())
+                    cmd.Parameters.AddWithValue("@locId", i.ToString())
+                    cmd.Parameters.AddWithValue("@locName", Name)
                     cmd.Parameters.AddWithValue("@modelId", "1")
                     cmd.Parameters.AddWithValue("@module", "FLOW1D")
                     cmd.Parameters.AddWithValue("@modelPar", "water level")
                     cmd.Parameters.AddWithValue("@resultsFile", "Output_TQ150HM.mat")
                     cmd.Parameters.AddWithValue("@resultsType", "MAX")
-                    cmd.Parameters.AddWithValue("@x", 999)
-                    cmd.Parameters.AddWithValue("@y", 888)
-                    cmd.Parameters.AddWithValue("@lat", 9.999)
-                    cmd.Parameters.AddWithValue("@lon", 8.888)
+                    cmd.Parameters.AddWithValue("@x", X)
+                    cmd.Parameters.AddWithValue("@y", Y)
+                    cmd.Parameters.AddWithValue("@lat", Lat)
+                    cmd.Parameters.AddWithValue("@lon", Lon)
                     cmd.Parameters.AddWithValue("@wp", DBNull.Value)
                     cmd.Parameters.AddWithValue("@zp", DBNull.Value)
 

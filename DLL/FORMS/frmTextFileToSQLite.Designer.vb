@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmTextFileToSQLite
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class frmTextFileToSQLite
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmTextFileToSQLite))
         Me.grFields = New System.Windows.Forms.DataGridView()
@@ -34,6 +34,7 @@ Partial Class frmTextFileToSQLite
         Me.btnImport = New System.Windows.Forms.Button()
         Me.txtCSVFile = New System.Windows.Forms.TextBox()
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
+        Me.chkDeleteAllExisting = New System.Windows.Forms.CheckBox()
         CType(Me.grFields, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -46,7 +47,7 @@ Partial Class frmTextFileToSQLite
         Me.grFields.Name = "grFields"
         Me.grFields.RowHeadersWidth = 51
         Me.grFields.RowTemplate.Height = 24
-        Me.grFields.Size = New System.Drawing.Size(985, 372)
+        Me.grFields.Size = New System.Drawing.Size(985, 323)
         Me.grFields.TabIndex = 34
         '
         'colItem
@@ -83,7 +84,7 @@ Partial Class frmTextFileToSQLite
         Me.lblProgress.AutoSize = True
         Me.lblProgress.Location = New System.Drawing.Point(15, 441)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(65, 17)
+        Me.lblProgress.Size = New System.Drawing.Size(62, 16)
         Me.lblProgress.TabIndex = 33
         Me.lblProgress.Text = "Progress"
         '
@@ -124,11 +125,24 @@ Partial Class frmTextFileToSQLite
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
         '
+        'chkDeleteAllExisting
+        '
+        Me.chkDeleteAllExisting.AutoSize = True
+        Me.chkDeleteAllExisting.Checked = True
+        Me.chkDeleteAllExisting.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkDeleteAllExisting.Location = New System.Drawing.Point(18, 385)
+        Me.chkDeleteAllExisting.Name = "chkDeleteAllExisting"
+        Me.chkDeleteAllExisting.Size = New System.Drawing.Size(181, 20)
+        Me.chkDeleteAllExisting.TabIndex = 35
+        Me.chkDeleteAllExisting.Text = "delete all existing records"
+        Me.chkDeleteAllExisting.UseVisualStyleBackColor = True
+        '
         'frmTextFileToSQLite
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1013, 496)
+        Me.Controls.Add(Me.chkDeleteAllExisting)
         Me.Controls.Add(Me.grFields)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
@@ -155,4 +169,5 @@ Partial Class frmTextFileToSQLite
     Friend WithEvents btnImport As Windows.Forms.Button
     Friend WithEvents txtCSVFile As Windows.Forms.TextBox
     Friend WithEvents dlgOpenFile As Windows.Forms.OpenFileDialog
+    Friend WithEvents chkDeleteAllExisting As Windows.Forms.CheckBox
 End Class
