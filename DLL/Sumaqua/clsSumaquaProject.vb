@@ -19,7 +19,7 @@ Public Class clsSumaquaProject
     Dim OutputSubdir As String = "OUTPUT"
 
     Public OutputLocations As Dictionary(Of String, clsSumaquaOutputLocationStatistics)
-    Public ResultsFile As clsMatFile
+    Public ResultsFile As clsSumaquaResultsMatFile
 
     Public Sub New(ByRef mySetup As clsSetup)
         Setup = mySetup
@@ -33,7 +33,7 @@ Public Class clsSumaquaProject
         OutputLocations = New Dictionary(Of String, clsSumaquaOutputLocationStatistics)
 
         Dim myResultsPath As String = GetResultsPath()
-        ResultsFile = New clsMatFile(Me.Setup, myResultsPath)
+        ResultsFile = New clsSumaquaResultsMatFile(Me.Setup, myResultsPath)
 
     End Sub
 
@@ -52,7 +52,7 @@ Public Class clsSumaquaProject
 
 
             Dim myResultsPath As String = GetResultsPath()
-            ResultsFile = New clsMatFile(Me.Setup, myResultsPath)
+            ResultsFile = New clsSumaquaResultsMatFile(Me.Setup, myResultsPath)
 
 
             Return True

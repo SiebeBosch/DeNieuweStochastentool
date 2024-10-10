@@ -157,6 +157,34 @@ Public Class frmStochasten
         RebuildAllGrids()
     End Sub
 
+
+    Public Function EnableButtons() As Boolean
+        Try
+            'this function enables/disables buttons, based on whether results are available
+
+            'first check if all results files are present. We can do this by checking the DONE column in the grid
+            Dim AllResultsFilesPresent As Boolean = True
+            For Each myRow As DataGridViewRow In grRuns.Rows
+                If Not myRow.Cells("DONE").Value Then
+                    AllResultsFilesPresent = False
+                    Exit For
+                End If
+            Next
+
+            'if all results files are present, enable the buttons for uitlezen, postprocessing, export and viewer
+            btnUitlezen.Enabled = AllResultsFilesPresent
+            btnPostprocessing.Enabled = AllResultsFilesPresent
+            btnViewer.Enabled = AllResultsFilesPresent
+            btnExport.Enabled = AllResultsFilesPresent
+
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error enabling buttons: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
     Private Sub btnBuild_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnBuild.Click
 
         'make sure to accept crashed results if specified
@@ -469,7 +497,6 @@ Public Class frmStochasten
                     grOutputLocations.Columns(colIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill 'ID of outputlocation
                 End If
             Next
-
 
             Me.Setup.SqliteCon.Close()
 
@@ -3748,14 +3775,14 @@ Public Class frmStochasten
         Dim Casename As String = ""
         Dim TempWorkDir As String = ""
 
-
+        '20241002 bugfix: if not casename was given, the temporary work dir was not set
         If Not IsDBNull(Row.Cells(0).Value) Then ID = Row.Cells(0).Value
         If Not IsDBNull(Row.Cells(1).Value) Then ModelType = Row.Cells(1).Value
         If Not IsDBNull(Row.Cells(2).Value) Then Exec = Row.Cells(2).Value
         If Not IsDBNull(Row.Cells(3).Value) Then Args = Row.Cells(3).Value
         If Not IsDBNull(Row.Cells(4).Value) Then ModelDir = Row.Cells(4).Value
         If Not IsDBNull(Row.Cells(5).Value) Then Casename = Row.Cells(5).Value
-        If Not IsDBNull(Row.Cells(5).Value) Then TempWorkDir = Row.Cells(6).Value
+        If Not IsDBNull(Row.Cells(6).Value) Then TempWorkDir = Row.Cells(6).Value
         If Not IsDBNull(Row.Cells(7).Value) Then RRResultsFiles = Row.Cells(7).Value
         If Not IsDBNull(Row.Cells(8).Value) Then FlowResultsFiles = Row.Cells(8).Value
         If Not IsDBNull(Row.Cells(9).Value) Then RTCResultsFiles = Row.Cells(9).Value
@@ -3854,6 +3881,9 @@ Public Class frmStochasten
             'refresh the grid me.Setup.containing the runs (reads which runs have already been run)
             Setup.GeneralFunctions.UpdateProgressBar("Rebuilding the runs grid...", 6, 10, True)
             Call Setup.StochastenAnalyse.RefreshRunsGrid(grRuns, btnPostprocessing)
+
+            'finally enable the buttons that are allowed to be enabled, given the availability of results
+            EnableButtons()
 
             Setup.GeneralFunctions.UpdateProgressBar("Done.", 0, 10, True)
 
@@ -4937,6 +4967,44 @@ Public Class frmStochasten
         End If
     End Sub
 
+    Private Sub SumaquasHertogenboschToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SumaquasHertogenboschToolStripMenuItem.Click
+
+        Using cmd As New SQLite.SQLiteCommand
+            cmd.Connection = Me.Setup.SqliteCon
+            Me.Setup.SqliteCon.Open()
+
+            'first clear the table
+            Dim query As String = "DELETE FROM OUTPUTLOCATIONS;"
+            Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+
+            ' Assuming cmd is your SQLiteCommand object
+            Using transaction = Me.Setup.SqliteCon.BeginTransaction()
+                For i = 0 To 93
+                    cmd.CommandText = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, WP, ZP) VALUES (@locId, @locName, @modelId, @module, @modelPar, @resultsFile, @resultsType, @x, @y, @lat, @lon, @wp, @zp);"
+
+                    cmd.Parameters.Clear()
+                    cmd.Parameters.AddWithValue("@locId", (i + 1).ToString())
+                    cmd.Parameters.AddWithValue("@locName", (i + 1).ToString())
+                    cmd.Parameters.AddWithValue("@modelId", "1")
+                    cmd.Parameters.AddWithValue("@module", "FLOW1D")
+                    cmd.Parameters.AddWithValue("@modelPar", "water level")
+                    cmd.Parameters.AddWithValue("@resultsFile", "Output_TQ150HM.mat")
+                    cmd.Parameters.AddWithValue("@resultsType", "MAX")
+                    cmd.Parameters.AddWithValue("@x", 999)
+                    cmd.Parameters.AddWithValue("@y", 888)
+                    cmd.Parameters.AddWithValue("@lat", 9.999)
+                    cmd.Parameters.AddWithValue("@lon", 8.888)
+                    cmd.Parameters.AddWithValue("@wp", DBNull.Value)
+                    cmd.Parameters.AddWithValue("@zp", DBNull.Value)
+
+                    cmd.ExecuteNonQuery()
+                Next
+                transaction.Commit()
+            End Using
+        End Using
+        PopulateOutputLocationsGrid()
+    End Sub
+
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click
         Me.Setup.GeneralFunctions.UpdateProgressBar("Clearing data from table RESULTATEN", 0, 10, True)
         Dim query As String = "DELETE FROM RESULTATEN;"
@@ -5065,12 +5133,15 @@ Public Class frmStochasten
             'copy the results to the results directory
             If grRuns.SelectedRows.Count > 0 Then
                 If Not Me.Setup.StochastenAnalyse.Runs.CopyResultsFromSelected(grRuns, btnPostprocessing, chkRemoveSimulationAfterCopyingResultsFiles.Checked) Then
-                    MsgBox("Fouten bij het uitlezen van de geselecteerde runs. Controleer de logfile voor meldingen.")
+                    MsgBox("Fouten bij het kopieren van resultaten uit de geselecteerde runs. Controleer de logfile voor meldingen.")
                     Me.Setup.Log.write(Setup.StochastenAnalyse.ResultsDir & "\logfile.txt", True)
                 End If
             Else
                 MsgBox("Selecteer de rijen van de simulaties waarvan u de resultaten wilt kopiëren")
             End If
+
+            're-enable the buttons
+            EnableButtons()
 
             'afsluiten & logfile schrijven
             Dim logfile As String = Replace(Me.Setup.StochastenAnalyse.XMLFile, ".xml", ".log", , , Microsoft.VisualBasic.CompareMethod.Text)

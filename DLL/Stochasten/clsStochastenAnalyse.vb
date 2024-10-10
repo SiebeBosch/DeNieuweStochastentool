@@ -26,6 +26,7 @@ Imports System.Threading.Tasks
 Imports CsvHelper
 Imports CsvHelper.Configuration
 Imports System.Threading
+Imports DocumentFormat.OpenXml.Office2010.Excel
 
 
 'Imports Ionic.Zip
@@ -2977,6 +2978,8 @@ Public Class clsStochastenAnalyse
                             readHIS(myRun, myFile)
                         ElseIf Right(myFile.FileName, 7).ToLower = "_his.nc" Then
                             readHISNC(myRun, myFile)
+                        ElseIf Right(myFile.FileName, 4).ToLower = ".mat" Then
+                            readMAT(myRun, myFile)
                         End If
                     Next
                 Next
@@ -3049,85 +3052,36 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
-    'Public Function readHISNC(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
-    '    Try
-    '        Dim i As Long, n As Long, j As Long
-    '        Dim MaxInLastTimeStep As Boolean
-    '        Dim Min As Double, Max As Double, tsMin As Long, tsMax As Long, Avg As Double, mySum As Double
-    '        Dim dtRes As New DataTable
 
-    '        If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
-    '        Dim myHisNC As New clsHisNCFile(myRun.OutputFilesDir & "\" & myFile.FileName, Me.Setup)
+    Public Function readMAT(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
+        Try
+            If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+            Dim myMatFile As New clsSumaquaResultsMatFile(Me.Setup, myRun.OutputFilesDir & "\" & myFile.FileName)
 
-    '        If myFile.Parameters.Count = 0 Then
-    '            Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
-    '        Else
-    '            For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-    '                If myPar.Locations.Count = 0 Then
-    '                    Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-    '                Else
-    '                    '--------------------------------------------------------------------------------------------------------------------------------------------
-    '                    '  writing the results for this run & parameter to the database
-    '                    '--------------------------------------------------------------------------------------------------------------------------------------------
-    '                    Dim Waterlevels As Double(,) = Nothing
-    '                    Dim Times As Double() = Nothing            'timesteps, expressed in seconds w.r.t. RefDate as specified in the .MDU
-    '                    Dim IDList As String() = Nothing
-    '                    If Not myHisNC.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList) Then Throw New Exception("Error reading hisfile by parameter " & myPar.Name)
+            Dim Output As New Dictionary(Of String, clsSumaquaOutputLocationStatistics)
+            myMatFile.Read(Output)
 
-    '                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-    '                    Using myCmd As New SQLite.SQLiteCommand
-    '                        myCmd.Connection = Me.Setup.SqliteCon
-    '                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
+            Dim resultsList As New List(Of ResultItem)
 
-    '                            For i = 0 To IDList.Count - 1
-    '                                Dim ID As String = IDList(i)
+            'we need to define a parameter
+            For Each ID As String In Output.Keys
+                Dim result As New ResultItem()
+                result.LocationName = ID
+                result.Max = Output.Item(ID).Max
+                result.Min = Output.Item(ID).Min
+                result.Avg = Output.Item(ID).Mean
+                resultsList.Add(result)
+            Next
+            InsertResults(resultsList, myRun)
 
-    '                                If myPar.Locations.ContainsKey(ID.Trim.ToUpper) Then
-    '                                    Max = -9.0E+99
-    '                                    Min = 9.0E+99
-    '                                    mySum = 0
-    '                                    n = 0
 
-    '                                    For j = 0 To UBound(Waterlevels, 1)
-    '                                        If (j + 1) / (UBound(Waterlevels, 1) + 1) * 100 >= ResultsStartPercentage Then
-    '                                            n += 1
-    '                                            mySum += Waterlevels(j, i)
-    '                                            If Waterlevels(j, i) > Max Then
-    '                                                Max = Waterlevels(j, i)
-    '                                                tsMax = j
-    '                                                If j = UBound(Waterlevels, 1) Then MaxInLastTimeStep = True
-    '                                            End If
-    '                                            If Waterlevels(j, i) < Min Then
-    '                                                Min = Waterlevels(j, i)
-    '                                                tsMin = j
-    '                                            End If
-    '                                        End If
-    '                                    Next
-    '                                    Avg = mySum / n
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function readHIS of class clsStochastenAnalyse: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
-    '                                    'add the outcome of this run to the dictionary of results
-    '                                    myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myPar.Locations.Item(ID.Trim.ToUpper).Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-    '                                    myCmd.ExecuteNonQuery()
-    '                                    If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myPar.Locations.Item(ID.Trim.ToUpper).ID)
-
-    '                                End If
-    '                            Next
-
-    '                            'insert the resulta for all locations at once
-    '                            transaction.Commit() 'this is where the bulk insert is finally executed.
-    '                        End Using
-    '                    End Using
-
-    '                End If
-    '            Next
-    '        End If
-
-    '        Return True
-    '    Catch ex As Exception
-    '        Me.Setup.Log.AddError("Error in function readHISNC of class clsStochastenAnalyse: " & ex.Message)
-    '        Return False
-    '    End Try
-    'End Function
     Public Function readHISNC(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
         'this is the result of refactoring the code by Claude AI on 2024-06-27
         Try
@@ -4174,7 +4128,7 @@ Public Class clsStochastenAnalyse
     End Function
 
     Public Sub RefreshRunsGrid(ByRef myGrid As DataGridView, ByRef btnCharts As Button)
-        Dim RunID As String, Done As Boolean, AllComplete As Boolean
+        Dim RunID As String, Done As Boolean, AllResultsFilesPresent As Boolean
         Dim myRun As clsStochastenRun, myRow As DataGridViewRow
         Dim myModel As clsSimulationModel, myFile As clsResultsFile
         Dim i As Long = 0, n As Long = myGrid.Rows.Count
@@ -4183,9 +4137,9 @@ Public Class clsStochastenAnalyse
         Me.Setup.GeneralFunctions.UpdateProgressBar("Simulatieresultaten inventariseren.", 0, 10, True)
 
         'v2.3.5: auto-fill the first column
-        myGrid.Columns(0).AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader 'in the first column we display the run's unique ID so fill
-        myGrid.Columns(ColIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.None 'temporarily set the autosize mode for our column to none. This speeds up the routine below
-        AllComplete = True
+        'myGrid.Columns(0).AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader 'in the first column we display the run's unique ID so fill
+        'myGrid.Columns(ColIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.None 'temporarily set the autosize mode for our column to none. This speeds up the routine below
+        AllResultsFilesPresent = True
         For Each myRow In myGrid.Rows
             i += 1
             Me.Setup.GeneralFunctions.UpdateProgressBar("", i, n)
@@ -4198,23 +4152,34 @@ Public Class clsStochastenAnalyse
                 For Each myFile In myModel.ResultsFiles.Files.Values
                     If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then
                         Done = False
-                        AllComplete = False
+                        AllResultsFilesPresent = False
                         Exit For
                     End If
                 Next
             Next
             myRow.Cells(ColIdx).Value = Done
         Next
-        myGrid.Columns(ColIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+        'myGrid.Columns(ColIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
 
+        'set the column widths
+        myGrid.Columns("ID").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+        myGrid.Columns("DONE").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
+        myGrid.Columns("DONE").Width = 50 ' Adjust this value as needed
+        For Each column As DataGridViewColumn In myGrid.Columns
+            If column.Name <> "ID" And column.Name <> "DONE" Then
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+            End If
+        Next
         Me.Setup.GeneralFunctions.UpdateProgressBar("Inventarisatie gereed.", 1, 1, True)
-        If AllComplete Then
+        If AllResultsFilesPresent Then
             btnCharts.Enabled = True
         Else
+            'not all results files have been copied to the output directory yet. Disable the read Results button, the Chart button
             btnCharts.Enabled = False
         End If
 
     End Sub
+
 
 
     Public Function AssignMeteoStationNumbersFromHBVProject(ByRef myProject As clsHBVProject) As Boolean

@@ -616,7 +616,7 @@
     <Compile Include="Stochasten\frmClassifyGroundwaterHBV.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Sumaqua\clsMatFile.vb" />
+    <Compile Include="Sumaqua\clsSumaquaResultsMatFile.vb" />
     <Compile Include="Sumaqua\clsSumaquaOutputLocationStatistics.vb" />
     <Compile Include="Sumaqua\clsSumaquaProject.vb" />
     <Compile Include="Tijdreeksen\clsTijdreeksAnalyse.vb" />

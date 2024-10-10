@@ -905,9 +905,10 @@ Public Class clsStochastenRun
             End If
             '--------------------------------------------------------------------------------------------------------------------
 
-
+            Return True
         Catch ex As Exception
-
+            Me.Setup.Log.AddError("Error building Sumaqua model run: " & ex.Message)
+            Return False
         End Try
     End Function
 
@@ -1015,7 +1016,7 @@ Public Class clsStochastenRun
                     FileCopy(fromFile, toFile)
                     FileCopy(fromFile, toStochastDir)
                 Else
-                    Throw New Exception("Fout: bestand voor extra stochast niet gevonden niet: " & fromFile)
+                    Throw New Exception("Fout: bestand voor extra stochast niet gevonden: " & fromFile)
                 End If
 
             End While
