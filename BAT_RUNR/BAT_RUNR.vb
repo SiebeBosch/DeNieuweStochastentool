@@ -11,10 +11,10 @@ Module BAT_RUNR
         Console.WriteLine("Running simulations")
 
         If args.Length < 2 Then
-            Console.WriteLine("This application runs a series of simulations using multithreading (parallel)")
+            Console.WriteLine("This application runs a series of simulations using multithreading (parallel).")
             Console.WriteLine("Please provide a path to a simulations file. Each line in the simulations file should refer to a .bat or .exe file, followed by a space and its arguments.")
-            Console.WriteLine("E.g. ""C:\temp\Bommel\STOWA2014_HUIDIG_winter_MIDDELNAT_MIDDELHOOG_140mm\run.bat.""")
-            Console.WriteLine("The second argument is the maximum number of concurrent simulations, e.g. 4.")
+            Console.WriteLine("E.g., ""C:\temp\Bommel\STOWA2014_HUIDIG_winter_MIDDELNAT_MIDDELHOOG_140mm\run.bat""")
+            Console.WriteLine("The second argument is the maximum number of concurrent simulations, e.g., 4.")
             Console.WriteLine("Usage: BAT_RUNR.exe [SimulationsFile] [MaxConcurrentSimulations]")
 
             Console.WriteLine("Please enter the path to a simulations file:")
@@ -34,30 +34,23 @@ Module BAT_RUNR
             Exit Sub
         End If
 
-        'set the current working directory equal to the directory of the simulations file
-        Directory.SetCurrentDirectory(GetDirFromPath(simulationsFile))
-
         ' Initialize the semaphore with the maximum number of concurrent simulations
         semaphore = New Semaphore(maxConcurrentSimulations, maxConcurrentSimulations)
 
         Dim simulations As String() = File.ReadAllLines(simulationsFile)
         Dim threads As New List(Of Thread)
         For Each simulation In simulations
-
-            'first distinguish any arguments from the path
+            ' Parse the simulation string into path and arguments
             Dim simulationParts = ParseSimulationString(simulation)
 
             Dim thread As New Thread(Sub()
-                                         ' Combine the current directory with the path
-                                         Dim fullPath As String = System.IO.Path.Combine(Directory.GetCurrentDirectory(), simulationParts.path)
-
-                                         ' Run the simulation with the full path and arguments
+                                         ' Combine the simulations file directory with the simulation path
+                                         Dim fullPath As String = Path.Combine(Path.GetDirectoryName(simulationsFile), simulationParts.path)
                                          RunSimulation(fullPath, simulationParts.arguments)
                                      End Sub)
             thread.Start()
             threads.Add(thread)
         Next
-
 
         ' Wait for all threads to complete
         For Each thread In threads
@@ -71,17 +64,13 @@ Module BAT_RUNR
         Dim path As String = String.Empty
         Dim arguments As String = String.Empty
 
-        ' Check if the simulation string is enclosed in quotes
         If simulation.StartsWith(ControlChars.Quote) AndAlso simulation.Contains(ControlChars.Quote) Then
-            ' Find the ending quote of the path
             Dim endQuoteIndex As Integer = simulation.IndexOf(ControlChars.Quote, 1)
             If endQuoteIndex <> -1 Then
-                ' Extract the path and subsequent arguments
                 path = simulation.Substring(1, endQuoteIndex - 1)
                 arguments = simulation.Substring(endQuoteIndex + 1).Trim()
             End If
         Else
-            ' If not enclosed in quotes, split normally
             Dim parts() As String = simulation.Split(New Char() {" "c}, 2)
             path = parts(0)
             arguments = If(parts.Length > 1, parts(1), String.Empty)
@@ -90,55 +79,54 @@ Module BAT_RUNR
         Return (path, arguments)
     End Function
 
-
     Sub RunSimulation(filePath As String, arguments As String)
-        semaphore.WaitOne() ' Acquire the semaphore
+        semaphore.WaitOne()
 
         Try
-            Dim workingDirectory As String = GetDirFromPath(filePath)
+            Dim workingDirectory As String = Path.GetDirectoryName(filePath)
 
             If Not File.Exists(filePath) Then
                 Console.WriteLine("File not found: " & filePath)
                 Return
             End If
 
-            If Not Directory.Exists(workingDirectory) Then
+            If String.IsNullOrEmpty(workingDirectory) OrElse Not Directory.Exists(workingDirectory) Then
                 Console.WriteLine("Working directory not found: " & workingDirectory)
                 Return
             End If
 
+            Console.WriteLine($"Starting simulation: {filePath} in directory {workingDirectory}")
 
-            ' Adding feedback about the simulation start
-            Console.WriteLine("Starting simulation: " & filePath)
+            Dim process As New Process()
+            process.StartInfo = New ProcessStartInfo() With {
+                .FileName = filePath,
+                .Arguments = arguments,
+                .WorkingDirectory = workingDirectory,
+                .UseShellExecute = False,
+                .CreateNoWindow = True,
+                .RedirectStandardOutput = True,
+                .RedirectStandardError = True
+            }
 
-            Dim process As New Process
-            process.StartInfo.FileName = filePath
-            process.StartInfo.Arguments = arguments
-            process.StartInfo.WorkingDirectory = workingDirectory
-            process.StartInfo.UseShellExecute = True
-            process.StartInfo.CreateNoWindow = False
             process.Start()
+
+            Dim output As String = process.StandardOutput.ReadToEnd()
+            Dim errorOutput As String = process.StandardError.ReadToEnd()
             process.WaitForExit()
 
-            ' Adding feedback about the simulation completion
-            Console.WriteLine("Completed simulation: " & filePath)
+            If process.ExitCode = 0 Then
+                Console.WriteLine($"Completed simulation: {filePath}")
+            Else
+                Console.WriteLine($"Simulation failed: {filePath} with exit code {process.ExitCode}")
+                If Not String.IsNullOrWhiteSpace(errorOutput) Then
+                    Console.WriteLine($"Error: {errorOutput}")
+                End If
+            End If
+
+        Catch ex As Exception
+            Console.WriteLine($"Error running simulation {filePath}: {ex.Message}")
         Finally
-            semaphore.Release() ' Release the semaphore
+            semaphore.Release()
         End Try
     End Sub
-
-
-    ' Function to remove extra quotes from a path
-    Function RemoveQuotes(path As String) As String
-        Return path.Trim(ControlChars.Quote)
-    End Function
-
-    Friend Function GetDirFromPath(ByVal path As String) As String
-        Try
-            Return path.Substring(0, path.LastIndexOf("\") + 1)
-        Catch ex As Exception
-            Return ""
-        End Try
-    End Function
-
 End Module

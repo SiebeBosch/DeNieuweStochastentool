@@ -1080,7 +1080,7 @@ Public Class clsGISData
                         Return -1
                     End If
                 Else
-                    Me.setup.Log.AddError("Shapefile does not exist: " & Path)
+                    Me.setup.Log.AddWarning("Shapefile does not exist: " & Path)
                     Return -1
                 End If
             End If
@@ -1133,7 +1133,7 @@ Public Class clsGISData
                     Return Nothing
                 End If
             Else
-                Me.setup.Log.AddError("Shapefile does not exist: " & Path)
+                Me.setup.Log.AddWarning("Shapefile does not exist: " & Path)
                 Return Nothing
             End If
         Catch ex As Exception

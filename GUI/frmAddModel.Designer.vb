@@ -47,15 +47,16 @@ Partial Class frmAddModel
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.lblProgress = New System.Windows.Forms.Label()
+        Me.hlpAddModel = New System.Windows.Forms.Button()
         Me.SuspendLayout()
         '
         'btnAdd
         '
         Me.btnAdd.DialogResult = System.Windows.Forms.DialogResult.OK
-        Me.btnAdd.Location = New System.Drawing.Point(566, 258)
+        Me.btnAdd.Location = New System.Drawing.Point(535, 270)
         Me.btnAdd.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnAdd.Name = "btnAdd"
-        Me.btnAdd.Size = New System.Drawing.Size(129, 57)
+        Me.btnAdd.Size = New System.Drawing.Size(108, 44)
         Me.btnAdd.TabIndex = 0
         Me.btnAdd.Text = "Add"
         Me.btnAdd.UseVisualStyleBackColor = True
@@ -233,7 +234,7 @@ Partial Class frmAddModel
         Me.prProgress.Location = New System.Drawing.Point(26, 296)
         Me.prProgress.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.prProgress.Name = "prProgress"
-        Me.prProgress.Size = New System.Drawing.Size(524, 18)
+        Me.prProgress.Size = New System.Drawing.Size(503, 18)
         Me.prProgress.TabIndex = 24
         '
         'lblProgress
@@ -245,11 +246,23 @@ Partial Class frmAddModel
         Me.lblProgress.TabIndex = 25
         Me.lblProgress.Text = "Progress:"
         '
+        'hlpAddModel
+        '
+        Me.hlpAddModel.BackColor = System.Drawing.Color.Gold
+        Me.hlpAddModel.Location = New System.Drawing.Point(649, 270)
+        Me.hlpAddModel.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.hlpAddModel.Name = "hlpAddModel"
+        Me.hlpAddModel.Size = New System.Drawing.Size(46, 44)
+        Me.hlpAddModel.TabIndex = 26
+        Me.hlpAddModel.Text = "?"
+        Me.hlpAddModel.UseVisualStyleBackColor = False
+        '
         'frmAddModel
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(711, 334)
+        Me.Controls.Add(Me.hlpAddModel)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.btnWorkdir)
@@ -305,4 +318,5 @@ Partial Class frmAddModel
     Friend WithEvents dlgOpenFile As OpenFileDialog
     Friend WithEvents prProgress As ProgressBar
     Friend WithEvents lblProgress As Label
+    Friend WithEvents hlpAddModel As Button
 End Class

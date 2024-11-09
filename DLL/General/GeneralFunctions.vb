@@ -19,7 +19,11 @@ Public Class GeneralFunctions
     Private setup As clsSetup
     Public unitConversion As clsUnitConversion
 
-
+    Public Enum enmErrorLevel
+        _Error = 0
+        _Warning = 1
+        _Message = 2
+    End Enum
 
     Structure StrTimeSeries
         Public ID As String
@@ -419,6 +423,16 @@ Public Class GeneralFunctions
         grid = 3
     End Enum
 
+    Public Enum enm1DParameter
+        unknown = 0
+        waterlevel = 1
+        depth = 2
+        velocity = 3
+        discharge = 4
+        crest_level = 5
+        gate_height = 6
+        volume = 7
+    End Enum
     Public Enum enm2DParameter
         depth = 0
         waterlevel = 1
@@ -6017,7 +6031,7 @@ Public Class GeneralFunctions
             Dim lat As Double, lon As Double
             Dim query As String
 
-            If Not System.IO.File.Exists(ShapeFile) Then Throw New Exception("Error: shapefile does not exist: " & ShapeFile)
+            If Not System.IO.File.Exists(ShapeFile) Then Throw New Exception("Shapefile does not exist: " & ShapeFile)
             If Not sf.Open(ShapeFile) Then Throw New Exception("Error: could not open shapefile: " & ShapeFile)
             UpdateProgressBar("Writing shapes to database...", 0, 10)
 
@@ -7436,15 +7450,15 @@ Public Class GeneralFunctions
         End Try
     End Function
 
-    Public Function PopulateComboBoxShapeFields(ByVal ShapeFilePath As String, ByRef cmb As System.Windows.Forms.ComboBox, Optional ByVal PreSelect As String = "") As Boolean
+    Public Function PopulateComboBoxShapeFields(ByVal ShapeFilePath As String, ByRef cmb As System.Windows.Forms.ComboBox, ErrorLevel As enmErrorLevel, Optional ByVal PreSelect As String = "") As Boolean
         Try
             Dim mySF As New MapWinGIS.Shapefile
             Dim myField As String, i As Integer
             'first clear the combobox
             cmb.Items.Clear()
-            If Not System.IO.File.Exists(ShapeFilePath) Then Throw New Exception("Error: shapefile does not exist: " & ShapeFilePath)
+            If Not System.IO.File.Exists(ShapeFilePath) Then Throw New Exception("Shapefile does not exist: " & ShapeFilePath)
             If mySF.Open(ShapeFilePath) Then
-                If mySF.NumFields = 0 Then Throw New Exception("Error: shapefile does not contain any fields: " & ShapeFilePath)
+                If mySF.NumFields = 0 Then Throw New Exception("Shapefile does not contain any fields: " & ShapeFilePath)
                 cmb.Items.Add("")       'add an empty field so the user can deselect any previous selection in the GUI
                 For i = 0 To mySF.NumFields - 1
                     myField = mySF.Field(i).Name.Trim.ToUpper  'siebe: made case insensitive.
@@ -7454,12 +7468,19 @@ Public Class GeneralFunctions
                 For Each myField In cmb.Items
                     If myField.Trim.ToUpper = PreSelect.Trim.ToUpper Then cmb.SelectedItem = myField
                 Next
+
                 mySF.Close()
             End If
             Return True
         Catch ex As Exception
-            Me.setup.Log.AddError(ex.Message)
-            Me.setup.Log.AddError("Error in function PopulateComboBoxShapeFields while processing " & ShapeFilePath)
+            Select Case ErrorLevel
+                Case enmErrorLevel._Error
+                    Me.setup.Log.AddError("Error in function PopulateComboBoxShapeFields while processing " & ShapeFilePath & ": " & ex.Message)
+                Case enmErrorLevel._Warning
+                    Me.setup.Log.AddWarning("Warning in function PopulateComboBoxShapeFields while processing " & ShapeFilePath & ": " & ex.Message)
+                Case enmErrorLevel._Message
+                    Me.setup.Log.AddMessage("Message from function PopulateComboBoxShapeFields while processing " & ShapeFilePath & ": " & ex.Message)
+            End Select
             Return False
         End Try
     End Function

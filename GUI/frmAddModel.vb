@@ -82,4 +82,13 @@ Public Class frmAddModel
         cmbModelType.Items.Clear()
         Me.Setup.GeneralFunctions.PopulateComboBoxColumnWithEnumNames(cmbModelType, GetType(STOCHLIB.GeneralFunctions.enmSimulationModel))
     End Sub
+
+    Private Sub hlpAddModel_Click(sender As Object, e As EventArgs) Handles hlpAddModel.Click
+        openhelplink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/models.html#modelschematisatie-toevoegen")
+    End Sub
+
+    Public Sub OpenHelpLink(url As String)
+        Process.Start(New ProcessStartInfo(url) With {.UseShellExecute = True})
+    End Sub
+
 End Class

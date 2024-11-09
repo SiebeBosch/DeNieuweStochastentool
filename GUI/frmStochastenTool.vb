@@ -158,7 +158,7 @@ Public Class frmStochasten
     End Sub
 
 
-    Public Function EnableButtons() As Boolean
+    Public Function EnableButtons(ForceAllTrue As Boolean) As Boolean
         Try
             'this function enables/disables buttons, based on whether results are available
 
@@ -171,11 +171,19 @@ Public Class frmStochasten
                 End If
             Next
 
-            'if all results files are present, enable the buttons for uitlezen, postprocessing, export and viewer
-            btnUitlezen.Enabled = AllResultsFilesPresent
-            btnPostprocessing.Enabled = AllResultsFilesPresent
-            btnViewer.Enabled = AllResultsFilesPresent
-            btnExport.Enabled = AllResultsFilesPresent
+            If ForceAllTrue Then
+                btnUitlezen.Enabled = True
+                btnPostprocessing.Enabled = True
+                btnViewer.Enabled = True
+                btnExport.Enabled = True
+            Else
+                'if all results files are present, enable the buttons for uitlezen, postprocessing, export and viewer
+                btnUitlezen.Enabled = AllResultsFilesPresent
+                btnPostprocessing.Enabled = AllResultsFilesPresent
+                btnViewer.Enabled = AllResultsFilesPresent
+                btnExport.Enabled = AllResultsFilesPresent
+            End If
+
 
             Return True
         Catch ex As Exception
@@ -186,6 +194,9 @@ Public Class frmStochasten
     End Function
 
     Private Sub btnBuild_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnBuild.Click
+
+        'clear the log
+        Me.Setup.Log.Clear()
 
         'make sure to accept crashed results if specified
         Me.Setup.StochastenAnalyse.AllowCrashedResults = chkUseCrashedResults.Checked
@@ -486,14 +497,14 @@ Public Class frmStochasten
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
             'populate the grid me.Setup.containing meteo stations
-            query = "SELECT LOCATIEID,MODELID,MODULE,MODELPAR,RESULTSFILE,RESULTSTYPE,X,Y,LAT,LON,ZP,WP FROM OUTPUTLOCATIONS;"
+            query = "SELECT LOCATIEID,LOCATIENAAM, MODELID,MODULE,MODELPAR,RESULTSFILE,RESULTSTYPE,X,Y,LAT,LON,ZP,WP FROM OUTPUTLOCATIONS;"
             da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
             grOutputLocations.DataSource = dt
 
-            'v2.3.5: auto resize column for locationID
+            'v2.3.5: auto resize column for locationNaam and LoCATIEID
             For colIdx As Integer = 0 To dt.Columns.Count - 1
-                If dt.Columns(colIdx).ColumnName = "LOCATIEID" Then
+                If dt.Columns(colIdx).ColumnName = "LOCATIEID" OrElse dt.Columns(colIdx).ColumnName = "LOCATIENAAM" Then
                     grOutputLocations.Columns(colIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill 'ID of outputlocation
                 End If
             Next
@@ -854,8 +865,8 @@ Public Class frmStochasten
 
     Public Sub PopulateSubCatchmentComboBoxes()
         'populate the comboboxes
-        Call Setup.GeneralFunctions.PopulateComboBoxShapeFields(Me.Setup.StochastenAnalyse.SubcatchmentShapefile, cmbWinterpeil)
-        Call Setup.GeneralFunctions.PopulateComboBoxShapeFields(Me.Setup.StochastenAnalyse.SubcatchmentShapefile, cmbZomerpeil)
+        Call Setup.GeneralFunctions.PopulateComboBoxShapeFields(Me.Setup.StochastenAnalyse.SubcatchmentShapefile, cmbWinterpeil, enmErrorLevel._Message)
+        Call Setup.GeneralFunctions.PopulateComboBoxShapeFields(Me.Setup.StochastenAnalyse.SubcatchmentShapefile, cmbZomerpeil, enmErrorLevel._Message)
     End Sub
 
     Private Sub SaveXMLToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles SaveXMLToolStripMenuItem.Click
@@ -3794,6 +3805,9 @@ Public Class frmStochasten
 
     Private Sub BtnPopulateRuns_Click(sender As Object, e As EventArgs) Handles btnPopulateRuns.Click
         Try
+            'clear the log
+            Me.Setup.Log.Clear()
+
             'sluit de databaseconnectie
             If Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Close()
             If Not System.IO.Directory.Exists(Setup.StochastenAnalyse.ResultsDir) Then System.IO.Directory.CreateDirectory(Setup.StochastenAnalyse.ResultsDir)
@@ -3883,7 +3897,7 @@ Public Class frmStochasten
             Call Setup.StochastenAnalyse.RefreshRunsGrid(grRuns, btnPostprocessing)
 
             'finally enable the buttons that are allowed to be enabled, given the availability of results
-            EnableButtons()
+            EnableButtons(True)
 
             Setup.GeneralFunctions.UpdateProgressBar("Done.", 0, 10, True)
 
@@ -4585,8 +4599,8 @@ Public Class frmStochasten
         dlgOpenFile.Filter = "ESRI Shapefile|*.shp"
         dlgOpenFile.ShowDialog()
         txtPeilgebieden.Text = dlgOpenFile.FileName
-        Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtPeilgebieden.Text, cmbWinterpeil)
-        Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtPeilgebieden.Text, cmbZomerpeil)
+        Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtPeilgebieden.Text, cmbWinterpeil, enmErrorLevel._Message)
+        Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtPeilgebieden.Text, cmbZomerpeil, enmErrorLevel._Message)
     End Sub
 
     Private Sub SaveXMLToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles SaveXMLToolStripMenuItem1.Click
@@ -4953,9 +4967,14 @@ Public Class frmStochasten
     End Sub
 
     Private Sub hlpExtraFiles_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpExtraFiles.LinkClicked
-        Dim url As String = "https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#map-met-extra-bestanden-per-simulatie"
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#map-met-extra-bestanden-per-simulatie")
+    End Sub
+
+    Public Sub OpenHelpLink(url As String)
         Process.Start(New ProcessStartInfo(url) With {.UseShellExecute = True})
     End Sub
+
+
 
     Private Sub grSeizoenen_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles grSeizoenen.CellContentClick
 
@@ -4972,15 +4991,27 @@ Public Class frmStochasten
 
     Private Sub SumaquasHertogenboschToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SumaquasHertogenboschToolStripMenuItem.Click
 
-        'first we create a dictionary of integer, string where the key is the column index in the .mat file
-
-        Dim locations As New Dictionary(Of Integer, String)
+        'first we create a dictionary of integer, strLocation where the key is the column index in the .mat file
+        Dim locations As New Dictionary(Of Integer, strLocation)
 
         ' Split the data into an array of names
         ' Create the dictionary using LINQ
         Dim data As String = "Volume_1D Polygoon17;Volume_1D Polygoon23;Volume_1D Polygoon26;Volume_2D Polygoon17;Volume_2D Polygoon23;Volume_2D Polygoon26;Volume1D+Volume_2D Polygoon18;Volume1D+Volume_2D Polygoon19;Volume1D+Volume_2D Polygoon21;Volume1D+Volume_2D Polygoon22;Volume1D+Volume_2D Polygoon24;Volume1D+Volume_2D Polygoon25;Volume1D+Volume_2D Polygoon27;Q_HS AM_Inlaat_WB_DynBeekdal01;Q_HS AM_Inlaat_WB_DynBeekdal02;Q_HS AM_Inlaat_WB_DynBeekdal03;Q_HS inlaat_BBN;Q_HS inlaat_BBZ;Q_HS AM_Normaalregeling_RosmalenseAa;Q_HS AM_INLAAT_HOWABO;Q_HS AM_S116HDW;Q_HS WST_Weir_DO1_st3;Q_HS AM_Crev_Stuw;Q_HS AM_Crev_onderspuier;Q_HS afsluitstuw_BBZ;Q_HS pomp;Q_HS pomp19_21;WL node_ADM_Bossche_Broek;WL node_3686;WL node_3911;WL node_4045;WL node_meas_BBZ;WL node_WST_MS_DO1_st3;WL node_1122;WL node_2728;WL node_AM_mp_VG;WL node_AM_mp_VG3;WL node_AM_mp_VG2;WL node_2316;WL node_AM_M116HDW;WL node_1561;WL node_4036;WL node_4038;WL node_1032;WL node_AM_Crev_boven;WL node_1033;WL node_3813;WL node_3767;WL node_3723;WL node_4002;WL node_4040;WL node_3979;WL node_meas_BBN;WL node_143;WL node_2639;WL node_1837;WL node_4052;WL node_2736;WL node_995;WL node_991;WL node_2499;WL node_985;WL node_AM_Crev_beneden;WL node_2317;WL node_1034;Q_1D2D Polygoon17;Q_1D2D Polygoon23;Q_1D2D Polygoon26;link1D1D_17_19;link1D1D_18_21;link1D1D_23_26;link1D1D_24_27;link1D1D_19_23;Q2d2d_1918;Q2d2d_2423;Q2d2d_2327;Q2d2d_1821;Outfall edge 923;Outfall edge 1598;Outfall edge 986;Outfall edge 2281;GL AM_INLAAT_HOWABO;GL AM_S116HDW;GL AM_Crev_Stuw;GL AM_Crev_onderspuier;GL WST_Weir_DO1_st3;GL inlaat_BBN;GL inlaat_BBZ;GL afsluitstuw_BBZ;GL AM_Inlaat_WB_DynBeekdal01;GL AM_Inlaat_WB_DynBeekdal02;GL AM_Inlaat_WB_DynBeekdal03;GL AM_Normaalregeling_RosmalenseAa;Glel AM_Crev_onderspuier"
         Dim names As String() = data.Split({";"c}, StringSplitOptions.RemoveEmptyEntries)
-        Dim dict As Dictionary(Of Integer, String) = names.Select(Function(name, index) New With {Key .Key = index, Key .Value = name}).ToDictionary(Function(x) x.Key, Function(x) x.Value)
+        locations = names.Select(Function(name, index) New With {Key .Key = index, Key .Value = New strLocation With {.Name = name, .Parameter = enm1DParameter.unknown}}).ToDictionary(Function(x) x.Key, Function(x) x.Value)
+
+        For Each myID As Integer In locations.Keys
+            If locations(myID).Name.ToLower.Contains("volume") Then
+                locations(myID).Parameter = enm1DParameter.volume
+            ElseIf locations(myID).Name.ToLower.Contains("wl") Then
+                locations(myID).Parameter = enm1DParameter.waterlevel
+            ElseIf locations(myID).Name.ToLower.Contains("q") Then
+                locations(myID).Parameter = enm1DParameter.discharge
+            Else
+                locations(myID).Parameter = enm1DParameter.unknown
+            End If
+        Next
+
 
         Using cmd As New SQLite.SQLiteCommand
             cmd.Connection = Me.Setup.SqliteCon
@@ -4998,7 +5029,8 @@ Public Class frmStochasten
                     Dim Y As Double = 407503 - 10 * i
                     Dim Lat As Double
                     Dim Lon As Double
-                    Dim Name As String = dict.Item(i)
+                    Dim Name As String = locations(i).Name
+                    Dim Par As String = locations(i).Parameter.ToString
 
                     Me.Setup.GeneralFunctions.RD2WGS84(X, Y, Lat, Lon)
 
@@ -5009,7 +5041,7 @@ Public Class frmStochasten
                     cmd.Parameters.AddWithValue("@locName", Name)
                     cmd.Parameters.AddWithValue("@modelId", "1")
                     cmd.Parameters.AddWithValue("@module", "FLOW1D")
-                    cmd.Parameters.AddWithValue("@modelPar", "water level")
+                    cmd.Parameters.AddWithValue("@modelPar", Par)
                     cmd.Parameters.AddWithValue("@resultsFile", "Output_TQ150HM.mat")
                     cmd.Parameters.AddWithValue("@resultsType", "MAX")
                     cmd.Parameters.AddWithValue("@x", X)
@@ -5025,6 +5057,58 @@ Public Class frmStochasten
             End Using
         End Using
         PopulateOutputLocationsGrid()
+    End Sub
+
+    Private Sub hlpUitvoermap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpUitvoermap.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#uitvoermap")
+    End Sub
+
+    Private Sub hlpInvoermap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpInvoermap.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#invoermap")
+    End Sub
+
+    Private Sub hlpResultatenmap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpResultatenmap.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#resultatenmap")
+    End Sub
+
+    Private Sub hlpDatabase_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpDatabase.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#database")
+    End Sub
+
+    Private Sub hlpShapefilePeilgebieden_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpShapefilePeilgebieden.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#shapefile-peilgebieden")
+    End Sub
+
+    Private Sub hlpVeldWinterpeil_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpVeldWinterpeil.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#veld-winterpeil-en-veld-zomerpeil")
+    End Sub
+
+    Private Sub hlpVeldZomerpeil_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpVeldZomerpeil.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#veld-winterpeil-en-veld-zomerpeil")
+    End Sub
+
+    Private Sub hlpMeteo_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpMeteo.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#meteo")
+    End Sub
+
+    Private Sub hlpBerekeningen_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpBerekeningen.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#berekeningen")
+    End Sub
+
+    Private Sub hlpOutput_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpOutput.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#output")
+    End Sub
+
+    Private Sub hlpNabewerking_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpNabewerking.LinkClicked
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#nabewerking")
+    End Sub
+
+    Private Sub hlpModellen_Click(sender As Object, e As EventArgs) Handles hlpModellen.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/models.html")
+    End Sub
+
+    Private Sub hlpSeizoenen_Click(sender As Object, e As EventArgs) Handles hlpSeizoenen.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/seizoenen.html")
     End Sub
 
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click
@@ -5129,6 +5213,7 @@ Public Class frmStochasten
 
     Private Sub btnCopyResults_Click(sender As Object, e As EventArgs) Handles btnCopyResults.Click
         Try
+            Dim ShowLog As Boolean = True
 
             'make sure to accept crashed results if specified
             Me.Setup.StochastenAnalyse.AllowCrashedResults = chkUseCrashedResults.Checked
@@ -5160,15 +5245,16 @@ Public Class frmStochasten
                 End If
             Else
                 MsgBox("Selecteer de rijen van de simulaties waarvan u de resultaten wilt kopiëren")
+                ShowLog = False
             End If
 
             're-enable the buttons
-            EnableButtons()
+            EnableButtons(True)
 
             'afsluiten & logfile schrijven
             Dim logfile As String = Replace(Me.Setup.StochastenAnalyse.XMLFile, ".xml", ".log", , , Microsoft.VisualBasic.CompareMethod.Text)
             Me.Setup.GeneralFunctions.UpdateProgressBar("klaar.", 0, 10, True)
-            Me.Setup.Log.write(Me.Setup.Settings.RootDir & "\" & logfile, True)
+            Me.Setup.Log.write(Me.Setup.Settings.RootDir & "\" & logfile, ShowLog)
 
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function btnCopyResults: " & ex.Message)
@@ -5268,3 +5354,7 @@ Public Class frmStochasten
 
 End Class
 
+Public Class strLocation
+    Public Property Name As String
+    Public Property Parameter As GeneralFunctions.enm1DParameter
+End Class

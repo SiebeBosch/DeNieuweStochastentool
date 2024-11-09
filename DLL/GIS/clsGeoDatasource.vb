@@ -1245,7 +1245,7 @@ Public Class clsGeoDatasource
             'start with the fields from the primary datasource
             Select Case PrimaryDataSource
                 Case GeneralFunctions.enmGeoDataSource.Shapefile
-                    If Shapefile.sf.NumFields = 0 Then Throw New Exception("Error: shapefile does not contain any fields: " & Shapefile.Path)
+                    If Shapefile.sf.NumFields = 0 Then Throw New Exception("Shapefile does not contain any fields: " & Shapefile.Path)
                     myCol.Items.Add("") 'v2.105: always add the possibility to select an empty value
                     For i = 0 To Shapefile.sf.NumFields - 1
                         myCol.Items.Add(Shapefile.sf.Field(i).Name.Trim.ToUpper)
@@ -1288,7 +1288,7 @@ Public Class clsGeoDatasource
             'start with the fields from the primary datasource
             Select Case PrimaryDataSource
                 Case GeneralFunctions.enmGeoDataSource.Shapefile
-                    If Shapefile.sf.NumFields = 0 Then Throw New Exception("Error: shapefile does not contain any fields: " & Shapefile.Path)
+                    If Shapefile.sf.NumFields = 0 Then Throw New Exception("Shapefile does not contain any fields: " & Shapefile.Path)
                     For i = 0 To Shapefile.sf.NumFields - 1
                         cmb.Items.Add(Shapefile.sf.Field(i).Name.Trim.ToUpper)
                     Next

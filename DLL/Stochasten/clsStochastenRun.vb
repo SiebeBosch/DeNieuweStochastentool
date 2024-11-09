@@ -323,13 +323,13 @@ Public Class clsStochastenRun
                 'Me.Setup.GeneralFunctions.DatabaseWriteLockFile(Me.Setup.StochastenAnalyse.StochastsConfigFile, ID)
 
                 If myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.DIMR Then
-                    BuildDIMRModelRun(myModel, runDir, runIdx, nRuns)
+                    If Not BuildDIMRModelRun(myModel, runDir, runIdx, nRuns) Then Me.Setup.Log.AddError("Unable to build run in " & runDir & ". Skipping.")
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SOBEK Then
-                    BuildSobekModelRun(myModel, runDir)
+                    If BuildSobekModelRun(myModel, runDir) Then Me.Setup.Log.AddError("Unable to build run in " & runDir & ". Skipping.")
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.HBV Then
-                    BuildHBVModelRun(myModel, myModel.TempWorkDir, runDir, ID)
+                    If Not BuildHBVModelRun(myModel, myModel.TempWorkDir, runDir, ID) Then Me.Setup.Log.AddError("Unable to build run in " & runDir & ". Skipping.")
                 ElseIf myModel.ModelType = STOCHLIB.GeneralFunctions.enmSimulationModel.SUMAQUA Then
-                    BuildSumaquaModelRun(myModel, runDir)
+                    If Not BuildSumaquaModelRun(myModel, runDir) Then Me.Setup.Log.AddError("Unable to build run in " & runDir & ". Skipping.")
                 End If
 
                 If System.IO.Directory.Exists(ExtraModelInputFilesDir) Then
@@ -421,17 +421,17 @@ Public Class clsStochastenRun
                 'copy the groundwater file(s)
                 '--------------------------------------------------------------------------------------------------------------------
                 If GWClass IsNot Nothing Then
-                    If GWClass.RRFiles.Count > 0 Then
+                    If GWClass.RRFiles IsNot Nothing AndAlso GWClass.RRFiles.Count > 0 Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RRFiles, Me.Setup.DIMRData.DIMRConfig.RR.SubDir) Then Throw New Exception($"Fout bij het kopieren van de grondwaterbestanden {GWClass.RRFiles}")
                     End If
-                    If GWClass.RRFiles.Count > 0 Then
+                    If GWClass.FlowFiles IsNot Nothing AndAlso GWClass.FlowFiles.Count > 0 Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.FlowFiles, Me.Setup.DIMRData.DIMRConfig.Flow1D.SubDir) Then Throw New Exception($"Fout bij het kopieren van de grondwaterbestanden {GWClass.FlowFiles}")
                     End If
-                    If GWClass.RRFiles.Count > 0 Then
+                    If GWClass.RTCFiles IsNot Nothing AndAlso GWClass.RTCFiles.Count > 0 Then
                         Setup.GeneralFunctions.UpdateProgressBar("Copying the groundwater file.", 0, 10, True)
-                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception("Fout bij het kopieren van het grondwaterbestand.")
+                        If Not CopyGroundwaterFiles(myModel, runDir, GWClass.RTCFiles, Me.Setup.DIMRData.DIMRConfig.RTC.SubDir) Then Throw New Exception($"Fout bij het kopieren van de grondwaterbestanden {GWClass.RTCFiles}")
                     End If
                 End If
                 '--------------------------------------------------------------------------------------------------------------------
@@ -1001,6 +1001,10 @@ Public Class clsStochastenRun
                 fromFile = Setup.GeneralFunctions.ParseString(ExtraFiles, ";")
                 fromFile = Me.Setup.GeneralFunctions.RelativeToAbsolutePath(fromFile, Me.Setup.Settings.RootDir)
 
+                If Not System.IO.File.Exists(fromFile) Then
+                    Throw New Exception("Fout: bestand voor extra stochast niet gevonden: " & fromFile)
+                End If
+
                 If myModel.ModelType = enmSimulationModel.SOBEK Then
                     toFile = RunDir & "\WORK\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
                 ElseIf myModel.ModelType = enmSimulationModel.DIMR Then
@@ -1011,18 +1015,16 @@ Public Class clsStochastenRun
                     Throw New Exception("Kan invoerbestand " & fromFile & " niet naar het doelmodel kopieren omdat het modeltype niet wordt ondersteund voor de onderhavige stochast: " & myModel.ModelType.ToString)
                 End If
 
+                Me.Setup.Log.AddMessage($"Copying file for extra stochast from {fromFile} to {toFile}...")
+
                 toStochastDir = InputFilesDir & "\" & Setup.GeneralFunctions.FileNameFromPath(fromFile)
-                If File.Exists(fromFile) Then
-                    FileCopy(fromFile, toFile)
-                    FileCopy(fromFile, toStochastDir)
-                Else
-                    Throw New Exception("Fout: bestand voor extra stochast niet gevonden: " & fromFile)
-                End If
+                FileCopy(fromFile, toFile)
+                FileCopy(fromFile, toStochastDir)
 
             End While
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.AddError("Error in function CopyExtraFiles: " & ex.Message)
             Return False
         End Try
 

@@ -1,7 +1,8 @@
 {
   "profiles": {
     "BAT_RUNR": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "c:\\temp\\JOS\\simulations.txt 4"
     }
   }
 }

@@ -19,8 +19,8 @@ Public Class frmAddDataFromCSVToShapefile
         Dim Result As DialogResult = dlgOpenFile.ShowDialog
         If Result = Windows.Forms.DialogResult.OK Then
             txtSF.Text = dlgOpenFile.FileName
-            Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtSF.Text, cmbIDField)
-            Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtSF.Text, cmbShapeField)
+            Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtSF.Text, cmbIDField, GeneralFunctions.enmErrorLevel._Message)
+            Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtSF.Text, cmbShapeField, GeneralFunctions.enmErrorLevel._Message)
         End If
     End Sub
 

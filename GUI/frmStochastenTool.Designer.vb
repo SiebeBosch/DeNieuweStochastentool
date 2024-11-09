@@ -98,9 +98,8 @@ Partial Class frmStochasten
         Me.txtUitloop = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.cmbDuration = New System.Windows.Forms.ComboBox()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.txtMaxParallel = New System.Windows.Forms.TextBox()
         Me.grBestanden = New System.Windows.Forms.GroupBox()
+        Me.hlpUitvoermap = New System.Windows.Forms.LinkLabel()
         Me.hlpExtraFiles = New System.Windows.Forms.LinkLabel()
         Me.btnExtraFilesDir = New System.Windows.Forms.Button()
         Me.Label16 = New System.Windows.Forms.Label()
@@ -285,6 +284,20 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
+        Me.hlpInvoermap = New System.Windows.Forms.LinkLabel()
+        Me.hlpResultatenmap = New System.Windows.Forms.LinkLabel()
+        Me.hlpDatabase = New System.Windows.Forms.LinkLabel()
+        Me.hlpShapefilePeilgebieden = New System.Windows.Forms.LinkLabel()
+        Me.hlpVeldWinterpeil = New System.Windows.Forms.LinkLabel()
+        Me.hlpVeldZomerpeil = New System.Windows.Forms.LinkLabel()
+        Me.hlpMeteo = New System.Windows.Forms.LinkLabel()
+        Me.hlpBerekeningen = New System.Windows.Forms.LinkLabel()
+        Me.txtMaxParallel = New System.Windows.Forms.TextBox()
+        Me.Label4 = New System.Windows.Forms.Label()
+        Me.hlpOutput = New System.Windows.Forms.LinkLabel()
+        Me.hlpNabewerking = New System.Windows.Forms.LinkLabel()
+        Me.hlpModellen = New System.Windows.Forms.Button()
+        Me.hlpSeizoenen = New System.Windows.Forms.Button()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -627,7 +640,7 @@ Partial Class frmStochasten
         Me.ImporterenToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.VolumesUitCSVToolStripMenuItem, Me.RandvoorwaardenUitCSVToolStripMenuItem})
         Me.ImporterenToolStripMenuItem.Name = "ImporterenToolStripMenuItem"
         Me.ImporterenToolStripMenuItem.Size = New System.Drawing.Size(327, 26)
-        Me.ImporterenToolStripMenuItem.Text = "Importeren/Bijwerken"
+        Me.ImporterenToolStripMenuItem.Text = "Importeren"
         '
         'VolumesUitCSVToolStripMenuItem
         '
@@ -740,13 +753,14 @@ Partial Class frmStochasten
         'GroupBox1
         '
         Me.GroupBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox1.Controls.Add(Me.hlpOutput)
         Me.GroupBox1.Controls.Add(Me.chk2D)
         Me.GroupBox1.Controls.Add(Me.chk1D)
-        Me.GroupBox1.Location = New System.Drawing.Point(444, 455)
+        Me.GroupBox1.Location = New System.Drawing.Point(444, 466)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.GroupBox1.Size = New System.Drawing.Size(328, 124)
+        Me.GroupBox1.Size = New System.Drawing.Size(328, 113)
         Me.GroupBox1.TabIndex = 41
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Output"
@@ -780,6 +794,7 @@ Partial Class frmStochasten
         Me.grMeteo.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.grMeteo.AutoSize = True
+        Me.grMeteo.Controls.Add(Me.hlpMeteo)
         Me.grMeteo.Controls.Add(Me.btnRemoveMeteoStation)
         Me.grMeteo.Controls.Add(Me.grMeteoStations)
         Me.grMeteo.Controls.Add(Me.btnAddMeteoStation)
@@ -796,7 +811,7 @@ Partial Class frmStochasten
         '
         Me.btnRemoveMeteoStation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRemoveMeteoStation.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveMeteoStation.Location = New System.Drawing.Point(387, 63)
+        Me.btnRemoveMeteoStation.Location = New System.Drawing.Point(387, 83)
         Me.btnRemoveMeteoStation.Margin = New System.Windows.Forms.Padding(4)
         Me.btnRemoveMeteoStation.Name = "btnRemoveMeteoStation"
         Me.btnRemoveMeteoStation.Size = New System.Drawing.Size(33, 31)
@@ -812,14 +827,14 @@ Partial Class frmStochasten
         Me.grMeteoStations.Margin = New System.Windows.Forms.Padding(4)
         Me.grMeteoStations.Name = "grMeteoStations"
         Me.grMeteoStations.RowHeadersWidth = 51
-        Me.grMeteoStations.Size = New System.Drawing.Size(357, 138)
+        Me.grMeteoStations.Size = New System.Drawing.Size(357, 218)
         Me.grMeteoStations.TabIndex = 0
         '
         'btnAddMeteoStation
         '
         Me.btnAddMeteoStation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnAddMeteoStation.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddMeteoStation.Location = New System.Drawing.Point(387, 25)
+        Me.btnAddMeteoStation.Location = New System.Drawing.Point(387, 45)
         Me.btnAddMeteoStation.Margin = New System.Windows.Forms.Padding(4)
         Me.btnAddMeteoStation.Name = "btnAddMeteoStation"
         Me.btnAddMeteoStation.Size = New System.Drawing.Size(33, 31)
@@ -833,6 +848,7 @@ Partial Class frmStochasten
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.grNabewerking.AutoSize = True
+        Me.grNabewerking.Controls.Add(Me.hlpNabewerking)
         Me.grNabewerking.Controls.Add(Me.chkRemoveSimulationAfterCopyingResultsFiles)
         Me.grNabewerking.Controls.Add(Me.chkUseCrashedResults)
         Me.grNabewerking.Controls.Add(Me.Label9)
@@ -912,6 +928,7 @@ Partial Class frmStochasten
         Me.grBerekeningen.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.grBerekeningen.AutoSize = True
+        Me.grBerekeningen.Controls.Add(Me.hlpBerekeningen)
         Me.grBerekeningen.Controls.Add(Me.Label2)
         Me.grBerekeningen.Controls.Add(Me.txtUitloop)
         Me.grBerekeningen.Controls.Add(Me.Label1)
@@ -940,7 +957,7 @@ Partial Class frmStochasten
         'txtUitloop
         '
         Me.txtUitloop.Enabled = False
-        Me.txtUitloop.Location = New System.Drawing.Point(224, 62)
+        Me.txtUitloop.Location = New System.Drawing.Point(193, 63)
         Me.txtUitloop.Margin = New System.Windows.Forms.Padding(4)
         Me.txtUitloop.Name = "txtUitloop"
         Me.txtUitloop.Size = New System.Drawing.Size(73, 22)
@@ -960,35 +977,23 @@ Partial Class frmStochasten
         'cmbDuration
         '
         Me.cmbDuration.FormattingEnabled = True
-        Me.cmbDuration.Location = New System.Drawing.Point(224, 32)
+        Me.cmbDuration.Location = New System.Drawing.Point(193, 33)
         Me.cmbDuration.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbDuration.Name = "cmbDuration"
         Me.cmbDuration.Size = New System.Drawing.Size(73, 24)
         Me.cmbDuration.TabIndex = 0
         '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 98)
-        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(150, 16)
-        Me.Label4.TabIndex = 31
-        Me.Label4.Text = "Parallelle berekeningen"
-        '
-        'txtMaxParallel
-        '
-        Me.txtMaxParallel.Location = New System.Drawing.Point(224, 94)
-        Me.txtMaxParallel.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtMaxParallel.Name = "txtMaxParallel"
-        Me.txtMaxParallel.Size = New System.Drawing.Size(73, 22)
-        Me.txtMaxParallel.TabIndex = 28
-        Me.txtMaxParallel.Text = "1"
-        '
         'grBestanden
         '
         Me.grBestanden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.grBestanden.Controls.Add(Me.hlpVeldZomerpeil)
+        Me.grBestanden.Controls.Add(Me.hlpVeldWinterpeil)
+        Me.grBestanden.Controls.Add(Me.hlpShapefilePeilgebieden)
+        Me.grBestanden.Controls.Add(Me.hlpDatabase)
+        Me.grBestanden.Controls.Add(Me.hlpResultatenmap)
+        Me.grBestanden.Controls.Add(Me.hlpInvoermap)
+        Me.grBestanden.Controls.Add(Me.hlpUitvoermap)
         Me.grBestanden.Controls.Add(Me.hlpExtraFiles)
         Me.grBestanden.Controls.Add(Me.btnExtraFilesDir)
         Me.grBestanden.Controls.Add(Me.Label16)
@@ -1020,6 +1025,16 @@ Partial Class frmStochasten
         Me.grBestanden.TabIndex = 37
         Me.grBestanden.TabStop = False
         Me.grBestanden.Text = "Bestanden en Mappen"
+        '
+        'hlpUitvoermap
+        '
+        Me.hlpUitvoermap.AutoSize = True
+        Me.hlpUitvoermap.Location = New System.Drawing.Point(261, 69)
+        Me.hlpUitvoermap.Name = "hlpUitvoermap"
+        Me.hlpUitvoermap.Size = New System.Drawing.Size(14, 16)
+        Me.hlpUitvoermap.TabIndex = 56
+        Me.hlpUitvoermap.TabStop = True
+        Me.hlpUitvoermap.Text = "?"
         '
         'hlpExtraFiles
         '
@@ -1257,6 +1272,7 @@ Partial Class frmStochasten
         '
         'tabSobek
         '
+        Me.tabSobek.Controls.Add(Me.hlpModellen)
         Me.tabSobek.Controls.Add(Me.btnDeleteModel)
         Me.tabSobek.Controls.Add(Me.btnAddModel)
         Me.tabSobek.Controls.Add(Me.grModels)
@@ -1272,7 +1288,7 @@ Partial Class frmStochasten
         '
         Me.btnDeleteModel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnDeleteModel.BackColor = System.Drawing.Color.IndianRed
-        Me.btnDeleteModel.Location = New System.Drawing.Point(1637, 42)
+        Me.btnDeleteModel.Location = New System.Drawing.Point(1638, 76)
         Me.btnDeleteModel.Margin = New System.Windows.Forms.Padding(4)
         Me.btnDeleteModel.Name = "btnDeleteModel"
         Me.btnDeleteModel.Size = New System.Drawing.Size(33, 31)
@@ -1284,7 +1300,7 @@ Partial Class frmStochasten
         '
         Me.btnAddModel.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnAddModel.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddModel.Location = New System.Drawing.Point(1637, 7)
+        Me.btnAddModel.Location = New System.Drawing.Point(1637, 43)
         Me.btnAddModel.Margin = New System.Windows.Forms.Padding(4)
         Me.btnAddModel.Name = "btnAddModel"
         Me.btnAddModel.Size = New System.Drawing.Size(33, 31)
@@ -1309,6 +1325,7 @@ Partial Class frmStochasten
         '
         'tabSeizoenen
         '
+        Me.tabSeizoenen.Controls.Add(Me.hlpSeizoenen)
         Me.tabSeizoenen.Controls.Add(Me.btnRemoveSeason)
         Me.tabSeizoenen.Controls.Add(Me.btnAddSeason)
         Me.tabSeizoenen.Controls.Add(Me.lblCheckSumSeizoenen)
@@ -1325,7 +1342,7 @@ Partial Class frmStochasten
         '
         Me.btnRemoveSeason.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRemoveSeason.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveSeason.Location = New System.Drawing.Point(1637, 48)
+        Me.btnRemoveSeason.Location = New System.Drawing.Point(1638, 76)
         Me.btnRemoveSeason.Margin = New System.Windows.Forms.Padding(4)
         Me.btnRemoveSeason.Name = "btnRemoveSeason"
         Me.btnRemoveSeason.Size = New System.Drawing.Size(33, 31)
@@ -1337,7 +1354,7 @@ Partial Class frmStochasten
         '
         Me.btnAddSeason.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnAddSeason.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddSeason.Location = New System.Drawing.Point(1637, 9)
+        Me.btnAddSeason.Location = New System.Drawing.Point(1638, 43)
         Me.btnAddSeason.Margin = New System.Windows.Forms.Padding(4)
         Me.btnAddSeason.Name = "btnAddSeason"
         Me.btnAddSeason.Size = New System.Drawing.Size(33, 31)
@@ -2970,6 +2987,154 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1675, 28)
         Me.prProgress.TabIndex = 24
         '
+        'hlpInvoermap
+        '
+        Me.hlpInvoermap.AutoSize = True
+        Me.hlpInvoermap.Location = New System.Drawing.Point(261, 35)
+        Me.hlpInvoermap.Name = "hlpInvoermap"
+        Me.hlpInvoermap.Size = New System.Drawing.Size(14, 16)
+        Me.hlpInvoermap.TabIndex = 57
+        Me.hlpInvoermap.TabStop = True
+        Me.hlpInvoermap.Text = "?"
+        '
+        'hlpResultatenmap
+        '
+        Me.hlpResultatenmap.AutoSize = True
+        Me.hlpResultatenmap.Location = New System.Drawing.Point(261, 98)
+        Me.hlpResultatenmap.Name = "hlpResultatenmap"
+        Me.hlpResultatenmap.Size = New System.Drawing.Size(14, 16)
+        Me.hlpResultatenmap.TabIndex = 58
+        Me.hlpResultatenmap.TabStop = True
+        Me.hlpResultatenmap.Text = "?"
+        '
+        'hlpDatabase
+        '
+        Me.hlpDatabase.AutoSize = True
+        Me.hlpDatabase.Location = New System.Drawing.Point(261, 167)
+        Me.hlpDatabase.Name = "hlpDatabase"
+        Me.hlpDatabase.Size = New System.Drawing.Size(14, 16)
+        Me.hlpDatabase.TabIndex = 59
+        Me.hlpDatabase.TabStop = True
+        Me.hlpDatabase.Text = "?"
+        '
+        'hlpShapefilePeilgebieden
+        '
+        Me.hlpShapefilePeilgebieden.AutoSize = True
+        Me.hlpShapefilePeilgebieden.Location = New System.Drawing.Point(261, 199)
+        Me.hlpShapefilePeilgebieden.Name = "hlpShapefilePeilgebieden"
+        Me.hlpShapefilePeilgebieden.Size = New System.Drawing.Size(14, 16)
+        Me.hlpShapefilePeilgebieden.TabIndex = 60
+        Me.hlpShapefilePeilgebieden.TabStop = True
+        Me.hlpShapefilePeilgebieden.Text = "?"
+        '
+        'hlpVeldWinterpeil
+        '
+        Me.hlpVeldWinterpeil.AutoSize = True
+        Me.hlpVeldWinterpeil.Location = New System.Drawing.Point(261, 230)
+        Me.hlpVeldWinterpeil.Name = "hlpVeldWinterpeil"
+        Me.hlpVeldWinterpeil.Size = New System.Drawing.Size(14, 16)
+        Me.hlpVeldWinterpeil.TabIndex = 61
+        Me.hlpVeldWinterpeil.TabStop = True
+        Me.hlpVeldWinterpeil.Text = "?"
+        '
+        'hlpVeldZomerpeil
+        '
+        Me.hlpVeldZomerpeil.AutoSize = True
+        Me.hlpVeldZomerpeil.Location = New System.Drawing.Point(261, 262)
+        Me.hlpVeldZomerpeil.Name = "hlpVeldZomerpeil"
+        Me.hlpVeldZomerpeil.Size = New System.Drawing.Size(14, 16)
+        Me.hlpVeldZomerpeil.TabIndex = 62
+        Me.hlpVeldZomerpeil.TabStop = True
+        Me.hlpVeldZomerpeil.Text = "?"
+        '
+        'hlpMeteo
+        '
+        Me.hlpMeteo.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.hlpMeteo.AutoSize = True
+        Me.hlpMeteo.Location = New System.Drawing.Point(404, 19)
+        Me.hlpMeteo.Name = "hlpMeteo"
+        Me.hlpMeteo.Size = New System.Drawing.Size(14, 16)
+        Me.hlpMeteo.TabIndex = 63
+        Me.hlpMeteo.TabStop = True
+        Me.hlpMeteo.Text = "?"
+        '
+        'hlpBerekeningen
+        '
+        Me.hlpBerekeningen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.hlpBerekeningen.AutoSize = True
+        Me.hlpBerekeningen.Location = New System.Drawing.Point(307, 19)
+        Me.hlpBerekeningen.Name = "hlpBerekeningen"
+        Me.hlpBerekeningen.Size = New System.Drawing.Size(14, 16)
+        Me.hlpBerekeningen.TabIndex = 64
+        Me.hlpBerekeningen.TabStop = True
+        Me.hlpBerekeningen.Text = "?"
+        '
+        'txtMaxParallel
+        '
+        Me.txtMaxParallel.Enabled = False
+        Me.txtMaxParallel.Location = New System.Drawing.Point(193, 95)
+        Me.txtMaxParallel.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtMaxParallel.Name = "txtMaxParallel"
+        Me.txtMaxParallel.Size = New System.Drawing.Size(73, 22)
+        Me.txtMaxParallel.TabIndex = 28
+        Me.txtMaxParallel.Text = "1"
+        '
+        'Label4
+        '
+        Me.Label4.AutoSize = True
+        Me.Label4.Location = New System.Drawing.Point(12, 98)
+        Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(150, 16)
+        Me.Label4.TabIndex = 31
+        Me.Label4.Text = "Parallelle berekeningen"
+        '
+        'hlpOutput
+        '
+        Me.hlpOutput.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.hlpOutput.AutoSize = True
+        Me.hlpOutput.Location = New System.Drawing.Point(307, 17)
+        Me.hlpOutput.Name = "hlpOutput"
+        Me.hlpOutput.Size = New System.Drawing.Size(14, 16)
+        Me.hlpOutput.TabIndex = 65
+        Me.hlpOutput.TabStop = True
+        Me.hlpOutput.Text = "?"
+        '
+        'hlpNabewerking
+        '
+        Me.hlpNabewerking.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.hlpNabewerking.AutoSize = True
+        Me.hlpNabewerking.Location = New System.Drawing.Point(863, 19)
+        Me.hlpNabewerking.Name = "hlpNabewerking"
+        Me.hlpNabewerking.Size = New System.Drawing.Size(14, 16)
+        Me.hlpNabewerking.TabIndex = 66
+        Me.hlpNabewerking.TabStop = True
+        Me.hlpNabewerking.Text = "?"
+        '
+        'hlpModellen
+        '
+        Me.hlpModellen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.hlpModellen.BackColor = System.Drawing.Color.Gold
+        Me.hlpModellen.Location = New System.Drawing.Point(1637, 10)
+        Me.hlpModellen.Margin = New System.Windows.Forms.Padding(4)
+        Me.hlpModellen.Name = "hlpModellen"
+        Me.hlpModellen.Size = New System.Drawing.Size(33, 31)
+        Me.hlpModellen.TabIndex = 22
+        Me.hlpModellen.Text = "?"
+        Me.hlpModellen.UseVisualStyleBackColor = False
+        '
+        'hlpSeizoenen
+        '
+        Me.hlpSeizoenen.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.hlpSeizoenen.BackColor = System.Drawing.Color.Gold
+        Me.hlpSeizoenen.Location = New System.Drawing.Point(1637, 9)
+        Me.hlpSeizoenen.Margin = New System.Windows.Forms.Padding(4)
+        Me.hlpSeizoenen.Name = "hlpSeizoenen"
+        Me.hlpSeizoenen.Size = New System.Drawing.Size(33, 31)
+        Me.hlpSeizoenen.TabIndex = 23
+        Me.hlpSeizoenen.Text = "?"
+        Me.hlpSeizoenen.UseVisualStyleBackColor = False
+        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -2993,6 +3158,7 @@ Partial Class frmStochasten
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.grMeteo.ResumeLayout(False)
+        Me.grMeteo.PerformLayout()
         CType(Me.grMeteoStations, System.ComponentModel.ISupportInitialize).EndInit()
         Me.grNabewerking.ResumeLayout(False)
         Me.grNabewerking.PerformLayout()
@@ -3090,11 +3256,9 @@ Partial Class frmStochasten
     Friend WithEvents tabPostprocessing As System.Windows.Forms.TabPage
     Friend WithEvents dlgOpenFile As System.Windows.Forms.OpenFileDialog
     Friend WithEvents txtUitloop As System.Windows.Forms.TextBox
-    Friend WithEvents txtMaxParallel As System.Windows.Forms.TextBox
     Friend WithEvents Label5 As System.Windows.Forms.Label
     Friend WithEvents txtInputDir As System.Windows.Forms.TextBox
     Friend WithEvents grModels As System.Windows.Forms.DataGridView
-    Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents txtDatabase As System.Windows.Forms.TextBox
     Friend WithEvents Label7 As System.Windows.Forms.Label
     Friend WithEvents TabRuns As System.Windows.Forms.TabPage
@@ -3340,4 +3504,19 @@ Partial Class frmStochasten
     Friend WithEvents hlpExtraFiles As LinkLabel
     Friend WithEvents VoorgedefinieerdToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents SumaquasHertogenboschToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents hlpUitvoermap As LinkLabel
+    Friend WithEvents hlpInvoermap As LinkLabel
+    Friend WithEvents hlpResultatenmap As LinkLabel
+    Friend WithEvents hlpDatabase As LinkLabel
+    Friend WithEvents hlpShapefilePeilgebieden As LinkLabel
+    Friend WithEvents hlpVeldWinterpeil As LinkLabel
+    Friend WithEvents hlpVeldZomerpeil As LinkLabel
+    Friend WithEvents hlpMeteo As LinkLabel
+    Friend WithEvents hlpBerekeningen As LinkLabel
+    Friend WithEvents hlpOutput As LinkLabel
+    Friend WithEvents Label4 As Label
+    Friend WithEvents txtMaxParallel As TextBox
+    Friend WithEvents hlpNabewerking As LinkLabel
+    Friend WithEvents hlpModellen As Button
+    Friend WithEvents hlpSeizoenen As Button
 End Class

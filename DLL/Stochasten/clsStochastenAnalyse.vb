@@ -232,7 +232,7 @@ Public Class clsStochastenAnalyse
             Using jsonReader As New StreamReader(runspath)
                 jsonStr = jsonReader.ReadToEnd                      'read the entire file
                 jsonStr = jsonStr.Replace("let runs = ", "").Trim   'remove our javascript variable declaration and any line breaks
-                jsonStr = jsonStr.Substring(0, jsonStr.Length - 1)            'remove the trailing semicolon which is a javascript thing
+                jsonStr = jsonStr.Substring(0, jsonStr.Length)            'remove the trailing semicolon which is a javascript thing
             End Using
 
             Dim jsonObject As JObject = JObject.Parse(jsonStr)

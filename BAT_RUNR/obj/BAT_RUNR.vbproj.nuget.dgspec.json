@@ -26,6 +26,7 @@
           "C:\\GITHUB\\HYDROC01\\references": {},
           "C:\\GITHUB\\HYDROC02\\packages": {},
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {

@@ -22,7 +22,7 @@ Public Class frmLocationsFromShapefile
         dlgOpenFile.Filter = "ESRI Shapefile|*.shp"
         dlgOpenFile.ShowDialog()
         txtShapefile.Text = dlgOpenFile.FileName
-        Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtShapefile.Text, cmbIDField)
+        Me.Setup.GeneralFunctions.PopulateComboBoxShapeFields(txtShapefile.Text, cmbIDField, GeneralFunctions.enmErrorLevel._Error)
     End Sub
 
     Private Sub btnImport_Click(sender As Object, e As EventArgs) Handles btnImport.Click
