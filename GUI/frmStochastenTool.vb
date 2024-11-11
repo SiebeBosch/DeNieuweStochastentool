@@ -4966,8 +4966,7 @@ Public Class frmStochasten
         txtExtraFilesDir.Text = dlgFolder.SelectedPath
     End Sub
 
-    Private Sub hlpExtraFiles_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpExtraFiles.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#map-met-extra-bestanden-per-simulatie")
+    Private Sub hlpExtraFiles_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
     Public Sub OpenHelpLink(url As String)
@@ -4997,16 +4996,39 @@ Public Class frmStochasten
         ' Split the data into an array of names
         ' Create the dictionary using LINQ
         Dim data As String = "Volume_1D Polygoon17;Volume_1D Polygoon23;Volume_1D Polygoon26;Volume_2D Polygoon17;Volume_2D Polygoon23;Volume_2D Polygoon26;Volume1D+Volume_2D Polygoon18;Volume1D+Volume_2D Polygoon19;Volume1D+Volume_2D Polygoon21;Volume1D+Volume_2D Polygoon22;Volume1D+Volume_2D Polygoon24;Volume1D+Volume_2D Polygoon25;Volume1D+Volume_2D Polygoon27;Q_HS AM_Inlaat_WB_DynBeekdal01;Q_HS AM_Inlaat_WB_DynBeekdal02;Q_HS AM_Inlaat_WB_DynBeekdal03;Q_HS inlaat_BBN;Q_HS inlaat_BBZ;Q_HS AM_Normaalregeling_RosmalenseAa;Q_HS AM_INLAAT_HOWABO;Q_HS AM_S116HDW;Q_HS WST_Weir_DO1_st3;Q_HS AM_Crev_Stuw;Q_HS AM_Crev_onderspuier;Q_HS afsluitstuw_BBZ;Q_HS pomp;Q_HS pomp19_21;WL node_ADM_Bossche_Broek;WL node_3686;WL node_3911;WL node_4045;WL node_meas_BBZ;WL node_WST_MS_DO1_st3;WL node_1122;WL node_2728;WL node_AM_mp_VG;WL node_AM_mp_VG3;WL node_AM_mp_VG2;WL node_2316;WL node_AM_M116HDW;WL node_1561;WL node_4036;WL node_4038;WL node_1032;WL node_AM_Crev_boven;WL node_1033;WL node_3813;WL node_3767;WL node_3723;WL node_4002;WL node_4040;WL node_3979;WL node_meas_BBN;WL node_143;WL node_2639;WL node_1837;WL node_4052;WL node_2736;WL node_995;WL node_991;WL node_2499;WL node_985;WL node_AM_Crev_beneden;WL node_2317;WL node_1034;Q_1D2D Polygoon17;Q_1D2D Polygoon23;Q_1D2D Polygoon26;link1D1D_17_19;link1D1D_18_21;link1D1D_23_26;link1D1D_24_27;link1D1D_19_23;Q2d2d_1918;Q2d2d_2423;Q2d2d_2327;Q2d2d_1821;Outfall edge 923;Outfall edge 1598;Outfall edge 986;Outfall edge 2281;GL AM_INLAAT_HOWABO;GL AM_S116HDW;GL AM_Crev_Stuw;GL AM_Crev_onderspuier;GL WST_Weir_DO1_st3;GL inlaat_BBN;GL inlaat_BBZ;GL afsluitstuw_BBZ;GL AM_Inlaat_WB_DynBeekdal01;GL AM_Inlaat_WB_DynBeekdal02;GL AM_Inlaat_WB_DynBeekdal03;GL AM_Normaalregeling_RosmalenseAa;Glel AM_Crev_onderspuier"
+        Dim Xdata As String = "157504.473;149057.137;149145.418067405;157504.473;149057.137;149145.418067405;155370.342991181;155488.072999127;153694.893999982;147936.655473;149116.276;150273.977286899;149145;157380.422;154558.759636;153955.123351;148749.996719427;150007.943635935;153976.690999937;148250.320696936;133356.853;148536.500576872;147064.088669223;147074.301943365;151223.856;149211.828284;153880.691;148637.184;149116.276;150406.098243536;149975.034864922;150007.943635935;148536.500576872;146386.348;148250.002714649;147944.917770288;148192.573627917;148257.93771293;133356.853;133356.853;152692.465;148536.500576872;148539.815708015;147074.301943365;147136.092999553;147064.088669223;151244.92446711;149804.857674709;151680.325;150998.812551267;148750.018491675;150134.870144985;148749.996719427;163092.757;157031.141000001;162658.925031525;147962.636399;154480.833692852;155538.485000061;153973.510528674;154007.802;152154.491;147004.820906;148989.709;147004.820906;157504.473;149057.137;149145.418067405;157372.5452;154177.038906103;148572.537591189;150933.682;153357.283;154558.759636;149234.168094333;151797.377;154177.038906103;151398.513999975;150954.054901232;152154.491;153302.723242045;148250.320696936;133356.853;147064.088669223;147074.301943365;148536.500576872;148749.996719427;150007.943635935;151223.856;157380.422;154558.759636;153955.123351;153976.690999937;147074.301943365"
+        Dim Ydata As String = "407344.467;411834.341;408788.631070115;407344.467;411834.341;408788.631070115;409274.241983708;408900.64599942;411428.528999981;410088.35023;409880.588;408108.833809909;408788;407476.773;410406.562631;411147.436387;410498.103747917;407597.64579551;411096.198999786;410241.88785169;413867.032;410412.521536655;416083.099545059;416084.013963311;408970.304;408781.410727;411114.531;410223.728999996;409880.588;408274.458669836;407594.398832904;407597.64579551;410412.521536655;411766.886;410241.872872093;410088.336286995;410239.167487044;410282.816982477;413867.032;413867.032;410684.149;410412.521536655;410417.201376867;416084.013963311;416074.777000277;416083.099545059;408987.540836726;409852.008719336;407347.773;409367.863818105;410498.097741942;409128.302181511;410498.103747917;406279.195;407773.115999998;405381.371298199;410088.306386;410399.981885724;409195.283999611;411108.267883591;411070.864;413179.888;416077.793164;410700.973;416077.793164;407344.467;411834.341;408788.631070115;407467.2609;411012.703621718;410352.43132758;409570.015;411243.655;410406.562631;410578.524912764;409813.697;411012.703621718;412713.612999997;414100.330157196;413179.888;411662.505086313;410241.88785169;413867.032;416083.099545059;416084.013963311;410412.521536655;410498.103747917;407597.64579551;408970.304;407476.773;410406.562631;411147.436387;411096.198999786;416084.013963311"
+
+        ' Split the data into an array of names
         Dim names As String() = data.Split({";"c}, StringSplitOptions.RemoveEmptyEntries)
-        locations = names.Select(Function(name, index) New With {Key .Key = index, Key .Value = New strLocation With {.Name = name, .Parameter = enm1DParameter.unknown}}).ToDictionary(Function(x) x.Key, Function(x) x.Value)
+        Dim XCoords As String() = Xdata.Split({";"c}, StringSplitOptions.RemoveEmptyEntries)
+        Dim YCoords As String() = Ydata.Split({";"c}, StringSplitOptions.RemoveEmptyEntries)
+
+        ' Create the dictionary using LINQ, now including X and Y coordinates
+        locations = names.Select(Function(name, index) New With {Key .Key = index, Key .Value = New strLocation With {.Name = name, .Parameter = enm1DParameter.unknown, .X = Double.Parse(XCoords(index)), .Y = Double.Parse(YCoords(index))}}).ToDictionary(Function(x) x.Key, Function(x) x.Value)
 
         For Each myID As Integer In locations.Keys
             If locations(myID).Name.ToLower.Contains("volume") Then
+                'volume
                 locations(myID).Parameter = enm1DParameter.volume
             ElseIf locations(myID).Name.ToLower.Contains("wl") Then
+                'waterlevel
                 locations(myID).Parameter = enm1DParameter.waterlevel
+            ElseIf locations(myID).Name.ToLower.Contains("q_1d2d") Then
+                'internal exchange of water between 1D and 2D
+                locations(myID).Parameter = enm1DParameter.internal_exchange
             ElseIf locations(myID).Name.ToLower.Contains("q") Then
+                'discharge
                 locations(myID).Parameter = enm1DParameter.discharge
+            ElseIf locations(myID).Name.ToLower.Contains("link") Then
+                'discharge between two polygons!!!!
+                locations(myID).Parameter = enm1DParameter.discharge
+            ElseIf locations(myID).Name.ToLower.Contains("glel") Then
+                'gate height
+                locations(myID).Parameter = enm1DParameter.gate_height
+            ElseIf locations(myID).Name.ToLower.Contains("gl") Then
+                'crest level
+                locations(myID).Parameter = enm1DParameter.crest_level
             Else
                 locations(myID).Parameter = enm1DParameter.unknown
             End If
@@ -5025,8 +5047,8 @@ Public Class frmStochasten
             Using transaction = Me.Setup.SqliteCon.BeginTransaction()
                 For i = 0 To 93
 
-                    Dim X As Double = 157748
-                    Dim Y As Double = 407503 - 10 * i
+                    Dim X As Double = locations(i).X
+                    Dim Y As Double = locations(i).Y
                     Dim Lat As Double
                     Dim Lon As Double
                     Dim Name As String = locations(i).Name
@@ -5059,48 +5081,38 @@ Public Class frmStochasten
         PopulateOutputLocationsGrid()
     End Sub
 
-    Private Sub hlpUitvoermap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpUitvoermap.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#uitvoermap")
+    Private Sub hlpUitvoermap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpInvoermap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpInvoermap.LinkClicked
+    Private Sub hlpInvoermap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
         OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#invoermap")
     End Sub
 
-    Private Sub hlpResultatenmap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpResultatenmap.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#resultatenmap")
+    Private Sub hlpResultatenmap_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpDatabase_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpDatabase.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#database")
+    Private Sub hlpDatabase_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpShapefilePeilgebieden_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpShapefilePeilgebieden.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#shapefile-peilgebieden")
+    Private Sub hlpShapefilePeilgebieden_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpVeldWinterpeil_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpVeldWinterpeil.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#veld-winterpeil-en-veld-zomerpeil")
+    Private Sub hlpVeldWinterpeil_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpVeldZomerpeil_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpVeldZomerpeil.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#veld-winterpeil-en-veld-zomerpeil")
+    Private Sub hlpVeldZomerpeil_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpMeteo_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpMeteo.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#meteo")
+    Private Sub hlpMeteo_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpBerekeningen_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpBerekeningen.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#berekeningen")
+    Private Sub hlpBerekeningen_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpOutput_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpOutput.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#output")
+    Private Sub hlpOutput_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
-    Private Sub hlpNabewerking_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs) Handles hlpNabewerking.LinkClicked
-        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#nabewerking")
+    Private Sub hlpNabewerking_LinkClicked(sender As Object, e As LinkLabelLinkClickedEventArgs)
     End Sub
 
     Private Sub hlpModellen_Click(sender As Object, e As EventArgs) Handles hlpModellen.Click
@@ -5109,6 +5121,55 @@ Public Class frmStochasten
 
     Private Sub hlpSeizoenen_Click(sender As Object, e As EventArgs) Handles hlpSeizoenen.Click
         OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/seizoenen.html")
+    End Sub
+
+    Private Sub hlpInvoermap2_Click(sender As Object, e As EventArgs) Handles hlpInvoermap2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#invoermap")
+    End Sub
+
+    Private Sub hlbUitvoermap2_Click(sender As Object, e As EventArgs) Handles hlbUitvoermap2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#uitvoermap")
+    End Sub
+
+    Private Sub hlpResultatenmap2_Click(sender As Object, e As EventArgs) Handles hlpResultatenmap2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#resultatenmap")
+    End Sub
+
+    Private Sub hlpExtraFiles2_Click(sender As Object, e As EventArgs) Handles hlpExtraFiles2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#map-met-extra-bestanden-per-simulatie")
+
+    End Sub
+
+    Private Sub hlpDatabase2_Click(sender As Object, e As EventArgs) Handles hlpDatabase2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#database")
+    End Sub
+
+    Private Sub hlpShapefilePeilgebieden2_Click(sender As Object, e As EventArgs) Handles hlpShapefilePeilgebieden2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#shapefile-peilgebieden")
+    End Sub
+
+    Private Sub hlpVeldWinterpeil2_Click(sender As Object, e As EventArgs) Handles hlpVeldWinterpeil2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#veld-winterpeil-en-veld-zomerpeil")
+    End Sub
+
+    Private Sub hlpVeldZomerpeil2_Click(sender As Object, e As EventArgs) Handles hlpVeldZomerpeil2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#veld-winterpeil-en-veld-zomerpeil")
+    End Sub
+
+    Private Sub hlpMeteo2_Click(sender As Object, e As EventArgs) Handles hlpMeteo2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#meteo")
+    End Sub
+
+    Private Sub hlpBerekeningen2_Click(sender As Object, e As EventArgs) Handles hlpBerekeningen2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#berekeningen")
+    End Sub
+
+    Private Sub hlpOutput2_Click(sender As Object, e As EventArgs) Handles hlpOutput2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#output")
+    End Sub
+
+    Private Sub hlpNabewerking2_Click(sender As Object, e As EventArgs) Handles hlpNabewerking2.Click
+        OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#nabewerking")
     End Sub
 
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click
@@ -5357,4 +5418,7 @@ End Class
 Public Class strLocation
     Public Property Name As String
     Public Property Parameter As GeneralFunctions.enm1DParameter
+
+    Public Property X As Double
+    Public Property Y As Double
 End Class

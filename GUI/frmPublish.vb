@@ -209,6 +209,8 @@ Public Class frmPublish
             'start by transforming the subcatchments shapefile into a geojson file. Later we will read this file into memory and write it to our data.js
             Dim utils As New MapWinGIS.Utils
             If System.IO.File.Exists(path) Then System.IO.File.Delete(path)
+
+            If Not System.IO.File.Exists(PeilgebiedenSF.Replace(".shp", ".prj")) Then Me.Setup.Log.AddWarning("No .prj file found with subcatchments shapefile. Unable to plot them in the viewer.")
             utils.OGR2OGR(PeilgebiedenSF, path, "-f GeoJSON -t_srs EPSG:4326")
 
             'read the subcatchments json to memory and convert it into JS content
@@ -274,11 +276,11 @@ Public Class frmPublish
                         Dim T50 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
                         Dim T100 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
                         Dim ZPString As String, WPString As String
-                        If IsDBNull(dtLoc(i)("ZP")) Then ZPString = "%ZP%: null" Else ZPString = "%ZP%:" & dtLoc(i)("ZP")
-                        If IsDBNull(dtLoc(i)("WP")) Then WPString = "%WP%: null" Else WPString = "%WP%:" & dtLoc(i)("WP")
-                        Dim locationsString As String = "        { %ID%: %" & dtLoc.Rows(i)("LOCATIENAAM") & "%, %lat%: " & dtLoc.Rows(i)("lat") & ", %lon%: " & dtLoc.Rows(i)("lon") & ", " & WPString & ", " & ZPString & ", %T10%: " & T10 & ", %T25%: " & T25 & ", %T50%: " & T50 & ", %T100%: " & T100 & "}"
+                        If IsDBNull(dtLoc(i)("ZP")) Then ZPString = """ZP"": null" Else ZPString = """ZP"":" & dtLoc(i)("ZP")
+                        If IsDBNull(dtLoc(i)("WP")) Then WPString = """WP"": null" Else WPString = """WP"":" & dtLoc(i)("WP")
+                        Dim locationsString As String = "        { ""ID"": """ & dtLoc.Rows(i)("LOCATIENAAM") & """, ""parameter"": """ & dtLoc.Rows(i)("MODELPAR") & """, ""lat"": " & dtLoc.Rows(i)("lat") & ", ""lon"": " & dtLoc.Rows(i)("lon") & ", " & WPString & ", " & ZPString & ", ""T10"": " & T10 & ", ""T25"": " & T25 & ", ""T50"": " & T50 & ", ""T100"": " & T100 & "}"
                         If i < dtLoc.Rows.Count - 1 Then locationsString &= ","
-                        locationsWriter.WriteLine(locationsString.Replace("%", Chr(34)))
+                        locationsWriter.WriteLine(locationsString)
                     End If
                 Next
                 locationsWriter.WriteLine("    ]")

@@ -432,6 +432,7 @@ Public Class GeneralFunctions
         crest_level = 5
         gate_height = 6
         volume = 7
+        internal_exchange = 8
     End Enum
     Public Enum enm2DParameter
         depth = 0
