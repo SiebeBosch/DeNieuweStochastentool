@@ -17,6 +17,7 @@ Imports Apache.Arrow
 Imports System.Data.Common
 Imports System.Data.SQLite
 Imports System.Collections.ObjectModel
+Imports System.Transactions
 
 
 '========================================================================================================================
@@ -706,6 +707,7 @@ Public Class frmStochasten
                 Setup.StochastenAnalyse.InputFilesDir = Setup.GeneralFunctions.RelativeToAbsolutePath(txtInputDir.Text, Setup.Settings.RootDir)
                 Setup.StochastenAnalyse.OutputFilesDir = Setup.GeneralFunctions.RelativeToAbsolutePath(txtOutputDir.Text, Setup.Settings.RootDir)
 
+
                 Call RebuildAllGrids()
 
             End If
@@ -753,6 +755,7 @@ Public Class frmStochasten
             Dim Catchments As New Dictionary(Of String, String)
             Dim BoundaryNodes As New Dictionary(Of Integer, STOCHLIB.clsStochastBoundaryNode)
             Dim query As String
+            Dim Klimaatscenario As String = "STOWA2024_HUIDIG"
 
             'Create the XML Document
             m_xmld = New XmlDocument()
@@ -785,7 +788,7 @@ Public Class frmStochasten
                     ElseIf n_node.Name.Trim.ToLower = "maxparallel" Then
                         txtMaxParallel.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "klimaatscenario" Then
-                        cmbClimate.SelectedItem = n_node.InnerText
+                        Klimaatscenario = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "duur" Then
                         cmbDuration.SelectedItem = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "uitloop" Then
@@ -831,6 +834,14 @@ Public Class frmStochasten
             query = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, ZP, WP FROM OUTPUTLOCATIONS;"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLocations, True)
             grOutputLocations.DataSource = dtLocations
+
+            'if our combobox contains the selected climate scenario, select it
+            For Each item As Object In cmbClimate.Items
+                If item.ToString = Klimaatscenario Then
+                    cmbClimate.SelectedItem = item
+                    Exit For
+                End If
+            Next
 
 
             Call RebuildAllGrids()
@@ -5171,6 +5182,102 @@ Public Class frmStochasten
     Private Sub hlpNabewerking2_Click(sender As Object, e As EventArgs) Handles hlpNabewerking2.Click
         OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#nabewerking")
     End Sub
+    Private Sub NeerslagpatronenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NeerslagpatronenToolStripMenuItem.Click
+        Try
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Importing STOWA rainfall patterns", 0, 10, True)
+
+            Me.Setup.SqliteCon.Open()
+            Using trans As SQLite.SQLiteTransaction = Me.Setup.SqliteCon.BeginTransaction()
+                Try
+                    ' Clear existing data
+                    Dim clearQuery As String = "DELETE FROM PATRONEN;"
+                    Using cmdClear As New SQLite.SQLiteCommand(clearQuery, Me.Setup.SqliteCon)
+                        cmdClear.ExecuteNonQuery()
+                    End Using
+
+                    ' Prepare bulk insert command
+                    Dim insertQuery As String = "INSERT INTO PATRONEN (KLIMAATSCENARIO, SEIZOEN, DUUR, PATROON, USE, KANS) " &
+                                          "VALUES (@scenario, @seizoen, @duur, @patroon, @use, @kans);"
+
+                    Using cmdInsert As New SQLite.SQLiteCommand(insertQuery, Me.Setup.SqliteCon)
+                        ' Define parameters once
+                        cmdInsert.Parameters.Add("@scenario", DbType.String)
+                        cmdInsert.Parameters.Add("@seizoen", DbType.String)
+                        cmdInsert.Parameters.Add("@duur", DbType.Int32)
+                        cmdInsert.Parameters.Add("@patroon", DbType.String)
+                        cmdInsert.Parameters.Add("@use", DbType.Boolean)
+                        cmdInsert.Parameters.Add("@kans", DbType.Double)
+
+                        ' Define your data
+                        Dim patronenData As List(Of PatroonRecord) = GetPatronenData()
+
+                        ' Insert all records
+                        For Each record In patronenData
+                            cmdInsert.Parameters("@scenario").Value = record.Scenario
+                            cmdInsert.Parameters("@seizoen").Value = record.Seizoen
+                            cmdInsert.Parameters("@duur").Value = record.Duur
+                            cmdInsert.Parameters("@patroon").Value = record.Patroon
+                            cmdInsert.Parameters("@use").Value = record.Use
+                            cmdInsert.Parameters("@kans").Value = record.Kans
+                            cmdInsert.ExecuteNonQuery()
+                        Next
+                    End Using
+
+                    trans.Commit()
+                Catch ex As Exception
+                    trans.Rollback()
+                    Throw
+                End Try
+            End Using
+
+            'make sure to rebuild our patterns grids now that we have new voluemes
+            BuildPatternsGrids()
+
+            Me.Setup.SqliteCon.Close()
+
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Import complete.", 10, 10, True)
+
+        Catch ex As Exception
+            MessageBox.Show("Error importing rainfall patterns: " & ex.Message)
+        End Try
+    End Sub
+
+    ' Helper class to store pattern data
+    Private Class PatroonRecord
+        Public Property Scenario As String
+        Public Property Seizoen As String
+        Public Property Duur As Integer
+        Public Property Patroon As String
+        Public Property Use As Boolean
+        Public Property Kans As Double
+    End Class
+
+    ' Helper function to define your rainfall pattern data
+    Private Function GetPatronenData() As List(Of PatroonRecord)
+        Dim patterns As New List(Of PatroonRecord)
+
+        'opmerking: ten opzichte van de publicaties van STOWA zijn sommige kansen iets aangepast omdat anders de som niet op 1 uitkwam
+
+        'duur 24 uur, seizoen mrt-okt
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "HOOG", .Use = True, .Kans = 0.67 * (1 - 0.875)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "MIDDELHOOG", .Use = True, .Kans = 0.67 * (0.875 - 0.625)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "MIDDELLAAG", .Use = True, .Kans = 0.67 * (0.625 - 0.375)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "LAAG", .Use = True, .Kans = 0.67 * (0.375)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "KORT", .Use = True, .Kans = 0.15})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "LANG", .Use = True, .Kans = 0.08})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "UNIFORM", .Use = True, .Kans = 0.1})
+
+        'duur 24 uur, seizoen nov-feb
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "HOOG", .Use = True, .Kans = 0.59 * (1 - 0.875)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "MIDDELHOOG", .Use = True, .Kans = 0.59 * (0.875 - 0.625)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "MIDDELLAAG", .Use = True, .Kans = 0.59 * (0.625 - 0.375)})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "LAAG", .Use = True, .Kans = 0.59 * 0.375})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "KORT", .Use = True, .Kans = 0.13})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "LANG", .Use = True, .Kans = 0.1})
+        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "UNIFORM", .Use = True, .Kans = 0.18})
+
+        Return patterns
+    End Function
 
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click
         Me.Setup.GeneralFunctions.UpdateProgressBar("Clearing data from table RESULTATEN", 0, 10, True)

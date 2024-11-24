@@ -548,5 +548,101 @@
     "title": "Technische documentatie",
     "section": "",
     "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
+  },
+  {
+    "objectID": "cases/delfland.html",
+    "href": "cases/delfland.html",
+    "title": "Delfland",
+    "section": "",
+    "text": "Hier beschrijven we een casus met het SOBEK-model van de Delflandse boezem. Met dit model wordt op het moment van schrijven door W+B, ondersteund door Hydroconsult en Deltares een hoogwatertoetsing uitgevoerd.\n\n\n\nDe modelschematisatie van de Delflandse boezem",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#inleiding",
+    "href": "cases/delfland.html#inleiding",
+    "title": "Delfland",
+    "section": "",
+    "text": "Hier beschrijven we een casus met het SOBEK-model van de Delflandse boezem. Met dit model wordt op het moment van schrijven door W+B, ondersteund door Hydroconsult en Deltares een hoogwatertoetsing uitgevoerd.\n\n\n\nDe modelschematisatie van de Delflandse boezem",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#opgave",
+    "href": "cases/delfland.html#opgave",
+    "title": "Delfland",
+    "section": "Opgave",
+    "text": "Opgave\nDe opdracht is om een volledige hoogwatertoetsing uit te voeren, inclusief een analyse met windopzet en golfslag. De stochasetenanalyse wordt uitgevoerd met De Nieuwe Stochastentool. Windopzet en golfslag met het programma Promotor.\nUit eerdere studies is gebleken dat de duren van 24 uur en 48 uur waarschijnlijk maatgevend zijn in voor de Delflandse boezem. Waarschijnlijk is deze korte duur te wijten aan de snelle respons van de glastuinbouwgebieden op neerslag.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#de-modelschematisatie",
+    "href": "cases/delfland.html#de-modelschematisatie",
+    "title": "Delfland",
+    "section": "De modelschematisatie",
+    "text": "De modelschematisatie\nDe modelschematisatie bestaat uit een SOBEK2-model met RR- en 1D Flow-component.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#uitdagingen",
+    "href": "cases/delfland.html#uitdagingen",
+    "title": "Delfland",
+    "section": "Uitdagingen",
+    "text": "Uitdagingen\nVoor de stochastenanalyse zelf biedt deze studie weinig uitdagingen. De Nieuwe Stochastentool werd oorspronkelijk vervaardigd voor SOBEK-2-modellen en de neerslagstatistieken zijn actueel en paraat. De belangrijkste uitdagingen in deze studie zitten in:\n\nhet verdisconteren van de gebiedsreductiefactoren in de combinaties van neerslagvolume en patroon\naccuraat rekenen met de kans op het uitvallen van gemalen",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#kader",
+    "href": "cases/delfland.html#kader",
+    "title": "Delfland",
+    "section": "Kader",
+    "text": "Kader\nOm de configuratie van de volledige stochastenanalyse te kunnen bewerkstelligen vraagt de opdrachtgever om gevoeligheidsanalyses uit te voeren voor diverse combinaties van stochasten en hun klassen. Reeds vastgelegde keuzes zijn:\n\nanalyse voor twee duren: 24 en 48 uur\ntwee seizoenen: winter en jaarrond\nklassen neerslagvolumes met stapgrootte van 10 mm\ndrie neerslagpatronen\ndrie initiële grondwaterklassen\n\nGevoeligheidsanalyses worden gevraagd voor: * de kans op uitval van gemalen *\nEen belangrijk punt wordt gemaakt van de gebiedsreductiefactor. Deze factor moet niet, zoals standaard in De Nieuwe Stochastentool is ingebouwd, als constante verondersteld, maar afhankelijk van herhalingstijd en gebiedsgrootte. In deze casus verdisconteren we daarom de gebiedsreductiefactor in de tabel met volumes. Voor iedere combinatie van duur en volume wordt onderzocht voor welk gedeelte van die duur de grootste gebiedsreductie van toepassing is. Die reductie wordt vervolgens in de gebeurtenis geïmplementeerd.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#gevoeligheidsanalyse",
+    "href": "cases/delfland.html#gevoeligheidsanalyse",
+    "title": "Delfland",
+    "section": "Gevoeligheidsanalyse",
+    "text": "Gevoeligheidsanalyse",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
+  },
+  {
+    "objectID": "cases/delfland.html#gevoeligheidsanalyses",
+    "href": "cases/delfland.html#gevoeligheidsanalyses",
+    "title": "Delfland",
+    "section": "Gevoeligheidsanalyses",
+    "text": "Gevoeligheidsanalyses\nOm de gevoeligheidsanalyses te kunnen uitvoeren hebben we een basale ‘uitgeklede’ stochastenopzet nodig. Van daaruit kunnen we uitstapjes maken, bijvoorbeeld naar het toevoegen van een stochast ‘gemaalfalen’.",
+    "crumbs": [
+      "Tutorial",
+      "Praktijkcases",
+      "Delfland"
+    ]
   }
 ]

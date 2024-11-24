@@ -363,7 +363,7 @@ Public Class frmPublish
                     resultsWriter.WriteLine(resultsString)
                 Next
                 resultsWriter.WriteLine("  ]")
-                resultsWriter.WriteLine("};")
+                resultsWriter.WriteLine("}")
             End Using
             Me.Setup.GeneralFunctions.UpdateProgressBar("Operation complete.", 0, 10, True)
             Return True

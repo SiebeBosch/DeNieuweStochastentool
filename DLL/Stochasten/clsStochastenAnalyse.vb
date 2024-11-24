@@ -209,7 +209,7 @@ Public Class clsStochastenAnalyse
                 exceedanceWriter.WriteLine("      ]")
                 exceedanceWriter.WriteLine("    }")
                 exceedanceWriter.WriteLine("  ]")
-                exceedanceWriter.WriteLine("};")
+                exceedanceWriter.WriteLine("}")
             End Using
 
             Return True
@@ -4083,7 +4083,7 @@ Public Class clsStochastenAnalyse
 
     End Sub
 
-    Public Function getBuiVerloop(ByVal Patroon As String, SimulationModel As GeneralFunctions.enmSimulationModel) As Double()
+    Public Function getBuiVerloop(ByVal Patroon As String, SimulationModel As GeneralFunctions.enmSimulationModel) As (Boolean, Double())
 
         '------------------------------------------------------------------------
         'Author: Siebe Bosch
@@ -4131,10 +4131,10 @@ Public Class clsStochastenAnalyse
                     Next
             End Select
 
-            Return myPatroon
+            Return (True, myPatroon)
         Catch err As Exception
             Me.Setup.Log.AddError(err.Message)
-            Return Nothing
+            Return (False, Nothing)
         End Try
 
     End Function

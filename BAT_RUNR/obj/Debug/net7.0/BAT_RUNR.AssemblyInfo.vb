@@ -16,7 +16,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("BAT_RUNR"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7965372cd4b7cb4efa964c81438d81faec8bad96"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03965f35e51082ed6673f49233bbe1becbfc6190"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("BAT_RUNR"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("BAT_RUNR"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")> 

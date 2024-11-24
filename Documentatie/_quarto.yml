@@ -39,6 +39,7 @@ website:
       - section: "Praktijkcases"
         contents:
           - cases/denbosch.qmd
+          - cases/delfland.qmd
           
 format:
   html:
