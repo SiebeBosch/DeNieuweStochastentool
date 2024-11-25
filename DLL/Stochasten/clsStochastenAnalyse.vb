@@ -4174,6 +4174,7 @@ Public Class clsStochastenAnalyse
         'myGrid.Columns(ColIdx).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
 
         'set the column widths
+        myGrid.Columns("ID").MinimumWidth = 50
         myGrid.Columns("ID").AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         myGrid.Columns("DONE").AutoSizeMode = DataGridViewAutoSizeColumnMode.None
         myGrid.Columns("DONE").Width = 50 ' Adjust this value as needed

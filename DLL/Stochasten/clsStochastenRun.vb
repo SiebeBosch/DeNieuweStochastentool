@@ -392,11 +392,12 @@ Public Class clsStochastenRun
 
                 Dim myBui As New clsBuiFile(Me.Setup)
                 Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-                Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+                Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+                If Not res.Item1 Then Throw New Exception("Error getting the rainfall pattern.")
                 For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                     If Station.StationType = enmMeteoStationType.precipitation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
                     ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
                         myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
@@ -775,7 +776,8 @@ Public Class clsStochastenRun
 
             'Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
             'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-            Dim Verloop() As Double = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+            Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+            If res.Item1 = False Then Throw New Exception("Error retrieving the rainfall pattern from database.")
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
                     Dim myBui As New clsBuiFile(Me.Setup)
@@ -783,7 +785,7 @@ Public Class clsStochastenRun
                     'generate a HBV rainfall file and set both the absolute and relative paths
                     BuiFile = runDir & "\" & Station.ID & ".txt"
                     Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
-                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, Verloop, StochastenAnalyse.DurationAdd)
+                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
                     myBui.WriteHBV(BuiFile, Station, 3)
                 ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                     'Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)

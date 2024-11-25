@@ -990,7 +990,7 @@ Public Class frmStochasten
                         'query = $"Select VOLUME, USE, KANS, KANSCORR{StationsString} from VOLUMES where DUUR=" & cmbDuration.Text & " And SEIZOEN='" & mySeason & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "' ORDER BY VOLUME;"
 
                         'populate the newly created grid me.Setup.containing volumes and update them based on the selection of classes
-                        query = "SELECT VOLUME, USE, KANS, KANSCORR from VOLUMES where DUUR=" & cmbDuration.Text & " AND SEIZOEN='" & mySeason & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "' ORDER BY VOLUME;"
+                        query = "SELECT VOLUME, USE, KANS, KANSCORR from VOLUMES where DUUR=" & cmbDuration.Text & " AND SEIZOEN=""" & mySeason & """ AND KLIMAATSCENARIO='" & cmbClimate.Text & "' ORDER BY VOLUME;"
 
                         Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dt)
                         myVolumesGrid.DataSource = dt
@@ -1123,7 +1123,7 @@ Public Class frmStochasten
             Checksum = 0
             For Each myRow In grVolumes.Rows
                 Checksum += myRow.Cells("KANS").Value
-                query = "UPDATE VOLUMES SET USE=" & myRow.Cells("USE").Value & ", KANSCORR=" & myRow.Cells("KANSCORR").Value & " WHERE VOLUME=" & myRow.Cells("VOLUME").Value & " AND DUUR=" & Duur & " AND SEIZOEN='" & Season & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
+                query = "UPDATE VOLUMES SET USE=" & myRow.Cells("USE").Value & ", KANSCORR=" & myRow.Cells("KANSCORR").Value & " WHERE VOLUME=" & myRow.Cells("VOLUME").Value & " AND DUUR=" & Duur & " AND SEIZOEN=""" & Season & """ AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
                 Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, True)
             Next
             lblChecksum.Text = "Checksum: " & Checksum
@@ -1208,7 +1208,7 @@ Public Class frmStochasten
 
 
                         'populate the grid for this season me.Setup.containing patterns
-                        query = "SELECT PATROON, KANS, USE, KANSCORR from PATRONEN where DUUR=" & cmbDuration.Text & " AND SEIZOEN='" & mySeason & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
+                        query = "SELECT PATROON, KANS, USE, KANSCORR from PATRONEN where DUUR=" & cmbDuration.Text & " AND SEIZOEN=""" & mySeason & """ AND KLIMAATSCENARIO=""" & cmbClimate.Text & """;"
                         da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
                         da.Fill(dt)
                         myPatternsGrid.DataSource = dt
@@ -1261,22 +1261,21 @@ Public Class frmStochasten
             Try
 
                 Dim da As SQLite.SQLiteDataAdapter
-                Dim dtzom As New DataTable
-                Dim dtwin As New DataTable
+                Dim dt As New DataTable
 
                 If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
-                'populate the grid me.Setup.containing summer volumes
-                query = "SELECT PATROON, " & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & ", USE, KANS from PATRONEN where DUUR=" & cmbDuration.Text & " AND SEIZOEN='zomer';"
-                da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
-                da.Fill(dtzom)
-                'grPatronenZomer.DataSource = dtzom
+                'make a list of all unique seasons
+                query = "SELECT DISTINCT SEASON FROM SEIZOENEN;"
+                Dim st As New DataTable
+                Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, st, True)
 
-                'populate the grid me.Setup.containing winter volumes
-                query = "SELECT PATROON, " & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & ", USE, KANS from PATRONEN where DUUR=" & cmbDuration.Text & " AND SEIZOEN='winter';"
-                da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
-                da.Fill(dtwin)
-                'grPatronenWinter.DataSource = dtwin
+                For i = 0 To st.Rows.Count - 1
+                    'populate the grid me.Setup.containing summer volumes
+                    query = "SELECT PATROON, USE, KANS from PATRONEN where KLIMAATSCENARIO=""" & Me.Setup.StochastenAnalyse.KlimaatScenario.ToString & """ AND DUUR=" & cmbDuration.Text & " AND SEIZOEN=""" & st.Rows(i)(0).ToString & """;"
+                    da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
+                    da.Fill(dt)
+                Next
 
                 Me.Setup.SqliteCon.Close()
 
@@ -1303,35 +1302,35 @@ Public Class frmStochasten
 
         'first investigate the active and non-active patterns
         For Each myRow As DataGridViewRow In PatternGrid.Rows
-            Select Case myRow.Cells("PATROON").Value
-                Case Is = "HOOG"
-                    Hoog = myRow.Cells("USE").Value
+            Select Case myRow.Cells("PATROON").Value.ToString.Trim.ToUpper
+                Case Is = "HOOG", "PATROON1D"
+                    Hoog = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pHoog = myRow.Cells("KANS").Value
-                Case Is = "MIDDELHOOG"
-                    MiddelHoog = myRow.Cells("USE").Value
+                Case Is = "MIDDELHOOG", "PATROON1C"
+                    MiddelHoog = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pMiddelHoog = myRow.Cells("KANS").Value
-                Case Is = "MIDDELLAAG"
-                    MiddelLaag = myRow.Cells("USE").Value
+                Case Is = "MIDDELLAAG", "PATROON1B"
+                    MiddelLaag = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pMiddelLaag = myRow.Cells("KANS").Value
-                Case Is = "LAAG"
-                    Laag = myRow.Cells("USE").Value
+                Case Is = "LAAG", "PATROON1A"
+                    Laag = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pLaag = myRow.Cells("KANS").Value
-                Case Is = "KORT"
-                    Kort = myRow.Cells("USE").Value
+                Case Is = "KORT", "PATROON2A"
+                    Kort = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pKort = myRow.Cells("KANS").Value
-                Case Is = "LANG"
-                    Lang = myRow.Cells("USE").Value
+                Case Is = "LANG", "PATROON2B"
+                    Lang = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pLang = myRow.Cells("KANS").Value
-                Case Is = "UNIFORM"
-                    Uniform = myRow.Cells("USE").Value
+                Case Is = "UNIFORM", "PATROON0"
+                    Uniform = If(myRow.Cells("USE").Value Is DBNull.Value, False, myRow.Cells("USE").Value)
                     pUniform = myRow.Cells("KANS").Value
             End Select
         Next
 
         'then decide the probabilities
         For Each myRow As DataGridViewRow In PatternGrid.Rows
-            Select Case myRow.Cells("PATROON").Value
-                Case Is = "HOOG"
+            Select Case myRow.Cells("PATROON").Value.ToString.Trim.ToUpper
+                Case Is = "HOOG", "PATROON1D"
                     If Hoog = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf Hoog AndAlso MiddelHoog AndAlso MiddelLaag Then
@@ -1343,7 +1342,7 @@ Public Class frmStochasten
                     Else
                         myRow.Cells("KANSCORR").Value = pHoog + pMiddelHoog + pMiddelLaag
                     End If
-                Case Is = "MIDDELHOOG"
+                Case Is = "MIDDELHOOG", "PATROON1C"
                     If MiddelHoog = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf Hoog AndAlso MiddelHoog AndAlso MiddelLaag Then
@@ -1355,7 +1354,7 @@ Public Class frmStochasten
                     Else
                         myRow.Cells("KANSCORR").Value = pHoog + pMiddelHoog + pMiddelLaag
                     End If
-                Case Is = "MIDDELLAAG"
+                Case Is = "MIDDELLAAG", "PATROON1B"
                     If MiddelLaag = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf MiddelLaag AndAlso MiddelHoog AndAlso Hoog Then
@@ -1367,7 +1366,7 @@ Public Class frmStochasten
                     ElseIf MiddelLaag Then
                         myRow.Cells("KANSCORR").Value = pMiddelLaag + pMiddelHoog + pHoog
                     End If
-                Case Is = "LAAG"
+                Case Is = "LAAG", "PATROON1A"
                     If Laag = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf Laag AndAlso Uniform Then
@@ -1375,7 +1374,7 @@ Public Class frmStochasten
                     Else
                         myRow.Cells("KANSCORR").Value = pLaag + pUniform
                     End If
-                Case Is = "UNIFORM"
+                Case Is = "UNIFORM", "PATROON0"
                     If Uniform = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf Uniform AndAlso Laag Then
@@ -1383,7 +1382,7 @@ Public Class frmStochasten
                     Else
                         myRow.Cells("KANSCORR").Value = pLaag + pUniform
                     End If
-                Case Is = "KORT"
+                Case Is = "KORT", "PATROON2A"
                     If Kort = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf Kort AndAlso Lang Then
@@ -1391,7 +1390,7 @@ Public Class frmStochasten
                     ElseIf Kort Then
                         myRow.Cells("KANSCORR").Value = pKort + pLang
                     End If
-                Case Is = "LANG"
+                Case Is = "LANG", "PATROON2B"
                     If Lang = False Then
                         myRow.Cells("KANSCORR").Value = 0
                     ElseIf Lang AndAlso Kort Then
@@ -1408,7 +1407,7 @@ Public Class frmStochasten
         For Each myRow In PatternGrid.Rows
             Checksum += myRow.cells("KANSCORR").value
         Next
-        If Checksum <> 1 Then
+        If Checksum <> 1 AndAlso Checksum <> 0 Then
             For Each myRow In PatternGrid.Rows
                 myRow.cells("KANSCORR").value = myRow.cells("KANSCORR").value * 1 / Checksum
             Next
@@ -1430,7 +1429,7 @@ Public Class frmStochasten
                 Checksum += myRow.Cells("KANSCORR").Value
                 Dim KansCorr As Double
                 If Double.IsNaN(myRow.cells("KANSCORR").value) Then KansCorr = 0 Else KansCorr = myRow.cells("KANSCORR").value
-                query = "UPDATE PATRONEN SET USE=" & myRow.Cells("USE").Value & ", KANSCORR=" & KansCorr & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND DUUR=" & Setup.StochastenAnalyse.Duration & " AND SEIZOEN='" & Season & "' AND PATROON='" & myRow.Cells("PATROON").Value & "';"
+                query = "UPDATE PATRONEN SET USE=" & If(IsDBNull(myRow.cells("USE").value), 0, myRow.Cells("USE").Value) & ", KANSCORR=" & KansCorr & " WHERE KLIMAATSCENARIO=""" & cmbClimate.Text & """ AND DUUR=" & Setup.StochastenAnalyse.Duration & " AND SEIZOEN=""" & Season & """ AND PATROON=""" & myRow.Cells("PATROON").Value & """;"
                 Dim newCommand = New SQLite.SQLiteCommand(query, Me.Setup.SqliteCon)
                 newCommand.ExecuteNonQuery()
             Next
@@ -1556,7 +1555,7 @@ Public Class frmStochasten
                             Sub(sender2, eventargs2)
                                 If myGroundwaterGrid.SelectedRows.Count > 0 Then
                                     For Each dataRow As DataGridViewRow In myGroundwaterGrid.SelectedRows
-                                        query = "DELETE FROM GRONDWATER WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & dataRow.Cells("NAAM").Value & "';"
+                                        query = "DELETE FROM GRONDWATER WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN=""" & mySeason & """ AND NAAM='" & dataRow.Cells("NAAM").Value & "';"
                                         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
                                     Next
                                     ReadGroundwaterClasses(mySeason, dt)
@@ -1614,7 +1613,7 @@ Public Class frmStochasten
         Try
             Dim query As String
             dt.Clear()
-            query = "SELECT NAAM,FOLDER,RRFILES,FLOWFILES,RTCFILES,USE,KANS FROM GRONDWATER WHERE SEIZOEN='" & Season & "' AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
+            query = "SELECT NAAM,FOLDER,RRFILES,FLOWFILES,RTCFILES,USE,KANS FROM GRONDWATER WHERE SEIZOEN=""" & Season & """ AND KLIMAATSCENARIO='" & cmbClimate.Text & "';"
             Dim da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
             Return True
@@ -1634,7 +1633,7 @@ Public Class frmStochasten
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
             'first delete all rows for the current Season and Climate
-            query = "DELETE FROM GRONDWATER WHERE SEIZOEN='" & Season & "' AND KLIMAATSCENARIO='" & KlimaatScenario & "';"
+            query = "DELETE FROM GRONDWATER WHERE SEIZOEN=""" & Season & """ AND KLIMAATSCENARIO='" & KlimaatScenario & "';"
             Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
             'next write the current datagridview back into the database
@@ -2476,7 +2475,7 @@ Public Class frmStochasten
 
                                 If ActiveExtraGrid.SelectedRows.Count > 0 Then
                                     For i = 0 To ActiveExtraGrid.SelectedRows.Count - 1
-                                        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & mySeason & "' AND NAAM='" & ActiveExtraGrid.SelectedRows(i).Cells("NAAM").Value & "';"
+                                        query = "DELETE FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN=""" & mySeason & """ AND NAAM='" & ActiveExtraGrid.SelectedRows(i).Cells("NAAM").Value & "';"
                                         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query)
                                     Next
                                 Else
@@ -2558,7 +2557,7 @@ Public Class frmStochasten
         Try
             Dim query As String
             dt.Clear()
-            query = "SELECT NAAM,USE,KANS,RRFILES,FLOWFILES,RTCFILES FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN='" & Season & "';"
+            query = "SELECT NAAM,USE,KANS,RRFILES,FLOWFILES,RTCFILES FROM EXTRA" & ExtraNum & " WHERE KLIMAATSCENARIO='" & cmbClimate.Text & "' AND SEIZOEN=""" & Season & """;"
             Dim da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
         Catch ex As Exception
@@ -2576,7 +2575,7 @@ Public Class frmStochasten
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
             'first delete all instances for the current season and climate scenario
-            query = "DELETE FROM EXTRA" & ExtraNum.ToString.Trim & " WHERE KLIMAATSCENARIO='" & KlimaatScenario & "' AND SEIZOEN='" & Season & "';"
+            query = "DELETE FROM EXTRA" & ExtraNum.ToString.Trim & " WHERE KLIMAATSCENARIO='" & KlimaatScenario & "' AND SEIZOEN=""" & Season & """;"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
             'now write the currently active grid to the database
@@ -3373,6 +3372,7 @@ Public Class frmStochasten
         Setup.GeneralFunctions.UpdateProgressBar("Updating table NEERSLAGVERLOOP", progress, 100, True)
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "NEERSLAGVERLOOP")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "PATROON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "PATROON", enmSQLiteDataType.SQLITETEXT, "VERLOOP_PATIDX")
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "SEIZOEN") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "SEIZOEN", enmSQLiteDataType.SQLITETEXT, "VERLOOP_SEIZOENIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "DUUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "DUUR", enmSQLiteDataType.SQLITEINT, "VERLOOP_DUURIDX")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "UUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "UUR", enmSQLiteDataType.SQLITEINT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE", enmSQLiteDataType.SQLITEREAL)
@@ -4023,16 +4023,20 @@ Public Class frmStochasten
                 If Not Found Then
                     If InStr(1, dt.Rows(i)("SEIZOEN"), "zomer", CompareMethod.Text) > 0 Then
                         StartDate = New Date(2000, 6, 1)
+                    ElseIf InStr(1, dt.Rows(i)("SEIZOEN"), "mrt-okt", CompareMethod.Text) > 0 Then
+                        StartDate = New Date(2000, 6, 1)
                     ElseIf InStr(1, dt.Rows(i)("SEIZOEN"), "summer", CompareMethod.Text) > 0 Then
                         StartDate = New Date(2000, 6, 1)
                     ElseIf InStr(1, dt.Rows(i)("SEIZOEN"), "winter", CompareMethod.Text) > 0 Then
+                        StartDate = New Date(2000, 1, 1)
+                    ElseIf InStr(1, dt.Rows(i)("SEIZOEN"), "nov-feb", CompareMethod.Text) > 0 Then
                         StartDate = New Date(2000, 1, 1)
                     ElseIf InStr(1, dt.Rows(i)("SEIZOEN"), "", CompareMethod.Text) > 0 Then
                         StartDate = New Date(2000, 1, 1)
                     Else
                         StartDate = New Date(2000, 1, 1)
                     End If
-                    query = "INSERT INTO SEIZOENEN (SEASON, USE, EVENTSTART, KANS) VALUES ('" & dt.Rows(i)("SEIZOEN") & "'," & False & ",'" & StartDate & "',0.5);"
+                    query = "INSERT INTO SEIZOENEN (SEASON, USE, EVENTSTART, KANS) VALUES (""" & dt.Rows(i)("SEIZOEN") & """," & False & ",'" & StartDate & "',0.5);"
                     Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                 End If
             Next
@@ -4432,9 +4436,10 @@ Public Class frmStochasten
         {"VOLUME", New STOCHLIB.clsDataField("VOLUME", enmSQLiteDataType.SQLITEREAL)}
         }
         Dim myForm As New STOCHLIB.frmTextFileToSQLite(Me.Setup, Me.Setup.SqliteCon, "VOLUMES", myFields)
-        myForm.ShowDialog()
-
-        UpdateVolumesTable(0)
+        Dim res As DialogResult = myForm.ShowDialog()
+        If res = DialogResult.OK Then
+            UpdateVolumesTable(0)
+        End If
 
     End Sub
 
@@ -5182,102 +5187,44 @@ Public Class frmStochasten
     Private Sub hlpNabewerking2_Click(sender As Object, e As EventArgs) Handles hlpNabewerking2.Click
         OpenHelpLink("https://siebebosch.github.io/DeNieuweStochastentool/GUI/general.html#nabewerking")
     End Sub
-    Private Sub NeerslagpatronenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NeerslagpatronenToolStripMenuItem.Click
-        Try
-            Me.Setup.GeneralFunctions.UpdateProgressBar("Importing STOWA rainfall patterns", 0, 10, True)
 
-            Me.Setup.SqliteCon.Open()
-            Using trans As SQLite.SQLiteTransaction = Me.Setup.SqliteCon.BeginTransaction()
-                Try
-                    ' Clear existing data
-                    Dim clearQuery As String = "DELETE FROM PATRONEN;"
-                    Using cmdClear As New SQLite.SQLiteCommand(clearQuery, Me.Setup.SqliteCon)
-                        cmdClear.ExecuteNonQuery()
-                    End Using
-
-                    ' Prepare bulk insert command
-                    Dim insertQuery As String = "INSERT INTO PATRONEN (KLIMAATSCENARIO, SEIZOEN, DUUR, PATROON, USE, KANS) " &
-                                          "VALUES (@scenario, @seizoen, @duur, @patroon, @use, @kans);"
-
-                    Using cmdInsert As New SQLite.SQLiteCommand(insertQuery, Me.Setup.SqliteCon)
-                        ' Define parameters once
-                        cmdInsert.Parameters.Add("@scenario", DbType.String)
-                        cmdInsert.Parameters.Add("@seizoen", DbType.String)
-                        cmdInsert.Parameters.Add("@duur", DbType.Int32)
-                        cmdInsert.Parameters.Add("@patroon", DbType.String)
-                        cmdInsert.Parameters.Add("@use", DbType.Boolean)
-                        cmdInsert.Parameters.Add("@kans", DbType.Double)
-
-                        ' Define your data
-                        Dim patronenData As List(Of PatroonRecord) = GetPatronenData()
-
-                        ' Insert all records
-                        For Each record In patronenData
-                            cmdInsert.Parameters("@scenario").Value = record.Scenario
-                            cmdInsert.Parameters("@seizoen").Value = record.Seizoen
-                            cmdInsert.Parameters("@duur").Value = record.Duur
-                            cmdInsert.Parameters("@patroon").Value = record.Patroon
-                            cmdInsert.Parameters("@use").Value = record.Use
-                            cmdInsert.Parameters("@kans").Value = record.Kans
-                            cmdInsert.ExecuteNonQuery()
-                        Next
-                    End Using
-
-                    trans.Commit()
-                Catch ex As Exception
-                    trans.Rollback()
-                    Throw
-                End Try
-            End Using
-
-            'make sure to rebuild our patterns grids now that we have new voluemes
-            BuildPatternsGrids()
-
-            Me.Setup.SqliteCon.Close()
-
-            Me.Setup.GeneralFunctions.UpdateProgressBar("Import complete.", 10, 10, True)
-
-        Catch ex As Exception
-            MessageBox.Show("Error importing rainfall patterns: " & ex.Message)
-        End Try
+    Private Sub NeerslagpatronenUitCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NeerslagpatronenUitCSVToolStripMenuItem.Click
+        Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField) From {
+        {"PATROON", New STOCHLIB.clsDataField("DUUR", enmSQLiteDataType.SQLITETEXT)},
+        {"SEIZOEN", New STOCHLIB.clsDataField("KANS", enmSQLiteDataType.SQLITETEXT)},
+        {"DUUR", New STOCHLIB.clsDataField("KANSCORR", enmSQLiteDataType.SQLITEINT)},
+        {"UUR", New STOCHLIB.clsDataField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITEINT)},
+        {"FRACTIE", New STOCHLIB.clsDataField("SEIZOEN", enmSQLiteDataType.SQLITEREAL)}
+        }
+        Dim myForm As New STOCHLIB.frmTextFileToSQLite(Me.Setup, Me.Setup.SqliteCon, "NEERSLAGVERLOOP", myFields)
+        Dim res As DialogResult = myForm.ShowDialog()
+        If res = DialogResult.OK Then
+            Me.Setup.SetProgress(prProgress, lblProgress)
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Import successful.", 0, 10, True)
+        End If
     End Sub
 
-    ' Helper class to store pattern data
-    Private Class PatroonRecord
-        Public Property Scenario As String
-        Public Property Seizoen As String
-        Public Property Duur As Integer
-        Public Property Patroon As String
-        Public Property Use As Boolean
-        Public Property Kans As Double
-    End Class
+    Private Sub NeerslagpatronenkansUitCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NeerslagpatronenkansUitCSVToolStripMenuItem.Click
+        Dim myFields As New Dictionary(Of String, STOCHLIB.clsDataField) From {
+        {"KLIMAATSCENARIO", New STOCHLIB.clsDataField("KLIMAATSCENARIO", enmSQLiteDataType.SQLITETEXT)},
+        {"SEIZOEN", New STOCHLIB.clsDataField("SEIZOEN", enmSQLiteDataType.SQLITETEXT)},
+        {"DUUR", New STOCHLIB.clsDataField("DUUR", enmSQLiteDataType.SQLITEINT)},
+        {"PATROON", New STOCHLIB.clsDataField("PATROON", enmSQLiteDataType.SQLITETEXT)},
+        {"KANS", New STOCHLIB.clsDataField("KANS", enmSQLiteDataType.SQLITEREAL)},
+        {"USE", New STOCHLIB.clsDataField("USE", enmSQLiteDataType.SQLITEINT)},
+        {"KANSCORR", New STOCHLIB.clsDataField("KANSCORR", enmSQLiteDataType.SQLITEREAL)}
+        }
+        Dim myForm As New STOCHLIB.frmTextFileToSQLite(Me.Setup, Me.Setup.SqliteCon, "PATRONEN", myFields)
+        Dim res As DialogResult = myForm.ShowDialog()
 
-    ' Helper function to define your rainfall pattern data
-    Private Function GetPatronenData() As List(Of PatroonRecord)
-        Dim patterns As New List(Of PatroonRecord)
+        If res = DialogResult.OK Then
+            'refesh the patterns grids
+            RefreshPatternsGrids()
+            Me.Setup.SetProgress(prProgress, lblProgress)
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Import successful.", 0, 10, True)
+        End If
 
-        'opmerking: ten opzichte van de publicaties van STOWA zijn sommige kansen iets aangepast omdat anders de som niet op 1 uitkwam
-
-        'duur 24 uur, seizoen mrt-okt
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "HOOG", .Use = True, .Kans = 0.67 * (1 - 0.875)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "MIDDELHOOG", .Use = True, .Kans = 0.67 * (0.875 - 0.625)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "MIDDELLAAG", .Use = True, .Kans = 0.67 * (0.625 - 0.375)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "LAAG", .Use = True, .Kans = 0.67 * (0.375)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "KORT", .Use = True, .Kans = 0.15})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "LANG", .Use = True, .Kans = 0.08})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "mrt-okt", .Duur = 24, .Patroon = "UNIFORM", .Use = True, .Kans = 0.1})
-
-        'duur 24 uur, seizoen nov-feb
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "HOOG", .Use = True, .Kans = 0.59 * (1 - 0.875)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "MIDDELHOOG", .Use = True, .Kans = 0.59 * (0.875 - 0.625)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "MIDDELLAAG", .Use = True, .Kans = 0.59 * (0.625 - 0.375)})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "LAAG", .Use = True, .Kans = 0.59 * 0.375})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "KORT", .Use = True, .Kans = 0.13})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "LANG", .Use = True, .Kans = 0.1})
-        patterns.Add(New PatroonRecord With {.Scenario = "STOWA2024_HUIDIG", .Seizoen = "nov-feb", .Duur = 24, .Patroon = "UNIFORM", .Use = True, .Kans = 0.18})
-
-        Return patterns
-    End Function
+    End Sub
 
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click
         Me.Setup.GeneralFunctions.UpdateProgressBar("Clearing data from table RESULTATEN", 0, 10, True)
