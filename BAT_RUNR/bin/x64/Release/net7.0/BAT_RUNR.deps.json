@@ -16,7 +16,10 @@
       },
       "STOCHLIB/1.0.0": {
         "runtime": {
-          "STOCHLIB.dll": {}
+          "STOCHLIB.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "2.4.0.0"
+          }
         }
       },
       "ScientificDataSet/0.0.0.0": {

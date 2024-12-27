@@ -32,7 +32,10 @@ Partial Class frmPublish
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.lblProgress = New System.Windows.Forms.Label()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chkParameters1D = New System.Windows.Forms.CheckedListBox()
         Me.GroupBox1.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -112,11 +115,30 @@ Partial Class frmPublish
         Me.lblProgress.TabIndex = 4
         Me.lblProgress.Text = "Voorgang:"
         '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.chkParameters1D)
+        Me.GroupBox2.Location = New System.Drawing.Point(7, 155)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(310, 219)
+        Me.GroupBox2.TabIndex = 5
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Parameters 1D"
+        '
+        'chkParameters1D
+        '
+        Me.chkParameters1D.FormattingEnabled = True
+        Me.chkParameters1D.Location = New System.Drawing.Point(20, 38)
+        Me.chkParameters1D.Name = "chkParameters1D"
+        Me.chkParameters1D.Size = New System.Drawing.Size(271, 157)
+        Me.chkParameters1D.TabIndex = 6
+        '
         'frmPublish
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.btnPubliceren)
@@ -126,6 +148,7 @@ Partial Class frmPublish
         Me.Text = "Uitkomsten publiceren"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -140,4 +163,6 @@ Partial Class frmPublish
     Friend WithEvents dlgFolder As FolderBrowserDialog
     Friend WithEvents prProgress As ProgressBar
     Friend WithEvents lblProgress As Label
+    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents chkParameters1D As CheckedListBox
 End Class

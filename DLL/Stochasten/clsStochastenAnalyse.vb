@@ -4083,7 +4083,7 @@ Public Class clsStochastenAnalyse
 
     End Sub
 
-    Public Function getBuiVerloop(ByVal Patroon As String, SimulationModel As GeneralFunctions.enmSimulationModel) As (Boolean, Double())
+    Public Function getBuiVerloop(ByVal Patroon As String, ByVal Seizoen As String, SimulationModel As GeneralFunctions.enmSimulationModel) As (Boolean, Double())
 
         '------------------------------------------------------------------------
         'Author: Siebe Bosch
@@ -4114,10 +4114,12 @@ Public Class clsStochastenAnalyse
             cn.ConnectionString = "Data Source=" & StochastsConfigFile & ";Version=3;"
 
             cn.Open()
-            query = "Select FRACTIE from NEERSLAGVERLOOP where DUUR=" & Duration.ToString.Trim & " And PATROON='" & Patroon.ToString.ToUpper & "' ORDER BY UUR;"
+            query = "Select FRACTIE from NEERSLAGVERLOOP where DUUR=" & Duration.ToString.Trim & " AND SEIZOEN=""" & Seizoen.ToString.Trim & """ And PATROON='" & Patroon.ToString.Trim & "' ORDER BY UUR;"
             da = New SQLite.SQLiteDataAdapter(query, cn)
             da.Fill(dt)
             cn.Close()
+
+            If dt.Rows.Count < Duration Then Throw New Exception("Not enough values found in database for duration " & Duration.ToString & " and pattern " & Patroon.ToString & " and season " & Seizoen.ToString & ".")
 
             Select Case SimulationModel
                 Case GeneralFunctions.enmSimulationModel.HBV

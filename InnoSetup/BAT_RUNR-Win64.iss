@@ -2,12 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "BAT_RUNR"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "1.0.1"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"
 #define LicensesLocation "c:\GITHUB\DeNieuweStochastentool\licenses"
-#define BinLocation "c:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\Release\net7.0"
+#define BinLocation "c:\GITHUB\DeNieuweStochastentool\BAT_RUNR\bin\x64\Release\net7.0"
 ;;hieronder wisselen tussen 32bit en 64bit. 32bit is uitcommentarieren van de regel hieronder
 #define x64BitVersion
 ;;#define VsVersion = "2015" 

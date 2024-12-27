@@ -28,6 +28,7 @@ Public Class frmPublish
 
     Private Sub frmPublish_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Setup.SetProgress(prProgress, lblProgress)
+        Me.Setup.GeneralFunctions.PopulateCheckedListBoxFromDatabaseQuery(Me.Setup.SqliteCon, "SELECT DISTINCT MODELPAR FROM OUTPUTLOCATIONS;", chkParameters1D)
     End Sub
 
     Private Sub btnPubliceren_Click(sender As Object, e As EventArgs) Handles btnPubliceren.Click
@@ -79,7 +80,7 @@ Public Class frmPublish
                 End If
 
                 If export1D Then
-                    If Not WriteLocationsJSON(ViewerDir & "\js\locations.js") Then Throw New Exception("Error writing locations to JSON.")
+                    If Not WriteLocationsJSON(ViewerDir & "\js\locations.js", chkParameters1D) Then Throw New Exception("Error writing locations to JSON.")
                     If Not WriteResultsJSON(ViewerDir & "\js\results.js") Then Throw New Exception("Error writing results to JSON.")
                     If Not WriteExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js") Then Throw New Exception("Error writing exceedance data for 1D to JSON.")
                 End If
@@ -88,7 +89,7 @@ Public Class frmPublish
                 Me.Cursor = Cursors.Default
 
                 'execute the html file in the default browser
-                System.Diagnostics.Process.Start(ViewerDir & "\index.html")
+                Process.Start(ViewerDir & "\index.html")
 
             ElseIf radExistingWebviewer.Checked Then
                 'first we'll browse to the existing webviewer directory
@@ -105,7 +106,7 @@ Public Class frmPublish
                     Setup.StochastenAnalyse.AddExceedanceLevels2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text)
 
                     'execute the html file in the default browser
-                    System.Diagnostics.Process.Start(ViewerDir & "\index.html")
+                    Process.Start(ViewerDir & "\index.html")
 
                 End If
             End If
@@ -242,43 +243,57 @@ Public Class frmPublish
     End Function
 
 
-    Public Function WriteLocationsJSON(locationsdatapath As String) As Boolean
+    Public Function WriteLocationsJSON(locationsdatapath As String, Parameters As CheckedListBox) As Boolean
         Try
-            'now reread our results locations!
-            Dim dtLoc = New DataTable
-            Dim query As String = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, WP, ZP FROM OUTPUTLOCATIONS;"
+            ' Get the selected parameters from the CheckedListBox
+            Dim selectedParameters As New List(Of String)
+            For Each item In Parameters.CheckedItems
+                selectedParameters.Add("'" & item.ToString() & "'")
+            Next
+
+            ' Check if any parameter is selected
+            If selectedParameters.Count = 0 Then
+                Throw New Exception("No parameters selected.")
+            End If
+
+            ' Create the SQL query to filter locations by selected parameters
+            Dim query As String = "SELECT MODELID, MODULE, RESULTSFILE, MODELPAR, LOCATIEID, LOCATIENAAM, RESULTSTYPE, X, Y, LAT, LON, WP, ZP " &
+                              "FROM OUTPUTLOCATIONS WHERE MODELPAR IN (" & String.Join(", ", selectedParameters) & ");"
+
+            ' Execute the query and retrieve the results
+            Dim dtLoc As New DataTable
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtLoc, True)
 
-            'write the dataset to json
+            ' Write the dataset to JSON
             If System.IO.File.Exists(locationsdatapath) Then System.IO.File.Delete(locationsdatapath)
             Using locationsWriter As New StreamWriter(locationsdatapath)
-
                 locationsWriter.WriteLine("let locations = {")
                 locationsWriter.WriteLine("    " & Chr(34) & "locations" & Chr(34) & ": [")
 
                 Me.Setup.GeneralFunctions.UpdateProgressBar("Writing results...", 0, 10, True)
-                Dim resNum As Integer = 0
 
-                'process each location and write it to the locations.js
+                ' Process each location and write it to the JSON file
                 For i = 0 To dtLoc.Rows.Count - 1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, dtLoc.Rows.Count)
 
-                    'for this location we will retrieve the exceedance table
+                    ' Retrieve the exceedance table for this location
                     Dim dtHerh As New DataTable
                     query = "SELECT HERHALINGSTIJD, WAARDE FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & dtLoc.Rows(i)("LOCATIENAAM") & "' AND KLIMAATSCENARIO='" & Climate & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
                     Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
 
                     If dtHerh.Rows.Count > 0 Then
-                        'now that we have our exceedance table, we can start writing it to the data.js file
-                        'NOTE: we replace double quotes first by percentage %. Later we will replace all % characters again with double quotes
+                        ' Interpolate data for exceedance levels
                         Dim T10 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 10, 0, 1)
                         Dim T25 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 25, 0, 1)
                         Dim T50 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 50, 0, 1)
                         Dim T100 As Double = Setup.GeneralFunctions.InterpolateFromDataTable(dtHerh, 100, 0, 1)
-                        Dim ZPString As String, WPString As String
-                        If IsDBNull(dtLoc(i)("ZP")) Then ZPString = """ZP"": null" Else ZPString = """ZP"":" & dtLoc(i)("ZP")
-                        If IsDBNull(dtLoc(i)("WP")) Then WPString = """WP"": null" Else WPString = """WP"":" & dtLoc(i)("WP")
-                        Dim locationsString As String = "        { ""ID"": """ & dtLoc.Rows(i)("LOCATIENAAM") & """, ""parameter"": """ & dtLoc.Rows(i)("MODELPAR") & """, ""lat"": " & dtLoc.Rows(i)("lat") & ", ""lon"": " & dtLoc.Rows(i)("lon") & ", " & WPString & ", " & ZPString & ", ""T10"": " & T10 & ", ""T25"": " & T25 & ", ""T50"": " & T50 & ", ""T100"": " & T100 & "}"
+
+                        ' Handle potential null values for ZP and WP
+                        Dim ZPString As String = If(IsDBNull(dtLoc.Rows(i)("ZP")), """ZP"": null", """ZP"":" & dtLoc.Rows(i)("ZP"))
+                        Dim WPString As String = If(IsDBNull(dtLoc.Rows(i)("WP")), """WP"": null", """WP"":" & dtLoc.Rows(i)("WP"))
+
+                        ' Construct the JSON object for this location
+                        Dim locationsString As String = "        { ""ID"": """ & dtLoc.Rows(i)("LOCATIENAAM") & """, ""parameter"": """ & dtLoc.Rows(i)("MODELPAR") & """, ""lat"": " & dtLoc.Rows(i)("LAT") & ", ""lon"": " & dtLoc.Rows(i)("LON") & ", " & WPString & ", " & ZPString & ", ""T10"": " & T10 & ", ""T25"": " & T25 & ", ""T50"": " & T50 & ", ""T100"": " & T100 & " }"
                         If i < dtLoc.Rows.Count - 1 Then locationsString &= ","
                         locationsWriter.WriteLine(locationsString)
                     End If
@@ -290,8 +305,8 @@ Public Class frmPublish
         Catch ex As Exception
             Return False
         End Try
-
     End Function
+
 
 
     Public Function WriteResultsJSON(path As String) As Boolean

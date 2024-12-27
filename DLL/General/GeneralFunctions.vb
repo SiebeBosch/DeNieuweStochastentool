@@ -6851,7 +6851,9 @@ Public Class GeneralFunctions
 
     End Function
     Public Function RelativeToAbsolutePath(ByVal myPath As String, ByVal myRootDir As String) As String
-        If Mid(myPath.Trim, 2, 2) = ":\" Then
+        If myPath.Trim = "" Then
+            Return String.Empty
+        ElseIf Mid(myPath.Trim, 2, 2) = ":\" Then
             'the given path is not relative but absolute. Do not change it!
             Return myPath
         Else
@@ -11352,6 +11354,45 @@ Public Class GeneralFunctions
             con.Close()
             Return True
         Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function PopulateCheckedListBoxFromDatabaseQuery(ByRef con As SQLite.SQLiteConnection, ByVal query As String, ByRef myCheckedListBox As Forms.CheckedListBox, Optional ByVal formatting As String = "") As Boolean
+        ' This function populates a CheckedListBox with data from a database query.
+        Dim r As Long
+
+        Try
+            Dim dt As DataTable
+            Dim da As SQLite.SQLiteDataAdapter
+
+            ' Ensure the database connection is open
+            If Not con.State = ConnectionState.Open Then con.Open()
+
+            ' Create a DataTable to hold the query results
+            dt = New DataTable
+            da = New SQLite.SQLiteDataAdapter(query, con)
+            da.Fill(dt)
+
+            ' Clear existing items in the CheckedListBox
+            myCheckedListBox.Items.Clear()
+
+            ' Add items to the CheckedListBox based on query results
+            If formatting = "" Then
+                For r = 0 To dt.Rows.Count - 1
+                    myCheckedListBox.Items.Add(dt.Rows(r)(0).ToString().Trim())
+                Next
+            Else
+                For r = 0 To dt.Rows.Count - 1
+                    myCheckedListBox.Items.Add(Format(dt.Rows(r)(0), formatting).Trim())
+                Next
+            End If
+
+            ' Close the database connection
+            con.Close()
+            Return True
+        Catch ex As Exception
+            ' Handle any errors
             Return False
         End Try
     End Function

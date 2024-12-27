@@ -6,16 +6,21 @@ Module BAT_RUNR
     Dim semaphore As Semaphore
     Dim simulationsFile As String
     Dim maxConcurrentSimulations As Integer
+    Dim silentMode As Boolean = False
+    Dim completedSimulations As Integer = 0
+    Dim totalSimulations As Integer = 0
+    Dim lockObj As New Object()
 
     Sub Main(args As String())
         Console.WriteLine("Running simulations")
 
-        If args.Length < 2 Then
+        If args.Length < 3 Then
+            Console.WriteLine("BAT_RUNR version 1.0.1.")
             Console.WriteLine("This application runs a series of simulations using multithreading (parallel).")
             Console.WriteLine("Please provide a path to a simulations file. Each line in the simulations file should refer to a .bat or .exe file, followed by a space and its arguments.")
             Console.WriteLine("E.g., ""C:\temp\Bommel\STOWA2014_HUIDIG_winter_MIDDELNAT_MIDDELHOOG_140mm\run.bat""")
             Console.WriteLine("The second argument is the maximum number of concurrent simulations, e.g., 4.")
-            Console.WriteLine("Usage: BAT_RUNR.exe [SimulationsFile] [MaxConcurrentSimulations]")
+            Console.WriteLine("Optionally, provide 'true' or 'false' as the third argument to enable or disable silent mode.")
 
             Console.WriteLine("Please enter the path to a simulations file:")
             simulationsFile = Console.ReadLine()
@@ -24,9 +29,15 @@ Module BAT_RUNR
             While Not Integer.TryParse(Console.ReadLine(), maxConcurrentSimulations)
                 Console.WriteLine("Invalid input. Please enter a numeric value for the maximum number of concurrent simulations:")
             End While
+
+            Console.WriteLine("Enable silent mode? (true/false):")
+            silentMode = Boolean.TryParse(Console.ReadLine(), silentMode)
         Else
             simulationsFile = args(0)
             maxConcurrentSimulations = Integer.Parse(args(1))
+            If args.Length > 2 Then
+                silentMode = Boolean.Parse(args(2))
+            End If
         End If
 
         If Not File.Exists(simulationsFile) Then
@@ -38,15 +49,17 @@ Module BAT_RUNR
         semaphore = New Semaphore(maxConcurrentSimulations, maxConcurrentSimulations)
 
         Dim simulations As String() = File.ReadAllLines(simulationsFile)
+        totalSimulations = simulations.Length
         Dim threads As New List(Of Thread)
+
         For Each simulation In simulations
             ' Parse the simulation string into path and arguments
             Dim simulationParts = ParseSimulationString(simulation)
 
             Dim thread As New Thread(Sub()
-                                         ' Combine the simulations file directory with the simulation path
                                          Dim fullPath As String = Path.Combine(Path.GetDirectoryName(simulationsFile), simulationParts.path)
                                          RunSimulation(fullPath, simulationParts.arguments)
+                                         UpdateProgress()
                                      End Sub)
             thread.Start()
             threads.Add(thread)
@@ -95,7 +108,9 @@ Module BAT_RUNR
                 Return
             End If
 
-            Console.WriteLine($"Starting simulation: {filePath} in directory {workingDirectory}")
+            If Not silentMode Then
+                Console.WriteLine($"Starting simulation: {filePath} in directory {workingDirectory}")
+            End If
 
             Dim process As New Process()
             process.StartInfo = New ProcessStartInfo() With {
@@ -103,24 +118,22 @@ Module BAT_RUNR
                 .Arguments = arguments,
                 .WorkingDirectory = workingDirectory,
                 .UseShellExecute = False,
-                .CreateNoWindow = True,
-                .RedirectStandardOutput = True,
-                .RedirectStandardError = True
+                .CreateNoWindow = silentMode,
+                .RedirectStandardOutput = silentMode,
+                .RedirectStandardError = silentMode
             }
 
             process.Start()
 
-            Dim output As String = process.StandardOutput.ReadToEnd()
-            Dim errorOutput As String = process.StandardError.ReadToEnd()
+            If silentMode Then
+                process.StandardOutput.ReadToEnd()
+                process.StandardError.ReadToEnd()
+            End If
+
             process.WaitForExit()
 
-            If process.ExitCode = 0 Then
-                Console.WriteLine($"Completed simulation: {filePath}")
-            Else
+            If process.ExitCode <> 0 AndAlso Not silentMode Then
                 Console.WriteLine($"Simulation failed: {filePath} with exit code {process.ExitCode}")
-                If Not String.IsNullOrWhiteSpace(errorOutput) Then
-                    Console.WriteLine($"Error: {errorOutput}")
-                End If
             End If
 
         Catch ex As Exception
@@ -128,5 +141,12 @@ Module BAT_RUNR
         Finally
             semaphore.Release()
         End Try
+    End Sub
+
+    Sub UpdateProgress()
+        SyncLock lockObj
+            completedSimulations += 1
+            Console.WriteLine($"Progress: {completedSimulations}/{totalSimulations} simulations complete")
+        End SyncLock
     End Sub
 End Module

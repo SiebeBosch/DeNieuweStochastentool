@@ -13,8 +13,12 @@
         "packagesPath": "C:\\Users\\SiebeBosch\\.nuget\\packages\\",
         "outputPath": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
           "C:\\Users\\SiebeBosch\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +30,6 @@
           "C:\\GITHUB\\HYDROC01\\references": {},
           "C:\\GITHUB\\HYDROC02\\packages": {},
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -47,8 +50,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
-        }
+          "auditMode": "all"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net7.0": {
@@ -69,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     },
@@ -78,6 +82,7 @@
         "projectUniqueName": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj",
         "projectName": "STOCHLIB",
         "projectPath": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\STOCHLIB.vbproj",
+        "UsingMicrosoftNETSdk": false,
         "frameworks": {
           "net48": {
             "projectReferences": {}

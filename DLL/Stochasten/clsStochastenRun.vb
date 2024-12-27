@@ -392,7 +392,7 @@ Public Class clsStochastenRun
 
                 Dim myBui As New clsBuiFile(Me.Setup)
                 Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-                Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+                Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, SeasonClass.Name, myModel.ModelType)
                 If Not res.Item1 Then Throw New Exception("Error getting the rainfall pattern.")
                 For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                     If Station.StationType = enmMeteoStationType.precipitation Then
@@ -601,7 +601,7 @@ Public Class clsStochastenRun
             'write the precipitation file and make a backup in the stochast directory
             Dim myBui As New clsBuiFile(Me.Setup)
             Setup.GeneralFunctions.UpdateProgressBar("Retrieving rainfall pattern.", 0, 10, True)
-            Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+            Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, SeasonClass.Name, myModel.ModelType)
             If Not res.Item1 Then Throw New Exception("Error retrieving the rainfall pattern from database.")
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
@@ -776,7 +776,7 @@ Public Class clsStochastenRun
 
             'Dim myMeteoDir As String = runDir & "\METEO\" & SeasonClass.Name.ToString & "_" & PatternClass.Patroon.ToString & "_" & VolumeClass.Volume & "mm\"
             'If Not Directory.Exists(myMeteoDir) Then Directory.CreateDirectory(myMeteoDir)
-            Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, myModel.ModelType)
+            Dim res As (Boolean, Double()) = StochastenAnalyse.getBuiVerloop(PatternClass.Patroon, SeasonClass.Name, myModel.ModelType)
             If res.Item1 = False Then Throw New Exception("Error retrieving the rainfall pattern from database.")
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
