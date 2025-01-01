@@ -5321,7 +5321,7 @@ Public Class frmStochasten
             For Each myModel In Me.Setup.StochastenAnalyse.Models.Values
                 ' Define the arguments to pass
                 ' Assuming arg1 and arg2 are your internal variables
-                Dim arg1 As String = myModel.TempWorkDir & "\simulations.txt"
+                Dim arg1 As String = myModel.TempWorkDir & "\simulations.json"
                 Dim arg2 As Integer = Me.Setup.GeneralFunctions.ForceNumeric(txtMaxParallel.Text, "Maximum number of simultaneous computations", 4, enmMessageType.Message)
                 Dim arguments As String = arg1 & " " & arg2
                 Process.Start(batRunrPath, arguments)

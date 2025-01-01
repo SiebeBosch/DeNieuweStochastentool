@@ -392,19 +392,19 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
         '
         'EditToolStripMenuItem
@@ -1057,13 +1057,12 @@ Partial Class frmStochasten
         '
         'txtMaxParallel
         '
-        Me.txtMaxParallel.Enabled = False
         Me.txtMaxParallel.Location = New System.Drawing.Point(193, 95)
         Me.txtMaxParallel.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxParallel.Name = "txtMaxParallel"
         Me.txtMaxParallel.Size = New System.Drawing.Size(73, 22)
         Me.txtMaxParallel.TabIndex = 28
-        Me.txtMaxParallel.Text = "1"
+        Me.txtMaxParallel.Text = "4"
         '
         'grBestanden
         '

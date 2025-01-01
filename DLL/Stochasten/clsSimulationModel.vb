@@ -13,6 +13,8 @@ Public Class clsSimulationModel
     Public ResultsFiles As clsResultsFiles
     Public ModelType As GeneralFunctions.enmSimulationModel
 
+    Public RunLocalCopy As Boolean = True 'if true, then a copy of the .EXE file will be made in the working directory and run from there. If false, then the original model's path will be used
+
     Private Setup As clsSetup
 
 
@@ -30,6 +32,13 @@ Public Class clsSimulationModel
         ModelDir = myModelDir
         CaseName = myCaseName
         TempWorkDir = myTempWorkDir
+
+        Select Case ModelType
+            Case GeneralFunctions.enmSimulationModel.SOBEK
+                RunLocalCopy = False
+            Case Else
+                RunLocalCopy = True
+        End Select
 
         ResultsFiles = New clsResultsFiles(Me.Setup, Me)
 

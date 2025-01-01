@@ -613,46 +613,53 @@ Public Class clsStochastenRuns
     End Function
 
     Public Function BuildSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
-
-        '------------------------------------------------------------------------------------------------------------------------------
-        'this routine actually creates a new instance of the model schematisation(s) to be run and writes them to the temporary workdir
-        'it then copies the necessary files into the workdir and kicks off the model(s)
-        '------------------------------------------------------------------------------------------------------------------------------
         Dim ID As String, myRun As clsStochastenRun
         Dim i As Long, n As Long
         Dim Done As Boolean
 
         Try
             For Each myModel In StochastenAnalyse.Models.Values
-
-                'in order to run all simulations we will here create one encompassing .bat file that will run all simulations
-                'this .bat file will be written to the workdir and executed from there
                 If myModel.TempWorkDir.Length = 0 Then Throw New Exception("No temporary working directory specified for model " & myModel.Id & ".")
                 If Not System.IO.Directory.Exists(myModel.TempWorkDir) Then System.IO.Directory.CreateDirectory(myModel.TempWorkDir)
-                Using myWriter As New StreamWriter(myModel.TempWorkDir & "\simulations.txt")
 
-                    'first figure out how many runs to do
+                Using myWriter As New StreamWriter(myModel.TempWorkDir & "\simulations.json")
                     n = 0
                     For Each myrow As DataGridViewRow In grRuns.SelectedRows
                         If Not myrow.Cells("DONE").Value = True Then n += 1
                     Next
 
-                    'build the model schematisation(s) for all selected runs
+                    ' Write JSON array opening
+                    myWriter.WriteLine("{""simulations"": [")
+
                     i = 0
                     For Each myRow As DataGridViewRow In grRuns.SelectedRows
                         If Not myRow.Cells("DONE").Value = True Then
                             ID = myRow.Cells("ID").Value
                             myRun = Runs.Item(ID.Trim.ToUpper)
 
-                            'build the run
                             If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
 
-                            'and write a line to the .bat file to run this model using BAT_RUNR
-                            Dim RelativePath As String = ""
-                            Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir, myRun.getExePath(myModel), RelativePath)
-                            myWriter.WriteLine("""" & RelativePath & """ " & myModel.Args)
+                            Dim TempWorkDir As String = myModel.TempWorkDir & "\" & ID
+                            Select Case myModel.ModelType
+                                Case GeneralFunctions.enmSimulationModel.SOBEK
+                                    TempWorkDir &= "\CMTWORK"
+                            End Select
 
-                            'set "DONE"to true if all output files for this run are present
+                            ' Write JSON object for each simulation
+                            Dim jsonObject As String = "{" &
+                            """ModelType"": """ & myModel.ModelType.ToString & """," &
+                            """Executable"": """ & myRun.getExePath(myModel).Replace("\", "\\") & """," &
+                            """Arguments"": """ & myModel.Args.Replace("""", "\""") & """," &
+                            """WorkDir"": """ & TempWorkDir.Replace("\", "\\") & """"
+
+                            If i < n - 1 Then
+                                jsonObject &= "},"
+                            Else
+                                jsonObject &= "}"
+                            End If
+
+                            myWriter.WriteLine(jsonObject)
+
                             Done = True
                             For Each myFile In myModel.ResultsFiles.Files.Values
                                 If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
@@ -664,19 +671,93 @@ Public Class clsStochastenRuns
                         i += 1
                     Next
 
-                    'after all runs are complete, refresh the entire grid
+                    ' Write JSON array closing
+                    myWriter.WriteLine("]}")
+
                     Call StochastenAnalyse.RefreshRunsGrid(grRuns, btnCharts)
                 End Using
-
             Next
-
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError(ex.Message)
             Return False
         End Try
-
     End Function
+
+    'Public Function BuildSelected(ByRef grRuns As DataGridView, ByRef btnCharts As Button) As Boolean
+
+    '    '------------------------------------------------------------------------------------------------------------------------------
+    '    'this routine actually creates a new instance of the model schematisation(s) to be run and writes them to the temporary workdir
+    '    'it then copies the necessary files into the workdir and kicks off the model(s)
+    '    '------------------------------------------------------------------------------------------------------------------------------
+    '    Dim ID As String, myRun As clsStochastenRun
+    '    Dim i As Long, n As Long
+    '    Dim Done As Boolean
+
+    '    Try
+    '        For Each myModel In StochastenAnalyse.Models.Values
+
+    '            'in order to run all simulations we will here create one encompassing .bat file that will run all simulations
+    '            'this .bat file will be written to the workdir and executed from there
+    '            If myModel.TempWorkDir.Length = 0 Then Throw New Exception("No temporary working directory specified for model " & myModel.Id & ".")
+    '            If Not System.IO.Directory.Exists(myModel.TempWorkDir) Then System.IO.Directory.CreateDirectory(myModel.TempWorkDir)
+    '            Using myWriter As New StreamWriter(myModel.TempWorkDir & "\simulations.json")
+
+
+
+    '                'first figure out how many runs to do
+    '                n = 0
+    '                For Each myrow As DataGridViewRow In grRuns.SelectedRows
+    '                    If Not myrow.Cells("DONE").Value = True Then n += 1
+    '                Next
+
+    '                'build the model schematisation(s) for all selected runs
+    '                i = 0
+    '                For Each myRow As DataGridViewRow In grRuns.SelectedRows
+    '                    If Not myRow.Cells("DONE").Value = True Then
+    '                        ID = myRow.Cells("ID").Value
+    '                        myRun = Runs.Item(ID.Trim.ToUpper)
+
+    '                        'build the run
+    '                        If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
+
+    '                        'and write a line to the .bat file to run this model using BAT_RUNR
+    '                        'some models can be copied
+    '                        myWriter.WriteLine(myModel.ModelType.ToString & "  """ & myRun.getExePath(myModel) & """ " & myModel.Args)
+
+    '                        'If myModel.RunLocalCopy Then
+    '                        '    Dim ModelPath As String = ""
+    '                        '    Me.Setup.GeneralFunctions.AbsoluteToRelativePath(myModel.TempWorkDir, myRun.getExePath(myModel), ModelPath)
+    '                        '    myWriter.WriteLine("""" & ModelPath & """ " & myModel.Args)
+    '                        'Else
+    '                        'End If
+
+
+    '                        'set "DONE"to true if all output files for this run are present
+    '                        Done = True
+    '                        For Each myFile In myModel.ResultsFiles.Files.Values
+    '                            If Not File.Exists(myRun.OutputFilesDir & myFile.FileName) Then
+    '                                Done = False
+    '                            End If
+    '                        Next
+    '                        myRow.Cells("DONE").Value = Done
+    '                    End If
+    '                    i += 1
+    '                Next
+
+    '                'after all runs are complete, refresh the entire grid
+    '                Call StochastenAnalyse.RefreshRunsGrid(grRuns, btnCharts)
+    '            End Using
+
+    '        Next
+
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError(ex.Message)
+    '        Return False
+    '    End Try
+
+    'End Function
 
     Public Sub RunsToGrid(ByRef grRuns As DataGridView)
 

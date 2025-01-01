@@ -63,12 +63,20 @@ Public Class clsStochastenRun
         StochastenAnalyse = myAnalyse
     End Sub
 
-    Public Function getRunDir(ByRef myModel As clsSimulationModel) As String
+    Public Function getModelCaseDir(ByRef myModel As clsSimulationModel) As String
         Return myModel.TempWorkDir & "\" & ID
     End Function
 
+    Public Function getExeDir(ByRef myModel As clsSimulationModel) As String
+        If myModel.RunLocalCopy Then
+            Return myModel.TempWorkDir & "\" & ID
+        Else
+            Return Me.Setup.GeneralFunctions.DirFromFileName(myModel.Exec)
+        End If
+    End Function
+
     Public Function getExePath(ByRef myModel As clsSimulationModel) As String
-        Return getRunDir(myModel) & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
+        Return getExeDir(myModel) & "\" & Me.Setup.GeneralFunctions.FileNameFromPath(myModel.Exec)
     End Function
 
     Public Function getMeteoForcing() As clsMeteoForcing
@@ -169,7 +177,7 @@ Public Class clsStochastenRun
     Public Function DeleteRun() As Boolean
         Try
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
-                Dim runDir As String = getRunDir(myModel) ' myModel.TempWorkDir & "\" & ID
+                Dim runDir As String = getModelCaseDir(myModel) ' myModel.TempWorkDir & "\" & ID
                 'delete the run directory and its contents
                 If System.IO.Directory.Exists(runDir) Then
                     System.IO.Directory.Delete(runDir, True)
@@ -195,7 +203,7 @@ Public Class clsStochastenRun
             For Each myModel As clsSimulationModel In StochastenAnalyse.Models.Values
 
                 'for each run we need to create a unique subdirectory to myModel.TempWorkDir
-                Dim runDir As String = getRunDir(myModel) ' myModel.TempWorkDir & "\" & ID
+                Dim runDir As String = getModelCaseDir(myModel) ' myModel.TempWorkDir & "\" & ID
                 If Not System.IO.Directory.Exists(runDir) Then
                     Me.Setup.Log.AddError("Unable to copy simulation results to the results directory. The directory " & runDir & " which should contain the results does not exist.")
                     nErrors += 1
