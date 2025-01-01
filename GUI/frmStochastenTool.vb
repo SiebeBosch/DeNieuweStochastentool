@@ -5308,14 +5308,11 @@ Public Class frmStochasten
 
     Private Sub btnSimulate_Click(sender As Object, e As EventArgs) Handles btnSimulate.Click
         Try
-            ' Get the directory of the current application
-            Dim appPath As String = AppDomain.CurrentDomain.BaseDirectory
             Dim batRunrPath As String
+            batRunrPath = "c:\Program Files\Hydroconsult\BAT_RUNR\BAT_RUNR.exe"
 
-            If Debugger.IsAttached Then
-                batRunrPath = "c:\Program Files\Hydroconsult\BAT_RUNR\BAT_RUNR.exe"
-            Else
-                batRunrPath = Path.Combine(appPath, "BAT_RUNR.EXE")
+            If Not System.IO.File.Exists(batRunrPath) Then
+                Throw New Exception($"Batch runner executable BAT_RUNR.exe not found in {batRunrPath}. Please install it.")
             End If
 
             For Each myModel In Me.Setup.StochastenAnalyse.Models.Values
@@ -5327,7 +5324,7 @@ Public Class frmStochasten
                 Process.Start(batRunrPath, arguments)
             Next
         Catch ex As Exception
-            MessageBox.Show("Failed to start BAT_RUNR.EXE: " & ex.Message)
+            MessageBox.Show(ex.Message)
         End Try
     End Sub
 
