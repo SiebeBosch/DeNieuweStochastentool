@@ -3001,65 +3001,142 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
+
     Public Function readHIS(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
+        'previous attempts were to read the specific location and parameter from a binary memorystream but it was slow and gave wrong results
+        'so now we'll simply read all results from the HIS-file and write them to the database in one go
         Try
-            Dim MaxInLastTimeStep As Boolean
-            Dim Min As Double, Max As Double, tsMin As Long, tsMax As Long, Avg As Double
+            Dim MaxInLastTimeStep As Boolean = False
             Dim dtRes As New DataTable
 
             If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
-            Using myHisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
-                If myFile.Parameters.Count = 0 Then
-                    Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
-                Else
-                    For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
-                        If myPar.Locations.Count = 0 Then
-                            Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
-                        Else
-                            '--------------------------------------------------------------------------------------------------------------------------------------------
-                            '  writing the results for this run to the database
-                            '  start by reading the entire file to memory. This is supposed to be MUCH faster than reading from file every time
-                            '--------------------------------------------------------------------------------------------------------------------------------------------
 
-                            'database needs to be populated or refreshed for this run. read the hisfile to memory
-                            myHisReader.ReadToMemory()
-                            Using hisReader As New BinaryReader(myHisReader.ms)
+            Dim hisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
+            hisReader.ReadHisHeader()
 
-                                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                                Using myCmd As New SQLite.SQLiteCommand
-                                    myCmd.Connection = Me.Setup.SqliteCon
-                                    Using transaction = Me.Setup.SqliteCon.BeginTransaction
+            'decide the number of timesteps to skip
+            Dim SkipFirstTimesteps As Integer = Math.Ceiling(hisReader.CountTimesteps * ResultsStartPercentage / 100)
 
-                                        'walk through each location and retreive the stochastic results
-                                        For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
-                                            If Not myHisReader.ReadStochasticResultsFromMemoryStream(hisReader, myLoc.ID, myPar.Name, MaxInLastTimeStep, Min, tsMin, Max, tsMax, Avg, ResultsStartPercentage) Then
-                                                Me.Setup.Log.AddError("Could not read results for location " & myLoc.ID & " and parameter " & myPar.Name & ".")
-                                            Else
-                                                'add the outcome of this run to the dictionary of results
-                                                myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
-                                                myCmd.ExecuteNonQuery()
-                                                If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
-                                            End If
-                                        Next
+            If myFile.Parameters.Count = 0 Then
+                Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
+            Else
+                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+                    Dim dtList As New Dictionary(Of String, DataTable)
+                    dtList = hisReader.ReadAllDataOneParameterToDataTableCollection(myPar.Name, SkipFirstTimesteps)
 
-                                        'insert the results for all locations at once
-                                        transaction.Commit() 'this is where the bulk insert is finally executed.
-                                    End Using
-                                End Using
+                    'now that we have all the data in memory, we can write it to the database
+                    If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+                    Using myCmd As New SQLite.SQLiteCommand
+                        myCmd.Connection = Me.Setup.SqliteCon
+                        Using transaction = Me.Setup.SqliteCon.BeginTransaction
 
-                            End Using
-                            myHisReader.Close()
+                            'walk through each location and retreive the stochastic results
+                            Dim iLoc As Integer = 0, nLoc As Integer = myPar.Locations.Count
+                            For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
+                                iLoc += 1
+                                Me.Setup.GeneralFunctions.UpdateProgressBar("", iLoc, nLoc)
 
-                        End If
-                    Next
-                End If
-            End Using
+                                'we can now retrieve the timetable from our list of datatables
+                                If Not dtList.ContainsKey(myLoc.ID.Trim.ToUpper) Then
+                                    Me.Setup.Log.AddError("Location " & myLoc.ID & " not present in the HIS-file.")
+                                    Continue For
+                                End If
+
+                                'retrieve the statistics for this location
+                                Dim MaxVal As Double = dtList.Item(myLoc.ID.Trim.ToUpper).Compute("MAX(DATAVALUE)", "")
+                                Dim MinVal As Double = dtList.Item(myLoc.ID.Trim.ToUpper).Compute("MIN(DATAVALUE)", "")
+                                Dim AvgVal As Double = dtList.Item(myLoc.ID.Trim.ToUpper).Compute("AVG(DATAVALUE)", "")
+                                Dim LastVal As Double = dtList.Item(myLoc.ID.Trim.ToUpper).Rows(myLoc.Duration - 1)("DATAVALUE")
+                                If LastVal = MaxVal Then MaxInLastTimeStep = True Else MaxInLastTimeStep = False
+
+                                'add the outcome of this run to the dictionary of results
+                                myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & MaxVal & "," & MinVal & "," & AvgVal & "," & myRun.P & ");"
+                                myCmd.ExecuteNonQuery()
+                                If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
+                            Next
+
+                            'insert the results for all locations at once
+                            transaction.Commit() 'this is where the bulk insert is finally executed.
+                        End Using
+                    End Using
+
+                Next
+            End If
+
+
             Return True
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function readHIS of class clsStochastenAnalyse: " & ex.Message)
             Return False
         End Try
     End Function
+
+    'Public Function readHIS(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile) As Boolean
+    '    Try
+    '        Dim MaxInLastTimeStep As Boolean
+    '        Dim Min As Double, Max As Double, tsMin As Long, tsMax As Long, Avg As Double
+    '        Dim dtRes As New DataTable
+
+    '        If Not System.IO.File.Exists(myRun.OutputFilesDir & "\" & myFile.FileName) Then Throw New Exception("Fout: resultatenbestand niet gevonden: " & myRun.OutputFilesDir & "\" & myFile.FileName)
+    '        Using myHisReader As New clsHisFileBinaryReader(myRun.OutputFilesDir & "\" & myFile.FileName, Setup)
+    '            If myFile.Parameters.Count = 0 Then
+    '                Me.Setup.Log.AddWarning("no parameters specified for output file " & myFile.FileName & ".")
+    '            Else
+    '                For Each myPar As clsResultsFileParameter In myFile.Parameters.Values 'walk through all parameters associated with this HIS-file
+
+    '                    Me.Setup.GeneralFunctions.UpdateProgressBar("Reading result for run " & myRun.ID, 0, 10, True)
+
+    '                    If myPar.Locations.Count = 0 Then
+    '                        Throw New Exception("Error: no locations specified for parameter " & myPar.Name & " in output file " & myFile.FileName & ".")
+    '                    Else
+    '                        '--------------------------------------------------------------------------------------------------------------------------------------------
+    '                        '  writing the results for this run to the database
+    '                        '  start by reading the entire file to memory. This is supposed to be MUCH faster than reading from file every time
+    '                        '--------------------------------------------------------------------------------------------------------------------------------------------
+
+    '                        'database needs to be populated or refreshed for this run. read the hisfile to memory
+    '                        myHisReader.ReadToMemory()
+    '                        Using hisReader As New BinaryReader(myHisReader.ms)
+
+    '                            If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
+    '                            Using myCmd As New SQLite.SQLiteCommand
+    '                                myCmd.Connection = Me.Setup.SqliteCon
+    '                                Using transaction = Me.Setup.SqliteCon.BeginTransaction
+
+    '                                    'walk through each location and retreive the stochastic results
+    '                                    Dim iLoc As Integer = 0, nLoc As Integer = myPar.Locations.Count
+    '                                    For Each myLoc As clsResultsFileLocation In myPar.Locations.Values  'walk through all locations associated with this HIS-file and parameter
+    '                                        iLoc += 1
+    '                                        Me.Setup.GeneralFunctions.UpdateProgressBar("", iLoc, nloc)
+    '                                        If Not myHisReader.ReadStochasticResultsFromMemoryStream(hisReader, myLoc.ID, myPar.Name, MaxInLastTimeStep, Min, tsMin, Max, tsMax, Avg, ResultsStartPercentage) Then
+    '                                            Me.Setup.Log.AddError("Could not read results for location " & myLoc.ID & " and parameter " & myPar.Name & ".")
+    '                                        Else
+    '                                            'add the outcome of this run to the dictionary of results
+    '                                            myCmd.CommandText = "INSERT INTO RESULTATEN (KLIMAATSCENARIO, DUUR, LOCATIENAAM, RUNID, MAXVAL, MINVAL, AVGVAL, P) VALUES ('" & Setup.StochastenAnalyse.KlimaatScenario.ToString.Trim.ToUpper & "'," & Setup.StochastenAnalyse.Duration & ",'" & myLoc.Name & "','" & myRun.ID & "'," & Max & "," & Min & "," & Avg & "," & myRun.P & ");"
+    '                                            myCmd.ExecuteNonQuery()
+    '                                            If MaxInLastTimeStep = True Then Me.Setup.Log.AddError("Maximum value in last timestep for simulation " & myRun.ID & " and location " & myLoc.ID)
+    '                                        End If
+    '                                    Next
+
+    '                                    'insert the results for all locations at once
+    '                                    transaction.Commit() 'this is where the bulk insert is finally executed.
+    '                                End Using
+    '                            End Using
+
+    '                        End Using
+    '                        myHisReader.Close()
+    '                        Me.Setup.GeneralFunctions.UpdateProgressBar("Results successfully read.", 0, 10, True)
+
+    '                    End If
+    '                Next
+    '            End If
+    '        End Using
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function readHIS of class clsStochastenAnalyse: " & ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
 
 
     Public Function readMAT(ByRef myRun As clsStochastenRun, ByRef myFile As clsResultsFile, LocationNames As Dictionary(Of String, String)) As Boolean

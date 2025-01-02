@@ -342,7 +342,7 @@ Public Class clsHisFileBinaryReader
             For i = 0 To hisFileHeader.Locations.Count - 1
                 dt = New DataTable
                 dt.Columns.Add("", Type.GetType("System.String"))
-                dt.Columns.Add("", Type.GetType("System.Double"))
+                dt.Columns.Add("DATAVALUE", Type.GetType("System.Double"))
                 If Not dtCollection.ContainsKey(hisFileHeader.Locations(i).Trim.ToUpper) Then
                     dtCollection.Add(hisFileHeader.Locations(i).Trim.ToUpper, dt)
                 Else
@@ -918,7 +918,7 @@ Public Class clsHisFileBinaryReader
             Dim locationIndex As Integer = hisFileHeader.Locations.IndexOf(location)
             If locationIndex < 0 Then
                 Dim myLongLoc As clsLongLocation = HIA.GetByID(location)
-                If Not myLongLoc Is Nothing Then
+                If myLongLoc IsNot Nothing Then
                     locationIndex = myLongLoc.Num
                 Else
                     Return False
@@ -989,99 +989,166 @@ Public Class clsHisFileBinaryReader
 
     End Function
 
-    Public Function ReadStochasticResultsFromMemoryStream(ByRef hisReader As BinaryReader, ByVal location As String, ByVal PartOfParameterName As String, ByRef MaxInLastTimeStep As Boolean, ByRef Min As Double, ByRef tsMin As Long, ByRef Max As Double, ByRef tsMax As Long, ByRef Avg As Double, Optional ByVal SkipFirstPercentage As Integer = 0) As Boolean
-        '=====================================================================================================================
-        'this function will read the results of a stochastic run from memory. 
-        'This should be MUCH faster than reading it from file
-        'Therefore the prerequesits for this routine are that the file has already entirely been read to the memory stream
-        'Also we assume that the hisfile header has already been read separately and is present in the variable hisfileheader
-        'see also the function ReadFromMemory
-        '=====================================================================================================================
+    Public Function ReadStochasticResultsFromMemoryStream(
+    ByRef hisReader As BinaryReader,
+    ByVal location As String,
+    ByVal PartOfParameterName As String,
+    ByRef MaxInLastTimeStep As Boolean,
+    ByRef Min As Double,
+    ByRef tsMin As Long,
+    ByRef Max As Double,
+    ByRef tsMax As Long,
+    ByRef Avg As Double,
+    Optional ByVal SkipFirstPercentage As Integer = 0) As Boolean
 
         Try
-            'Author: code courtesy of Deltares (Delft, The Netherlands) via mr. Klaas-Jan van Heeringen
-            'Adjusted by Siebe Bosch on 28-8-2014
-            'Description: Reads statistics from a hisfile in memory and places them in a clsSobekTable class instance
-            Dim Par As String = "", ParFound As Boolean = False
+            If location = "calc_112" Then Stop
 
-            Dim n As Long, Sum As Double, Val As Double
-            Max = -999999999
-            Min = 999999999
-            Avg = 0
+            Dim i As Long = 0, Sum As Double = 0, Val As Double
+            Dim n As Long = 0
+            Dim blockSize As Integer = hisFileHeader.StreamDataBlockSize
+            Dim startDataPos As Long = hisFileHeader.StreamStartDataPosition
+            Dim nSteps As Integer = (ms.Length - startDataPos) \ blockSize
+
+            Dim locationIndex As Integer = hisFileHeader.Locations.IndexOf(location)
+            If locationIndex < 0 Then Return False
+
+            Dim parameterIndex As Integer = hisFileHeader.parameters.IndexOf(PartOfParameterName)
+            If parameterIndex < 0 Then parameterIndex = 0
+
+            Dim bitPosition = (locationIndex * hisFileHeader.parameters.Count + parameterIndex) * 4
+            ms.Position = startDataPos
+
+            Min = Double.MaxValue
+            Max = Double.MinValue
             MaxInLastTimeStep = False
 
-            'we assume that t
-            'if location index not found, it could be a long ID. Check the .hia-file.
-            Dim locationIndex As Integer = hisFileHeader.Locations.IndexOf(location)
-            If locationIndex < 0 Then
-                Dim myLongLoc As clsLongLocation = HIA.GetByID(location)
-                If Not myLongLoc Is Nothing Then
-                    locationIndex = myLongLoc.Num
-                Else
-                    Return False
-                End If
-            End If
+            While ms.Position <= ms.Length - blockSize
+                i += 1
+                Dim timeStepData(blockSize - 1) As Byte
+                hisReader.Read(timeStepData, 0, blockSize)
 
-            'look for the right parameter index
-            For Each Par In hisFileHeader.parameters
-                If InStr(Par.Trim.ToUpper, PartOfParameterName.Trim.ToUpper, CompareMethod.Text) > 0 Then
-                    ParFound = True
-                    Exit For
-                End If
-            Next
+                Dim dataValue As Single = BitConverter.ToSingle(timeStepData, bitPosition)
+                Val = Convert.ToDouble(dataValue)
 
-            'if parameter index not found, then use the first parameter in the hisfile
-            If Not ParFound Then
-                Par = hisFileHeader.parameters.Item(0)
-                Me.Setup.Log.AddError("No parameter in hisfile found containing " & PartOfParameterName & "; first parameter was used.")
-            End If
-
-            Dim parameterIndex As Integer = hisFileHeader.parameters.IndexOf(Par)
-            'If parameterIndex < 0 Then parameterIndex = HIA.longParameters.Item(Par)
-
-            'read the data from the memory stream, using a streamreader
-            Dim bitPosition = (locationIndex * hisFileHeader.parameters.Count + parameterIndex) * 4
-            Dim [step] As Integer = 0
-            Dim [nsteps] As Integer = (ms.Length - hisFileHeader.StreamStartDataPosition) / hisFileHeader.StreamDataBlockSize
-            ms.Position = hisFileHeader.StreamStartDataPosition
-
-            While ms.Position <= (ms.Length - hisFileHeader.StreamDataBlockSize)
-                hisReader.ReadInt32()
-                Dim block = hisReader.ReadBytes(hisFileHeader.StreamDataBlockSize - 4)
-
-                If ([step] + 1) / [nsteps] * 100 >= SkipFirstPercentage Then
+                If nSteps > 0 AndAlso (i / nSteps * 100) >= SkipFirstPercentage Then
                     n += 1
-                    Val = Convert.ToDouble(BitConverter.ToSingle(block, bitPosition))
                     Sum += Val
                     If Val < Min Then
                         Min = Val
-                        tsMin = [step]
+                        tsMin = i
                     End If
                     If Val > Max Then
                         Max = Val
-                        tsMax = [step]
+                        tsMax = i
                     End If
                 End If
-
-                [step] += 1
-
             End While
 
-            If tsMax = [nsteps] - 1 Then MaxInLastTimeStep = True
-            If n = 0 Then
-                Throw New Exception("No results found in hisfile: " & Path)
-            Else
-                Avg = Sum / n
-            End If
-
+            If tsMax = nSteps - 1 Then MaxInLastTimeStep = True
+            Avg = If(n > 0, Sum / n, 0)
             Return True
-
         Catch ex As Exception
-            Me.Setup.Log.AddError(ex.Message)
+            Me.Setup.Log.AddError("Error in ReadStochasticResultsFromMemoryStream: " & ex.Message)
+            Return False
         End Try
 
-
     End Function
+
+
+    'Public Function ReadStochasticResultsFromMemoryStream(ByRef hisReader As BinaryReader, ByVal location As String, ByVal PartOfParameterName As String, ByRef MaxInLastTimeStep As Boolean, ByRef Min As Double, ByRef tsMin As Long, ByRef Max As Double, ByRef tsMax As Long, ByRef Avg As Double, Optional ByVal SkipFirstPercentage As Integer = 0) As Boolean
+    '    '=====================================================================================================================
+    '    'this function will read the results of a stochastic run from memory. 
+    '    'This should be MUCH faster than reading it from file
+    '    'Therefore the prerequesits for this routine are that the file has already entirely been read to the memory stream
+    '    'Also we assume that the hisfile header has already been read separately and is present in the variable hisfileheader
+    '    'see also the function ReadFromMemory
+    '    '=====================================================================================================================
+
+    '    Try
+    '        'Author: code courtesy of Deltares (Delft, The Netherlands) via mr. Klaas-Jan van Heeringen
+    '        'Adjusted by Siebe Bosch on 28-8-2014
+    '        'Description: Reads statistics from a hisfile in memory and places them in a clsSobekTable class instance
+    '        Dim Par As String = "", ParFound As Boolean = False
+
+    '        Dim n As Long, Sum As Double, Val As Double
+    '        Max = -999999999
+    '        Min = 999999999
+    '        Avg = 0
+    '        MaxInLastTimeStep = False
+
+    '        'we assume that t
+    '        'if location index not found, it could be a long ID. Check the .hia-file.
+    '        Dim locationIndex As Integer = hisFileHeader.Locations.IndexOf(location)
+    '        If locationIndex < 0 Then
+    '            Dim myLongLoc As clsLongLocation = HIA.GetByID(location)
+    '            If Not myLongLoc Is Nothing Then
+    '                locationIndex = myLongLoc.Num
+    '            Else
+    '                Return False
+    '            End If
+    '        End If
+
+    '        'look for the right parameter index
+    '        For Each Par In hisFileHeader.parameters
+    '            If InStr(Par.Trim.ToUpper, PartOfParameterName.Trim.ToUpper, CompareMethod.Text) > 0 Then
+    '                ParFound = True
+    '                Exit For
+    '            End If
+    '        Next
+
+    '        'if parameter index not found, then use the first parameter in the hisfile
+    '        If Not ParFound Then
+    '            Par = hisFileHeader.parameters.Item(0)
+    '            Me.Setup.Log.AddError("No parameter in hisfile found containing " & PartOfParameterName & "; first parameter was used.")
+    '        End If
+
+    '        Dim parameterIndex As Integer = hisFileHeader.parameters.IndexOf(Par)
+    '        'If parameterIndex < 0 Then parameterIndex = HIA.longParameters.Item(Par)
+
+    '        'read the data from the memory stream, using a streamreader
+    '        Dim bitPosition = (locationIndex * hisFileHeader.parameters.Count + parameterIndex) * 4
+    '        Dim [step] As Integer = 0
+    '        Dim [nsteps] As Integer = (ms.Length - hisFileHeader.StreamStartDataPosition) / hisFileHeader.StreamDataBlockSize
+    '        ms.Position = hisFileHeader.StreamStartDataPosition
+
+    '        While ms.Position <= (ms.Length - hisFileHeader.StreamDataBlockSize)
+    '            hisReader.ReadInt32()
+    '            Dim block = hisReader.ReadBytes(hisFileHeader.StreamDataBlockSize - 4)
+
+    '            If ([step] + 1) / [nsteps] * 100 >= SkipFirstPercentage Then
+    '                n += 1
+    '                Val = Convert.ToDouble(BitConverter.ToSingle(block, bitPosition))
+    '                Sum += Val
+    '                If Val < Min Then
+    '                    Min = Val
+    '                    tsMin = [step]
+    '                End If
+    '                If Val > Max Then
+    '                    Max = Val
+    '                    tsMax = [step]
+    '                End If
+    '            End If
+
+    '            [step] += 1
+
+    '        End While
+
+    '        If tsMax = [nsteps] - 1 Then MaxInLastTimeStep = True
+    '        If n = 0 Then
+    '            Throw New Exception("No results found in hisfile: " & Path)
+    '        Else
+    '            Avg = Sum / n
+    '        End If
+
+    '        Return True
+
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError(ex.Message)
+    '    End Try
+
+
+    'End Function
 
 
     Public Function ReadHisHeader(Optional ByVal UpdateProgressbar As Boolean = False) As stHisFileHeader
