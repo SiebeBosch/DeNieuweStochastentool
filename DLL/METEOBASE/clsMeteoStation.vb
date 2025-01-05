@@ -4,7 +4,7 @@ Imports STOCHLIB.General
 Public Class clsMeteoStation
     Friend ID As String
     Friend CatchmentIdx As Integer    'index number of the catchment
-    Friend Factor As Double           'discharge factor for this station
+    Friend ConstantFactor As Double   'Area Reduction Factor for this station
     Friend RepresentsCSO As Boolean   'Whether this station represents a Combined Sewer Overflow location
     Private setup As clsSetup
 

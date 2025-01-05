@@ -471,6 +471,9 @@ Public Class frmStochasten
             da.Fill(dt)
             grMeteoStations.DataSource = dt
 
+            grMeteoStations.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+
+
             Me.Setup.SqliteCon.Close()
 
         Catch fail As Exception

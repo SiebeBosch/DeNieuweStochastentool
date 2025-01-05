@@ -405,7 +405,7 @@ Public Class clsStochastenRun
                 For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                     If Station.StationType = enmMeteoStationType.precipitation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
+                        myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.ConstantFactor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
                     ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
                         myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
@@ -614,7 +614,7 @@ Public Class clsStochastenRun
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
                     Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
+                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.ConstantFactor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
                 ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                     Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
                     myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
@@ -793,7 +793,7 @@ Public Class clsStochastenRun
                     'generate a HBV rainfall file and set both the absolute and relative paths
                     BuiFile = runDir & "\" & Station.ID & ".txt"
                     Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
-                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.Factor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
+                    myBui.BuildSTOWATYPE(Station.Name, VolumeClass.Volume, Station.ConstantFactor, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd)
                     myBui.WriteHBV(BuiFile, Station, 3)
                 ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                     'Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)

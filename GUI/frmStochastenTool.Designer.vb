@@ -770,7 +770,7 @@ Partial Class frmStochasten
         Me.GroupBox1.Controls.Add(Me.hlpOutput2)
         Me.GroupBox1.Controls.Add(Me.chk2D)
         Me.GroupBox1.Controls.Add(Me.chk1D)
-        Me.GroupBox1.Location = New System.Drawing.Point(444, 466)
+        Me.GroupBox1.Location = New System.Drawing.Point(701, 466)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
@@ -828,7 +828,7 @@ Partial Class frmStochasten
         Me.grMeteo.Margin = New System.Windows.Forms.Padding(4)
         Me.grMeteo.Name = "grMeteo"
         Me.grMeteo.Padding = New System.Windows.Forms.Padding(4)
-        Me.grMeteo.Size = New System.Drawing.Size(428, 267)
+        Me.grMeteo.Size = New System.Drawing.Size(685, 267)
         Me.grMeteo.TabIndex = 40
         Me.grMeteo.TabStop = False
         Me.grMeteo.Text = "Meteo"
@@ -837,7 +837,7 @@ Partial Class frmStochasten
         '
         Me.hlpMeteo2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.hlpMeteo2.BackColor = System.Drawing.Color.Gold
-        Me.hlpMeteo2.Location = New System.Drawing.Point(387, 22)
+        Me.hlpMeteo2.Location = New System.Drawing.Point(644, 22)
         Me.hlpMeteo2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.hlpMeteo2.Name = "hlpMeteo2"
         Me.hlpMeteo2.Size = New System.Drawing.Size(33, 31)
@@ -849,7 +849,7 @@ Partial Class frmStochasten
         '
         Me.btnRemoveMeteoStation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnRemoveMeteoStation.BackColor = System.Drawing.Color.IndianRed
-        Me.btnRemoveMeteoStation.Location = New System.Drawing.Point(387, 96)
+        Me.btnRemoveMeteoStation.Location = New System.Drawing.Point(644, 96)
         Me.btnRemoveMeteoStation.Margin = New System.Windows.Forms.Padding(4)
         Me.btnRemoveMeteoStation.Name = "btnRemoveMeteoStation"
         Me.btnRemoveMeteoStation.Size = New System.Drawing.Size(33, 31)
@@ -865,14 +865,14 @@ Partial Class frmStochasten
         Me.grMeteoStations.Margin = New System.Windows.Forms.Padding(4)
         Me.grMeteoStations.Name = "grMeteoStations"
         Me.grMeteoStations.RowHeadersWidth = 51
-        Me.grMeteoStations.Size = New System.Drawing.Size(357, 218)
+        Me.grMeteoStations.Size = New System.Drawing.Size(620, 218)
         Me.grMeteoStations.TabIndex = 0
         '
         'btnAddMeteoStation
         '
         Me.btnAddMeteoStation.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnAddMeteoStation.BackColor = System.Drawing.Color.MediumSeaGreen
-        Me.btnAddMeteoStation.Location = New System.Drawing.Point(387, 59)
+        Me.btnAddMeteoStation.Location = New System.Drawing.Point(644, 59)
         Me.btnAddMeteoStation.Margin = New System.Windows.Forms.Padding(4)
         Me.btnAddMeteoStation.Name = "btnAddMeteoStation"
         Me.btnAddMeteoStation.Size = New System.Drawing.Size(33, 31)
@@ -893,11 +893,11 @@ Partial Class frmStochasten
         Me.grNabewerking.Controls.Add(Me.txtResultsStartPercentage)
         Me.grNabewerking.Controls.Add(Me.cmbClimate)
         Me.grNabewerking.Controls.Add(Me.Label8)
-        Me.grNabewerking.Location = New System.Drawing.Point(780, 314)
+        Me.grNabewerking.Location = New System.Drawing.Point(1037, 314)
         Me.grNabewerking.Margin = New System.Windows.Forms.Padding(4)
         Me.grNabewerking.Name = "grNabewerking"
         Me.grNabewerking.Padding = New System.Windows.Forms.Padding(4)
-        Me.grNabewerking.Size = New System.Drawing.Size(884, 266)
+        Me.grNabewerking.Size = New System.Drawing.Size(627, 266)
         Me.grNabewerking.TabIndex = 39
         Me.grNabewerking.TabStop = False
         Me.grNabewerking.Text = "Nabewerking"
@@ -906,7 +906,7 @@ Partial Class frmStochasten
         '
         Me.hlpNabewerking2.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.hlpNabewerking2.BackColor = System.Drawing.Color.Gold
-        Me.hlpNabewerking2.Location = New System.Drawing.Point(844, 20)
+        Me.hlpNabewerking2.Location = New System.Drawing.Point(587, 20)
         Me.hlpNabewerking2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.hlpNabewerking2.Name = "hlpNabewerking2"
         Me.hlpNabewerking2.Size = New System.Drawing.Size(33, 31)
@@ -985,7 +985,7 @@ Partial Class frmStochasten
         Me.grBerekeningen.Controls.Add(Me.cmbDuration)
         Me.grBerekeningen.Controls.Add(Me.Label4)
         Me.grBerekeningen.Controls.Add(Me.txtMaxParallel)
-        Me.grBerekeningen.Location = New System.Drawing.Point(444, 314)
+        Me.grBerekeningen.Location = New System.Drawing.Point(701, 314)
         Me.grBerekeningen.Margin = New System.Windows.Forms.Padding(4)
         Me.grBerekeningen.Name = "grBerekeningen"
         Me.grBerekeningen.Padding = New System.Windows.Forms.Padding(4)

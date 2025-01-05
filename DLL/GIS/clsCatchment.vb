@@ -645,7 +645,7 @@ Public Class clsCatchment
                     'since we already have the total m3/s for the catchment. 
                     'Now we'll have to start writing the results based on the actual areas! Therefore GISArea - RRCSOLocationsArea
                     myVal = myRecord.GetValue(0)                                  'drainage flux in m3/s
-                    myVal = ms.Factor * ts * Me.Setup.GeneralFunctions.m3ps2mmps(myVal, AreaGIS - ModelAreas.RRPavedNonCSO) 'convert to mm/ts
+                    myVal = ms.ConstantFactor * ts * Me.Setup.GeneralFunctions.m3ps2mmps(myVal, AreaGIS - ModelAreas.RRPavedNonCSO) 'convert to mm/ts
                 End If
                 BuiFile.Values(i, msIdx) = myVal
             Next
@@ -667,7 +667,7 @@ Public Class clsCatchment
         'naamgeving van de neerslagstations wordt opgebouwd uit de eerste drie karakters van de naam + "_" + indexnummer (om uniciteit te garanderen)
         'plus "_QFACT_" en dan de oppervlaktegewogen afvoercoefficient
         ms = New clsMeteoStation(Me.Setup)
-        ms.Factor = 1
+        ms.ConstantFactor = 1
         ms.CatchmentIdx = CatchmentIdx
         ms.ID = Left(ID, 3) & "_" & ms.CatchmentIdx.ToString.Trim & "_QFACT_1.0000"
         BuiFile.AddMeteoStation(ms)
@@ -678,8 +678,8 @@ Public Class clsCatchment
             Else
                 ms = New clsMeteoStation(Me.Setup)
                 ms.CatchmentIdx = CatchmentIdx
-                ms.Factor = Math.Round(myArea.WeightedDischargeCoefFactor, 4)
-                ms.ID = Left(ID, 3) & "_" & ms.CatchmentIdx.ToString.Trim & "_QFACT_" & Format(ms.Factor, "0.0000")
+                ms.ConstantFactor = Math.Round(myArea.WeightedDischargeCoefFactor, 4)
+                ms.ID = Left(ID, 3) & "_" & ms.CatchmentIdx.ToString.Trim & "_QFACT_" & Format(ms.ConstantFactor, "0.0000")
                 myArea.MeteoStation = BuiFile.MeteoStations.GetAdd(ms, ms.ID.Trim.ToUpper)
             End If
         Next
@@ -687,7 +687,7 @@ Public Class clsCatchment
         If AddCSOStation Then
             'a separate rainfall station for all Combined Sewage Overflows
             ms = New clsMeteoStation(Me.Setup)
-            ms.Factor = 1
+            ms.ConstantFactor = 1
             ms.CatchmentIdx = CatchmentIdx
             ms.RepresentsCSO = True
             ms.ID = Left(ID, 3) & "_" & ms.CatchmentIdx.ToString.Trim & "_CSO"

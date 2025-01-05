@@ -3,10 +3,7 @@
   "WorkspaceRootPath": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\sobek\\clshisfilebinaryreader.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenanalyse.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\sobek\\clsbuifile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
@@ -15,6 +12,30 @@
     {
       "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
       "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\meteobase\\clsmeteostations.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenrun.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\meteobase\\clsmeteostation.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\gis\\clscatchments.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\gis\\clscatchment.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenanalyse.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\sobek\\clshisfilebinaryreader.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{00000000-0000-0000-0000-000000000000}|\u003CSolution\u003E|StochastenTool||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmpublish.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
@@ -49,32 +70,122 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "clsBuiFile.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\SOBEK\\clsBuiFile.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\SOBEK\\clsBuiFile.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\SOBEK\\clsBuiFile.vb",
+              "RelativeToolTip": "..\\DLL\\SOBEK\\clsBuiFile.vb",
+              "ViewState": "AgIAANwAAAAAAAAAAAD4v+UAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-05T09:27:31.621Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "clsCatchments.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\GIS\\clsCatchments.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\GIS\\clsCatchments.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\GIS\\clsCatchments.vb",
+              "RelativeToolTip": "..\\DLL\\GIS\\clsCatchments.vb",
+              "ViewState": "AgIAAMAAAAAAAAAAAAASwM4AAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-05T09:03:06.131Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "clsCatchment.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\GIS\\clsCatchment.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\GIS\\clsCatchment.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\GIS\\clsCatchment.vb",
+              "RelativeToolTip": "..\\DLL\\GIS\\clsCatchment.vb",
+              "ViewState": "AgIAAJwCAAAAAAAAAAASwKoCAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-05T09:01:43.865Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "clsMeteoStation.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\METEOBASE\\clsMeteoStation.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\METEOBASE\\clsMeteoStation.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\METEOBASE\\clsMeteoStation.vb",
+              "RelativeToolTip": "..\\DLL\\METEOBASE\\clsMeteoStation.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-05T08:58:39.73Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "clsMeteoStations.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\METEOBASE\\clsMeteoStations.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\METEOBASE\\clsMeteoStations.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\METEOBASE\\clsMeteoStations.vb",
+              "RelativeToolTip": "..\\DLL\\METEOBASE\\clsMeteoStations.vb",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAkwBwAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-05T08:57:46.145Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "clsStochastenRun.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRun.vb",
+              "ViewState": "AgIAAIoBAAAAAAAAAAAswJcBAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-05T08:33:05.909Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "StochastenTool",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\StochastenTool.vbproj",
+              "RelativeDocumentMoniker": "StochastenTool.vbproj",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\StochastenTool.vbproj",
+              "RelativeToolTip": "StochastenTool.vbproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-01-02T08:24:04.301Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "clsHisFileBinaryReader.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\SOBEK\\clsHisFileBinaryReader.vb",
               "RelativeDocumentMoniker": "..\\DLL\\SOBEK\\clsHisFileBinaryReader.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\SOBEK\\clsHisFileBinaryReader.vb",
               "RelativeToolTip": "..\\DLL\\SOBEK\\clsHisFileBinaryReader.vb",
-              "ViewState": "AgIAAEsBAAAAAAAAAAAMwFMBAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEIBAAAAAAAAAAAMwGcBAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-01-01T22:16:54.481Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
               "Title": "clsStochastenAnalyse.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenAnalyse.vb",
-              "ViewState": "AgIAAOYLAAAAAAAAAAAWwMELAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAADIAAAAAAAAAAAAqwD8AAAApAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-01-01T22:14:19.703Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 11,
               "Title": "frmPublish.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmPublish.vb",
               "RelativeDocumentMoniker": "frmPublish.vb",
@@ -86,20 +197,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "frmStochastenTool.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeDocumentMoniker": "frmStochastenTool.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeToolTip": "frmStochastenTool.vb",
-              "ViewState": "AgIAALQSAAAAAAAAAAAnwLwSAAAmAAAAAAAAAA==",
+              "ViewState": "AgIAAGwKAAAAAAAAAAAhwHUKAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-01-01T22:14:08.421Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "frmStochastenTool.vb [Design]",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeDocumentMoniker": "frmStochastenTool.vb",

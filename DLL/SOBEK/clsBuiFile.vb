@@ -226,7 +226,7 @@ Public Class clsBuiFile
         Return myStation
     End Function
 
-    Public Function BuildSTOWATYPE(ByVal StationName As String, ByVal Vol As Double, ByVal ARF As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer) As Boolean
+    Public Function BuildSTOWATYPE(ByVal StationName As String, ByVal Vol As Double, ByVal ConstantReductionFactor As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer) As Boolean
 
         Dim i As Integer
         Dim ms As clsMeteoStation
@@ -234,12 +234,11 @@ Public Class clsBuiFile
 
         ms = GetAddMeteoStation(StationName.Trim.ToUpper, StationName)
 
-
         Call InitializeRecords(StartDate, StartDate.AddHours(Fractie.Count + Uitloop), New TimeSpan(1, 0, 0))
 
-        'werkelijke bui
+        'bui, eventueel met constante gebiedsreductiefactor
         For i = 0 To Fractie.Count - 1
-            Values(i, 0) = Vol * ARF * Fractie(i)
+            Values(i, 0) = Vol * ms.ConstantFactor * Fractie(i)
         Next
 
         'uitloop

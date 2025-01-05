@@ -23,7 +23,7 @@ Public Class clsMeteoStations
         Dim myStation As New clsMeteoStation(Me.setup)
         myStation.ID = Name
         myStation.Name = Name
-        myStation.Factor = ARF
+        myStation.ConstantFactor = ARF
         myStation.StationType = Me.setup.GeneralFunctions.getMeteoStationTypeFromString(soort)
         MeteoStations.Add(myStation.ID, myStation)
     End Sub

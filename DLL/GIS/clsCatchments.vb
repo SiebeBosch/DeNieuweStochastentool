@@ -203,7 +203,7 @@ Public Class clsCatchments
                         'since we already have the total m3/s for the catchment. 
                         'Now we'll have to start writing the results based on the actual areas! Therefore GISArea - RRCSOLocationsArea
                         myVal = myRecord.GetValue(0)                                  'drainage flux in m3/s
-                        myVal = ms.Factor * ts * Me.setup.GeneralFunctions.m3ps2mmps(myVal, Catchment.TotalShape.Area - Catchment.ModelAreas.RRPavedCSO) 'convert to mm/ts
+                        myVal = ms.ConstantFactor * ts * Me.setup.GeneralFunctions.m3ps2mmps(myVal, Catchment.TotalShape.Area - Catchment.ModelAreas.RRPavedCSO) 'convert to mm/ts
                     End If
                     myStr &= (" " & Format(myVal, Formatting))
                 Next
