@@ -229,7 +229,7 @@ Public Class frmStochasten
         'de meteo stations
         Me.Setup.StochastenAnalyse.MeteoStations.Initialize()
         For Each myRow As DataGridViewRow In grMeteoStations.Rows
-            Me.Setup.StochastenAnalyse.MeteoStations.Add(myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value)
+            Me.Setup.StochastenAnalyse.MeteoStations.Add(myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value, myRow.Cells(3).Value, myRow.Cells(4).Value)
         Next
 
         'een d-hydromodel op de server of via de casemanager kan niet in combinatie met andere modellen draaien omdat het zelfstandig alle runs aanstuurt
@@ -452,28 +452,40 @@ Public Class frmStochasten
     End Function
 
     Public Sub BuildMeteoStationsGrid()
-        Dim query As [String]
-
-        'this routine refreshes the datagridview that me.Setup.contains meteostations
-        'create a database me.Setup.connection to the SQLite database that me.Setup.contains the me.Setup.configuration of stochasts.
-        'the name of the me.Setup.connection is equal to the path to the database file
-
         Try
-
             Dim da As SQLite.SQLiteDataAdapter
             Dim dt As New DataTable
-
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
-            'populate the grid me.Setup.containing meteo stations
-            query = "SELECT naam, soort, ARF from METEOSTATIONS;"
+            'First load the data
+            Dim query As String = "SELECT naam, soort, gebiedsreductie, ARF, oppervlak from METEOSTATIONS;"
             da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
             da.Fill(dt)
+
+            'populate our datagrid with the result of the query
             grMeteoStations.DataSource = dt
 
+            ''Create the ComboBox column
+            'Dim colGebiedsReductie As New DataGridViewComboBoxColumn()
+            'colGebiedsReductie.DataPropertyName = "gebiedsreductie"
+            'colGebiedsReductie.HeaderText = "Gebiedsreductie"
+            'colGebiedsReductie.Name = "colGebiedsreductie"
+
+            ''Instead of using enum values directly, create a list of strings
+            'Dim values As New List(Of String)
+            'For Each value In [Enum].GetValues(GetType(STOCHLIB.GeneralFunctions.enmGebiedsreductie))
+            '    values.Add(value.ToString())
+            'Next
+            'colGebiedsReductie.DataSource = values
+
+            ''Replace the existing column
+            'If grMeteoStations.Columns.Contains("gebiedsreductie") Then
+            '    Dim columnIndex As Integer = grMeteoStations.Columns("gebiedsreductie").Index
+            '    grMeteoStations.Columns.RemoveAt(columnIndex)
+            '    grMeteoStations.Columns.Insert(columnIndex, colGebiedsReductie)
+            'End If
+
             grMeteoStations.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-
-
             Me.Setup.SqliteCon.Close()
 
         Catch fail As Exception
@@ -482,7 +494,6 @@ Public Class frmStochasten
             MessageBox.Show([error])
             Me.Close()
         End Try
-
     End Sub
 
 
@@ -2663,7 +2674,17 @@ Public Class frmStochasten
             If grMeteoStations.Rows.Count > 0 Then
                 Dim Naam As String = grMeteoStations.Rows(e.RowIndex).Cells(0).Value
                 Dim Type As String = grMeteoStations.Rows(e.RowIndex).Cells(1).Value.ToString.ToLower
-                Dim ARF As Double = grMeteoStations.Rows(e.RowIndex).Cells(2).Value
+
+                Dim GebiedsReductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie = enmGebiedsreductie.constante
+                If [Enum].TryParse(grMeteoStations.Rows(e.RowIndex).Cells(2).Value.ToString(), True, GebiedsReductie) Then
+                    ' Successfully parsed - GebiedsReductie now contains the enum value
+                Else
+                    ' Handle invalid value case
+                    MessageBox.Show("Invalid value for GebiedsReductie")
+                End If
+
+                Dim ARF As Double = grMeteoStations.Rows(e.RowIndex).Cells(3).Value
+                Dim oppervlak As Double = If(IsDBNull(grMeteoStations.Rows(e.RowIndex).Cells(4).Value), 0, grMeteoStations.Rows(e.RowIndex).Cells(4).Value)
 
                 If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
                 Dim cmd As New SQLite.SQLiteCommand With {
@@ -2675,10 +2696,10 @@ Public Class frmStochasten
                 da.Fill(dt)
 
                 If dt.Rows.Count = 0 Then
-                    cmd.CommandText = "INSERT INTO METEOSTATIONS (naam, soort, ARF) VALUES ('" & Naam & "','" & Type & "'," & ARF & ");"
+                    cmd.CommandText = "INSERT INTO METEOSTATIONS (naam, soort, gebiedsreductie, ARF, oppervlak) VALUES ('" & Naam & "','" & Type & "','" & GebiedsReductie.ToString & "'," & ARF & "," & oppervlak & ");"
                     cmd.ExecuteNonQuery()
                 Else
-                    query = "UPDATE METEOSTATIONS SET naam='" & Naam & "',soort='" & Type & "',ARF=" & ARF & ";"
+                    query = "UPDATE METEOSTATIONS SET naam='" & Naam & "',soort='" & Type & "',gebiedsreductie='" & GebiedsReductie.ToString & "',ARF=" & ARF & ",oppervlak=" & oppervlak & ";"
                     Dim newCommand = New SQLite.SQLiteCommand(query, Me.Setup.SqliteCon)
                     newCommand.ExecuteNonQuery()
                 End If
@@ -2690,13 +2711,13 @@ Public Class frmStochasten
 
     Private Sub BtnAddMeteoStation_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddMeteoStation.Click
         If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
-            Dim myForm As New STOCHLIB.frmAddMeteoStation
+            Dim myForm As New STOCHLIB.frmAddMeteoStation(Me.Setup)
             myForm.ShowDialog()
             If myForm.DialogResult = Windows.Forms.DialogResult.OK Then
                 If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
                 Dim cmd As New SQLite.SQLiteCommand With {
                 .Connection = Me.Setup.SqliteCon,
-                .CommandText = "INSERT INTO METEOSTATIONS (naam, soort, ARF) VALUES ('" & myForm.naam & "','" & myForm.soort & "'," & myForm.ARF & ");"
+                .CommandText = "INSERT INTO METEOSTATIONS (naam, soort, gebiedsreductie, ARF, oppervlak) VALUES ('" & myForm.naam & "','" & myForm.soort & "','" & myForm.gebiedsreductie.ToString & "'," & myForm.ARF & "," & myForm.oppervlak & ");"
                     }
                 cmd.ExecuteNonQuery()
                 Me.Setup.SqliteCon.Close()
@@ -3212,7 +3233,9 @@ Public Class frmStochasten
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "METEOSTATIONS") Then Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "METEOSTATIONS")
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "SEASON") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "NAAM", enmSQLiteDataType.SQLITETEXT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "SOORT") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "SOORT", enmSQLiteDataType.SQLITETEXT)
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "GEBIEDSREDUCTIE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "GEBIEDSREDUCTIE", enmSQLiteDataType.SQLITETEXT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "ARF") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "ARF", enmSQLiteDataType.SQLITEREAL)
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "METEOSTATIONS", "OPPERVLAK") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "METEOSTATIONS", "OPPERVLAK", enmSQLiteDataType.SQLITEREAL)
     End Sub
 
     Public Sub UpdateRandknopenTable(progress As Integer)

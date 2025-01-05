@@ -19,11 +19,13 @@ Public Class clsMeteoStations
         MeteoStations = New Dictionary(Of String, clsMeteoStation)
     End Sub
 
-    Public Sub Add(ByVal Name As String, ByVal soort As String, ByVal ARF As Double)
+    Public Sub Add(ByVal Name As String, ByVal soort As String, ByVal gebiedsreductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie, ByVal ARF As Double, ByVal oppervlak As Double)
         Dim myStation As New clsMeteoStation(Me.setup)
         myStation.ID = Name
         myStation.Name = Name
+        myStation.gebiedsreductie = gebiedsreductie
         myStation.ConstantFactor = ARF
+        myStation.oppervlak = oppervlak
         myStation.StationType = Me.setup.GeneralFunctions.getMeteoStationTypeFromString(soort)
         MeteoStations.Add(myStation.ID, myStation)
     End Sub

@@ -25,6 +25,11 @@ Public Class GeneralFunctions
         _Message = 2
     End Enum
 
+    Public Enum enmGebiedsreductie
+        constante = 0
+        oppervlak = 1
+    End Enum
+
     Structure StrTimeSeries
         Public ID As String
         Public LOCATIONID As String
