@@ -4,8 +4,8 @@ Imports STOCHLIB.General
 Public Class clsMeteoStation
     Friend ID As String
     Friend CatchmentIdx As Integer    'index number of the catchment
-    Friend gebiedsreductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie
-    Friend ConstantFactor As Double   'Area Reduction Factor for this station
+    Friend gebiedsreductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie = GeneralFunctions.enmGebiedsreductie.constante
+    Friend ConstantFactor As Double = 1   'Area Reduction Factor for this station
     Friend oppervlak As Double        'Area of the catchment in km2
 
     Friend RepresentsCSO As Boolean   'Whether this station represents a Combined Sewer Overflow location

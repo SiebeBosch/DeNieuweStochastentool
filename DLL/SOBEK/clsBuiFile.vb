@@ -226,20 +226,32 @@ Public Class clsBuiFile
         Return myStation
     End Function
 
-    Public Function BuildSTOWATYPE(ByVal StationName As String, ByVal Vol As Double, ByVal ConstantReductionFactor As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer) As Boolean
+    Public Function BuildSTOWATYPE(ByVal StationName As String, ByVal Vol As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer, gebiedsreductie As GeneralFunctions.enmGebiedsreductie, constantARF As Double, oppervlak As Double) As Boolean
 
         Dim i As Integer
         Dim ms As clsMeteoStation
         TimeStep = New TimeSpan(1, 0, 0)
 
         ms = GetAddMeteoStation(StationName.Trim.ToUpper, StationName)
-
+        ms.gebiedsreductie = gebiedsreductie
+        ms.ConstantFactor = constantARF
+        ms.oppervlak = oppervlak
         Call InitializeRecords(StartDate, StartDate.AddHours(Fractie.Count + Uitloop), New TimeSpan(1, 0, 0))
 
-        'bui, eventueel met constante gebiedsreductiefactor
-        For i = 0 To Fractie.Count - 1
-            Values(i, 0) = Vol * ms.ConstantFactor * Fractie(i)
-        Next
+        Select Case ms.gebiedsreductie
+            Case Is = STOCHLIB.GeneralFunctions.enmGebiedsreductie.constante
+                'bui, eventueel met constante gebiedsreductiefactor
+                For i = 0 To Fractie.Count - 1
+                    Values(i, 0) = Vol * ms.ConstantFactor * Fractie(i)
+                Next
+            Case Is = GeneralFunctions.enmGebiedsreductie.oppervlak
+                'bui, bereken gebiedsreductie op basis van het oppervlak
+                'neem aan dat de tijdstapgrootte 1 uur is
+                Vol = Vol * setup.Gebiedsreductie.CalculateReductionFactor(Vol, Fractie.Count * 60, ms.oppervlak)
+                For i = 0 To Fractie.Count - 1
+                    Values(i, 0) = Vol * Fractie(i)
+                Next
+        End Select
 
         'uitloop
         For i = Fractie.Count To Fractie.Count + Uitloop - 1

@@ -229,7 +229,8 @@ Public Class frmStochasten
         'de meteo stations
         Me.Setup.StochastenAnalyse.MeteoStations.Initialize()
         For Each myRow As DataGridViewRow In grMeteoStations.Rows
-            Me.Setup.StochastenAnalyse.MeteoStations.Add(myRow.Cells(0).Value, myRow.Cells(1).Value, myRow.Cells(2).Value, myRow.Cells(3).Value, myRow.Cells(4).Value)
+            Dim gebiedsreductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie = [Enum].Parse(GetType(STOCHLIB.GeneralFunctions.enmGebiedsreductie), myRow.Cells(2).Value.ToString())
+            Me.Setup.StochastenAnalyse.MeteoStations.Add(myRow.Cells(0).Value, myRow.Cells(1).Value, gebiedsreductie, myRow.Cells(3).Value, myRow.Cells(4).Value)
         Next
 
         'een d-hydromodel op de server of via de casemanager kan niet in combinatie met andere modellen draaien omdat het zelfstandig alle runs aanstuurt
@@ -2661,53 +2662,83 @@ Public Class frmStochasten
 
 
     End Sub
+    Private Sub GrNeerslagstations_CellValueChanged(sender As Object, e As DataGridViewCellEventArgs) Handles grMeteoStations.CellValueChanged
 
-    Private Sub GrNeerslagstations_CellValueChanged(ByVal sender As Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles grMeteoStations.CellValueChanged
-        Dim query As String
-        Dim da As SQLite.SQLiteDataAdapter
-        Dim dt As New DataTable
-
-        '--------------------------------------------------------------------------------------------
-        'deze routine werkt een neerslagstation bij in de database
-        '--------------------------------------------------------------------------------------------
-        If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then
-            If grMeteoStations.Rows.Count > 0 Then
-                Dim Naam As String = grMeteoStations.Rows(e.RowIndex).Cells(0).Value
-                Dim Type As String = grMeteoStations.Rows(e.RowIndex).Cells(1).Value.ToString.ToLower
-
-                Dim GebiedsReductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie = enmGebiedsreductie.constante
-                If [Enum].TryParse(grMeteoStations.Rows(e.RowIndex).Cells(2).Value.ToString(), True, GebiedsReductie) Then
-                    ' Successfully parsed - GebiedsReductie now contains the enum value
-                Else
-                    ' Handle invalid value case
-                    MessageBox.Show("Invalid value for GebiedsReductie")
-                End If
-
-                Dim ARF As Double = grMeteoStations.Rows(e.RowIndex).Cells(3).Value
-                Dim oppervlak As Double = If(IsDBNull(grMeteoStations.Rows(e.RowIndex).Cells(4).Value), 0, grMeteoStations.Rows(e.RowIndex).Cells(4).Value)
-
-                If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
-                Dim cmd As New SQLite.SQLiteCommand With {
-                .Connection = Me.Setup.SqliteCon
-                    }
-
-                query = "SELECT * from METEOSTATIONS where naam='" & Naam & "';"
-                da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
-                da.Fill(dt)
-
-                If dt.Rows.Count = 0 Then
-                    cmd.CommandText = "INSERT INTO METEOSTATIONS (naam, soort, gebiedsreductie, ARF, oppervlak) VALUES ('" & Naam & "','" & Type & "','" & GebiedsReductie.ToString & "'," & ARF & "," & oppervlak & ");"
-                    cmd.ExecuteNonQuery()
-                Else
-                    query = "UPDATE METEOSTATIONS SET naam='" & Naam & "',soort='" & Type & "',gebiedsreductie='" & GebiedsReductie.ToString & "',ARF=" & ARF & ",oppervlak=" & oppervlak & ";"
-                    Dim newCommand = New SQLite.SQLiteCommand(query, Me.Setup.SqliteCon)
-                    newCommand.ExecuteNonQuery()
-                End If
-
-            End If
-            Me.Setup.SqliteCon.Close()
+        If String.IsNullOrEmpty(cmbClimate.Text) OrElse String.IsNullOrEmpty(cmbDuration.Text) OrElse Setup.SqliteCon Is Nothing Then
+            Return
         End If
+        If grMeteoStations.Rows.Count = 0 Then Return
+
+        Try
+            Using conn As New SQLite.SQLiteConnection(Setup.SqliteCon.ConnectionString)
+                conn.Open()
+
+                Dim row = grMeteoStations.Rows(e.RowIndex)
+                Dim naam As String = row.Cells(0).Value?.ToString()
+                Dim type As String = row.Cells(1).Value?.ToString()?.ToLower()
+
+                ' Parse GebiedsReductie
+                Dim gebiedsReductie As enmGebiedsreductie
+                If Not [Enum].TryParse(row.Cells(2).Value?.ToString(), True, gebiedsReductie) Then
+                    MessageBox.Show("Invalid value for GebiedsReductie")
+                    Return
+                End If
+
+                Dim arf As Double = Convert.ToDouble(row.Cells(3).Value)
+                Dim oppervlak As Double = If(IsDBNull(row.Cells(4).Value), 0, Convert.ToDouble(row.Cells(4).Value))
+
+                Dim query As String
+                Using cmd As New SQLite.SQLiteCommand(conn)
+                    Select Case e.ColumnIndex
+                        Case 0 ' Name updated
+                            query = "UPDATE METEOSTATIONS SET naam = @Naam 
+                                WHERE soort = @Type 
+                                AND gebiedsreductie = @GebiedsReductie 
+                                AND ARF = @ARF 
+                                AND oppervlak = @Oppervlak"
+                        Case 1 ' Type updated
+                            query = "UPDATE METEOSTATIONS SET soort = @Type 
+                                WHERE naam = @Naam 
+                                AND gebiedsreductie = @GebiedsReductie 
+                                AND ARF = @ARF 
+                                AND oppervlak = @Oppervlak"
+                        Case 2 ' GebiedsReductie updated
+                            query = "UPDATE METEOSTATIONS SET gebiedsreductie = @GebiedsReductie 
+                                WHERE naam = @Naam 
+                                AND soort = @Type 
+                                AND ARF = @ARF 
+                                AND oppervlak = @Oppervlak"
+                        Case 3 ' ARF updated
+                            query = "UPDATE METEOSTATIONS SET ARF = @ARF 
+                                WHERE naam = @Naam 
+                                AND soort = @Type 
+                                AND gebiedsreductie = @GebiedsReductie 
+                                AND oppervlak = @Oppervlak"
+                        Case 4 ' Oppervlak updated
+                            query = "UPDATE METEOSTATIONS SET oppervlak = @Oppervlak 
+                                WHERE naam = @Naam 
+                                AND soort = @Type 
+                                AND gebiedsreductie = @GebiedsReductie 
+                                AND ARF = @ARF"
+                        Case Else
+                            Return
+                    End Select
+
+                    cmd.CommandText = query
+                    cmd.Parameters.AddWithValue("@Naam", naam)
+                    cmd.Parameters.AddWithValue("@Type", type)
+                    cmd.Parameters.AddWithValue("@GebiedsReductie", gebiedsReductie.ToString())
+                    cmd.Parameters.AddWithValue("@ARF", arf)
+                    cmd.Parameters.AddWithValue("@Oppervlak", oppervlak)
+
+                    cmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+            MessageBox.Show($"Error updating database: {ex.Message}")
+        End Try
     End Sub
+
 
     Private Sub BtnAddMeteoStation_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAddMeteoStation.Click
         If cmbClimate.Text <> "" AndAlso cmbDuration.Text <> "" AndAlso Me.Setup.SqliteCon IsNot Nothing Then

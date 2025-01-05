@@ -529,6 +529,7 @@
     <Compile Include="SOBEK\Simulations\clsSobekSimulation.vb" />
     <Compile Include="SOBEK\Simulations\clsSobekSimulations.vb" />
     <Compile Include="Stochasten\clsFlowForcing.vb" />
+    <Compile Include="Stochasten\clsGebiedsreductie.vb" />
     <Compile Include="Stochasten\clsHerhalingstijd.vb" />
     <Compile Include="Stochasten\clsModelParameterClass.vb" />
     <Compile Include="Stochasten\clsModelParameterSet.vb" />
