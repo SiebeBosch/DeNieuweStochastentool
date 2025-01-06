@@ -1,0 +1,30 @@
+---
+title: "Gebiedsreductiefactor"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+De statistiek van puntneerslag is niet direct van toepassing op een groter gebied. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.
+
+Dit doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag drukken we uit met de zogeheten  gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor stellen we afhankelijk van: 
+
+1. duur van de neerslag 
+2. oppervlak van het beschouwde gebied 
+3. herhalingstijd van het neerslagvolume (een lage gebiedsreductiefactor betekent een hoge
+reductie van de neerslag). 
+
+Bij het bepalen van de reductie spelen de volgende overwegingen:
+
+* Korte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor, lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor
+* Een relatief groot gebied kent een lagere gebiedsreductiefactor dan een klein gebied. Hoe
+groter het gebied hoe kleiner immers de kans dat de extreme puntneerslag op het gehele
+gebied valt
+* De gebiedsreductiefactor neemt af bij toenemende herhalingstijd van de neerslaggebeurtenis.
+Hoe zeldzamer een neerslaggebeurtenis is, hoe groter de kans dat die neerslag
+niet over een groot gebied is gevallen.
+
+Gebiedsreductiefactoren voor Nederland zijn onderzocht door @OVEREEM2009.
+Hij beschrijft daarin de gebiedsreductiefactor als functie van de drie hierboven beschreven
+afhankelijkheden.
+
+

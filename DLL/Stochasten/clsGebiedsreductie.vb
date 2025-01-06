@@ -193,64 +193,155 @@ Public Class clsGebiedsreductie
 
     End Function
 
-    Public Function CalculateReductionFactor(volume As Double, durationMinutes As Integer, areaKm2 As Double) As Double
+    Public Function CalculateByArea(volume As Double, durationMinutes As Integer, areaKm2 As Double) As Double
         ' Determine which set of parameters to use based on duration
         If durationMinutes <= 720 Then
-            Return CalculateReductionFactorUpTo720(volume, durationMinutes, areaKm2)
+            Return CalculateReductionFactorUpTo720(volume, durationMinutes / 60, areaKm2)
         Else
-            Return CalculateReductionFactorAbove720(volume, durationMinutes, areaKm2)
+            Return CalculateReductionFactorAbove720(volume, durationMinutes / 60, areaKm2)
         End If
     End Function
 
-    Private Function CalculateReductionFactorUpTo720(volume As Double, durationMinutes As Integer, areaKm2 As Double) As Double
+    Public Function CalculateByAreaAdvanced(Season As String, Pattern As String, volume As Double, fractie As Double(), durationMinutes As Integer, areaKm2 As Double) As (Boolean, List(Of Double))
+        Try
+            ' Determine which set of parameters to use based on duration
+            Dim Result As New List(Of Double)
 
-        'get the nearest parameterset for the given duration and area
-        Dim table As clsAreaReductionTable = getNearestPars(durationMinutes, areaKm2)
 
-        ' Calculate reduction factor using GEV parameters
-        Dim loc = table.locpar_LM
-        Dim scale = table.sclpar_LM
-        Dim shape = table.k_LM
+            'first decide all the inlying durations
+            Dim durations As New List(Of Integer)
+            'If durationMinutes <= 15 Then durations.Add(15)              '15 minutes. skip this because we're working with 1 hour timesteps
+            'If durationMinutes <= 30 Then durations.Add(30)              '30 minutes. skip this because we're working with 1 hour timesteps
+            If durationMinutes >= 60 Then durations.Add(1)                '1 hour
+            If durationMinutes >= 120 Then durations.Add(2)               '2 hours
+            If durationMinutes >= 240 Then durations.Add(4)               '4 hours
+            If durationMinutes >= 480 Then durations.Add(8)               '8 hours
+            If durationMinutes >= 720 Then durations.Add(12)              '12 hours
+            If durationMinutes >= 1440 Then durations.Add(24)             '24 hours
+            If durationMinutes >= 2880 Then durations.Add(48)             '2 days
+            If durationMinutes >= 5760 Then durations.Add(96)             '4 days
+            If durationMinutes >= 11520 Then durations.Add(192)           '8 days
+            If durationMinutes >= 12960 Then durations.Add(216)           '9 days
 
-        Dim reductionFactor As Double
+            'now calculate the highest return period for each duration
+            Dim maxDur As Integer
+            Dim maxDurStartIdx As Integer 'the start index of the duration in the fractie array
+            Dim MaxT As Double = 0 'maximum return period
+            Dim curVol As Double, curmaxVol As Double, curStartIdx As Integer, curT As Double
 
-        If shape = 0 Then
-            reductionFactor = loc + scale * Math.Log(volume)
-        Else
-            reductionFactor = loc + (scale / shape) * ((1 - Math.Pow((volume / loc), -shape)))
-        End If
+            'walk through all durations and calculate which one yields the highest return period
+            For Each dur As Integer In durations
+                curmaxVol = 0
+                For startIdx = 0 To fractie.Length - dur
+                    'create a window of the given duration and walk through the fractie array to calculate curVol
+                    curVol = 0
+                    For i = startIdx To startIdx + dur - 1
+                        curVol += fractie(i) * volume
+                    Next
 
-        Return reductionFactor
+                    'if this is the highest volume so far, store it. And also store the start index
+                    If curVol > curmaxVol Then
+                        curmaxVol = curVol
+                        curStartIdx = startIdx
+                    End If
+
+                Next
+
+                curT = Me.Setup.Neerslagstatistiek.STOWA2024_JAARROND_T(dur * 60, curmaxVol, 2014, "", "")
+
+                'if this is the highest return period so far, store it
+                If curT > MaxT Then
+                    MaxT = curT
+                    maxDur = dur
+                    maxDurStartIdx = curStartIdx
+                End If
+            Next
+
+            'now that we found our critical duration and the startIdx we can calculate the reduction factor and apply it
+            Dim ARF As Double
+            If maxDur <= 720 / 60 Then
+                ARF = CalculateReductionFactorUpTo720(volume, maxDur, areaKm2)
+            Else
+                ARF = CalculateReductionFactorAbove720(volume, maxDur, areaKm2)
+            End If
+
+            'finally implement the reduction factor in the section of our fractie array
+            For i = 0 To fractie.Count - 1
+                If i < maxDurStartIdx Then
+                    Result.Add(volume * fractie(i)) 'no adjustment
+                ElseIf i < maxDurStartIdx + maxDur - 1 Then
+                    Result.Add(volume * fractie(i) * ARF)
+                Else
+                    Result.Add(volume * fractie(i)) 'no adjustment
+                End If
+            Next
+
+            Me.Setup.Log.AddMessage($"Reduction factor {ARF} computed for inlying duration {maxDur}H of {durationMinutes / 60}H at season {Season}, pattern {Pattern}, volume {volume} and area {areaKm2} km2.")
+            Return (True, Result)
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in CalculateByAreaAdvanced: " & ex.Message)
+            Return (False, Nothing)
+        End Try
+
+
     End Function
 
-    Private Function CalculateReductionFactorAbove720(volume As Double, durationMinutes As Integer, areaKm2 As Double) As Double
-        ' Get the nearest parameter set for the given duration and area
-        Dim table As clsAreaReductionTable = getNearestPars(durationMinutes, areaKm2)
-        Dim tableRef As clsAreaReductionTable = getNearestPars(durationMinutes, 5.73)
+    Private Function CalculateReductionFactorUpTo720(volume As Double, durationHours As Double, areaKm2 As Double) As Double
+        If durationHours > 12 Then Throw New Exception("Function only valid for durations <= 12 hours")
+        If durationHours < 0.25 OrElse (durationHours < 0.5 AndAlso areaKm2 > 968.37) Then Return Double.NaN
 
-        ' Extract GEV parameters from the table
-        Dim loc As Double = table.locpar_LM
-        Dim scale As Double = table.sclpar_LM
-        Dim shape As Double = table.k_LM
+        ' Calculate point to 5.73 km² ARF
+        Dim ARFpoint_5_73 As Double = 1 - 0.08266513 * Math.Pow(durationHours, -0.289186)
 
-        ' Reference area parameters (Aref)
-        Dim Aref As Double = 5.73 ' Reference area in km^2
-        Dim locAref As Double = tableRef.locpar_LM
-        Dim scaleAref As Double = tableRef.sclpar_LM
-        Dim shapeAref As Double = tableRef.k_LM
+        ' Get GEV parameters for target area and reference area
+        Dim table As clsAreaReductionTable = getNearestPars(durationHours * 60, areaKm2)
+        Dim tableRef As clsAreaReductionTable = getNearestPars(durationHours * 60, 5.73)
 
-        ' Use the GEV formula to calculate R_ref and R
-        ' Assuming "volume" represents the return period (T)
-        Dim T As Double = volume
-        Dim R_ref As Double = locAref * (1 + scaleAref * (1 - Math.Pow(T, -1 * shapeAref)) / shapeAref)
-        Dim R As Double = loc * (1 + scale * (1 - Math.Pow(T, -1 * shape)) / shape)
+        'estimate the return period of our given volume
+        Dim T As Double
+        T = Me.Setup.Neerslagstatistiek.STOWA2024_JAARROND_T(durationHours * 60, volume, 2014, "", "")
 
-        ' Calculate the area reduction factor (ARF)
-        Dim reductionFactor As Double = R / R_ref
+        ' Calculate R and R_ref using GEV distribution
+        If T > 50 Then T = 50
 
-        ' Return the calculated reduction factor
-        Return reductionFactor
+        ' Calculate R and R_ref using GEV distribution
+        Dim R_ref As Double = tableRef.locpar_LM * (1 + tableRef.sclpar_LM * (1 - Math.Pow(T, -1 * tableRef.k_LM)) / tableRef.k_LM)
+        Dim R As Double = table.locpar_LM * (1 + table.sclpar_LM * (1 - Math.Pow(T, -1 * table.k_LM)) / table.k_LM)
+
+        Return ARFpoint_5_73 * (R / R_ref)
     End Function
+
+    Private Function CalculateReductionFactorAbove720(volume As Double, durationHours As Double, areaKm2 As Double) As Double
+        Try
+            If durationHours <= 12 Then Throw New Exception("Function only valid for durations > 12 hours")
+            If durationHours > 240 Then Throw New Exception("Function only valid for durations <= 240 hours")
+
+            ' Calculate point to 5.73 km² ARF
+            Dim ARFpoint_5_73 As Double = 1 - 0.08266513 * Math.Pow(durationHours, -0.289186)
+
+            ' Get GEV parameters for target area and reference area
+            Dim table As clsAreaReductionTable = getNearestPars(durationHours * 60, areaKm2)
+            Dim tableRef As clsAreaReductionTable = getNearestPars(durationHours * 60, 5.73)
+
+            'estimate the return period of our given volume
+            Dim T As Double
+            T = Me.Setup.Neerslagstatistiek.STOWA2024_JAARROND_T(durationHours * 60, volume, 2014, "", "")
+
+            If T > 50 Then T = 50 'Cap at 50 years as per R script
+
+            ' Calculate R and R_ref using GEV distribution
+            Dim R_ref As Double = tableRef.locpar_LM * (1 + tableRef.sclpar_LM * (1 - Math.Pow(T, -1 * tableRef.k_LM)) / tableRef.k_LM)
+            Dim R As Double = table.locpar_LM * (1 + table.sclpar_LM * (1 - Math.Pow(T, -1 * table.k_LM)) / table.k_LM)
+
+            ' Calculate final ARF as product of both factors
+            Return ARFpoint_5_73 * (R / R_ref)
+        Catch ex As Exception
+            Me.Setup.Log.AddError(ex.Message)
+        End Try
+
+    End Function
+
 
 
 

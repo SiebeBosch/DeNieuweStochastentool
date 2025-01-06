@@ -28,6 +28,7 @@ Public Class GeneralFunctions
     Public Enum enmGebiedsreductie
         constante = 0
         oppervlak = 1
+        geavanceerd = 2
     End Enum
 
     Structure StrTimeSeries

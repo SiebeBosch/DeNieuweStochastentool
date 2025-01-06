@@ -154,7 +154,7 @@
     "href": "GUI/general.html#meteo",
     "title": "Tabblad Algemeen",
     "section": "Meteo",
-    "text": "Meteo\nDoor op de &lt;+&gt; button te drukken voegt de gebruiker een nieuw meteo-station toe ten behoeve van de simulaties. Ieder station heeft vijf kenmerken die moeten worden opgegeven:\n\nNAAM: naam van het meteo-station\nSOORT: het soort meteo-station (neerslag of verdamping)\nGEBIEDSREDUCTIE: of de oppervlaktereductie een constante betreft (‘constante’) of oppervlak-gebaseerd is (‘oppervlak’)\nARF: de constante gebiedsreductiefactor (Area Reduction Factor). Is van toepassing als onder ‘GEBIEDSREDUCTIE’ de waarde ‘constante’ werd opgegeven. Dit is een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie (STOWA 2019). Zelf de gebiedsreductiefactor berekenen kan op Meteobase.\nOPPERVLAK: het gebiedsoppervlak in km2 wat wordt gebruikt bij het berekenen van de gebiedsreductiefactor.",
+    "text": "Meteo\nDoor op de &lt;+&gt; button te drukken voegt de gebruiker een nieuw meteo-station toe ten behoeve van de simulaties. Ieder station heeft vijf kenmerken die moeten worden opgegeven:\n\nNAAM: naam van het meteo-station\nSOORT: het soort meteo-station (neerslag of verdamping)\nGEBIEDSREDUCTIE: of de oppervlaktereductie een constante betreft (‘constante’), oppervlak-gebaseerd is (‘oppervlak’) of geavanceerd oppervlakte-gebaseerd (‘geavanceerd’)\n\nconstante\n\nde constante factor, zoals opgegeven onder ARF, wordt over de alle buien toegepast; voor alle herhalingstijden dezelfde waarde.\n\noppervlak\n\nde reductiefactor wordt berekend als functie van de geschatte herhalingstijd van het buivolume en duur en het opgegeven gebiedsoppervlak (km2)\n\ngeavanceerd\n\nde reductiefactor wordt berekend en toegepast voor alleen dat gedeelte van de bui waarvan de neerslagsom de grootste herhalingstijd heeft. Hierin wordt ook het gebiedsoppervlak meegenomen.\n\n\nARF: de constante gebiedsreductiefactor (Area Reduction Factor). Is van toepassing als onder ‘GEBIEDSREDUCTIE’ de waarde ‘constante’ werd opgegeven. Dit is een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie (STOWA 2019). Zelf de gebiedsreductiefactor berekenen kan op Meteobase.\nOPPERVLAK: het gebiedsoppervlak in km2 wat wordt gebruikt bij het berekenen van de gebiedsreductiefactor.\n\nEen kleine handreiking wat betreft de methodes van gebiedsreductie:",
     "crumbs": [
       "Tutorial",
       "Gebruikshandleiding",
@@ -643,6 +643,18 @@
       "Tutorial",
       "Praktijkcases",
       "Delfland"
+    ]
+  },
+  {
+    "objectID": "technical_docs/gebiedsreductie.html",
+    "href": "technical_docs/gebiedsreductie.html",
+    "title": "Gebiedsreductiefactor",
+    "section": "",
+    "text": "De statistiek van puntneerslag is niet direct van toepassing op een groter gebied. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.\nDit doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag drukken we uit met de zogeheten gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor stellen we afhankelijk van:\n\nduur van de neerslag\noppervlak van het beschouwde gebied\nherhalingstijd van het neerslagvolume (een lage gebiedsreductiefactor betekent een hoge reductie van de neerslag).\n\nBij het bepalen van de reductie spelen de volgende overwegingen:\n\nKorte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor, lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor\nEen relatief groot gebied kent een lagere gebiedsreductiefactor dan een klein gebied. Hoe groter het gebied hoe kleiner immers de kans dat de extreme puntneerslag op het gehele gebied valt\nDe gebiedsreductiefactor neemt af bij toenemende herhalingstijd van de neerslaggebeurtenis. Hoe zeldzamer een neerslaggebeurtenis is, hoe groter de kans dat die neerslag niet over een groot gebied is gevallen.\n\nGebiedsreductiefactoren voor Nederland zijn onderzocht door Overeem (2009). Hij beschrijft daarin de gebiedsreductiefactor als functie van de drie hierboven beschreven afhankelijkheden.\n\n\n\n\n\n\n\nLiteratuur\n\nOvereem. 2009. “Climatology of extreme rainfall from rain gauges and weather radar.” {Rapport}. KNMI.",
+    "crumbs": [
+      "Tutorial",
+      "Technische documentatie",
+      "Gebiedsreductiefactor"
     ]
   }
 ]

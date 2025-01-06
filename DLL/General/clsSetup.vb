@@ -18,6 +18,7 @@ Namespace General
         Public ExtremeValuesStatistics As clsExtremeValuesStatistics
         Public IDFs As clsIDFs                  'een klasse met regenduurlijnen en hun eigenschappen
         Public Gebiedsreductie As clsGebiedsreductie
+        Public Neerslagstatistiek As clsNeerslagstatistiek
 
         Public HydroMathOperations As Dictionary(Of String, clsHydroMathOperation) 'here we keep track of all supported math operations for hydrological purposes
 
@@ -77,6 +78,7 @@ Namespace General
             GeneralFunctions = New GeneralFunctions(Me)  'algemene functies
 
             Gebiedsreductie = New clsGebiedsreductie(Me)
+            Neerslagstatistiek = New clsNeerslagstatistiek(Me)
 
             'now initialize our list of HydroMathOperations
             InitializeHydroMathOperations()

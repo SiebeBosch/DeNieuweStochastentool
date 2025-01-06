@@ -1,4 +1,5 @@
 ﻿Option Explicit On
+Imports DocumentFormat.OpenXml.Bibliography
 Imports STOCHLIB.General
 Imports System.IO
 
@@ -73,8 +74,8 @@ Public Class clsBuiFile
 
     Public Function IsSummer(winsumdate As Date, sumwindate As Date) As Boolean
         'this function returns a boolean to state if an even is summer or winter
-        Dim refYear As Integer = Year(winsumdate)
-        Dim checkDate As New Date(refYear, Month(StartDate), Month(EndDate))
+        Dim refYear As Integer = DateAndTime.Year(winsumdate)
+        Dim checkDate As New Date(refYear, DateAndTime.Month(StartDate), DateAndTime.Month(EndDate))
         If checkDate >= winsumdate AndAlso checkDate < sumwindate Then
             Return True
         Else
@@ -226,7 +227,7 @@ Public Class clsBuiFile
         Return myStation
     End Function
 
-    Public Function BuildSTOWATYPE(ByVal StationName As String, ByVal Vol As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer, gebiedsreductie As GeneralFunctions.enmGebiedsreductie, constantARF As Double, oppervlak As Double) As Boolean
+    Public Function BuildSTOWATYPE(ByVal StationName As String, Season As String, Pattern As String, ByVal Vol As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer, gebiedsreductie As GeneralFunctions.enmGebiedsreductie, constantARF As Double, oppervlak As Double) As Boolean
 
         Dim i As Integer
         Dim ms As clsMeteoStation
@@ -247,10 +248,21 @@ Public Class clsBuiFile
             Case Is = GeneralFunctions.enmGebiedsreductie.oppervlak
                 'bui, bereken gebiedsreductie op basis van het oppervlak
                 'neem aan dat de tijdstapgrootte 1 uur is
-                Vol = Vol * setup.Gebiedsreductie.CalculateReductionFactor(Vol, Fractie.Count * 60, ms.oppervlak)
+                Vol = Vol * setup.Gebiedsreductie.CalculateByArea(Vol, Fractie.Count * 60, ms.oppervlak)
                 For i = 0 To Fractie.Count - 1
                     Values(i, 0) = Vol * Fractie(i)
                 Next
+            Case Is = GeneralFunctions.enmGebiedsreductie.geavanceerd
+                'bui, bereken gebiedsreductie op basis van het oppervlak
+                'echter alleen voor het kritische gedeelte van de bui!
+                Dim res As (Boolean, List(Of Double)) = setup.Gebiedsreductie.CalculateByAreaAdvanced(Season, Pattern, Vol, Fractie, Fractie.Count * 60, ms.oppervlak)
+                If res.Item1 Then
+                    For i = 0 To Fractie.Count - 1
+                        Values(i, 0) = res.Item2(i)
+                    Next
+                End If
+            Case Else
+                Throw New Exception($"Error: unknown gebiedsreductie type. {ms.gebiedsreductie} not (yet) supported in generating .bui file.")
         End Select
 
         'uitloop
@@ -498,7 +510,7 @@ Public Class clsBuiFile
                     For i = 0 To nTim - 1
 
                         curDate = StartDate.AddMinutes(TimeStep.TotalMinutes * i)
-                        myStr = Year(curDate) & " " & Month(curDate) & " " & Day(curDate) & " " & Hour(curDate) & " " & Format(Values(i, 0), Formatting)
+                        myStr = DateAndTime.Year(curDate) & " " & DateAndTime.Month(curDate) & " " & DateAndTime.Day(curDate) & " " & Hour(curDate) & " " & Format(Values(i, 0), Formatting)
                         buiWriter.WriteLine(myStr)
                     Next
 

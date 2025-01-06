@@ -475,6 +475,7 @@
     <Compile Include="HBV\clsHBVTempHourlyFile.vb" />
     <Compile Include="METEOBASE\clsIDF.vb" />
     <Compile Include="METEOBASE\clsIDFs.vb" />
+    <Compile Include="Neerslagstatistiek\clsNeerslagstatistiek.vb" />
     <Compile Include="SOBEK\cls2DDomain.vb" />
     <Compile Include="SOBEK\cls2DResults.vb" />
     <Compile Include="SOBEK\cls2DResultsCase.vb" />

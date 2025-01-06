@@ -254,8 +254,21 @@ div.csl-indent {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Technische documentatie</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Technische documentatie</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../technical_docs/technicaldocumentation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Technische documentatie</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
@@ -383,12 +396,27 @@ div.csl-indent {
 <h2 class="anchored" data-anchor-id="meteo">Meteo</h2>
 <p>Door op de &lt;+&gt; button te drukken voegt de gebruiker een nieuw meteo-station toe ten behoeve van de simulaties. Ieder station heeft vijf kenmerken die moeten worden opgegeven:</p>
 <ul>
-<li>NAAM: naam van het meteo-station</li>
-<li>SOORT: het soort meteo-station (neerslag of verdamping)</li>
-<li>GEBIEDSREDUCTIE: of de oppervlaktereductie een constante betreft (‘constante’) of oppervlak-gebaseerd is (‘oppervlak’)</li>
-<li>ARF: de constante gebiedsreductiefactor (Area Reduction Factor). Is van toepassing als onder ‘GEBIEDSREDUCTIE’ de waarde ‘constante’ werd opgegeven. Dit is een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie <span class="citation" data-cites="STOWA2019">(<a href="#ref-STOWA2019" role="doc-biblioref">STOWA 2019</a>)</span>. Zelf de gebiedsreductiefactor berekenen kan op <a href="https://www.meteobase.nl">Meteobase</a>.</li>
-<li>OPPERVLAK: het gebiedsoppervlak in km<sup>2</sup> wat wordt gebruikt bij het berekenen van de gebiedsreductiefactor.</li>
+<li><p>NAAM: naam van het meteo-station</p></li>
+<li><p>SOORT: het soort meteo-station (neerslag of verdamping)</p></li>
+<li><p>GEBIEDSREDUCTIE: of de oppervlaktereductie een constante betreft (‘constante’), oppervlak-gebaseerd is (‘oppervlak’) of geavanceerd oppervlakte-gebaseerd (‘geavanceerd’)</p>
+<dl>
+<dt>constante</dt>
+<dd>
+de constante factor, zoals opgegeven onder ARF, wordt over de alle buien toegepast; voor alle herhalingstijden dezelfde waarde.
+</dd>
+<dt>oppervlak</dt>
+<dd>
+de reductiefactor wordt berekend als functie van de geschatte herhalingstijd van het buivolume en duur en het opgegeven gebiedsoppervlak (km<sup>2</sup>)
+</dd>
+<dt>geavanceerd</dt>
+<dd>
+de reductiefactor wordt berekend en toegepast voor alleen dat gedeelte van de bui waarvan de neerslagsom de grootste herhalingstijd heeft. Hierin wordt ook het gebiedsoppervlak meegenomen.
+</dd>
+</dl></li>
+<li><p>ARF: de constante gebiedsreductiefactor (Area Reduction Factor). Is van toepassing als onder ‘GEBIEDSREDUCTIE’ de waarde ‘constante’ werd opgegeven. Dit is een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie <span class="citation" data-cites="STOWA2019">(<a href="#ref-STOWA2019" role="doc-biblioref">STOWA 2019</a>)</span>. Zelf de gebiedsreductiefactor berekenen kan op <a href="https://www.meteobase.nl">Meteobase</a>.</p></li>
+<li><p>OPPERVLAK: het gebiedsoppervlak in km<sup>2</sup> wat wordt gebruikt bij het berekenen van de gebiedsreductiefactor.</p></li>
 </ul>
+<p>Een kleine handreiking wat betreft de methodes van gebiedsreductie:</p>
 </section>
 <section id="berekeningen" class="level2">
 <h2 class="anchored" data-anchor-id="berekeningen">Berekeningen</h2>

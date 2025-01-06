@@ -49,9 +49,21 @@ Door op de <+> button te drukken voegt de gebruiker een nieuw meteo-station toe 
 
 * NAAM: naam van het meteo-station
 * SOORT: het soort meteo-station (neerslag of verdamping)
-* GEBIEDSREDUCTIE: of de oppervlaktereductie een constante betreft ('constante') of oppervlak-gebaseerd is ('oppervlak')
+* GEBIEDSREDUCTIE: of de oppervlaktereductie een constante betreft ('constante'), oppervlak-gebaseerd is ('oppervlak') of geavanceerd oppervlakte-gebaseerd ('geavanceerd')
+    
+    constante
+    :   de constante factor, zoals opgegeven onder ARF, wordt over de alle buien toegepast; voor alle herhalingstijden dezelfde waarde.
+
+    oppervlak
+    :   de reductiefactor wordt berekend als functie van de geschatte herhalingstijd van het buivolume en duur en het opgegeven gebiedsoppervlak (km^2^)
+
+    geavanceerd
+    :   de reductiefactor wordt berekend en toegepast voor alleen dat gedeelte van de bui waarvan de neerslagsom de grootste herhalingstijd heeft. Hierin wordt ook het gebiedsoppervlak meegenomen.
+
 * ARF: de constante gebiedsreductiefactor (Area Reduction Factor). Is van toepassing als onder 'GEBIEDSREDUCTIE' de waarde 'constante' werd opgegeven. Dit is een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie [@STOWA2019]. Zelf de gebiedsreductiefactor berekenen kan op [Meteobase](https://www.meteobase.nl).
 * OPPERVLAK: het gebiedsoppervlak in km^2^ wat wordt gebruikt bij het berekenen van de gebiedsreductiefactor.
+
+Een kleine handreiking wat betreft de methodes van gebiedsreductie:
 
 ## Berekeningen
 Geef hier de gewenste duur van de hydrologische gebeurtenissen op. Er is keuze uit de standaardduren van STOWA: 24 uur, 48 uur, 96 uur, 192 uur en 216 uur. Soms komt het voor dat maximale waterstanden iets na de gebeurtenis optreden. Daarom is het mogelijk om de gebeurtenissen uit te breiden met een uitloopperiode.

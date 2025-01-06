@@ -34,7 +34,7 @@ Public Class clsStochasticSeasonClass
 
     Friend Setup As clsSetup
 
-    Public Sub New(ByRef mySetup As clsSetup, ClassName As String, ClassEventStart As Date, ClassP As Double)
+    Public Sub New(ByRef mySetup As clsSetup, mySeason As STOCHLIB.GeneralFunctions.enmSeason, ClassName As String, ClassEventStart As Date, ClassP As Double)
 
         Setup = mySetup
         Use = True

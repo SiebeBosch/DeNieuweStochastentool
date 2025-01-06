@@ -9,7 +9,7 @@ website:
     left:
       - tutorial/tutorial.qmd
       - GUI/UserManual.qmd
-      - technical_docs/technicaldocumentation.qmd
+      - technical_docs/gebiedsreductie.qmd
       - cases/cases.qmd
       - about.qmd
   sidebar:
@@ -36,6 +36,9 @@ website:
           - href: BAT_RUNR/inleiding.qmd
             text: Simuleren in batch
       - section: "Technische documentatie"
+        contents:
+          - href: technical_docs/gebiedsreductie.qmd
+            text: Gebiedsreductiefactor
       - section: "Praktijkcases"
         contents:
           - cases/denbosch.qmd

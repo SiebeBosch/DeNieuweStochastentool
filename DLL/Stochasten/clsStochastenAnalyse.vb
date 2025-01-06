@@ -1552,8 +1552,23 @@ Public Class clsStochastenAnalyse
 
         Seasons = New Dictionary(Of String, clsStochasticSeasonClass)
         For i = 0 To dtSeasons.Rows.Count - 1
+
+            'try to translate the name of our season to one of the enum types
+            Dim mySeasonEnum As GeneralFunctions.enmSeason
+            Select Case dtSeasons.Rows(i)("SEASON").ToString.Trim.ToLower
+                Case "yearround", "jaarrond", "jaar"
+                    mySeasonEnum = GeneralFunctions.enmSeason.yearround
+                Case "mamjjuso", "mar-oct", "mar-okt", "maa-okt"
+                    mySeasonEnum = GeneralFunctions.enmSeason.marchthroughoctober
+                Case "ndjf", "nov-feb"
+                    mySeasonEnum = GeneralFunctions.enmSeason.novemberthroughfebruary
+                Case Else
+                    Me.Setup.Log.AddWarning("Season " & dtSeasons.Rows(i)("SEASON").ToString.Trim & " not recognized. Defaulting to yearround for Area Reduction Factor.")
+                    mySeasonEnum = GeneralFunctions.enmSeason.yearround
+            End Select
+
             If dtSeasons.Rows(i)("USE") Then
-                Seasons.Add(dtSeasons.Rows(i)("SEASON").ToString.Trim.ToUpper, New clsStochasticSeasonClass(Me.Setup, dtSeasons.Rows(i)("SEASON"), dtSeasons.Rows(i)("EVENTSTART"), dtSeasons.Rows(i)("KANS")))
+                Seasons.Add(dtSeasons.Rows(i)("SEASON").ToString.Trim.ToUpper, New clsStochasticSeasonClass(Me.Setup, mySeasonEnum, dtSeasons.Rows(i)("SEASON"), dtSeasons.Rows(i)("EVENTSTART"), dtSeasons.Rows(i)("KANS")))
             End If
             mySeason = Seasons.Item(dtSeasons.Rows(i)("SEASON").ToString.Trim.ToUpper)
             With mySeason

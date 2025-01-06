@@ -2,6 +2,8 @@
 Imports STOCHLIB.General
 Imports System.IO
 Imports System.Threading
+Imports ClosedXML.Excel
+Imports DocumentFormat.OpenXml
 
 Public Class clsStochastenRuns
 
@@ -637,6 +639,7 @@ Public Class clsStochastenRuns
                             ID = myRow.Cells("ID").Value
                             myRun = Runs.Item(ID.Trim.ToUpper)
 
+                            'If myRun.VolumeClass.Volume = 25 And myRun.PatternClass.Patroon = "patroon1b" Then Stop
                             If Not myRun.Build(i, n) Then Me.Setup.Log.AddError("Error running model for stochast combination " & ID)
 
                             Dim TempWorkDir As String = myModel.TempWorkDir & "\" & ID
