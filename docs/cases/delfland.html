@@ -39,6 +39,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -319,7 +322,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Hier beschrijven we een casus met het SOBEK-model van de Delflandse boezem. Met dit model wordt op het moment van schrijven door W+B, ondersteund door Hydroconsult en Deltares een hoogwatertoetsing uitgevoerd.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/delfland_model.png" title="Delfland" class="img-fluid figure-img"></p>
+<p><a href="img/delfland_model.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="De modelschematisatie van de Delflandse boezem"><img src="img/delfland_model.png" title="Delfland" class="img-fluid figure-img" alt="De modelschematisatie van de Delflandse boezem"></a></p>
 <figcaption>De modelschematisatie van de Delflandse boezem</figcaption>
 </figure>
 </div>
@@ -359,6 +362,9 @@ ul.task-list li input[type="checkbox"] {
 <p>Om de gevoeligheidsanalyses te kunnen uitvoeren hebben we een basale ‘uitgeklede’ stochastenopzet nodig. Van daaruit kunnen we uitstapjes maken, bijvoorbeeld naar het toevoegen van een stochast ‘gemaalfalen’.</p>
 
 
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">De modelschematisatie van de Delflandse boezem</span>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -750,6 +756,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"fade","selector":".lightbox","descPosition":"right","openEffect":"fade","loop":false});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
 
 
 

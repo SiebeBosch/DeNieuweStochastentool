@@ -3,10 +3,10 @@
   "WorkspaceRootPath": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenruns.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsgebiedsreductie.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsgebiedsreductie.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\stochasten\\clsstochastenruns.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\sobek\\clsbuifile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
@@ -48,7 +48,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 15,
           "Children": [
             {
               "$type": "Bookmark",
@@ -68,13 +68,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "clsStochastenRuns.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRuns.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsStochastenRuns.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsStochastenRuns.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsStochastenRuns.vb",
-              "ViewState": "AgIAAJcCAAAAAAAAAAAewIACAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAI4CAAAAAAAAAAAewIACAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-01-06T22:31:36.124Z",
               "EditorCaption": ""
@@ -176,8 +176,7 @@
               "RelativeToolTip": "..\\DLL\\SOBEK\\clsBuiFile.vb",
               "ViewState": "AgIAAO8AAAAAAAAAAAAAAAEBAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-01-05T20:25:16.446Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-05T20:25:16.446Z"
             },
             {
               "$type": "Document",
@@ -206,13 +205,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "clsGebiedsreductie.vb",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsGebiedsreductie.vb",
               "RelativeDocumentMoniker": "..\\DLL\\Stochasten\\clsGebiedsreductie.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\Stochasten\\clsGebiedsreductie.vb",
               "RelativeToolTip": "..\\DLL\\Stochasten\\clsGebiedsreductie.vb",
-              "ViewState": "AgIAAAIBAAAAAAAAAAAAAA0BAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAPwAAAAAAAAAAAAAAA0BAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-01-05T16:26:35.875Z",
               "EditorCaption": ""

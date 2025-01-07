@@ -39,6 +39,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -336,7 +339,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Ter illustratie: de neerslagvolumes en hun kansen bevinden zich in de tabel “VOLUMES”. Voor iedere combinatie van klimaatscenario, duur en volumeklasse ligt vast met welke frequentie (uitgedrukt in aantal gebeurtenissen per jaar) gebeurtenissen uit die klasse voorkomen.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/db_volumes.png" title="Neerslagvolumes" class="img-fluid figure-img"></p>
+<p><a href="img/db_volumes.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Detail uit de tabel met neerslagvolumes"><img src="img/db_volumes.png" title="Neerslagvolumes" class="img-fluid figure-img" alt="Detail uit de tabel met neerslagvolumes"></a></p>
 <figcaption>Detail uit de tabel met neerslagvolumes</figcaption>
 </figure>
 </div>
@@ -353,6 +356,9 @@ ul.task-list li input[type="checkbox"] {
 <p>Het is een goede gewoonte om in de map met de .xml en .db file ook deze drie mappen te plaatsen.</p>
 
 
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Detail uit de tabel met neerslagvolumes</span>
+</div>
 </section>
 
 </main> <!-- /main -->
@@ -744,6 +750,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"fade","descPosition":"right","closeEffect":"fade","loop":false});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
 
 
 

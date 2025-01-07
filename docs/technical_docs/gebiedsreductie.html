@@ -59,6 +59,9 @@ div.csl-indent {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -329,30 +332,96 @@ div.csl-indent {
 </header>
 
 
-<p>De statistiek van puntneerslag is niet direct van toepassing op een groter gebied. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.</p>
-<p>Dit doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag drukken we uit met de zogeheten gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor stellen we afhankelijk van:</p>
+<p>De statistiek van puntneerslag is niet direct te gebruiken voor een groter gebied. Immers: hoe groter het gebied hoe kleiner de kans dat de extreme puntneerslag op dat hele gebied valt. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.</p>
+<p>het doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag doen we met de zogeheten gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor is afhankelijk van:</p>
 <ol type="1">
 <li>duur van de neerslag</li>
 <li>oppervlak van het beschouwde gebied</li>
-<li>herhalingstijd van het neerslagvolume (een lage gebiedsreductiefactor betekent een hoge reductie van de neerslag).</li>
+<li>herhalingstijd van het neerslagvolume bij de gekozen duur</li>
 </ol>
 <p>Bij het bepalen van de reductie spelen de volgende overwegingen:</p>
 <ul>
-<li>Korte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor, lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor</li>
+<li>Korte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor; lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor</li>
 <li>Een relatief groot gebied kent een lagere gebiedsreductiefactor dan een klein gebied. Hoe groter het gebied hoe kleiner immers de kans dat de extreme puntneerslag op het gehele gebied valt</li>
 <li>De gebiedsreductiefactor neemt af bij toenemende herhalingstijd van de neerslaggebeurtenis. Hoe zeldzamer een neerslaggebeurtenis is, hoe groter de kans dat die neerslag niet over een groot gebied is gevallen.</li>
 </ul>
 <p>Gebiedsreductiefactoren voor Nederland zijn onderzocht door <span class="citation" data-cites="OVEREEM2009">Overeem (<a href="#ref-OVEREEM2009" role="doc-biblioref">2009</a>)</span>. Hij beschrijft daarin de gebiedsreductiefactor als functie van de drie hierboven beschreven afhankelijkheden.</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Op <a href="www.meteobase.nl">Meteobase</a> is de methodiek van Overeem toegankelijk gemaakt voor hydrologen. Onder Statistiek - Oppervlaktereductie is het mogelijk om voor een gegeven gebiedsoppervlak de reductiefactor te berekenen, als functie van neerslagduur en herhalingstijd.</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/meteobase_oppervlaktereductie.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Gebiedsreductiefactor in Meteobase"><img src="img/meteobase_oppervlaktereductie.png" title="Gebiedsreductiefactor in Meteobase" class="img-fluid figure-img" alt="Gebiedsreductiefactor in Meteobase"></a></p>
+<figcaption>Gebiedsreductiefactor in Meteobase</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Ook in De Nieuwe Stochastentool is de methode van Overeem geïmplementeerd en wel in drie varianten:</p>
+<ul>
+<li>Als constante</li>
+<li>Afhankelijk van het gebiedsoppervlak en herhalingstijd</li>
+<li>Geavanceerd, afhankelijk van gebiedsoppervlak en herhalingstijd en met medeneming van inliggende duren</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/gebiedsreductie.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2" title="Gebiedsreductiefactor in De Nieuwe Stochastentool"><img src="img/gebiedsreductie.png" title="Gebiedsreductie in De Nieuwe Stochastentool" class="img-fluid figure-img" alt="Gebiedsreductiefactor in De Nieuwe Stochastentool"></a></p>
+<figcaption>Gebiedsreductiefactor in De Nieuwe Stochastentool</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>Voor ieder station geeft de gebruiker op welke reductiemethode moet worden gehanteerd (constante, oppervlak, geavanceerd)</li>
+<li>Het oppervlak wordt opgegeven in km<sup>2</sup></li>
+<li>Oppervlak wordt alleen gebruikt bij de methodes ‘oppervlak’ en ‘geavanceerd’</li>
+</ul>
+</div>
+</div>
+<dl>
+<dt>Als constante</dt>
+<dd>
+Als de gebruiker een constante oppervlaktereductie opgeeft wordt eenvoudigweg iedere bui uit de stochastenanalyse gereduceerd op basis van de opgegeven factor; ongeacht herhalingstijd of duur. Via bijvoorbeeld de getoonde Meteobase-link is het mogelijk om een reductiefactor in te schatten die van toepassing is op het gebied. Dit is de eenvoudigste vorm, maar doet dus geen recht aan het feit dat de reductie eigenlijk groter wordt bij toenemende herhalingstijd. <br><br>
+</dd>
+<dt>Afhankelijk van het gebiedsoppervlak en herhalingstijd</dt>
+<dd>
+Door de reductie afhankelijk te maken van het gebied en de herhalingstijd doen we recht aan het onderzoek van <span class="citation" data-cites="OVEREEM2009">Overeem (<a href="#ref-OVEREEM2009" role="doc-biblioref">2009</a>)</span>. Voor iedere bui afzonderlijk zal De Nieuwe Stochastentool berekenen wat de reductiefactor moet zijn en deze toepassen op de gehele bui. <br><br>
+</dd>
+<dt>Geavanceerd</dt>
+<dd>
+In opdracht van het Hoogheemraadschap van Delfland heeft bureau HKV (<span class="citation" data-cites="HKV2011">Nederpel et.al. (<a href="#ref-HKV2011" role="doc-biblioref">2011</a>)</span>) de methode verder verfijnd. De gedachte erachter was dat inliggende duren binnen de gegeven neerslagduur wellicht een grotere herhalingstijd hebben dan de gehele bui zelf, en dat dus beter alleen die inliggende duur kan worden gereduceerd.
+</dd>
+</dl>
+<p>in de geavanceerde optie voert De Nieuwe Stochastentool de gebiedsreductie uit op basis van de laatstgenoemde methodiek:</p>
+<ul>
+<li>het algoritme bepaalt voor de buiduur en -volume de herhalingstijd conform <span class="citation" data-cites="STOWA2024">STOWA (<a href="#ref-STOWA2024" role="doc-biblioref">2024</a>)</span></li>
+<li>voor alle inliggende duren: 1,2,4,8,12,24 uren en 2,4,8 en 9 dagen doorloopt het algoritme met een ‘moving window’ de bui en bepaalt de hoogste herhalingstijd voor iedere inliggende duur</li>
+<li>voor die inliggende duur die de hoogste herhalingstijd geeft wordt de reductiefactor berekend conform <span class="citation" data-cites="OVEREEM2009">Overeem (<a href="#ref-OVEREEM2009" role="doc-biblioref">2009</a>)</span></li>
+<li>de reductiefactor wordt uitsluitend toegepast op de gevonden inliggende duur. Uiteraard tenzij de gehele bui de hoogste herhalingstijd gaf. In dat geval wordt de reductiefactor op de gehele bui doorgevoerd.</li>
+</ul>
+<p>Bij het schatten van de herhalingstijden houdt het algoritme geen rekening met seizoenen. Het neemt het volume en de duur en berekent aan de hand van <span class="citation" data-cites="STOWA2024">STOWA (<a href="#ref-STOWA2024" role="doc-biblioref">2024</a>)</span> de herhalingstijd, uitgaande van jaarrond-statistiek. Bij het berekenen van de reductiefactor wordt wel rekening gehouden met het onderscheid dat Overeem aanbrengt tussen lange (&gt;720 minuten) en korte (&lt;= 720 minuten) duren. Stel dat de bui zelf een lange duur heeft, maar de gevonden inliggende duur een korte, dan wordt de reductie van de inliggende duur berekend op basis van het algoritme voor korte buien.</p>
 
 
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Gebiedsreductiefactor in Meteobase</span>
+<span class="glightbox-desc lightbox-desc-2">Gebiedsreductiefactor in De Nieuwe Stochastentool</span>
+</div>
 <section id="bibliography" class="level1 unnumbered">
 
 
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Literatuur</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-HKV2011" class="csl-entry" role="listitem">
+Nederpel et.al. 2011. <span>“<span class="nocase">Hydraulische belasting regionale keringen Delfland</span>.”</span> Rapport. HKV Lijn-in-water. <a href="https://www.dropbox.com/scl/fi/w6kszq74s1iyhz1ky09c7/Delfland_Gebiedsreductie_PR2129_10-defintief-rapport.pdf?rlkey=corwx2qjlkqwusjpnx0ka2inw&amp;dl=0">https://www.dropbox.com/scl/fi/w6kszq74s1iyhz1ky09c7/Delfland_Gebiedsreductie_PR2129_10-defintief-rapport.pdf?rlkey=corwx2qjlkqwusjpnx0ka2inw&amp;dl=0</a>.
+</div>
 <div id="ref-OVEREEM2009" class="csl-entry" role="listitem">
-Overeem. 2009. <span>“<span class="nocase">Climatology of extreme rainfall from rain gauges and weather radar</span>.”</span> {Rapport}. KNMI.
+Overeem. 2009. <span>“<span class="nocase">Climatology of extreme rainfall from rain gauges and weather radar</span>.”</span> Artikel. Wageningen University &amp; Research. <a href="https://edepot.wur.nl/14584">https://edepot.wur.nl/14584</a>.
+</div>
+<div id="ref-STOWA2024" class="csl-entry" role="listitem">
+STOWA. 2024. <span>“<span class="nocase">Statistiek van Extreme Neerslag in Nederland</span>.”</span> Rapport 2004-26. <span>STOWA</span>. <a href="https://www.stowa.nl/sites/default/files/2024-11/STOWA%202024-37%20WEB.pdf">https://www.stowa.nl/sites/default/files/2024-11/STOWA%202024-37%20WEB.pdf</a>.
 </div>
 </div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -743,6 +812,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"openEffect":"fade","selector":".lightbox","closeEffect":"fade","loop":false,"descPosition":"right"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
 
 
 

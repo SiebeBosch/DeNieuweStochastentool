@@ -4,18 +4,17 @@ bibliography: literatuur.bib
 reference-section-title: "Literatuur"
 ---
 
-De statistiek van puntneerslag is niet direct van toepassing op een groter gebied. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.
+De statistiek van puntneerslag is niet direct te gebruiken voor een groter gebied. Immers: hoe groter het gebied hoe kleiner de kans dat de extreme puntneerslag op dat hele gebied valt. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.
 
-Dit doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag drukken we uit met de zogeheten  gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor stellen we afhankelijk van: 
+het doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag doen we met de zogeheten  gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor is afhankelijk van: 
 
 1. duur van de neerslag 
 2. oppervlak van het beschouwde gebied 
-3. herhalingstijd van het neerslagvolume (een lage gebiedsreductiefactor betekent een hoge
-reductie van de neerslag). 
+3. herhalingstijd van het neerslagvolume bij de gekozen duur
 
 Bij het bepalen van de reductie spelen de volgende overwegingen:
 
-* Korte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor, lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor
+* Korte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor; lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor
 * Een relatief groot gebied kent een lagere gebiedsreductiefactor dan een klein gebied. Hoe
 groter het gebied hoe kleiner immers de kans dat de extreme puntneerslag op het gehele
 gebied valt
@@ -26,5 +25,54 @@ niet over een groot gebied is gevallen.
 Gebiedsreductiefactoren voor Nederland zijn onderzocht door @OVEREEM2009.
 Hij beschrijft daarin de gebiedsreductiefactor als functie van de drie hierboven beschreven
 afhankelijkheden.
+
+::: {.columns}
+::: {.column width="50%"}
+Op [Meteobase](www.meteobase.nl) is de methodiek van Overeem toegankelijk gemaakt voor hydrologen. Onder Statistiek - Oppervlaktereductie is het mogelijk om voor een gegeven gebiedsoppervlak de reductiefactor te berekenen, als functie van neerslagduur en herhalingstijd.
+:::
+::: {.column width="50%"}
+![Gebiedsreductiefactor in Meteobase](img/meteobase_oppervlaktereductie.png "Gebiedsreductiefactor in Meteobase")
+:::
+:::
+
+Ook in De Nieuwe Stochastentool is de methode van Overeem geïmplementeerd en wel in drie varianten:
+
+* Als constante
+* Afhankelijk van het gebiedsoppervlak en herhalingstijd
+* Geavanceerd, afhankelijk van gebiedsoppervlak en herhalingstijd en met medeneming van inliggende duren
+
+
+::: {.columns}
+::: {.column width="50%"}
+![Gebiedsreductiefactor in De Nieuwe Stochastentool](img/gebiedsreductie.png "Gebiedsreductie in De Nieuwe Stochastentool")
+:::
+::: {.column width="50%"}
+* Voor ieder station geeft de gebruiker op welke reductiemethode moet worden gehanteerd (constante, oppervlak, geavanceerd)
+* Het oppervlak wordt opgegeven in km^2^
+* Oppervlak wordt alleen gebruikt bij de methodes 'oppervlak' en 'geavanceerd'
+:::
+:::
+
+
+Als constante
+:   Als de gebruiker een constante oppervlaktereductie opgeeft wordt eenvoudigweg iedere bui uit de stochastenanalyse gereduceerd op basis van de opgegeven factor; ongeacht herhalingstijd of duur. Via bijvoorbeeld de getoonde Meteobase-link is het mogelijk om een reductiefactor in te schatten die van toepassing is op het gebied. Dit is de eenvoudigste vorm, maar doet dus geen recht aan het feit dat de reductie eigenlijk groter wordt bij toenemende herhalingstijd.
+<br><br>
+
+Afhankelijk van het gebiedsoppervlak en herhalingstijd
+:   Door de reductie afhankelijk te maken van het gebied en de herhalingstijd doen we recht aan het onderzoek van @OVEREEM2009. Voor iedere bui afzonderlijk zal De Nieuwe Stochastentool berekenen wat de reductiefactor moet zijn en deze toepassen op de gehele bui.
+<br><br>
+
+Geavanceerd
+:   In opdracht van het Hoogheemraadschap van Delfland heeft bureau HKV (@HKV2011) de methode verder verfijnd. De gedachte erachter was dat inliggende duren binnen de gegeven neerslagduur wellicht een grotere herhalingstijd hebben dan de gehele bui zelf, en dat dus beter alleen die inliggende duur kan worden gereduceerd.
+
+in de geavanceerde optie voert De Nieuwe Stochastentool de gebiedsreductie uit op basis van de laatstgenoemde methodiek:
+
+* het algoritme bepaalt voor de buiduur en -volume de herhalingstijd conform @STOWA2024
+* voor alle inliggende duren: 1,2,4,8,12,24 uren en 2,4,8 en 9 dagen doorloopt het algoritme met een 'moving window' de bui en bepaalt de hoogste herhalingstijd voor iedere inliggende duur
+* voor die inliggende duur die de hoogste herhalingstijd geeft wordt de reductiefactor berekend conform @OVEREEM2009
+* de reductiefactor wordt uitsluitend toegepast op de gevonden inliggende duur. Uiteraard tenzij de gehele bui de hoogste herhalingstijd gaf. In dat geval wordt de reductiefactor op de gehele bui doorgevoerd.
+
+Bij het schatten van de herhalingstijden houdt het algoritme geen rekening met seizoenen. Het neemt het volume en de duur en berekent aan de hand van @STOWA2024 de herhalingstijd, uitgaande van jaarrond-statistiek. Bij het berekenen van de reductiefactor wordt wel rekening gehouden met het onderscheid dat Overeem aanbrengt tussen lange (>720 minuten) en korte (<= 720 minuten) duren. Stel dat de bui zelf een lange duur heeft, maar de gevonden inliggende duur een korte, dan wordt de reductie van de inliggende duur berekend op basis van het algoritme voor korte buien.
+
 
 

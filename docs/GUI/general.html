@@ -59,6 +59,9 @@ div.csl-indent {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -348,7 +351,7 @@ div.csl-indent {
 <p>Het tabblad ‘Algemeen’ bevat de algemene instellingen voor de stochastenanalyse.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/frm_algemeen.png" title="Algemene instellingen" class="img-fluid figure-img"></p>
+<p><a href="img/frm_algemeen.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Algemene instellingen"><img src="img/frm_algemeen.png" title="Algemene instellingen" class="img-fluid figure-img" alt="Algemene instellingen"></a></p>
 <figcaption>Algemene instellingen</figcaption>
 </figure>
 </div>
@@ -406,7 +409,7 @@ de constante factor, zoals opgegeven onder ARF, wordt over de alle buien toegepa
 </dd>
 <dt>oppervlak</dt>
 <dd>
-de reductiefactor wordt berekend als functie van de geschatte herhalingstijd van het buivolume en duur en het opgegeven gebiedsoppervlak (km<sup>2</sup>)
+de reductiefactor wordt berekend als functie van de geschatte herhalingstijd van het buivolume, de duur en het opgegeven gebiedsoppervlak (km<sup>2</sup>)
 </dd>
 <dt>geavanceerd</dt>
 <dd>
@@ -416,7 +419,19 @@ de reductiefactor wordt berekend en toegepast voor alleen dat gedeelte van de bu
 <li><p>ARF: de constante gebiedsreductiefactor (Area Reduction Factor). Is van toepassing als onder ‘GEBIEDSREDUCTIE’ de waarde ‘constante’ werd opgegeven. Dit is een factor waarmee we compenseren dat statistieken van een puntbron (lees: neerslagstation) worden toegepast op een oppervlak. Zie voor meer informatie <span class="citation" data-cites="STOWA2019">(<a href="#ref-STOWA2019" role="doc-biblioref">STOWA 2019</a>)</span>. Zelf de gebiedsreductiefactor berekenen kan op <a href="https://www.meteobase.nl">Meteobase</a>.</p></li>
 <li><p>OPPERVLAK: het gebiedsoppervlak in km<sup>2</sup> wat wordt gebruikt bij het berekenen van de gebiedsreductiefactor.</p></li>
 </ul>
-<p>Een kleine handreiking wat betreft de methodes van gebiedsreductie:</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Het is mogelijk om meerdere meteo-stations te definiëren en voor ieder station aan te geven of en zo ja met welke methode de oppervlaktereductie moet worden berekend.</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../technical_docs/img/gebiedsreductie.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2" title="Meteo-stations"><img src="../technical_docs/img/gebiedsreductie.png" title="Gebiedsreductiefactor" class="img-fluid figure-img" alt="Meteo-stations"></a></p>
+<figcaption>Meteo-stations</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Voor meer informatie over de gebiedsreductie zie de <a href="../technical_docs/gebiedsreductie.html">technische documentatie</a>.</p>
 </section>
 <section id="berekeningen" class="level2">
 <h2 class="anchored" data-anchor-id="berekeningen">Berekeningen</h2>
@@ -434,6 +449,10 @@ de reductiefactor wordt berekend en toegepast voor alleen dat gedeelte van de bu
 <p>De optie ‘ook resultaten gecrashte sommen toestaan’ is op dit moment niet operationeel.</p>
 
 
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Algemene instellingen</span>
+<span class="glightbox-desc lightbox-desc-2">Meteo-stations</span>
+</div>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
@@ -834,6 +853,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","descPosition":"right","openEffect":"fade","closeEffect":"fade"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
 
 
 
