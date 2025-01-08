@@ -4,6 +4,7 @@ Public Class clsStochasticSeasonClass
     Friend Use As Boolean
     Friend Name As String
     Friend P As Double
+    Friend Volume_Multiplier As Double = 1
     Friend EventStart As Date
     Friend IDColIdx As Integer  'index number of the ID column in the runs grid
     Friend PColIdx As Integer   'index number of the P column in the runs grid
@@ -34,13 +35,14 @@ Public Class clsStochasticSeasonClass
 
     Friend Setup As clsSetup
 
-    Public Sub New(ByRef mySetup As clsSetup, mySeason As STOCHLIB.GeneralFunctions.enmSeason, ClassName As String, ClassEventStart As Date, ClassP As Double)
+    Public Sub New(ByRef mySetup As clsSetup, mySeason As STOCHLIB.GeneralFunctions.enmSeason, ClassName As String, ClassEventStart As Date, ClassP As Double, ClassVolumeMultiplier As Double)
 
         Setup = mySetup
         Use = True
         Name = ClassName
         EventStart = ClassEventStart
         P = ClassP
+        Volume_Multiplier = ClassVolumeMultiplier
 
         Volumes = New Dictionary(Of Double, clsStochasticVolumeClass)
         Patterns = New Dictionary(Of String, clsStochasticPatternClass)

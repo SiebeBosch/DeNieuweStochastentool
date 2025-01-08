@@ -129,15 +129,15 @@ Public Class clsStochastenRun
 
     Public Function calcP() As Double
         Dim P As Double = SeasonClass.P
-        If Not VolumeClass Is Nothing Then P *= VolumeClass.P
-        If Not PatternClass Is Nothing Then P *= PatternClass.p
-        If Not GWClass Is Nothing Then P *= GWClass.p
-        If Not WLClass Is Nothing Then P *= WLClass.p
-        If Not WindClass Is Nothing Then P *= WindClass.P
-        If Not Extra1Class Is Nothing Then P *= Extra1Class.p
-        If Not Extra2Class Is Nothing Then P *= Extra2Class.p
-        If Not Extra3Class Is Nothing Then P *= Extra3Class.p
-        If Not Extra4Class Is Nothing Then P *= Extra4Class.p
+        If VolumeClass IsNot Nothing Then P *= VolumeClass.P
+        If PatternClass IsNot Nothing Then P *= PatternClass.p
+        If GWClass IsNot Nothing Then P *= GWClass.p
+        If WLClass IsNot Nothing Then P *= WLClass.p
+        If WindClass IsNot Nothing Then P *= WindClass.P
+        If Extra1Class IsNot Nothing Then P *= Extra1Class.p
+        If Extra2Class IsNot Nothing Then P *= Extra2Class.p
+        If Extra3Class IsNot Nothing Then P *= Extra3Class.p
+        If Extra4Class IsNot Nothing Then P *= Extra4Class.p
         Return P
     End Function
 
@@ -405,7 +405,7 @@ Public Class clsStochastenRun
                 For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                     If Station.StationType = enmMeteoStationType.precipitation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                        myBui.BuildSTOWATYPE(Station.Name, SeasonClass.Name, PatternClass.Patroon, VolumeClass.Volume, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd, Station.gebiedsreductie, Station.ConstantFactor, Station.oppervlak)
+                        myBui.BuildSTOWATYPE(Station.Name, SeasonClass.Name, PatternClass.Patroon, VolumeClass.Volume, SeasonClass.Volume_Multiplier, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd, Station.gebiedsreductie, Station.ConstantFactor, Station.oppervlak)
                     ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                         Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
                         myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
@@ -614,7 +614,7 @@ Public Class clsStochastenRun
             For Each Station As clsMeteoStation In StochastenAnalyse.MeteoStations.MeteoStations.Values
                 If Station.StationType = enmMeteoStationType.precipitation Then
                     Setup.GeneralFunctions.UpdateProgressBar("Building rainfall data.", 0, 10, True)
-                    myBui.BuildSTOWATYPE(Station.Name, SeasonClass.Name, PatternClass.Patroon, VolumeClass.Volume, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd, Station.gebiedsreductie, Station.ConstantFactor, Station.oppervlak)
+                    myBui.BuildSTOWATYPE(Station.Name, SeasonClass.Name, PatternClass.Patroon, VolumeClass.Volume, SeasonClass.Volume_Multiplier, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd, Station.gebiedsreductie, Station.ConstantFactor, Station.oppervlak)
                 ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                     Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)
                     myBui.BuildLongTermEVAP(SeasonClass.Name, StochastenAnalyse.Duration, StochastenAnalyse.DurationAdd)
@@ -793,7 +793,7 @@ Public Class clsStochastenRun
                     'generate a HBV rainfall file and set both the absolute and relative paths
                     BuiFile = runDir & "\" & Station.ID & ".txt"
                     Me.Setup.GeneralFunctions.AbsoluteToRelativePath(runDir, BuiFile, BuiFileRelative)
-                    myBui.BuildSTOWATYPE(Station.Name, SeasonClass.Name, PatternClass.Patroon, VolumeClass.Volume, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd, Station.gebiedsreductie, Station.ConstantFactor, Station.oppervlak)
+                    myBui.BuildSTOWATYPE(Station.Name, SeasonClass.Name, PatternClass.Patroon, VolumeClass.Volume, SeasonClass.Volume_Multiplier, SeasonClass.EventStart, res.Item2, StochastenAnalyse.DurationAdd, Station.gebiedsreductie, Station.ConstantFactor, Station.oppervlak)
                     myBui.WriteHBV(BuiFile, Station, 3)
                 ElseIf Station.StationType = enmMeteoStationType.evaporation Then
                     'Setup.GeneralFunctions.UpdateProgressBar("Building evaporation data.", 0, 10, True)

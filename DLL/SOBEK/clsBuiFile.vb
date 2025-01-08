@@ -203,7 +203,7 @@ Public Class clsBuiFile
             Dim nRecords = GetnRecords()
 
             If nRecords > 0 Then
-                ReDim Values(0 To nRecords - 1, 0 To MeteoStations.MeteoStations.Count - 1)
+                ReDim Preserve Values(0 To nRecords - 1, 0 To MeteoStations.MeteoStations.Count - 1)
             Else
                 Throw New Exception("Error initializing bui file. Number of records could not be computed.")
             End If
@@ -217,58 +217,75 @@ Public Class clsBuiFile
     End Function
 
     Public Sub AddMeteoStation(ByRef ms As clsMeteoStation)
+        ms.Idx = MeteoStations.MeteoStations.Count
         Call MeteoStations.GetAdd(ms, ms.ID)
     End Sub
 
     Friend Function GetAddMeteoStation(ByVal Key As String, ByVal Station As String) As clsMeteoStation
         Dim myStation As New clsMeteoStation(Me.setup)
         myStation.ID = Station
+        myStation.Idx = MeteoStations.MeteoStations.Count
         Call MeteoStations.MeteoStations.Add(Key, myStation)
         Return myStation
     End Function
 
-    Public Function BuildSTOWATYPE(ByVal StationName As String, Season As String, Pattern As String, ByVal Vol As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer, gebiedsreductie As GeneralFunctions.enmGebiedsreductie, constantARF As Double, oppervlak As Double) As Boolean
+    Public Function BuildSTOWATYPE(ByVal StationName As String, Season As String, Pattern As String, ByVal Vol As Double, Volume_Multiplier As Double, ByVal StartDate As DateTime, ByVal Fractie As Double(), ByVal Uitloop As Integer, gebiedsreductie As GeneralFunctions.enmGebiedsreductie, constantARF As Double, oppervlak As Double) As Boolean
+        Try
+            Dim i As Integer
+            Dim ms As clsMeteoStation
+            TimeStep = New TimeSpan(1, 0, 0)
 
-        Dim i As Integer
-        Dim ms As clsMeteoStation
-        TimeStep = New TimeSpan(1, 0, 0)
+            ms = GetAddMeteoStation(StationName.Trim.ToUpper, StationName)
+            ms.gebiedsreductie = gebiedsreductie
+            ms.ConstantFactor = constantARF
+            ms.oppervlak = oppervlak
+            Call InitializeRecords(StartDate, StartDate.AddHours(Fractie.Count + Uitloop), New TimeSpan(1, 0, 0))
 
-        ms = GetAddMeteoStation(StationName.Trim.ToUpper, StationName)
-        ms.gebiedsreductie = gebiedsreductie
-        ms.ConstantFactor = constantARF
-        ms.oppervlak = oppervlak
-        Call InitializeRecords(StartDate, StartDate.AddHours(Fractie.Count + Uitloop), New TimeSpan(1, 0, 0))
-
-        Select Case ms.gebiedsreductie
-            Case Is = STOCHLIB.GeneralFunctions.enmGebiedsreductie.constante
-                'bui, eventueel met constante gebiedsreductiefactor
-                For i = 0 To Fractie.Count - 1
-                    Values(i, 0) = Vol * ms.ConstantFactor * Fractie(i)
-                Next
-            Case Is = GeneralFunctions.enmGebiedsreductie.oppervlak
-                'bui, bereken gebiedsreductie op basis van het oppervlak
-                'neem aan dat de tijdstapgrootte 1 uur is
-                Vol = Vol * setup.Gebiedsreductie.CalculateByArea(Vol, Fractie.Count * 60, ms.oppervlak)
-                For i = 0 To Fractie.Count - 1
-                    Values(i, 0) = Vol * Fractie(i)
-                Next
-            Case Is = GeneralFunctions.enmGebiedsreductie.geavanceerd
-                'bui, bereken gebiedsreductie op basis van het oppervlak
-                'echter alleen voor het kritische gedeelte van de bui!
-                Dim res As (Boolean, List(Of Double)) = setup.Gebiedsreductie.CalculateByAreaAdvanced(Season, Pattern, Vol, Fractie, Fractie.Count * 60, ms.oppervlak)
-                If res.Item1 Then
+            Select Case ms.gebiedsreductie
+                Case Is = STOCHLIB.GeneralFunctions.enmGebiedsreductie.constante
+                    'bui, eventueel met constante gebiedsreductiefactor
                     For i = 0 To Fractie.Count - 1
-                        Values(i, 0) = res.Item2(i)
+                        Values(i, ms.Idx) = Vol * ms.ConstantFactor * Volume_Multiplier * Fractie(i)
                     Next
-                End If
-            Case Else
-                Throw New Exception($"Error: unknown gebiedsreductie type. {ms.gebiedsreductie} not (yet) supported in generating .bui file.")
-        End Select
+                Case Is = GeneralFunctions.enmGebiedsreductie.oppervlak
+                    'bui, bereken gebiedsreductie op basis van het oppervlak
+                    'neem aan dat de tijdstapgrootte 1 uur is
+                    setup.Gebiedsreductie.ComputeARF(10, 24, 10)
+                    'Dim res As (Boolean, Double) = setup.Gebiedsreductie.CalculateByArea(Season, Pattern, Vol, Fractie.Count * 60, ms.oppervlak)
+                    'If res.Item1 Then
+                    '    Vol = Vol * res.Item2 * Volume_Multiplier 'apply the areal reduction factor to the event's volume
+                    '    For i = 0 To Fractie.Count - 1
+                    '        Values(i, ms.Idx) = Vol * Fractie(i)
+                    '    Next
+                    'Else
+                    '    Me.setup.Log.AddError($"Unable to implement Areal Reduction Factor (ARF) for {Season}, {Pattern}, {Vol} mm at {ms.oppervlak} km2. Event volume remains unchanged.")
+                    'End If
+                Case Is = GeneralFunctions.enmGebiedsreductie.geavanceerd
+                    'bui, bereken gebiedsreductie op basis van het oppervlak
+                    'echter alleen voor het kritische gedeelte van de bui!
+                    'Dim res As (Boolean, List(Of Double)) = setup.Gebiedsreductie.CalculateByAreaAdvanced(Season, Pattern, Vol * Volume_Multiplier, Fractie, Fractie.Count * 60, ms.oppervlak)
+                    'If res.Item1 Then
+                    '    For i = 0 To Fractie.Count - 1
+                    '        Values(i, ms.Idx) = res.Item2(i)
+                    '    Next
+                    'Else
+                    '    Me.setup.Log.AddError($"Unable to implement Areal Reduction Factor (ARF) for {Season}, {Pattern}, {Vol} mm at {ms.oppervlak} km2. Event volume remains unchanged.")
+                    'End If
+                Case Else
+                    Throw New Exception($"Error: unknown gebiedsreductie type. {ms.gebiedsreductie} not (yet) supported in generating .bui file.")
+            End Select
 
-        'uitloop
-        For i = Fractie.Count To Fractie.Count + Uitloop - 1
-            Values(i, 0) = 0
-        Next
+            'uitloop
+            For i = Fractie.Count To Fractie.Count + Uitloop - 1
+                Values(i, ms.Idx) = 0
+            Next
+            Return True
+
+        Catch ex As Exception
+            Me.setup.Log.AddError("Error in function BuildSTOWAType of class clsBuiFile: " & ex.Message)
+            Return False
+        End Try
+
 
     End Function
 

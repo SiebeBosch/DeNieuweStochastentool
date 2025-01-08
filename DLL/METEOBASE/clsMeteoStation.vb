@@ -3,6 +3,7 @@ Imports STOCHLIB.General
 
 Public Class clsMeteoStation
     Friend ID As String
+    Friend Idx As Integer             'index number of the station within the .bui file
     Friend CatchmentIdx As Integer    'index number of the catchment
     Friend gebiedsreductie As STOCHLIB.GeneralFunctions.enmGebiedsreductie = GeneralFunctions.enmGebiedsreductie.constante
     Friend ConstantFactor As Double = 1   'Area Reduction Factor for this station

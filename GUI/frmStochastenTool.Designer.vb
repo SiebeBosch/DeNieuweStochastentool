@@ -300,6 +300,7 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
+        Me.Button14 = New System.Windows.Forms.Button()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -1068,6 +1069,7 @@ Partial Class frmStochasten
         '
         Me.grBestanden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.grBestanden.Controls.Add(Me.Button14)
         Me.grBestanden.Controls.Add(Me.hlpVeldZomerpeil2)
         Me.grBestanden.Controls.Add(Me.hlpVeldWinterpeil2)
         Me.grBestanden.Controls.Add(Me.hlpShapefilePeilgebieden2)
@@ -3168,6 +3170,15 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1675, 28)
         Me.prProgress.TabIndex = 24
         '
+        'Button14
+        '
+        Me.Button14.Location = New System.Drawing.Point(557, 229)
+        Me.Button14.Name = "Button14"
+        Me.Button14.Size = New System.Drawing.Size(75, 23)
+        Me.Button14.TabIndex = 71
+        Me.Button14.Text = "Button14"
+        Me.Button14.UseVisualStyleBackColor = True
+        '
         'frmStochasten
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -3553,4 +3564,5 @@ Partial Class frmStochasten
     Friend WithEvents hlpNabewerking2 As Button
     Friend WithEvents NeerslagpatronenUitCSVToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NeerslagpatronenkansUitCSVToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents Button14 As Button
 End Class

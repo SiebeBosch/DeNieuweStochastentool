@@ -919,7 +919,7 @@ Public Class frmStochasten
                 If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
                 'populate the grid me.Setup.containing the season statistics
-                query = "SELECT SEASON, USE, EVENTSTART, KANS from SEIZOENEN;"
+                query = "SELECT SEASON, USE, EVENTSTART, KANS, VOLUME_MULTIPLIER from SEIZOENEN;"
                 da = New SQLite.SQLiteDataAdapter(query, Me.Setup.SqliteCon)
                 da.Fill(dtSeizoenen)
                 grSeizoenen.DataSource = dtSeizoenen
@@ -928,6 +928,8 @@ Public Class frmStochasten
                 grSeizoenen.Columns(2).DefaultCellStyle.Format = "yyyy-MM-dd"
                 'grSeizoenen.Columns(2).HeaderText = "EVENTSTART"  'something goes wrong here. Probably because of the binding. We skip this part
                 grSeizoenen.Columns(2).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+                grSeizoenen.Columns(4).AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
+
             End If
 
             lblCheckSumSeizoenen.Text = "Checksum=" & CalcCheckSum(grSeizoenen, "USE", "KANS")
@@ -3516,6 +3518,7 @@ Public Class frmStochasten
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "USE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "USE", enmSQLiteDataType.SQLITEINT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "EVENTSTART") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "EVENTSTART", enmSQLiteDataType.SQLITETEXT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "KANS") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "KANS", enmSQLiteDataType.SQLITEREAL)
+        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "SEIZOENEN", "VOLUME_MULTIPLIER") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "SEIZOENEN", "VOLUME_MULTIPLIER", enmSQLiteDataType.SQLITEREAL)
     End Sub
 
     Public Sub UpdateVolumesTable(progress As Integer)
@@ -4093,7 +4096,7 @@ Public Class frmStochasten
                     Else
                         StartDate = New Date(2000, 1, 1)
                     End If
-                    query = "INSERT INTO SEIZOENEN (SEASON, USE, EVENTSTART, KANS) VALUES (""" & dt.Rows(i)("SEIZOEN") & """," & False & ",'" & StartDate & "',0.5);"
+                    query = "INSERT INTO SEIZOENEN (SEASON, USE, EVENTSTART, KANS, VOLUME_MULTIPLIER) VALUES (""" & dt.Rows(i)("SEIZOEN") & """," & False & ",'" & StartDate & "',0.5,1);"
                     Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                 End If
             Next
@@ -4555,7 +4558,7 @@ Public Class frmStochasten
     Public Sub UpdateSeasons()
         'this routine updates the Seizoenen table in the database
         Dim query As String, myRow As DataGridViewRow
-        Dim EventDate As String, Kans As Double
+        Dim EventDate As String, Kans As Double, Volume_Multiplier As Double = 1
         query = "DELETE FROM SEIZOENEN;"
         Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
 
@@ -4571,7 +4574,13 @@ Public Class frmStochasten
                 Kans = myRow.Cells("KANS").Value
             End If
 
-            query = "INSERT INTO SEIZOENEN (SEASON, USE, EVENTSTART, KANS) VALUES ('" & myRow.Cells("SEASON").Value & "'," & myRow.Cells("USE").Value & ",'" & EventDate & "'," & Kans & ");"
+            If IsDBNull(myRow.Cells("VOLUME_MULTIPLIER").Value) Then
+                Volume_Multiplier = 1
+            Else
+                Volume_Multiplier = myRow.Cells("VOLUME_MULTIPLIER").Value
+            End If
+
+            query = "INSERT INTO SEIZOENEN (SEASON, USE, EVENTSTART, KANS, VOLUME_MULTIPLIER) VALUES ('" & myRow.Cells("SEASON").Value & "'," & myRow.Cells("USE").Value & ",'" & EventDate & "'," & Kans & "," & Volume_Multiplier & ");"
             Me.Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
         Next
         Me.Setup.SqliteCon.Close()
@@ -5286,6 +5295,11 @@ Public Class frmStochasten
             Me.Setup.GeneralFunctions.UpdateProgressBar("Import successful.", 0, 10, True)
         End If
 
+    End Sub
+
+    Private Sub Button14_Click(sender As Object, e As EventArgs) Handles Button14.Click
+        Dim result = Me.Setup.Gebiedsreductie.ComputeARF(10, 24, 10)
+        Debug.WriteLine($"Result: {result}")
     End Sub
 
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click

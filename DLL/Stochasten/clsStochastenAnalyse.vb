@@ -1568,8 +1568,9 @@ Public Class clsStochastenAnalyse
             End Select
 
             If dtSeasons.Rows(i)("USE") Then
-                Seasons.Add(dtSeasons.Rows(i)("SEASON").ToString.Trim.ToUpper, New clsStochasticSeasonClass(Me.Setup, mySeasonEnum, dtSeasons.Rows(i)("SEASON"), dtSeasons.Rows(i)("EVENTSTART"), dtSeasons.Rows(i)("KANS")))
+                Seasons.Add(dtSeasons.Rows(i)("SEASON").ToString.Trim.ToUpper, New clsStochasticSeasonClass(Me.Setup, mySeasonEnum, dtSeasons.Rows(i)("SEASON"), dtSeasons.Rows(i)("EVENTSTART"), dtSeasons.Rows(i)("KANS"), If(IsDBNull(dtSeasons.Rows(i)("VOLUME_MULTIPLIER")), 1, dtSeasons.Rows(i)("VOLUME_MULTIPLIER"))))
             End If
+
             mySeason = Seasons.Item(dtSeasons.Rows(i)("SEASON").ToString.Trim.ToUpper)
             With mySeason
 
@@ -1588,12 +1589,10 @@ Public Class clsStochastenAnalyse
                 For j = 0 To dtStoch.Rows.Count - 1
                     .GetAddPatternClass(dtStoch.Rows(j)(0), dtStoch.Rows(j)(1))
                 Next
-
-
-
-
-
             End With
+
+
+
         Next
 
 
@@ -1632,6 +1631,7 @@ Public Class clsStochastenAnalyse
                         mySeason.Name = KlimaatRow.Cells("SEASON").Value
                         mySeason.P = KlimaatRow.Cells("KANS").Value
                         mySeason.EventStart = KlimaatRow.Cells("EVENTSTART").Value
+                        mySeason.Volume_Multiplier = If(IsDBNull(KlimaatRow.Cells("VOLUME_MULTIPLIER").Value), 1, KlimaatRow.Cells("VOLUME_MULTIPLIER").Value)
 
                         With mySeason
 
