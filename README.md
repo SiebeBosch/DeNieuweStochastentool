@@ -31,8 +31,6 @@ Een andere relevante dependency is Gembox Spreadsheets. Dit is een externe compo
 
 Verder zijn er nog diverse NuGET-packages geconfigureerd, maar dit zal zich vanzelf wijzen wanneer de broncode in Visual Studio wordt ingeladen. De binaries van deze packages zijn te groot om hier op te nemen, dus zullen separaat moeten worden geïnstalleerd.
 
-Gebruikers die wel gebruik willen maken van De Nieuwe Stochastentool maar die niet het gedoe willen van downloaden en inladen van de broncode, compileren, licenties van componenten organiseren etc. kunnen contact opnemen met ondergetekende voor een onderhoudscontract.
-
 ## Compilen en builden setup
 inbegrepen bij deze Git is een Inno setup script. Dit script kan, na compileren in Visual Studio, worden gebruikt om een installatiebestand voor De Nieuwe Stochastentool te vervaardigen. Download en installeer daartoe Inno Setup https://jrsoftware.org/ alsmede Inno Script Studio https://www.kymoto.org/products/inno-script-studio. Stel in Inno Script Studio het pad naar Inno Setup in. Open dan het .iss bestand en draai het script.
 
