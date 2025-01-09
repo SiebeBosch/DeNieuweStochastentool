@@ -11,6 +11,10 @@ Het programma is geschreven in VB.NET in Visual Studio 2019, in het .NET framewo
 Daarnaast bevat het codeblokken HTML en javascript ten behoeve van de export naar de webviewer voor resultaten.
 
 De broncode is gepubliceerd onder GPL 3.0. Zie het bijgevoegde bestand LICENSE voor de volledige licentietekst.
+
+## Installatiebestanden
+U vind links naar de installatiebestanden (Windows, 64 bit) rechts op deze pagina, onder het kopje 'releases'.
+
 ## Documentatie
 De documentatie is in zijn geheel opgenomen in deze Github repository en wordt hier ook bijgehouden. U vindt hem hier: https://siebebosch.github.io/DeNieuweStochastentool/.
 
