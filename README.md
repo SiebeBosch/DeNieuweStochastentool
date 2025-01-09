@@ -7,7 +7,7 @@ Binnen dit TKI is De Nieuwe Stochastentool van Hydroconsult:
 - Opensource gemaakt (deze GIT)
 - Doorontwikkeld om ook volledige stochastenanalyses te kunnen uitvoeren en nabewerken met het programma D-Hydro.
 
-Het programma is geschreven in VB.NET in Visual Studio 2019, in het .NET framework 4.8.
+Het programma is geschreven in VB.NET in Visual Studio 2022, in het .NET framework 4.8.
 Daarnaast bevat het codeblokken HTML en javascript ten behoeve van de export naar de webviewer voor resultaten.
 
 De broncode is gepubliceerd onder GPL 3.0. Zie het bijgevoegde bestand LICENSE voor de volledige licentietekst.
