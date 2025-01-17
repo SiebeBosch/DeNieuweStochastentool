@@ -100,7 +100,7 @@
       <HintPath>..\References\Gembox\GemBox.Spreadsheet.WinFormsUtilities.dll</HintPath>
     </Reference>
     <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SDSLite.2.0.3\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
+      <HintPath>..\GUI\packages\SDSLite.3.0.1\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

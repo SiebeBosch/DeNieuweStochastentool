@@ -1,0 +1,47 @@
+# Basisconfiguratie
+
+Voor een snelle start kunt u onder [deze link](https://www.dropbox.com/scl/fi/kyljdnyel1ygbxevbaktl/QUICKSTART.ZIP?rlkey=1wf4efnj5l4la1g1l47fn3jr0&dl=0) een basisconfiguratie van De Nieuwe Stochastentool vinden.
+
+
+## Configuratie inladen
+
+::: {.grid}
+::: {.g-col-6}
+De configuratie bestaat uit een XML-file en een SQLite-database (.db). Laad deze als volgt in:
+
+* Pak de zipfile met de XML-file en de database uit en zet beide bestanden naast elkaar in de gewenste map.
+* Na de installatie van het programma vindt u De Nieuwe Stochastentool in het startmenu van Windows.
+* Open de configuratie via het menu 'Bestand' - 'XML openen'
+:::
+
+::: {.g-col-6}
+
+![Het opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).](../img/frmQuickstart1.png)
+
+:::
+:::
+
+## Neerslagstation aanmaken
+
+::: {.grid}
+::: {.g-col-6}
+Er moet minstens één neerslagstation worden aangemaakt.
+
+* Klik in de sectie 'Meteo' op het plusje. 
+* Geef in het scherm wat verschijnt de naam op van het nieuwe station
+* selecteer type 'neerslag'
+* Selecteer Methode gebiedsreductie 'constante' met een waarde van 1. 
+* Het gebiedsoppervlak doet in deze setting niet ter zake
+:::
+
+::: {.g-col-6}
+
+![Aanmaken van een neerslagstation.](../img/frmQuickstart2.png)
+
+:::
+:::
+
+
+::: {.callout-important}
+Neerslagstations moeten een naam krijgen die identiek is aan de stations die de modelschematisatie verwacht.
+:::

@@ -15,11 +15,143 @@
     "href": "technical_docs/gebiedsreductie.html",
     "title": "Gebiedsreductiefactor",
     "section": "",
-    "text": "De statistiek van puntneerslag is niet direct te gebruiken voor een groter gebied. Immers: hoe groter het gebied hoe kleiner de kans dat de extreme puntneerslag op dat hele gebied valt. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.\nhet doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag doen we met de zogeheten gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor is afhankelijk van:\n\nduur van de neerslag\noppervlak van het beschouwde gebied\nherhalingstijd van het neerslagvolume bij de gekozen duur\n\nBij het bepalen van de reductie spelen de volgende overwegingen:\n\nKorte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor; lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor\nEen relatief groot gebied kent een lagere gebiedsreductiefactor dan een klein gebied. Hoe groter het gebied hoe kleiner immers de kans dat de extreme puntneerslag op het gehele gebied valt\nDe gebiedsreductiefactor neemt af bij toenemende herhalingstijd van de neerslaggebeurtenis. Hoe zeldzamer een neerslaggebeurtenis is, hoe groter de kans dat die neerslag niet over een groot gebied is gevallen.\n\nGebiedsreductiefactoren voor Nederland zijn onderzocht door Overeem (2009). Hij beschrijft daarin de gebiedsreductiefactor als functie van de drie hierboven beschreven afhankelijkheden.\n\n\nOp Meteobase is de methodiek van Overeem toegankelijk gemaakt voor hydrologen. Onder Statistiek - Oppervlaktereductie is het mogelijk om voor een gegeven gebiedsoppervlak de reductiefactor te berekenen, als functie van neerslagduur en herhalingstijd.\n\n\n\n\nGebiedsreductiefactor in Meteobase\n\n\n\n\nOok in De Nieuwe Stochastentool is de methode van Overeem geïmplementeerd en wel in drie varianten:\n\nAls constante\nAfhankelijk van het gebiedsoppervlak en herhalingstijd\nGeavanceerd, afhankelijk van gebiedsoppervlak en herhalingstijd en met medeneming van inliggende duren\n\n\n\n\n\n\nGebiedsreductiefactor in De Nieuwe Stochastentool\n\n\n\n\nVoor ieder station geeft de gebruiker op welke reductiemethode moet worden gehanteerd (constante, oppervlak, geavanceerd)\nHet oppervlak wordt opgegeven in km2\nOppervlak wordt alleen gebruikt bij de methodes ‘oppervlak’ en ‘geavanceerd’\n\n\n\n\nAls constante\n\nAls de gebruiker een constante oppervlaktereductie opgeeft wordt eenvoudigweg iedere bui uit de stochastenanalyse gereduceerd op basis van de opgegeven factor; ongeacht herhalingstijd of duur. Via bijvoorbeeld de getoonde Meteobase-link is het mogelijk om een reductiefactor in te schatten die van toepassing is op het gebied. Dit is de eenvoudigste vorm, maar doet dus geen recht aan het feit dat de reductie eigenlijk groter wordt bij toenemende herhalingstijd. \n\nAfhankelijk van het gebiedsoppervlak en herhalingstijd\n\nDoor de reductie afhankelijk te maken van het gebied en de herhalingstijd doen we recht aan het onderzoek van Overeem (2009). Voor iedere bui afzonderlijk zal De Nieuwe Stochastentool berekenen wat de reductiefactor moet zijn en deze toepassen op de gehele bui. \n\nGeavanceerd\n\nIn opdracht van het Hoogheemraadschap van Delfland heeft bureau HKV (Nederpel et.al. (2011)) de methode verder verfijnd. De gedachte erachter was dat inliggende duren binnen de gegeven neerslagduur wellicht een grotere herhalingstijd hebben dan de gehele bui zelf, en dat dus beter alleen die inliggende duur kan worden gereduceerd.\n\n\nin de geavanceerde optie voert De Nieuwe Stochastentool de gebiedsreductie uit op basis van de laatstgenoemde methodiek:\n\nhet algoritme bepaalt voor de buiduur en -volume de herhalingstijd conform STOWA (2024)\nvoor alle inliggende duren: 1,2,4,8,12,24 uren en 2,4,8 en 9 dagen doorloopt het algoritme met een ‘moving window’ de bui en bepaalt de hoogste herhalingstijd voor iedere inliggende duur\nvoor die inliggende duur die de hoogste herhalingstijd geeft wordt de reductiefactor berekend conform Overeem (2009)\nde reductiefactor wordt uitsluitend toegepast op de gevonden inliggende duur. Uiteraard tenzij de gehele bui de hoogste herhalingstijd gaf. In dat geval wordt de reductiefactor op de gehele bui doorgevoerd.\n\nBij het schatten van de herhalingstijden houdt het algoritme geen rekening met seizoenen. Het neemt het volume en de duur en berekent aan de hand van STOWA (2024) de herhalingstijd, uitgaande van jaarrond-statistiek. Bij het berekenen van de reductiefactor wordt wel rekening gehouden met het onderscheid dat Overeem aanbrengt tussen lange (&gt;720 minuten) en korte (&lt;= 720 minuten) duren. Stel dat de bui zelf een lange duur heeft, maar de gevonden inliggende duur een korte, dan wordt de reductie van de inliggende duur berekend op basis van het algoritme voor korte buien.\n\n\n\nGebiedsreductiefactor in Meteobase\nGebiedsreductiefactor in De Nieuwe Stochastentool\n\n\n\n\n\n\nLiteratuur\n\nNederpel et.al. 2011. “Hydraulische belasting regionale keringen Delfland.” Rapport. HKV Lijn-in-water. https://www.dropbox.com/scl/fi/w6kszq74s1iyhz1ky09c7/Delfland_Gebiedsreductie_PR2129_10-defintief-rapport.pdf?rlkey=corwx2qjlkqwusjpnx0ka2inw&dl=0.\n\n\nOvereem. 2009. “Climatology of extreme rainfall from rain gauges and weather radar.” Artikel. Wageningen University & Research. https://edepot.wur.nl/14584.\n\n\nSTOWA. 2024. “Statistiek van Extreme Neerslag in Nederland.” Rapport 2004-26. STOWA. https://www.stowa.nl/sites/default/files/2024-11/STOWA%202024-37%20WEB.pdf.",
+    "text": "De statistiek van puntneerslag is niet direct te gebruiken voor een groter gebied. Immers: hoe groter het gebied hoe kleiner de kans dat de extreme puntneerslag op dat hele gebied valt. In een stochastenanalyse moeten we dus een correctie doorvoeren als we de neerslag die komt uit puntstatistieken willen toekennen aan een modelgebied.\nhet doorvertalen van de neerslagstatistiek van puntneerslag naar gebiedsneerslag doen we met de zogeheten gebiedsreductiefactor (Areal Reduction Factor). Deze gebiedsreductiefactor is afhankelijk van:\n\nduur van de neerslag\noppervlak van het beschouwde gebied\nherhalingstijd van het neerslagvolume bij de gekozen duur\n\nBij het bepalen van de reductie spelen de volgende overwegingen:\n\nKorte duren (convectieve neerslaggebeurtenissen in de zomer) hebben een lage gebiedsreductiefactor; lange duren (neerslagfronten in het najaar en de winter) hebben een hoge gebiedsreductiefactor\nEen relatief groot gebied kent een lagere gebiedsreductiefactor dan een klein gebied. Hoe groter het gebied hoe kleiner immers de kans dat de extreme puntneerslag op het gehele gebied valt\nDe gebiedsreductiefactor neemt af bij toenemende herhalingstijd van de neerslaggebeurtenis. Hoe zeldzamer een neerslaggebeurtenis is, hoe groter de kans dat die neerslag niet over een groot gebied is gevallen.\n\nGebiedsreductiefactoren voor Nederland zijn onderzocht door Overeem (2009). Hij beschrijft daarin de gebiedsreductiefactor als functie van de drie hierboven beschreven afhankelijkheden.\n\n\nOp Meteobase is de methodiek van Overeem toegankelijk gemaakt voor hydrologen. Onder Statistiek - Oppervlaktereductie is het mogelijk om voor een gegeven gebiedsoppervlak de reductiefactor te berekenen, als functie van neerslagduur en herhalingstijd.\n\n\n\n\nGebiedsreductiefactor in Meteobase\n\n\n\n\nOok in De Nieuwe Stochastentool is de methode van Overeem geïmplementeerd en wel in drie varianten:\n\nAls constante\nAfhankelijk van het gebiedsoppervlak en herhalingstijd\nGeavanceerd, afhankelijk van gebiedsoppervlak en herhalingstijd en met medeneming van inliggende duren\n\n\n\n\n\n\nGebiedsreductiefactor in De Nieuwe Stochastentool\n\n\n\n\nVoor ieder station geeft de gebruiker op welke reductiemethode moet worden gehanteerd (constante, oppervlak, geavanceerd)\nHet oppervlak wordt opgegeven in km2\nOppervlak wordt alleen gebruikt bij de methodes ‘oppervlak’ en ‘geavanceerd’\n\n\n\n\nAls constante\n\nAls de gebruiker een constante oppervlaktereductie opgeeft wordt eenvoudigweg iedere bui uit de stochastenanalyse gereduceerd op basis van de opgegeven factor; ongeacht herhalingstijd of duur. Via bijvoorbeeld de getoonde Meteobase-link is het mogelijk om een reductiefactor in te schatten die van toepassing is op het gebied. Dit is de eenvoudigste vorm, maar doet dus geen recht aan het feit dat de reductie eigenlijk groter wordt bij toenemende herhalingstijd. \n\nAfhankelijk van het gebiedsoppervlak en herhalingstijd\n\nDoor de reductie afhankelijk te maken van het gebied en de herhalingstijd doen we recht aan het onderzoek van Overeem (2009). Voor iedere bui afzonderlijk zal De Nieuwe Stochastentool berekenen wat de reductiefactor moet zijn en deze toepassen op de gehele bui. \n\nGeavanceerd\n\nIn opdracht van het Hoogheemraadschap van Delfland heeft bureau HKV (Nederpel et.al. (2011)) de methode verder verfijnd. De gedachte erachter was dat inliggende duren binnen de gegeven neerslagduur wellicht een grotere herhalingstijd hebben dan de gehele bui zelf, en dat dus beter alleen die inliggende duur kan worden gereduceerd.\n\n\nin de geavanceerde optie voert De Nieuwe Stochastentool de gebiedsreductie uit op basis van de laatstgenoemde methodiek:\n\nhet algoritme bepaalt voor de buiduur en -volume de herhalingstijd conform STOWA (2024)\nvoor alle inliggende duren: 1,2,4,8,12,24 uren en 2,4,8 en 9 dagen doorloopt het algoritme met een ‘moving window’ de bui en bepaalt de hoogste herhalingstijd voor iedere inliggende duur\nvoor die inliggende duur die de hoogste herhalingstijd geeft wordt de reductiefactor berekend conform Overeem (2009)\nde reductiefactor wordt uitsluitend toegepast op de gevonden inliggende duur. Uiteraard tenzij de gehele bui de hoogste herhalingstijd gaf. In dat geval wordt de reductiefactor op de gehele bui doorgevoerd.\n\nBij het schatten van de herhalingstijden houdt het algoritme geen rekening met seizoenen. Het neemt het volume en de duur en berekent aan de hand van STOWA (2024) de herhalingstijd, uitgaande van jaarrond-statistiek. Bij het berekenen van de reductiefactor wordt wel rekening gehouden met het onderscheid dat Overeem aanbrengt tussen lange (&gt;720 minuten) en korte (&lt;= 720 minuten) duren. Stel dat de bui zelf een lange duur heeft, maar de gevonden inliggende duur een korte, dan wordt de reductie van de inliggende duur berekend op basis van het algoritme voor korte buien.\n\n\n\nGebiedsreductiefactor in Meteobase\nGebiedsreductiefactor in De Nieuwe Stochastentool\n\n\n\n\n\n\nLiteratuur\n\nNederpel et.al. 2011. ‘Hydraulische belasting regionale keringen Delfland’. Rapport. HKV Lijn-in-water. https://www.dropbox.com/scl/fi/w6kszq74s1iyhz1ky09c7/Delfland_Gebiedsreductie_PR2129_10-defintief-rapport.pdf?rlkey=corwx2qjlkqwusjpnx0ka2inw&dl=0.\n\n\nOvereem. 2009. ‘Climatology of extreme rainfall from rain gauges and weather radar’. Artikel. Wageningen University & Research. https://edepot.wur.nl/14584.\n\n\nSTOWA. 2024. ‘Statistiek van Extreme Neerslag in Nederland’. Rapport 2004-26. STOWA. https://www.stowa.nl/sites/default/files/2024-11/STOWA%202024-37%20WEB.pdf.",
     "crumbs": [
       "Tutorial",
       "Technische documentatie",
       "Gebiedsreductiefactor"
+    ]
+  },
+  {
+    "objectID": "quickstart/simuleren.html",
+    "href": "quickstart/simuleren.html",
+    "title": "Simulaties doorrekenen",
+    "section": "",
+    "text": "De simulaties staan klaar in de tijdelijke werkmap. Er zijn nu twee manieren om ze door te rekenen:\n\nvanuit De Nieuwe Stochastentool\nmet de externe executable BAT_RUNR.exe\n\nBeide methodes hebben hun eigen voor- en nadelen.\n\n\nDe simulaties uitvoeren vanuit De Nieuwe Stochastentool zelf heeft als voordeel dat de gebruiker het programma niet hoeft te verlaten. Een nadeel is alleen dat de simulaties dan op de PC/laptop van de gebruiker zelf plaatsvinden, en dat kan de computer voor langere tijd bezet houden.\n\n\n\nOp het tabblad ‘algemeen’ staat een instelling ‘aantal parallelle berekeningen’. Hiermee kunt u aangeven hoeveel simulaties gelijktijdig op de pc mogen worden uitgevoerd. Een goede vuistregel is het aantal ‘cores’ van uw PC - 2. Zo blijft er altijd nog voldoende rekenkracht over voor processen van het OS.\nSelecteer welke simulaties moeten worden uitgevoerd\nDruk op ‘Simuleren’\nEen DOS-window verschijnt om te laten zien dat de simulatie draait. Na afloop van iedere simulatie geeft het window een update. U kunt natuurlijk altijd in de task manager checken of de simulaties werkelijk draaien.\n\n\n\n\n\n\nDe simulaties zijn gestart.\n\n\n\n\n\n\n\nMet de installatie van De Nieuwe Stochastentool hebt u ook een installatie voor BAT_RUNR ontvangen. Oplettende lezers zullen hebben gezien dat óók de interne simulatie vanuit De Nieuwe Stochastentool deze executable aanroept.\nHet voordeel van afzonderlijk de simulaties draaien is dat ze bijvoorbeeld op een rekencluster of een andere pc kunnen worden aangezet.\n\n\n\nStart het programma BAT_RUNR.EXE. Dit bevindt zich in c:Files_RUNR \nGeef het pad naar simulations.json op aan het programma\nGeef het maximum aantal gelijktijdige simulaties op\n\nHet programma gaat nu aan de slag en rekent alle simulaties door.\n\n\n\n\n\nSimuleren met BAT_RUNR.\n\n\n\n\n\n\n\nDe simulaties zijn gestart.\nSimuleren met BAT_RUNR.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Simulaties doorrekenen"
+    ]
+  },
+  {
+    "objectID": "quickstart/simuleren.html#optie-1-simuleren-vanuit-de-nieuwe-stochastentool",
+    "href": "quickstart/simuleren.html#optie-1-simuleren-vanuit-de-nieuwe-stochastentool",
+    "title": "Simulaties doorrekenen",
+    "section": "",
+    "text": "De simulaties uitvoeren vanuit De Nieuwe Stochastentool zelf heeft als voordeel dat de gebruiker het programma niet hoeft te verlaten. Een nadeel is alleen dat de simulaties dan op de PC/laptop van de gebruiker zelf plaatsvinden, en dat kan de computer voor langere tijd bezet houden.\n\n\n\nOp het tabblad ‘algemeen’ staat een instelling ‘aantal parallelle berekeningen’. Hiermee kunt u aangeven hoeveel simulaties gelijktijdig op de pc mogen worden uitgevoerd. Een goede vuistregel is het aantal ‘cores’ van uw PC - 2. Zo blijft er altijd nog voldoende rekenkracht over voor processen van het OS.\nSelecteer welke simulaties moeten worden uitgevoerd\nDruk op ‘Simuleren’\nEen DOS-window verschijnt om te laten zien dat de simulatie draait. Na afloop van iedere simulatie geeft het window een update. U kunt natuurlijk altijd in de task manager checken of de simulaties werkelijk draaien.\n\n\n\n\n\n\nDe simulaties zijn gestart.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Simulaties doorrekenen"
+    ]
+  },
+  {
+    "objectID": "quickstart/simuleren.html#optie-2-simuleren-met-bat_runr",
+    "href": "quickstart/simuleren.html#optie-2-simuleren-met-bat_runr",
+    "title": "Simulaties doorrekenen",
+    "section": "",
+    "text": "Met de installatie van De Nieuwe Stochastentool hebt u ook een installatie voor BAT_RUNR ontvangen. Oplettende lezers zullen hebben gezien dat óók de interne simulatie vanuit De Nieuwe Stochastentool deze executable aanroept.\nHet voordeel van afzonderlijk de simulaties draaien is dat ze bijvoorbeeld op een rekencluster of een andere pc kunnen worden aangezet.\n\n\n\nStart het programma BAT_RUNR.EXE. Dit bevindt zich in c:Files_RUNR \nGeef het pad naar simulations.json op aan het programma\nGeef het maximum aantal gelijktijdige simulaties op\n\nHet programma gaat nu aan de slag en rekent alle simulaties door.\n\n\n\n\n\nSimuleren met BAT_RUNR.\n\n\n\n\n\n\n\nDe simulaties zijn gestart.\nSimuleren met BAT_RUNR.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Simulaties doorrekenen"
+    ]
+  },
+  {
+    "objectID": "quickstart/seizoenen.html",
+    "href": "quickstart/seizoenen.html",
+    "title": "Seizoenen",
+    "section": "",
+    "text": "Seizoenen\nHet seizoen is strikt genomen geen stochast. Echter we behandelen hem wel als zodanig. Dit komt doordat neerslagvolumes en -patronen, maar ook de begingrondwaterstanden en hydraulische ruwheden in het zomerseizoen heel andere waarden kunnen hebben dan in het winterseizoen.\nVoor een klasse van de ‘stochast’ Seizoen kennen we eenvoudigweg de kans toe dat een willekeurige bui in dat seizoen zou vallen. STOWA onderscheid twee seizoenen: maart t/m oktober (kans: 2/3) en november t/m februari (kans: 1/3).\n\n\nIn de database hebben we de stochast ‘Seizoen’ al geconfigureerd conform STOWA (2024).\n\n\n\n\n\nDe stochast Seizoen is al geconfigureerd in de database.\n\n\n\n\n\n\n\nDe stochast Seizoen is al geconfigureerd in de database.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Seizoenen"
+    ]
+  },
+  {
+    "objectID": "quickstart/patronen.html",
+    "href": "quickstart/patronen.html",
+    "title": "Neerslagpatronen",
+    "section": "",
+    "text": "Neerslagpatronen\nVoor het neerslagverloop in de tijd is ook een stochast geïntroduceerd door STOWA. We noemen deze stochast ‘neerslagpatroon’ en hij ligt vast in een zevental tijdsverlopen met bijbehorende kans.\nSTOWA onderscheidt de volgende patronen:\n\npatroon0: uniform verloop van de neerslag in de tijd; vergelijkbaar met het vroegere patroon ‘uniform’\npatroon1a: bui met één lage piek; vergelijkbaar met het vroegere patroon ‘laag’\npatroon1b: bui met één middellage piek; vergelijkbaar met het vroegere patroon ‘middellaag’\npatroon1c: bui met één middelhoge piek; vergelijkbaar met het vroegere patroon ‘middelhoog’\npatroon1d: bui met één zeer hoge piek; vergelijkbaar met het vroegere patroon ‘hoog’\npatroon2a: bui met twee pieken kort op elkaar; vergelijkbaar met het vroegere patroon ‘kort’\npatroon2b: bui met twee pieken lang na elkaar; vergelijkbaar met het vroegere patroon ‘lang’\n\n\n\n\nSTOWA onderscheidt 7 neerslagpatronen.\n\n\n\n\nVoor deze snelstart hebben we de stochast ‘neerslagpatroon’ en de bijbehorende kansen al integraal opgenomen in de database.\n\nVink naar behoeven patronen aan of uit. Doe dit door de 0 onder ‘Use’ te vervangen door 1.\nMerk op dat de kans van uitgevinkte patronen automatisch worden herverdeeld over de actieve klassen. Dit herverdelen gebeurt niet noodzakelijkerwijs correct, dus beter is om met alle 7 patronen te werken.\n\n\n\n\n\n\nDe stochast neerslagpatroon.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nDe kanstoedeling zoals door STOWA toegekend is de enige wetenschappelijk onderbouwde. Het uitvinken van een patroon zorgt ervoor dat de kans van dat patroon wordt onderverdeeld over de overige patronen; wat niet noodzakelijkerwijs correct gebeurt. Het is de verantwoordelijkheid van de modelleur om zich ervan te gewissen dat de kanstoedeling over een subset van neerslagpatronen nog steeds geldig is. Reken daarom bij voorkeur met alle 7 patronen.\n\n\n\n\n\nSTOWA onderscheidt 7 neerslagpatronen.\nDe stochast neerslagpatroon.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Neerslagpatronen"
+    ]
+  },
+  {
+    "objectID": "quickstart/modelschematisatie.html",
+    "href": "quickstart/modelschematisatie.html",
+    "title": "Modelschematisatie",
+    "section": "",
+    "text": "Hier beschrijven we hoe een modelschematisatie toe te voegen en de output ervan te configureren.\n\n\nEr is ten minste één modelschematisatie nodig die wordt doorgerekend. Dit kan bijvoorbeeld een SOBEK-schematisatie zijn, of D-Hydro. In de basis is De Nieuwe Stochastentool model-agnostisch en ondersteunt het ieder model wat vanaf de command prompt gedraaid kan worden.\nOm u een snelle start te geven leveren we een werkende modelschematisatie in D-Hydro mee. Dit is een model van Gieterveen (Waterschap Hunze en Aa’s). Download dit model hier.\n\n\n\nPak het ZIP-bestand uit en plaats het model in een map waar hij eenvoudig toegankelijk is voor De Nieuwe Stochastentool. Goed gebruik is om naast de XML- en .DB file een mapje ‘model’ te maken en het model daarin te plaatsen.\nGa naar het tabblad Modellen\nDruk op het plusje rechts van het datagrid. Er verschijnt een nieuw formulier\nKies modeltype DIMR (Deltares Integrated Model Runner)\nDruk op de button rechts van het veld achter Executable en blader naar run.bat\nDruk op de button rechts van het veld achter Modeldir en blader naar de modelmap. In dit geval de map waarin run.bat en DIMR_Config.xml staan.\nGeef een Casenaam op\nDruk op de button rechts van het veld Workdir en blader naar een tijdelijke werkmap waar het programma de simulaties mag draaien. Zelf gebruiken we doorgaans C:\\Temp.\nAchter Resultsfiles RR, geef met puntkomma gescheiden de resultaatbestanden voor RR op. Het is goed gebruik om ook de sobek_3b.log mee nemen.\nAchter Resultsfiles Flow, geef met puntkomma gescheiden de resultaatbestanden voor Flow op die uit iedere simulatie naar de stochastenmap moeten worden gekopiëerd. Als voorbeeld nemen we hier het bestand FlowFM_his.nc wat de 1D-simulatieresultaten bevat. Voor 2D wordt doorgaans de Fourier-file genomen.\nKlik op ‘Add’ om de modelschematisatie toe te voegen.\n\n\n\n\n\n\nModelschematisatie toevoegen.\n\n\n\n\n\nDe modelschematisatie is toegevoegd.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nIn het geval van D-Hydro Flow kan de naamgeving van het resultaatbestand per model verschillen.\n\n\n\n\n\nDe Nieuwe Stochastentool moet nog weten voor welke uitvoerlocaties en -parameters het overschrijdingsgrafieken moet gaan produceren. Dit configureren we op het tabblad ‘Uitvoer’.\n\n\n\nGa naar het tabblad ‘Uitvoer’\nKies uit het menu de optie Modellen - Uitvoerlocaties 0D en 1D - Importeren. Er verschijnt een nieuw scherm\nSelecteer hier het modelID. Model 1 is de enige beschikbare hier\nKies MAX als modelresultaat. Dit betekent dat van iedere simulatie de piekwaterstand wordt bewaard en nabewerkt\nKlik op ‘Import’ om de uitvoerlocaties te importeren.\n\n\n\n\n\n\nUitvoerlocaties importeren uit het gekozen model.\n\n\n\n\n\nDe uitvoerlocaties zijn geïmporteerd.\n\n\n\n\n\n\n\nModelschematisatie toevoegen.\nDe modelschematisatie is toegevoegd.\nUitvoerlocaties importeren uit het gekozen model.\nDe uitvoerlocaties zijn geïmporteerd.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Modelschematisatie"
+    ]
+  },
+  {
+    "objectID": "quickstart/modelschematisatie.html#modelschematisatie-toevoegen",
+    "href": "quickstart/modelschematisatie.html#modelschematisatie-toevoegen",
+    "title": "Modelschematisatie",
+    "section": "",
+    "text": "Er is ten minste één modelschematisatie nodig die wordt doorgerekend. Dit kan bijvoorbeeld een SOBEK-schematisatie zijn, of D-Hydro. In de basis is De Nieuwe Stochastentool model-agnostisch en ondersteunt het ieder model wat vanaf de command prompt gedraaid kan worden.\nOm u een snelle start te geven leveren we een werkende modelschematisatie in D-Hydro mee. Dit is een model van Gieterveen (Waterschap Hunze en Aa’s). Download dit model hier.\n\n\n\nPak het ZIP-bestand uit en plaats het model in een map waar hij eenvoudig toegankelijk is voor De Nieuwe Stochastentool. Goed gebruik is om naast de XML- en .DB file een mapje ‘model’ te maken en het model daarin te plaatsen.\nGa naar het tabblad Modellen\nDruk op het plusje rechts van het datagrid. Er verschijnt een nieuw formulier\nKies modeltype DIMR (Deltares Integrated Model Runner)\nDruk op de button rechts van het veld achter Executable en blader naar run.bat\nDruk op de button rechts van het veld achter Modeldir en blader naar de modelmap. In dit geval de map waarin run.bat en DIMR_Config.xml staan.\nGeef een Casenaam op\nDruk op de button rechts van het veld Workdir en blader naar een tijdelijke werkmap waar het programma de simulaties mag draaien. Zelf gebruiken we doorgaans C:\\Temp.\nAchter Resultsfiles RR, geef met puntkomma gescheiden de resultaatbestanden voor RR op. Het is goed gebruik om ook de sobek_3b.log mee nemen.\nAchter Resultsfiles Flow, geef met puntkomma gescheiden de resultaatbestanden voor Flow op die uit iedere simulatie naar de stochastenmap moeten worden gekopiëerd. Als voorbeeld nemen we hier het bestand FlowFM_his.nc wat de 1D-simulatieresultaten bevat. Voor 2D wordt doorgaans de Fourier-file genomen.\nKlik op ‘Add’ om de modelschematisatie toe te voegen.\n\n\n\n\n\n\nModelschematisatie toevoegen.\n\n\n\n\n\nDe modelschematisatie is toegevoegd.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nIn het geval van D-Hydro Flow kan de naamgeving van het resultaatbestand per model verschillen.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Modelschematisatie"
+    ]
+  },
+  {
+    "objectID": "quickstart/modelschematisatie.html#output-configureren",
+    "href": "quickstart/modelschematisatie.html#output-configureren",
+    "title": "Modelschematisatie",
+    "section": "",
+    "text": "De Nieuwe Stochastentool moet nog weten voor welke uitvoerlocaties en -parameters het overschrijdingsgrafieken moet gaan produceren. Dit configureren we op het tabblad ‘Uitvoer’.\n\n\n\nGa naar het tabblad ‘Uitvoer’\nKies uit het menu de optie Modellen - Uitvoerlocaties 0D en 1D - Importeren. Er verschijnt een nieuw scherm\nSelecteer hier het modelID. Model 1 is de enige beschikbare hier\nKies MAX als modelresultaat. Dit betekent dat van iedere simulatie de piekwaterstand wordt bewaard en nabewerkt\nKlik op ‘Import’ om de uitvoerlocaties te importeren.\n\n\n\n\n\n\nUitvoerlocaties importeren uit het gekozen model.\n\n\n\n\n\nDe uitvoerlocaties zijn geïmporteerd.\n\n\n\n\n\n\n\nModelschematisatie toevoegen.\nDe modelschematisatie is toegevoegd.\nUitvoerlocaties importeren uit het gekozen model.\nDe uitvoerlocaties zijn geïmporteerd.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Modelschematisatie"
+    ]
+  },
+  {
+    "objectID": "quickstart/basisconfiguratie.html",
+    "href": "quickstart/basisconfiguratie.html",
+    "title": "Basisconfiguratie",
+    "section": "",
+    "text": "Voor een snelle start kunt u onder deze link een basisconfiguratie van De Nieuwe Stochastentool vinden.\n\n\n\n\nDe configuratie bestaat uit een XML-file en een SQLite-database (.db). Laad deze als volgt in:\n\nPak de zipfile met de XML-file en de database uit en zet beide bestanden naast elkaar in de gewenste map.\nNa de installatie van het programma vindt u De Nieuwe Stochastentool in het startmenu van Windows.\nOpen de configuratie via het menu ‘Bestand’ - ‘XML openen’\n\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\n\n\n\n\n\n\n\n\n\nEr moet minstens één neerslagstation worden aangemaakt.\n\nKlik in de sectie ‘Meteo’ op het plusje.\nGeef in het scherm wat verschijnt de naam op van het nieuwe station\nselecteer type ‘neerslag’\nSelecteer Methode gebiedsreductie ‘constante’ met een waarde van 1.\nHet gebiedsoppervlak doet in deze setting niet ter zake\n\n\n\n\n\n\nAanmaken van een neerslagstation.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nNeerslagstations moeten een naam krijgen die identiek is aan de stations die de modelschematisatie verwacht.\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\nAanmaken van een neerslagstation.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Basisconfiguratie"
+    ]
+  },
+  {
+    "objectID": "quickstart/basisconfiguratie.html#configuratie-inladen",
+    "href": "quickstart/basisconfiguratie.html#configuratie-inladen",
+    "title": "Basisconfiguratie",
+    "section": "",
+    "text": "De configuratie bestaat uit een XML-file en een SQLite-database (.db). Laad deze als volgt in:\n\nPak de zipfile met de XML-file en de database uit en zet beide bestanden naast elkaar in de gewenste map.\nNa de installatie van het programma vindt u De Nieuwe Stochastentool in het startmenu van Windows.\nOpen de configuratie via het menu ‘Bestand’ - ‘XML openen’\n\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Basisconfiguratie"
+    ]
+  },
+  {
+    "objectID": "quickstart/basisconfiguratie.html#neerslagstation-aanmaken",
+    "href": "quickstart/basisconfiguratie.html#neerslagstation-aanmaken",
+    "title": "Basisconfiguratie",
+    "section": "",
+    "text": "Er moet minstens één neerslagstation worden aangemaakt.\n\nKlik in de sectie ‘Meteo’ op het plusje.\nGeef in het scherm wat verschijnt de naam op van het nieuwe station\nselecteer type ‘neerslag’\nSelecteer Methode gebiedsreductie ‘constante’ met een waarde van 1.\nHet gebiedsoppervlak doet in deze setting niet ter zake\n\n\n\n\n\n\nAanmaken van een neerslagstation.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nNeerslagstations moeten een naam krijgen die identiek is aan de stations die de modelschematisatie verwacht.\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\nAanmaken van een neerslagstation.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Basisconfiguratie"
     ]
   },
   {
@@ -214,7 +346,7 @@
     "href": "GUI/seizoenen.html",
     "title": "Tabblad Seizoenen",
     "section": "",
-    "text": "Het tabblad ‘Seizoenen’ is het vertrekpunt voor het configureren van stochasten.\nStrikt genomen is ‘seizoen’ geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "text": "Het tabblad ‘Seizoenen’ is het vertrekpunt voor het configureren van stochasten.\nStrikt genomen is ‘seizoen’ geen echte stochast. Toch behandelen we hem in De Nieuwe Stochastentool wel als zodanig. Er zijn namelijk talloze andere stochasten die een sterke afhankelijkheid hebben met de tijd van het jaar waarin ze optreden. Denk hierbij aan het neerslagvolume, neerslagpatroon, de initiële grondwaterconditie en de onderhoudstoestand van watergangen. Voor al deze stochasten geldt dat ze in de zomer een andere kansverdeling hebben dan in de winter.\nSTOWA publiceerde in 2004 (STOWA 2004) twee seizoenen: groeiseizoen (8 maanden; maart-oktober) en buiten-groeiseizoen (4 maanden; november-februari). De standaard kanstoedelingen aan buivolume en buipatroon zoals die in de database zitten zijn daar dan ook aan gekoppeld.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\nSeizoenen en hun kans worden vastgelegd in de database in de tabel SEASONS.\n\n\n\nSeizoenen en hun kanstoedeling\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. ‘Statistiek van Extreme Neerslag in Nederland’. {Rapport} 2004-26. STOWA.",
     "crumbs": [
       "Tutorial",
       "Gebruikshandleiding",
@@ -588,7 +720,7 @@
     "href": "GUI/patterns.html",
     "title": "Tabblad Patronen",
     "section": "",
-    "text": "Met de stochast ‘Patronen’ bedoelen we in een stochastencontext doorgaans het ‘tijdsverloop van de neerslag’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Patronen’ ook staan voor het tijdsverloop van ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Patroon staat voor het tijdsverloop van de neerslag. Meer specifiek: doorgaans onderscheiden we hier de zeven buipatronen volgens (STOWA 2004).\n\n\n\nDe stochast ‘Patronen’\n\n\nHet staat iedereen echter vrij om eigen patronen te definiëren en daar een kans aan te verbinden. Dit kan allemaal in de database, in de volgende tabellen:\n\nPATRONEN: bevat de naam van ieder patroon en zijn kans\nNEERSLAGVERLOOP: bevat het tijdsverloop van ieder patroon, als fractie van de neerslagsom per tijdstap\n\n\n\n\nDe stochast ‘Patronen’\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. “Statistiek van Extreme Neerslag in Nederland.” {Rapport} 2004-26. STOWA.",
+    "text": "Met de stochast ‘Patronen’ bedoelen we in een stochastencontext doorgaans het ‘tijdsverloop van de neerslag’. Maar dat hoeft niet per sé. Wanneer we bijvoorbeeld alleen rekenen met een hydraulisch model (en dus geen neerslag-afvoerproces), kan ‘Patronen’ ook staan voor het tijdsverloop van ‘beekinstroom’.\nEchter in deze handleiding nemen we aan dat Patroon staat voor het tijdsverloop van de neerslag. Meer specifiek: doorgaans onderscheiden we hier de zeven buipatronen volgens (STOWA 2004).\n\n\n\nDe stochast ‘Patronen’\n\n\nHet staat iedereen echter vrij om eigen patronen te definiëren en daar een kans aan te verbinden. Dit kan allemaal in de database, in de volgende tabellen:\n\nPATRONEN: bevat de naam van ieder patroon en zijn kans\nNEERSLAGVERLOOP: bevat het tijdsverloop van ieder patroon, als fractie van de neerslagsom per tijdstap\n\n\n\n\nDe stochast ‘Patronen’\n\n\n\n\n\n\nLiteratuur\n\nSTOWA. 2004. ‘Statistiek van Extreme Neerslag in Nederland’. {Rapport} 2004-26. STOWA.",
     "crumbs": [
       "Tutorial",
       "Gebruikshandleiding",
@@ -637,6 +769,78 @@
     "title": "De Nieuwe Stochastentool",
     "section": "",
     "text": "Welkom bij De Nieuwe Stochastentool! Deze website beschrijft de werking en bediening van dit programma.\n9 februari 2024, Siebe Bosch"
+  },
+  {
+    "objectID": "quickstart/inleiding.html",
+    "href": "quickstart/inleiding.html",
+    "title": "Snelstart",
+    "section": "",
+    "text": "Snelstart\nDit hoofdstuk is bedoeld om u zo snel mogelijk op weg te helpen met De Nieuwe Stochastentool.\nDe stappen zijn:\n\nBegin met de basisconfiguratie (xml) en database (.db)\nVoeg een modelschematisatie toe en specificeer de benodigde resultaatbestanden\nMaak een neerslagstation aan\nKies de stochast ‘seizoen’\nKies de stochast ‘neerslagvolume’\nKies de stochast ‘neerslagpatroon’",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Inleiding"
+    ]
+  },
+  {
+    "objectID": "quickstart/nabewerken.html",
+    "href": "quickstart/nabewerken.html",
+    "title": "Simulaties nabewerken",
+    "section": "",
+    "text": "Wanneer de simulaties gereed zijn kunnen ze worden gekopiëerd, statistisch nabewerkt en gepubliceerd.\n\n\n\n\nNa het simuleren moeten de resultaatbestanden vanuit de tijdelijke werkmap worden gekopieerd naar de stochastenmap.\n\nSelecteer op het tabblad ‘simulaties’ de rijen van de simulaties waarvoor u de resultaten wilt kopiëren\nKlik ‘Kopiëren’\nMerk op dat het vinkje ‘DONE’ is aangevinkt voor alle simulaties waarvan de resultaatbestanden nu in de stochastenmap zitten.\n\n\n\n\n\n\nDe simulaties zijn gekopieerd.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nVoordat we de resultaten statistisch kunnen verwerken tot overschrijdingsgrafieken, moeten de resultaten voor álle simulaties beschikbaar zijn. Maw: DONE moet overal zijn aangevinkt.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Simulaties nabewerken"
+    ]
+  },
+  {
+    "objectID": "quickstart/nabewerken.html#kopiëren",
+    "href": "quickstart/nabewerken.html#kopiëren",
+    "title": "Simulaties nabewerken",
+    "section": "",
+    "text": "Na het simuleren moeten de resultaatbestanden vanuit de tijdelijke werkmap worden gekopieerd naar de stochastenmap.\n\nSelecteer op het tabblad ‘simulaties’ de rijen van de simulaties waarvoor u de resultaten wilt kopiëren\nKlik ‘Kopiëren’\nMerk op dat het vinkje ‘DONE’ is aangevinkt voor alle simulaties waarvan de resultaatbestanden nu in de stochastenmap zitten.\n\n\n\n\n\n\nDe simulaties zijn gekopieerd.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nVoordat we de resultaten statistisch kunnen verwerken tot overschrijdingsgrafieken, moeten de resultaten voor álle simulaties beschikbaar zijn. Maw: DONE moet overal zijn aangevinkt.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Simulaties nabewerken"
+    ]
+  },
+  {
+    "objectID": "quickstart/publiceren.html",
+    "href": "quickstart/publiceren.html",
+    "title": "Publiceren",
+    "section": "",
+    "text": "Het resultaat van een stochastenanalyse kan op twee manieren worden gepubliceerd:\n\nIn de interactieve webviewer\nIn Excel en csv-bestanden",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Resultaat publiceren"
+    ]
+  },
+  {
+    "objectID": "quickstart/simulaties.html",
+    "href": "quickstart/simulaties.html",
+    "title": "Simulaties samenstellen",
+    "section": "",
+    "text": "Simulaties samenstellen\nNu we de stochasten Seizoen, Neerslagvolume en Neerslagpatroon hebben geconfigureerd is het mogelijk om de klassen daarvan te combineren tot simulaties.\n\n\nAlle mogelijke combinaties van de stochasten worden gemaakt en verwerkt tot ‘simulatie’.\n\nGa naar het tabblad ‘Simulaties’\nKlik op ‘samenstellen’\n\n\n\n\n\n\nDe simulaties zijn samengesteld (klik voor groot).\n\n\n\n\n\n\nSimulaties bouwen\nNu is het tijd om de simulaties daadwerkelijk te genereren. Dit gebeurt in de tijdelijke werkmap die bij het model (tabblad Modellen) is opgegeven.\n\n\nDe gebruiker selecteert eerst welke simulaties moeten worden gebouwd.\n\nSelecteer de rijen van de simulaties die gebouwd moeten worden\nKlik op ‘Bouwen’\n\nAls het proces gereed is, staat in de tijdelijke werkmap zoals bij het model opgegeven een bestand simulations.json en voor iedere simulatie een eigen mapje met daarin de betreffende simulatie. In de volgende stap gaan we de simulaties uitvoeren.\n\n\n\n\n\nDe simulaties worden gebouwd.\n\n\n\n\n\nDe simulaties staan klaar om te worden doorgerekend.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nOmdat iedere simulatie een volledige kopie van het model krijgt, kan deze actie veel schijfruimte vergen. Daarom is het ook mogelijk een selectie van simulaties te maken en eerst alleen die selectie door te rekenen en uit te lezen.\n\n\n\n\n\nDe simulaties zijn samengesteld (klik voor groot).\nDe simulaties worden gebouwd.\nDe simulaties staan klaar om te worden doorgerekend.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Simulaties klaarzetten"
+    ]
+  },
+  {
+    "objectID": "quickstart/volumes.html",
+    "href": "quickstart/volumes.html",
+    "title": "Neerslagvolumes",
+    "section": "",
+    "text": "Neerslagvolumes\nHet neerslagvolume is zonder twijfel de belangrijkste stochast. Niet voor niets wordt door STOWA zoveel geïnvesteerd in een goede analyse van de statistieken van deze grootheid.\nAlle volumeklassen en hun kansen zijn al voorgedefinieerd in de database, met de kanstoedelingen conform STOWA (2024).\n\n\n\n\n\n\nBelangrijk\n\n\n\nDe stochast Neerslagvolume heeft een kansen toegekend gekregen maar klassenfrequenties. Dit is het aantal gebeurtenissen per jaar wat gemiddeld in iedere klasse valt. De som van alle frequenties is gelijk aan 365.25 * 24/duur(uren). Deze ‘checksum’ kunt u altijd controleren onderaan de pagina.\n\n\n\n\nVoor deze snelstart hebben we de stochast ‘volume’ al vooringesteld op de selectie van drie klassen: 25mm (als representant voor [22.5 - 27.5mm]), 50mm en 80mm.\n\nVink naar behoeven extra klassen aan. Doe dit door de 0 onder ‘Use’ te vervangen door 1.\nMerk op dat de klassenfrequenties dan automatisch worden herverdeeld over de actieve klassen.\n\n\n\n\n\n\nDe stochast Volume.\n\n\n\n\n\n\n\nDe stochast Volume.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Neerslagvolumes"
+    ]
   },
   {
     "objectID": "technical_docs/technicaldocumentation.html",

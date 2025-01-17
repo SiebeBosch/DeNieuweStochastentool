@@ -1,6 +1,7 @@
 ﻿Imports STOCHLIB.General
 Imports MathNet.Numerics.LinearAlgebra
 Imports alglib
+Imports DocumentFormat.OpenXml.Bibliography
 Public Class clsGebiedsreductie
 
     Private Setup As clsSetup
@@ -150,6 +151,106 @@ Public Class clsGebiedsreductie
 
         Return result.ResultMatrix(0, 0)
     End Function
+
+
+    Public Function CalculateByArea(Season As String, Pattern As String, volume As Double, durationMinutes As Integer, areaKm2 As Double) As (Boolean, Double)
+        Try
+            Dim T As Double = Me.Setup.Neerslagstatistiek.STOWA2024_JAARROND_T(durationMinutes, volume, 2014, "", "")
+
+            ' Determine which set of parameters to use based on duration
+            Dim ARF As Double = ComputeARF(areaKm2, durationMinutes / 60, T)
+            Me.Setup.Log.AddMessage($"Reduction factor {ARF} computed for duration {durationMinutes / 60}H at season {Season}, pattern {Pattern}, volume {volume} and area {areaKm2} km2.")
+            Return (True, ARF)
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function CalculateByArea of class clsGebiedsreductie: " & ex.Message)
+            Return (False, 0)
+        End Try
+
+    End Function
+
+
+    Public Function CalculateByAreaAdvanced(Season As String, Pattern As String, volume As Double, fractie As Double(), durationMinutes As Integer, areaKm2 As Double) As (Boolean, List(Of Double))
+        Try
+            ' Determine which set of parameters to use based on duration
+            Dim Result As New List(Of Double)
+
+
+            'first decide all the inlying durations
+            Dim durations As New List(Of Integer)
+            'If durationMinutes <= 15 Then durations.Add(15)              '15 minutes. skip this because we're working with 1 hour timesteps
+            'If durationMinutes <= 30 Then durations.Add(30)              '30 minutes. skip this because we're working with 1 hour timesteps
+            If durationMinutes >= 60 Then durations.Add(1)                '1 hour
+            If durationMinutes >= 120 Then durations.Add(2)               '2 hours
+            If durationMinutes >= 240 Then durations.Add(4)               '4 hours
+            If durationMinutes >= 480 Then durations.Add(8)               '8 hours
+            If durationMinutes >= 720 Then durations.Add(12)              '12 hours
+            If durationMinutes >= 1440 Then durations.Add(24)             '24 hours
+            If durationMinutes >= 2880 Then durations.Add(48)             '2 days
+            If durationMinutes >= 5760 Then durations.Add(96)             '4 days
+            If durationMinutes >= 11520 Then durations.Add(192)           '8 days
+            If durationMinutes >= 12960 Then durations.Add(216)           '9 days
+
+            'now calculate the highest return period for each duration
+            Dim maxDur As Integer
+            Dim maxDurStartIdx As Integer 'the start index of the duration in the fractie array
+            Dim MaxT As Double = 0 'maximum return period
+            Dim curVol As Double, curmaxVol As Double, curStartIdx As Integer, curT As Double
+
+            'walk through all durations and calculate which one yields the highest return period
+            For Each dur As Integer In durations
+                curmaxVol = 0
+                For startIdx = 0 To fractie.Length - dur
+                    'create a window of the given duration and walk through the fractie array to calculate curVol
+                    curVol = 0
+                    For i = startIdx To startIdx + dur - 1
+                        curVol += fractie(i) * volume
+                    Next
+
+                    'if this is the highest volume so far, store it. And also store the start index
+                    If curVol > curmaxVol Then
+                        curmaxVol = curVol
+                        curStartIdx = startIdx
+                    End If
+
+                Next
+
+                curT = Me.Setup.Neerslagstatistiek.STOWA2024_JAARROND_T(dur * 60, curmaxVol, 2014, "", "")
+
+                'if this is the highest return period so far, store it
+                If curT > MaxT Then
+                    MaxT = curT
+                    maxDur = dur
+                    maxDurStartIdx = curStartIdx
+                End If
+            Next
+
+            'now that we found our critical duration and the startIdx we can calculate the reduction factor and apply it
+            Dim ARF As Double = ComputeARF(areaKm2, maxDur, MaxT)
+
+            'finally implement the reduction factor in the section of our fractie array
+            For i = 0 To fractie.Count - 1
+                If i < maxDurStartIdx Then
+                    Result.Add(volume * fractie(i)) 'no adjustment
+                ElseIf i < maxDurStartIdx + maxDur Then 'within the subwindow adjust the volumes by applying the ARF
+                    Result.Add(volume * fractie(i) * ARF)
+                Else
+                    Result.Add(volume * fractie(i)) 'no adjustment
+                End If
+            Next
+
+            Me.Setup.Log.AddMessage($"Reduction factor {ARF} computed for inlying duration {maxDur}H of {durationMinutes / 60}H at season {Season}, pattern {Pattern}, volume {volume} and area {areaKm2} km2.")
+            Return (True, Result)
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in CalculateByAreaAdvanced: " & ex.Message)
+            Return (False, Nothing)
+        End Try
+
+
+    End Function
+
+
 
 End Class
 
@@ -348,110 +449,7 @@ End Class
 '    End Function
 
 
-'    Public Function CalculateByArea(Season As String, Pattern As String, volume As Double, durationMinutes As Integer, areaKm2 As Double) As (Boolean, Double)
-'        Try
-'            ' Determine which set of parameters to use based on duration
-'            Dim ARF As Double
-'            If durationMinutes <= 720 Then
-'                ARF = CalculateReductionFactorUpTo720(volume, durationMinutes / 60, areaKm2)
-'            Else
-'                ARF = CalculateReductionFactorAbove720(volume, durationMinutes / 60, areaKm2)
-'            End If
 
-'            Me.Setup.Log.AddMessage($"Reduction factor {ARF} computed for duration {durationMinutes / 60}H at season {Season}, pattern {Pattern}, volume {volume} and area {areaKm2} km2.")
-'            Return (True, ARF)
-
-'        Catch ex As Exception
-'            Me.Setup.Log.AddError("Error in function CalculateByArea of class clsGebiedsreductie: " & ex.Message)
-'            Return (False, 0)
-'        End Try
-
-'    End Function
-
-'    Public Function CalculateByAreaAdvanced(Season As String, Pattern As String, volume As Double, fractie As Double(), durationMinutes As Integer, areaKm2 As Double) As (Boolean, List(Of Double))
-'        Try
-'            ' Determine which set of parameters to use based on duration
-'            Dim Result As New List(Of Double)
-
-
-'            'first decide all the inlying durations
-'            Dim durations As New List(Of Integer)
-'            'If durationMinutes <= 15 Then durations.Add(15)              '15 minutes. skip this because we're working with 1 hour timesteps
-'            'If durationMinutes <= 30 Then durations.Add(30)              '30 minutes. skip this because we're working with 1 hour timesteps
-'            If durationMinutes >= 60 Then durations.Add(1)                '1 hour
-'            If durationMinutes >= 120 Then durations.Add(2)               '2 hours
-'            If durationMinutes >= 240 Then durations.Add(4)               '4 hours
-'            If durationMinutes >= 480 Then durations.Add(8)               '8 hours
-'            If durationMinutes >= 720 Then durations.Add(12)              '12 hours
-'            If durationMinutes >= 1440 Then durations.Add(24)             '24 hours
-'            If durationMinutes >= 2880 Then durations.Add(48)             '2 days
-'            If durationMinutes >= 5760 Then durations.Add(96)             '4 days
-'            If durationMinutes >= 11520 Then durations.Add(192)           '8 days
-'            If durationMinutes >= 12960 Then durations.Add(216)           '9 days
-
-'            'now calculate the highest return period for each duration
-'            Dim maxDur As Integer
-'            Dim maxDurStartIdx As Integer 'the start index of the duration in the fractie array
-'            Dim MaxT As Double = 0 'maximum return period
-'            Dim curVol As Double, curmaxVol As Double, curStartIdx As Integer, curT As Double
-
-'            'walk through all durations and calculate which one yields the highest return period
-'            For Each dur As Integer In durations
-'                curmaxVol = 0
-'                For startIdx = 0 To fractie.Length - dur
-'                    'create a window of the given duration and walk through the fractie array to calculate curVol
-'                    curVol = 0
-'                    For i = startIdx To startIdx + dur - 1
-'                        curVol += fractie(i) * volume
-'                    Next
-
-'                    'if this is the highest volume so far, store it. And also store the start index
-'                    If curVol > curmaxVol Then
-'                        curmaxVol = curVol
-'                        curStartIdx = startIdx
-'                    End If
-
-'                Next
-
-'                curT = Me.Setup.Neerslagstatistiek.STOWA2024_JAARROND_T(dur * 60, curmaxVol, 2014, "", "")
-
-'                'if this is the highest return period so far, store it
-'                If curT > MaxT Then
-'                    MaxT = curT
-'                    maxDur = dur
-'                    maxDurStartIdx = curStartIdx
-'                End If
-'            Next
-
-'            'now that we found our critical duration and the startIdx we can calculate the reduction factor and apply it
-'            Dim ARF As Double
-'            If maxDur <= 720 / 60 Then
-'                ARF = CalculateReductionFactorUpTo720(volume, maxDur, areaKm2)
-'            Else
-'                ARF = CalculateReductionFactorAbove720(volume, maxDur, areaKm2)
-'            End If
-
-'            'finally implement the reduction factor in the section of our fractie array
-'            For i = 0 To fractie.Count - 1
-'                If i < maxDurStartIdx Then
-'                    Result.Add(volume * fractie(i)) 'no adjustment
-'                ElseIf i < maxDurStartIdx + maxDur Then 'within the subwindow adjust the volumes by applying the ARF
-'                    Result.Add(volume * fractie(i) * ARF)
-'                Else
-'                    Result.Add(volume * fractie(i)) 'no adjustment
-'                End If
-'            Next
-
-'            Me.Setup.Log.AddMessage($"Reduction factor {ARF} computed for inlying duration {maxDur}H of {durationMinutes / 60}H at season {Season}, pattern {Pattern}, volume {volume} and area {areaKm2} km2.")
-'            Return (True, Result)
-
-'        Catch ex As Exception
-'            Me.Setup.Log.AddError("Error in CalculateByAreaAdvanced: " & ex.Message)
-'            Return (False, Nothing)
-'        End Try
-
-
-'    End Function
 
 '    Private Function CalculateReductionFactorUpTo720(volume As Double, durationHours As Double, areaKm2 As Double) As Double
 '        If durationHours > 12 Then Throw New Exception("Function only valid for durations <= 12 hours")

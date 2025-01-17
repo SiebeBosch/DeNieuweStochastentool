@@ -16,6 +16,28 @@ website:
     style: "docked"
     search: true
     contents:
+      - section: "Snelstart"
+        contents:
+          - href: quickstart/inleiding.qmd
+            text: "Inleiding"
+          - href: quickstart/basisconfiguratie.qmd
+            text: "Basisconfiguratie"
+          - href: quickstart/modelschematisatie.qmd
+            text: "Modelschematisatie"
+          - href: quickstart/seizoenen.qmd
+            text: "Seizoenen"
+          - href: quickstart/volumes.qmd
+            text: "Neerslagvolumes"
+          - href: quickstart/patronen.qmd
+            text: "Neerslagpatronen"
+          - href: quickstart/simulaties.qmd
+            text: "Simulaties klaarzetten"
+          - href: quickstart/simuleren.qmd
+            text: "Simulaties doorrekenen"
+          - href: quickstart/nabewerken.qmd
+            text: "Simulaties nabewerken"
+          - href: quickstart/publiceren.qmd
+            text: "Resultaat publiceren"
       - section: "Tutorial"
         contents:
           - tutorial/tutorial.qmd
@@ -53,6 +75,5 @@ format:
       match: auto
       effect: fade
       desc-position: right
-
-
+lang: nl
 

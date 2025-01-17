@@ -50,7 +50,6 @@ Public Class frmImportOutputlocations
             Dim query As String
             Dim WPFieldIdx As Integer
             Dim ZPFieldIdx As Integer
-            Dim WP As Double, ZP As Double
 
             Dim IDPatterns As New List(Of String)
             Dim TmpStr As String = txtIDFilter.Text

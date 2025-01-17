@@ -1,0 +1,25 @@
+
+# Neerslagvolumes
+
+Het neerslagvolume is zonder twijfel de belangrijkste stochast. Niet voor niets wordt door STOWA zoveel geïnvesteerd in een goede analyse van de statistieken van deze grootheid. 
+
+Alle volumeklassen en hun kansen zijn al voorgedefinieerd in de database, met de kanstoedelingen conform STOWA (2024). 
+
+::: {.callout-important}
+De stochast Neerslagvolume heeft een kansen toegekend gekregen maar klassenfrequenties. Dit is het aantal gebeurtenissen per jaar wat gemiddeld in iedere klasse valt. De som van alle frequenties is gelijk aan 365.25 * 24/duur(uren). Deze 'checksum' kunt u altijd controleren onderaan de pagina.
+:::
+
+
+::: {.grid}
+::: {.g-col-6}
+Voor deze snelstart hebben we de stochast 'volume' al vooringesteld op de selectie van drie klassen: 25mm (als representant voor [22.5 - 27.5mm]), 50mm en 80mm.
+
+* Vink naar behoeven extra klassen aan. Doe dit door de 0 onder 'Use' te vervangen door 1.
+* Merk op dat de klassenfrequenties dan automatisch worden herverdeeld over de actieve klassen.
+
+:::
+::: {.g-col-6}
+
+![De stochast Volume.](../img/frmQuickstart9.png)
+:::
+:::

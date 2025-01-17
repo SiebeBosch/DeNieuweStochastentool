@@ -79,6 +79,7 @@ Partial Class frmStochasten
         Me.AboutToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BetafunctiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LeesMATFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TestGebiedsreductieToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tabStochastentool = New System.Windows.Forms.TabControl()
         Me.tabSettings = New System.Windows.Forms.TabPage()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
@@ -300,7 +301,7 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.Button14 = New System.Windows.Forms.Button()
+        Me.TestNetCDFFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -452,20 +453,20 @@ Partial Class frmStochasten
         'ImporterenToolStripMenuItem1
         '
         Me.ImporterenToolStripMenuItem1.Name = "ImporterenToolStripMenuItem1"
-        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(208, 26)
+        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
         Me.ImporterenToolStripMenuItem1.Text = "Importeren"
         '
         'AlleVerwijderenToolStripMenuItem
         '
         Me.AlleVerwijderenToolStripMenuItem.Name = "AlleVerwijderenToolStripMenuItem"
-        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(208, 26)
+        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.AlleVerwijderenToolStripMenuItem.Text = "Verwijderen"
         '
         'VoorgedefinieerdToolStripMenuItem
         '
         Me.VoorgedefinieerdToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SumaquasHertogenboschToolStripMenuItem})
         Me.VoorgedefinieerdToolStripMenuItem.Name = "VoorgedefinieerdToolStripMenuItem"
-        Me.VoorgedefinieerdToolStripMenuItem.Size = New System.Drawing.Size(208, 26)
+        Me.VoorgedefinieerdToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.VoorgedefinieerdToolStripMenuItem.Text = "Voorgedefinieerd"
         '
         'SumaquasHertogenboschToolStripMenuItem
@@ -714,7 +715,7 @@ Partial Class frmStochasten
         '
         'BetafunctiesToolStripMenuItem
         '
-        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesMATFileToolStripMenuItem})
+        Me.BetafunctiesToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.LeesMATFileToolStripMenuItem, Me.TestGebiedsreductieToolStripMenuItem, Me.TestNetCDFFileToolStripMenuItem})
         Me.BetafunctiesToolStripMenuItem.Name = "BetafunctiesToolStripMenuItem"
         Me.BetafunctiesToolStripMenuItem.Size = New System.Drawing.Size(81, 24)
         Me.BetafunctiesToolStripMenuItem.Text = "Sandbox"
@@ -722,8 +723,14 @@ Partial Class frmStochasten
         'LeesMATFileToolStripMenuItem
         '
         Me.LeesMATFileToolStripMenuItem.Name = "LeesMATFileToolStripMenuItem"
-        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(183, 26)
+        Me.LeesMATFileToolStripMenuItem.Size = New System.Drawing.Size(229, 26)
         Me.LeesMATFileToolStripMenuItem.Text = "Lees .MAT file"
+        '
+        'TestGebiedsreductieToolStripMenuItem
+        '
+        Me.TestGebiedsreductieToolStripMenuItem.Name = "TestGebiedsreductieToolStripMenuItem"
+        Me.TestGebiedsreductieToolStripMenuItem.Size = New System.Drawing.Size(229, 26)
+        Me.TestGebiedsreductieToolStripMenuItem.Text = "Test gebiedsreductie"
         '
         'tabStochastentool
         '
@@ -1069,7 +1076,6 @@ Partial Class frmStochasten
         '
         Me.grBestanden.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.grBestanden.Controls.Add(Me.Button14)
         Me.grBestanden.Controls.Add(Me.hlpVeldZomerpeil2)
         Me.grBestanden.Controls.Add(Me.hlpVeldWinterpeil2)
         Me.grBestanden.Controls.Add(Me.hlpShapefilePeilgebieden2)
@@ -3170,14 +3176,11 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1675, 28)
         Me.prProgress.TabIndex = 24
         '
-        'Button14
+        'TestNetCDFFileToolStripMenuItem
         '
-        Me.Button14.Location = New System.Drawing.Point(557, 229)
-        Me.Button14.Name = "Button14"
-        Me.Button14.Size = New System.Drawing.Size(75, 23)
-        Me.Button14.TabIndex = 71
-        Me.Button14.Text = "Button14"
-        Me.Button14.UseVisualStyleBackColor = True
+        Me.TestNetCDFFileToolStripMenuItem.Name = "TestNetCDFFileToolStripMenuItem"
+        Me.TestNetCDFFileToolStripMenuItem.Size = New System.Drawing.Size(229, 26)
+        Me.TestNetCDFFileToolStripMenuItem.Text = "Test NetCDF file"
         '
         'frmStochasten
         '
@@ -3564,5 +3567,6 @@ Partial Class frmStochasten
     Friend WithEvents hlpNabewerking2 As Button
     Friend WithEvents NeerslagpatronenUitCSVToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents NeerslagpatronenkansUitCSVToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents Button14 As Button
+    Friend WithEvents TestGebiedsreductieToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents TestNetCDFFileToolStripMenuItem As ToolStripMenuItem
 End Class

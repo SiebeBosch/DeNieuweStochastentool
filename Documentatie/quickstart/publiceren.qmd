@@ -1,0 +1,26 @@
+
+# Publiceren
+
+Het resultaat van een stochastenanalyse kan op twee manieren worden gepubliceerd:
+
+* In de interactieve webviewer
+* In Excel en csv-bestanden
+
+## Optie 1: publiceren in de webviewer
+
+::: {.grid}
+::: {.g-col-6}
+:::
+::: {.g-col-6}
+:::
+:::
+
+## Optie 2: publiceren in Excel en CSV
+
+::: {.grid}
+::: {.g-col-6}
+:::
+::: {.g-col-6}
+
+:::
+:::

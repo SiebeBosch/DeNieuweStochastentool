@@ -1,0 +1,17 @@
+
+# Seizoenen
+
+Het seizoen is strikt genomen geen stochast. Echter we behandelen hem wel als zodanig. Dit komt doordat neerslagvolumes en -patronen, maar ook de begingrondwaterstanden en hydraulische ruwheden in het zomerseizoen heel andere waarden kunnen hebben dan in het winterseizoen.
+
+Voor een klasse van de 'stochast' Seizoen kennen we eenvoudigweg de kans toe dat een willekeurige bui in dat seizoen zou vallen. STOWA onderscheid twee seizoenen: maart t/m oktober (kans: 2/3) en november t/m februari (kans: 1/3).
+
+
+::: {.grid}
+::: {.g-col-6}
+In de database hebben we de stochast 'Seizoen' al geconfigureerd conform STOWA (2024). 
+:::
+::: {.g-col-6}
+
+![De stochast Seizoen is al geconfigureerd in de database.](../img/frmQuickstart8.png)
+:::
+:::

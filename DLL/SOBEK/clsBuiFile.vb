@@ -250,27 +250,26 @@ Public Class clsBuiFile
                 Case Is = GeneralFunctions.enmGebiedsreductie.oppervlak
                     'bui, bereken gebiedsreductie op basis van het oppervlak
                     'neem aan dat de tijdstapgrootte 1 uur is
-                    setup.Gebiedsreductie.ComputeARF(10, 24, 10)
-                    'Dim res As (Boolean, Double) = setup.Gebiedsreductie.CalculateByArea(Season, Pattern, Vol, Fractie.Count * 60, ms.oppervlak)
-                    'If res.Item1 Then
-                    '    Vol = Vol * res.Item2 * Volume_Multiplier 'apply the areal reduction factor to the event's volume
-                    '    For i = 0 To Fractie.Count - 1
-                    '        Values(i, ms.Idx) = Vol * Fractie(i)
-                    '    Next
-                    'Else
-                    '    Me.setup.Log.AddError($"Unable to implement Areal Reduction Factor (ARF) for {Season}, {Pattern}, {Vol} mm at {ms.oppervlak} km2. Event volume remains unchanged.")
-                    'End If
+                    Dim res As (Boolean, Double) = setup.Gebiedsreductie.CalculateByArea(Season, Pattern, Vol, Fractie.Count * 60, ms.oppervlak)
+                    If res.Item1 Then
+                        Vol = Vol * res.Item2 * Volume_Multiplier 'apply the areal reduction factor to the event's volume
+                        For i = 0 To Fractie.Count - 1
+                            Values(i, ms.Idx) = Vol * Fractie(i)
+                        Next
+                    Else
+                        Me.setup.Log.AddError($"Unable to implement Areal Reduction Factor (ARF) for {Season}, {Pattern}, {Vol} mm at {ms.oppervlak} km2. Event volume remains unchanged.")
+                    End If
                 Case Is = GeneralFunctions.enmGebiedsreductie.geavanceerd
                     'bui, bereken gebiedsreductie op basis van het oppervlak
                     'echter alleen voor het kritische gedeelte van de bui!
-                    'Dim res As (Boolean, List(Of Double)) = setup.Gebiedsreductie.CalculateByAreaAdvanced(Season, Pattern, Vol * Volume_Multiplier, Fractie, Fractie.Count * 60, ms.oppervlak)
-                    'If res.Item1 Then
-                    '    For i = 0 To Fractie.Count - 1
-                    '        Values(i, ms.Idx) = res.Item2(i)
-                    '    Next
-                    'Else
-                    '    Me.setup.Log.AddError($"Unable to implement Areal Reduction Factor (ARF) for {Season}, {Pattern}, {Vol} mm at {ms.oppervlak} km2. Event volume remains unchanged.")
-                    'End If
+                    Dim res As (Boolean, List(Of Double)) = setup.Gebiedsreductie.CalculateByAreaAdvanced(Season, Pattern, Vol * Volume_Multiplier, Fractie, Fractie.Count * 60, ms.oppervlak)
+                    If res.Item1 Then
+                        For i = 0 To Fractie.Count - 1
+                            Values(i, ms.Idx) = res.Item2(i)
+                        Next
+                    Else
+                        Me.setup.Log.AddError($"Unable to implement Areal Reduction Factor (ARF) for {Season}, {Pattern}, {Vol} mm at {ms.oppervlak} km2. Event volume remains unchanged.")
+                    End If
                 Case Else
                     Throw New Exception($"Error: unknown gebiedsreductie type. {ms.gebiedsreductie} not (yet) supported in generating .bui file.")
             End Select

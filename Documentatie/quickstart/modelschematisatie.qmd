@@ -1,0 +1,58 @@
+
+# Modelschematisatie
+
+Hier beschrijven we hoe een modelschematisatie toe te voegen en de output ervan te configureren.
+
+## Modelschematisatie toevoegen
+Er is ten minste één modelschematisatie nodig die wordt doorgerekend. Dit kan bijvoorbeeld een SOBEK-schematisatie zijn, of D-Hydro. In de basis is De Nieuwe Stochastentool model-agnostisch en ondersteunt het ieder model wat vanaf de command prompt gedraaid kan worden.
+
+Om u een snelle start te geven leveren we een werkende modelschematisatie in D-Hydro mee. Dit is een model van Gieterveen (Waterschap Hunze en Aa's). Download dit model [hier](https://www.dropbox.com/scl/fi/0e0rwk3nociix7pmm9pxf/QUICKSTART_MODEL.zip?rlkey=hrduc8vj9usv37k0n5rhu5pij&dl=0).
+
+::: {.grid}
+::: {.g-col-6}
+* Pak het ZIP-bestand uit en plaats het model in een map waar hij eenvoudig toegankelijk is voor De Nieuwe Stochastentool. Goed gebruik is om naast de XML- en .DB file een mapje 'model' te maken en het model daarin te plaatsen.
+* Ga naar het tabblad Modellen
+* Druk op het plusje rechts van het datagrid. Er verschijnt een nieuw formulier
+* Kies modeltype DIMR (Deltares Integrated Model Runner)
+* Druk op de button rechts van het veld achter Executable en blader naar run.bat
+* Druk op de button rechts van het veld achter Modeldir en blader naar de modelmap. In dit geval de map waarin run.bat en DIMR_Config.xml staan.
+* Geef een Casenaam op
+* Druk op de button rechts van het veld Workdir en blader naar een tijdelijke werkmap waar het programma de simulaties mag draaien. Zelf gebruiken we doorgaans C:\\Temp.
+* Achter Resultsfiles RR, geef met puntkomma gescheiden de resultaatbestanden voor RR op. Het is goed gebruik om ook de sobek_3b.log mee nemen.
+* Achter Resultsfiles Flow, geef met puntkomma gescheiden de resultaatbestanden voor Flow op die uit iedere simulatie naar de stochastenmap moeten worden gekopiëerd. Als voorbeeld nemen we hier het bestand FlowFM_his.nc wat de 1D-simulatieresultaten bevat. Voor 2D wordt doorgaans de Fourier-file genomen.
+* Klik op 'Add' om de modelschematisatie toe te voegen.
+:::
+::: {.g-col-6}
+
+![Modelschematisatie toevoegen.](../img/frmQuickstart3.png)
+
+
+![De modelschematisatie is toegevoegd.](../img/frmQuickstart4.png)
+:::
+:::
+
+::: {.callout-important}
+In het geval van D-Hydro Flow kan de naamgeving van het resultaatbestand per model verschillen.
+:::
+
+## Output configureren
+
+De Nieuwe Stochastentool moet nog weten voor welke uitvoerlocaties en -parameters het overschrijdingsgrafieken moet gaan produceren. Dit configureren we op het tabblad 'Uitvoer'.
+
+::: {.grid}
+::: {.g-col-6}
+* Ga naar het tabblad 'Uitvoer'
+* Kies uit het menu de optie Modellen - Uitvoerlocaties 0D en 1D - Importeren. Er verschijnt een nieuw scherm
+* Selecteer hier het modelID. Model 1 is de enige beschikbare hier
+* Kies MAX als modelresultaat. Dit betekent dat van iedere simulatie de piekwaterstand wordt bewaard en nabewerkt
+* Klik op 'Import' om de uitvoerlocaties te importeren.
+:::
+
+::: {.g-col-6}
+
+![Uitvoerlocaties importeren uit het gekozen model.](../img/frmQuickstart6.png)
+
+
+![De uitvoerlocaties zijn geïmporteerd.](../img/frmQuickstart7.png)
+:::
+:::

@@ -2102,6 +2102,21 @@ Public Class GeneralFunctions
         End Try
     End Function
 
+    Public Function SQLiteGetFirstInt(ByVal sqliteCon As SQLite.SQLiteConnection, ByVal myQuery As String) As Integer
+        Try
+            Using cmd As New SQLite.SQLiteCommand(myQuery, sqliteCon)
+                Dim result As Object = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso Not DBNull.Value.Equals(result) Then
+                    Return Convert.ToInt32(result)
+                Else
+                    Return 0  ' Return default value if no result or NULL
+                End If
+            End Using
+        Catch ex As Exception
+            Return 0  ' Return default value on error
+        End Try
+    End Function
+
     Public Function SQLiteDropAllIndexesFromTable(ByRef myConnection As SQLite.SQLiteConnection, TableName As String) As Boolean
         Try
             If Not myConnection.State = ConnectionState.Open Then myConnection.Open()

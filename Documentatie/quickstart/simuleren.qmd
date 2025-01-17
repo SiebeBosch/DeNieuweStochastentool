@@ -1,0 +1,47 @@
+
+# Simulaties doorrekenen
+
+De simulaties staan klaar in de tijdelijke werkmap. Er zijn nu twee manieren om ze door te rekenen:
+
+* vanuit De Nieuwe Stochastentool
+* met de externe executable BAT_RUNR.exe
+
+Beide methodes hebben hun eigen voor- en nadelen.
+
+## Optie 1: simuleren vanuit De Nieuwe Stochastentool
+
+De simulaties uitvoeren vanuit De Nieuwe Stochastentool zelf heeft als voordeel dat de gebruiker het programma niet hoeft te verlaten. Een nadeel is alleen dat de simulaties dan op de PC/laptop van de gebruiker zelf plaatsvinden, en dat kan de computer voor langere tijd bezet houden. 
+
+::: {.grid}
+::: {.g-col-6}
+* Op het tabblad 'algemeen' staat een instelling 'aantal parallelle berekeningen'. Hiermee kunt u aangeven hoeveel simulaties gelijktijdig op de pc mogen worden uitgevoerd. Een goede vuistregel is het aantal 'cores' van uw PC - 2. Zo blijft er altijd nog voldoende rekenkracht over voor processen van het OS.
+* Selecteer welke simulaties moeten worden uitgevoerd
+* Druk op 'Simuleren'
+* Een DOS-window verschijnt om te laten zien dat de simulatie draait. Na afloop van iedere simulatie geeft het window een update. U kunt natuurlijk altijd in de task manager checken of de simulaties werkelijk draaien.
+:::
+::: {.g-col-6}
+
+![De simulaties zijn gestart.](../img/frmQuickstart15.png)
+:::
+:::
+
+## Optie 2: simuleren met BAT_RUNR
+
+Met de installatie van De Nieuwe Stochastentool hebt u ook een installatie voor BAT_RUNR ontvangen. Oplettende lezers zullen hebben gezien dat óók de interne simulatie vanuit De Nieuwe Stochastentool deze executable aanroept.
+
+Het voordeel van afzonderlijk de simulaties draaien is dat ze bijvoorbeeld op een rekencluster of een andere pc kunnen worden aangezet. 
+
+::: {.grid}
+::: {.g-col-6}
+* Start het programma BAT_RUNR.EXE. Dit bevindt zich in c:\Program Files\Hydroconsult\BAT_RUNR\ 
+* Geef het pad naar simulations.json op aan het programma
+* Geef het maximum aantal gelijktijdige simulaties op
+
+Het programma gaat nu aan de slag en rekent alle simulaties door.
+:::
+::: {.g-col-6}
+
+![Simuleren met BAT_RUNR.](../img/frmQuickstart16.png)
+
+:::
+:::

@@ -42,8 +42,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.0.2.0</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>3.1.0.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -174,7 +174,7 @@
       <HintPath>packages\ProtoBufRemote.1.0.11\lib\net40\ProtoBufRemote.dll</HintPath>
     </Reference>
     <Reference Include="ScientificDataSet, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\SDSLite.2.0.3\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
+      <HintPath>packages\SDSLite.3.0.1\lib\netstandard2.0\ScientificDataSet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">

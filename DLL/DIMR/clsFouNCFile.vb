@@ -21,6 +21,7 @@ Public Class clsFouNCFile
     Dim Mesh2d_fourier001_maxID As Integer = -1
     Dim Mesh1d_fourier001_maxID As Integer = -1
     Dim Mesh2d_fourier002_maxID As Integer = -1
+    Dim Mesh2d_fourier001_maxdepthID As Integer = -1
     Dim Mesh2d_fourier002_maxdepthID As Integer = -1
     Dim Mesh1d_fourier002_maxID As Integer = -1
     Dim Mesh2d_face_xID As Integer = -1
@@ -37,6 +38,7 @@ Public Class clsFouNCFile
     Dim Mesh2d_fourier001_max As Double()       'size: number of faces
     Dim Mesh1d_fourier001_max As Double()       'size: number of nodes
     Dim Mesh2d_fourier002_max As Double()       'size: number of faces
+    Dim Mesh2d_fourier001_max_depth As Double()       'size: number of faces
     Dim Mesh2d_fourier002_max_depth As Double()       'size: number of faces
     Dim Mesh1d_fourier002_max As Double()       'size: number of nodes
     Friend Mesh2d_face_x As Double()       'size: number of faces
@@ -62,9 +64,15 @@ Public Class clsFouNCFile
 
     Public Function get2DMaxima(Parameter As GeneralFunctions.enm2DParameter) As Double()
         'returns the maximum water level for each 2D cell
+        'note: it is still not clear what the difference between fourier002 and fourier001 is.
+
         Select Case Parameter
             Case GeneralFunctions.enm2DParameter.depth
-                Return Mesh2d_fourier002_max_depth
+                If Mesh2d_fourier002_max_depth IsNot Nothing Then
+                    Return Mesh2d_fourier002_max_depth
+                ElseIf Mesh2d_fourier001_max_depth IsNot Nothing Then
+                    Return Mesh2d_fourier001_max_depth
+                End If
             Case GeneralFunctions.enm2DParameter.waterlevel
                 Return Mesh2d_fourier002_max
         End Select
@@ -72,7 +80,7 @@ Public Class clsFouNCFile
 
     Public Function Read() As Boolean
         Try
-            'note: which variable is stored wehre in the fourier file is specified in the fm-folder in the .fou file
+            'note: which variable is stored where in the fourier file is specified in the fm-folder in the .fou file
             'e.g.:
             '*var tsrts   sstop   numcyc  knfac   v0plu   layno   elp    
             ' wl  21600 - 1      0       1.0     0.0             min    
@@ -97,6 +105,7 @@ Public Class clsFouNCFile
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_long_name" Then Mesh1d_node_long_nameID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max_depth" Then Mesh2d_fourier001_maxdepthID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max_depth" Then Mesh2d_fourier002_maxdepthID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
@@ -113,6 +122,7 @@ Public Class clsFouNCFile
             If Mesh2d_fourier001_maxID >= 0 Then Mesh2d_fourier001_max = dataset.GetData(Of Double())(Mesh2d_fourier001_maxID)
             If Mesh1d_fourier001_maxID >= 0 Then Mesh1d_fourier001_max = dataset.GetData(Of Double())(Mesh1d_fourier001_maxID)
             If Mesh2d_fourier002_maxID >= 0 Then Mesh2d_fourier002_max = dataset.GetData(Of Double())(Mesh2d_fourier002_maxID)
+            If Mesh2d_fourier001_maxdepthID >= 0 Then Mesh2d_fourier001_max_depth = dataset.GetData(Of Double())(Mesh2d_fourier001_maxdepthID)
             If Mesh2d_fourier002_maxdepthID >= 0 Then Mesh2d_fourier002_max_depth = dataset.GetData(Of Double())(Mesh2d_fourier002_maxdepthID)
             If Mesh1d_fourier002_maxID >= 0 Then Mesh1d_fourier002_max = dataset.GetData(Of Double())(Mesh1d_fourier002_maxID)
             If Mesh2d_face_xID >= 0 Then Mesh2d_face_x = dataset.GetData(Of Double())(Mesh2d_face_xID)

@@ -1,0 +1,18 @@
+# Snelstart
+
+Dit hoofdstuk is bedoeld om u zo snel mogelijk op weg te helpen met De Nieuwe Stochastentool. 
+
+De stappen zijn:
+
+1. Begin met de [basisconfiguratie](basisconfiguratie.qmd) (xml) en database (.db)
+2. Voeg een modelschematisatie toe en specificeer de benodigde resultaatbestanden
+3. Maak een neerslagstation aan
+4. Kies de stochast 'seizoen'
+5. Kies de stochast 'neerslagvolume'
+6. Kies de stochast 'neerslagpatroon'
+
+
+
+
+
+

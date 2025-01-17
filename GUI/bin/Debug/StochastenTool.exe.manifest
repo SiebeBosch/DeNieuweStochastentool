@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="StochastenTool.exe" version="3.0.2.0" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="StochastenTool.exe" version="3.1.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <description asmv2:iconFile="FAVICON.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="StochastenTool" version="3.0.2.0" language="neutral" processorArchitecture="msil" />
+    <assemblyIdentity name="StochastenTool" version="3.1.0.1" language="neutral" processorArchitecture="msil" />
     <commandLine file="StochastenTool.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -282,38 +282,38 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ScientificDataSet.dll" size="381440">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ScientificDataSet.dll" size="300544">
       <assemblyIdentity name="ScientificDataSet" version="0.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>avExE+jEmxcoK/WZJnBUv81S9jNgfEGI0be3k4DJf1w=</dsig:DigestValue>
+        <dsig:DigestValue>fb+jpe/m7OJGkv1kidEMdBmfNpQYVAn1hrU+qp0SES0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="1819520">
-      <assemblyIdentity name="StochastenTool" version="3.0.2.0" language="neutral" processorArchitecture="msil" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="StochastenTool.exe" size="1820544">
+      <assemblyIdentity name="StochastenTool" version="3.1.0.1" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>6YF7RZ5U9zlV+RitOHRZLjUPlz57vNWQcAJ2HO54xok=</dsig:DigestValue>
+        <dsig:DigestValue>wtiaHUG3EBxRL1SKtqFmvffSoNftO54ZUD80hooiiLQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3450880">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3454464">
       <assemblyIdentity name="STOCHLIB" version="2.4.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>42Iw9d4g4oUaak2vvCRZtWCbWyWMx/a3+aeDe0OAXe4=</dsig:DigestValue>
+        <dsig:DigestValue>MN08stQIhjD4BwpZYQlniefnHsDqb1Amjk4QZaW4SgU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

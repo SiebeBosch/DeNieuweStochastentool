@@ -3436,49 +3436,40 @@ Public Class frmStochasten
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "UUR") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "UUR", enmSQLiteDataType.SQLITEINT)
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE", enmSQLiteDataType.SQLITEREAL)
     End Sub
-
     Public Sub UpdateClimateScenariosTable(progress As Integer)
         '------------------------------------------------------------------------------------
         '               UPDATE TABEL KLIMAATSCENARIOS
         '------------------------------------------------------------------------------------
         Setup.GeneralFunctions.UpdateProgressBar("Updating table KLIMAATSCENARIOS", progress, 100, True)
 
-        ' Ensure table exists
+        ' Create table if it doesn't exist
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "KLIMAATSCENARIOS") Then
-            Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "KLIMAATSCENARIOS")
+            Dim createTableSQL As String = "CREATE TABLE KLIMAATSCENARIOS (CLIMIDX INTEGER PRIMARY KEY AUTOINCREMENT, NAAM TEXT UNIQUE)"
+            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createTableSQL)
         End If
 
-        ' Ensure NAAM column exists
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "KLIMAATSCENARIOS", "NAAM") Then
-            Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "KLIMAATSCENARIOS", "NAAM", enmSQLiteDataType.SQLITETEXT, "CLIMIDX")
+        ' Check for index existence and create if missing
+        Dim checkIndexSQL As String = "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_klimaatscenarios_naam'"
+        If Setup.GeneralFunctions.SQLiteGetFirstInt(Me.Setup.SqliteCon, checkIndexSQL) = 0 Then
+            Dim createIndexSQL As String = "CREATE UNIQUE INDEX idx_klimaatscenarios_naam ON KLIMAATSCENARIOS(NAAM)"
+            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createIndexSQL)
         End If
 
-        ' Insert or update the record for STOWA20214_HUIDIG
-        Dim sql As String = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_HUIDIG')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        ' Insert or update the record for STOWA20214_HUIDIG
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2033L')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2050L')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2050M')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2050H')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2100L')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2100M')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2100H')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2150L')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2150M')"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES ('STOWA2024_2150H')"
+        ' Insert all climate scenarios in a single transaction
+        Dim sql As String = "INSERT OR IGNORE INTO KLIMAATSCENARIOS (NAAM) VALUES " &
+                       "('STOWA2024_HUIDIG'), " &
+                       "('STOWA2024_2033L'), " &
+                       "('STOWA2024_2050L'), " &
+                       "('STOWA2024_2050M'), " &
+                       "('STOWA2024_2050H'), " &
+                       "('STOWA2024_2100L'), " &
+                       "('STOWA2024_2100M'), " &
+                       "('STOWA2024_2100H'), " &
+                       "('STOWA2024_2150L'), " &
+                       "('STOWA2024_2150M'), " &
+                       "('STOWA2024_2150H')"
         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
     End Sub
-
 
     Public Sub UpdateDurationsTable(progress As Integer)
         '------------------------------------------------------------------------------------
@@ -3486,25 +3477,21 @@ Public Class frmStochasten
         '------------------------------------------------------------------------------------
         Setup.GeneralFunctions.UpdateProgressBar("Updating table DUREN", progress, 100, True)
 
-        ' Ensure table exists
+        ' Create table if it doesn't exist
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "DUREN") Then
-            Setup.GeneralFunctions.SQLiteCreateTable(Me.Setup.SqliteCon, "DUREN")
+            Dim createTableSQL As String = "CREATE TABLE DUREN (DURIDX INTEGER PRIMARY KEY AUTOINCREMENT, DUUR INTEGER UNIQUE)"
+            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createTableSQL)
         End If
 
-        ' Ensure NAAM column exists
-        If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "DUREN", "DUUR") Then
-            Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "DUREN", "DUUR", enmSQLiteDataType.SQLITEINT, "DURIDX")
+        ' Check for index existence and create if missing
+        Dim checkIndexSQL As String = "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_duren_duur'"
+        If Setup.GeneralFunctions.SQLiteGetFirstInt(Me.Setup.SqliteCon, checkIndexSQL) = 0 Then
+            Dim createIndexSQL As String = "CREATE UNIQUE INDEX idx_duren_duur ON DUREN(DUUR)"
+            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createIndexSQL)
         End If
 
-        Dim sql As String = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (24)"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (48)"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (96)"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (192)"
-        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
-        sql = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (216)"
+        ' Insert values
+        Dim sql As String = "INSERT OR IGNORE INTO DUREN (DUUR) VALUES (24), (48), (96), (192), (216)"
         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
     End Sub
 
@@ -5297,9 +5284,62 @@ Public Class frmStochasten
 
     End Sub
 
-    Private Sub Button14_Click(sender As Object, e As EventArgs) Handles Button14.Click
-        Dim result = Me.Setup.Gebiedsreductie.ComputeARF(10, 24, 10)
-        Debug.WriteLine($"Result: {result}")
+
+    Private Sub TestGebiedsreductieToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TestGebiedsreductieToolStripMenuItem.Click
+        ' Define the test parameters
+        Dim areas As Integer() = {10, 50, 100}           ' Surface areas in km²
+        Dim durations As Integer() = {24, 48}            ' Durations in hours
+        Dim returnPeriods As Integer() = {10, 25, 50, 100}   ' Return periods in years
+
+        ' Create a StringBuilder to store results
+        Dim results As New System.Text.StringBuilder()
+        results.AppendLine("ARF Test Results:")
+        results.AppendLine("================")
+        results.AppendLine()
+
+        ' Calculate ARF for all combinations
+        For Each area In areas
+            For Each duration In durations
+                For Each returnPeriod In returnPeriods
+                    Dim arf As Double = Me.Setup.Gebiedsreductie.ComputeARF(area, duration, returnPeriod)
+                    results.AppendLine($"Area: {area} km², Duration: {duration}h, Return Period: T={returnPeriod}")
+                    results.AppendLine($"ARF = {arf:F14}")
+                    results.AppendLine()
+                Next
+            Next
+        Next
+
+        ' Display results in a single TextBox or RichTextBox
+        ' You can modify this part based on your UI preferences
+        Dim resultsForm As New Form()
+        resultsForm.Text = "ARF Calculation Results"
+        resultsForm.Size = New Size(500, 600)
+
+        Dim txtResults As New TextBox()
+        txtResults.Multiline = True
+        txtResults.ScrollBars = ScrollBars.Vertical
+        txtResults.Dock = DockStyle.Fill
+        txtResults.Font = New Font("Consolas", 10)
+        txtResults.Text = results.ToString()
+
+        resultsForm.Controls.Add(txtResults)
+        resultsForm.ShowDialog()
+    End Sub
+
+    Private Sub TestNetCDFFileToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TestNetCDFFileToolStripMenuItem.Click
+        Try
+            Dim dlgOpenFile As New OpenFileDialog
+            Dim res As DialogResult
+            dlgOpenFile.Filter = "NetCDF files (*.nc)|*.nc"
+            res = dlgOpenFile.ShowDialog()
+            If res = DialogResult.OK Then
+                Dim myDataset As Microsoft.Research.Science.Data.DataSet
+                myDataset = Microsoft.Research.Science.Data.DataSet.Open(dlgOpenFile.FileName & "?openMode=readOnly")
+            End If
+            MsgBox("FlowFM networkfile successfully opened: " & dlgOpenFile.FileName)
+        Catch ex As Exception
+            MsgBox("Error: " & ex.Message)
+        End Try
     End Sub
 
     Private Sub AlleResultatenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleResultatenToolStripMenuItem.Click

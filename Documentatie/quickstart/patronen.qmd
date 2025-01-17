@@ -1,0 +1,36 @@
+
+# Neerslagpatronen
+
+Voor het neerslagverloop in de tijd is ook een stochast geïntroduceerd door STOWA. We noemen deze stochast 'neerslagpatroon' en hij ligt vast in een zevental tijdsverlopen met bijbehorende kans.
+
+STOWA onderscheidt de volgende patronen:
+
+* patroon0: uniform verloop van de neerslag in de tijd; vergelijkbaar met het vroegere patroon 'uniform'
+* patroon1a: bui met één lage piek; vergelijkbaar met het vroegere patroon 'laag'
+* patroon1b: bui met één middellage piek; vergelijkbaar met het vroegere patroon 'middellaag'
+* patroon1c: bui met één middelhoge piek; vergelijkbaar met het vroegere patroon 'middelhoog'
+* patroon1d: bui met één zeer hoge piek; vergelijkbaar met het vroegere patroon 'hoog'
+* patroon2a: bui met twee pieken kort op elkaar; vergelijkbaar met het vroegere patroon 'kort'
+* patroon2b: bui met twee pieken lang na elkaar; vergelijkbaar met het vroegere patroon 'lang'
+
+![STOWA onderscheidt 7 neerslagpatronen.](../img/frmQuickstart11.png)
+
+
+::: {.grid}
+::: {.g-col-6}
+Voor deze snelstart hebben we de stochast 'neerslagpatroon' en de bijbehorende kansen al integraal opgenomen in de database.
+
+* Vink naar behoeven patronen aan of uit. Doe dit door de 0 onder 'Use' te vervangen door 1.
+* Merk op dat de kans van uitgevinkte patronen automatisch worden herverdeeld over de actieve klassen. Dit herverdelen gebeurt niet noodzakelijkerwijs correct, dus beter is om met alle 7 patronen te werken.
+
+:::
+::: {.g-col-6}
+
+![De stochast neerslagpatroon.](../img/frmQuickstart10.png)
+:::
+:::
+
+
+::: {.callout-important}
+De kanstoedeling zoals door STOWA toegekend is de enige wetenschappelijk onderbouwde. Het uitvinken van een patroon zorgt ervoor dat de kans van dat patroon wordt onderverdeeld over de overige patronen; wat niet noodzakelijkerwijs correct gebeurt. Het is de verantwoordelijkheid van de modelleur om zich ervan te gewissen dat de kanstoedeling over een subset van neerslagpatronen nog steeds geldig is. Reken daarom bij voorkeur met alle 7 patronen.
+:::

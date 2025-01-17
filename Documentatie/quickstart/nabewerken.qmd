@@ -1,0 +1,52 @@
+
+# Simulaties nabewerken
+
+Wanneer de simulaties gereed zijn kunnen ze worden gekopiëerd, statistisch nabewerkt en gepubliceerd.
+
+## Kopiëren
+
+::: {.grid}
+::: {.g-col-6}
+Na het simuleren moeten de resultaatbestanden vanuit de tijdelijke werkmap worden gekopieerd naar de stochastenmap. 
+
+* Selecteer op het tabblad 'simulaties' de rijen van de simulaties waarvoor u de resultaten wilt kopiëren
+* Klik 'Kopiëren'
+* Merk op dat het vinkje 'DONE' is aangevinkt voor alle simulaties waarvan de resultaatbestanden nu in de stochastenmap zitten.
+:::
+::: {.g-col-6}
+
+![De simulaties zijn gekopieerd.](../img/frmQuickstart15.png)
+:::
+:::
+
+::: {.callout-important}
+Voordat we de resultaten statistisch kunnen verwerken tot overschrijdingsgrafieken, moeten de resultaten voor álle simulaties beschikbaar zijn. Maw: DONE moet overal zijn aangevinkt.
+:::
+
+# Uitlezen
+
+De volgende stap is het uitlezen van de resultaatbestanden. In deze stap wordt per simulatie de maximale waterstand voor elk van de uitvoerlocaties weggeschreven naar de database. In geval van 2D worden de maximale waterdieptes weggeschreven naar een CSV-bestand.
+
+
+::: {.grid}
+::: {.g-col-6}
+* Selecteer op het tabblad 'simulaties' de rijen van de simulaties waarvoor u de resultaten wilt uitlezen. Let op: het vinkje 'DONE' moet aangevinkt zijn. Dit betekent dat het resultaatbestand beschikbaar is.
+* Klik 'Uitlezen'
+:::
+::: {.g-col-6}
+
+:::
+:::
+
+# Nabewerken
+
+::: {.grid}
+::: {.g-col-6}
+De uitgelezen waterhoogtes moeten nu worden verwerkt tot overschrijdingstabellen.
+
+* Klik 'Nabewerken'
+:::
+::: {.g-col-6}
+
+:::
+:::

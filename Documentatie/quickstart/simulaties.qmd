@@ -1,0 +1,43 @@
+
+# Simulaties samenstellen
+
+Nu we de stochasten Seizoen, Neerslagvolume en Neerslagpatroon hebben geconfigureerd is het mogelijk om de klassen daarvan te combineren tot simulaties. 
+
+::: {.grid}
+::: {.g-col-6}
+Alle mogelijke combinaties van de stochasten worden gemaakt en verwerkt tot 'simulatie'.
+
+* Ga naar het tabblad 'Simulaties'
+* Klik op 'samenstellen'
+:::
+::: {.g-col-6}
+
+![De simulaties zijn samengesteld (klik voor groot).](../img/frmQuickstart12.png)
+:::
+:::
+
+# Simulaties bouwen
+
+Nu is het tijd om de simulaties daadwerkelijk te genereren. Dit gebeurt in de tijdelijke werkmap die bij het model (tabblad Modellen) is opgegeven.
+
+::: {.grid}
+::: {.g-col-6}
+De gebruiker selecteert eerst welke simulaties moeten worden gebouwd.
+
+* Selecteer de rijen van de simulaties die gebouwd moeten worden
+* Klik op 'Bouwen'
+
+Als het proces gereed is, staat in de tijdelijke werkmap zoals bij het model opgegeven een bestand simulations.json en voor iedere simulatie een eigen mapje met daarin de betreffende simulatie. In de volgende stap gaan we de simulaties uitvoeren.
+:::
+::: {.g-col-6}
+
+![De simulaties worden gebouwd.](../img/frmQuickstart13.png)
+
+![De simulaties staan klaar om te worden doorgerekend.](../img/frmQuickstart14.png)
+
+:::
+:::
+
+::: {.callout-important}
+Omdat iedere simulatie een volledige kopie van het model krijgt, kan deze actie veel schijfruimte vergen. Daarom is het ook mogelijk een selectie van simulaties te maken en eerst alleen die selectie door te rekenen en uit te lezen.
+:::

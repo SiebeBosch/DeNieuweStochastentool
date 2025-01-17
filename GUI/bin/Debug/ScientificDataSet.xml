@@ -215,295 +215,6 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="T:Microsoft.Research.Science.Data.CoordinateSystem">
-            <summary>
-            CoordinateSystem maps an index from a space of dimensions into coordinate values
-            constructed from axis variables.
-            </summary>
-            <remarks>
-            The <see cref="T:Microsoft.Research.Science.Data.CoordinateSystem"/> class cannot be modified after it is committed.
-            Therefore, all axes should be added to the coordinate system before the <see cref="P:Microsoft.Research.Science.Data.CoordinateSystem.DataSet"/>
-            is committed.
-            <example>
-            The followin example creates a coordinate system with a time axis
-            and adds a variable defined in the coordinate system.
-            <code>
-            DataSet ds = . . . ;
-            ds.IsAutocommitEnabled = false;
-            
-            // Creates a variable "time", adds it into the DataSet and then uses it as an axis for the cs:
-            Variable&lt;DateTime&gt; time = ds.AddVariable&lt;DateTime&gt;("time", "t");    
-            CoordinateSystem cs = ds.CreateCoordinateSystem("cs", time);
-            
-            // Temperature variable also depends on "t" for it is defined for each time moment.
-            Variable&lt;double&gt; temperature = ds.AddVariable&lt;double&gt;("temperature", "t");
-            
-            // Each value of temperature variable has corresponded time moment from the "time".
-            temperature.AddCoordinateSystem(cs);
-            
-            ds.Commit();
-            </code>
-            </example>
-            </remarks>
-        </member>
-        <member name="F:Microsoft.Research.Science.Data.CoordinateSystem.axes">
-            <summary>
-            The field stores axes during initialization of the cs.
-            After commit, it is null.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystem.Name">
-            <summary>
-            Gets the name of the coordinate system.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystem.Axes">
-            <summary>
-            Gets the collection of the coordinate system's axes.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystem.AxesArray">
-            <summary>
-            Gets the collection of axes as an array, i.e. indexed not by variable's ID but index.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystem.AxesCount">
-            <summary>
-            Gets the number of axes in the coordinate system.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystem.HasChanges">
-            <summary>
-            Gets the value indicating whether the coordinates system has already been committed or not.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystem.DataSet">
-            <summary>
-            Gets the Scientific Data Set instance the coordinate system is attached to.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.Commit">
-            <summary>
-            Commits all changes of the coordinate system. 
-            </summary>
-            <remarks>
-            After committing no changes in the coordinate system are allowed.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.GetSchema">
-            <summary>
-            Gets the schema for the coordinate system describing its structure.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.AddAxis``1(Microsoft.Research.Science.Data.Variable{``0})">
-            <summary>
-            Adds the variable to the coordinate system as an axis.
-            </summary>
-            <remarks>
-            The variable <paramref name="var"/> must belong to the same data set as the coordinate system does.
-            </remarks>
-            <param name="var">The variable that is to be considered as an axis.</param>
-            <typeparam name="DataType">Data type of the axis.</typeparam>
-            <returns>The variable just added as an axis.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.AddAxis(Microsoft.Research.Science.Data.Variable)">
-            <summary>
-            Adds the variable to the coordinate system as an axis.
-            </summary>
-            <remarks>
-            The variable <paramref name="var"/> must belong to the same data set as the coordinate system does.
-            </remarks>
-            <param name="var">The variable that is to be considered as an axis.</param>
-            <returns>The variable just added as an axis.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.AddAxis``1(System.String,System.String[])">
-            <summary>
-            Creates and adds the variable as an axis to the coordinate system and related data set.
-            </summary>
-            <param name="name">Name of the new variable.</param>
-            <param name="dims">Names of dimensions the variable depends on.</param>
-            <typeparam name="DataType">Data type of the axis.</typeparam>
-            <returns>The variable just created and added as an axis.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.GetDimensions">
-            <summary>
-            Returns committed version of the dimensions list for the coordinate system.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.GetDimensions(Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>
-            Returns specified version of the dimensions list for the coordinate system.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.GetDimensions(Microsoft.Research.Science.Data.DataSet.Changes)">
-            <summary>
-            Returns the dimensions list for the coordinate system base on given changeset.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.ToString">
-            <summary>Converts this object to string</summary>
-            <returns>String with brief information about coordinate system</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystem.CheckConstraints(Microsoft.Research.Science.Data.DataSet.Changes)">
-            <summary>
-            Checks the constraints and throws an exception if the check failed.
-            </summary>
-            <exception cref="T:System.Exception">Constraints are not satisfied.</exception>
-            <remarks>
-            <para>The method checks the constraints and throws an exception if the check failed.</para>
-            <para>
-            The constraint of a coordinate system means reversibility of its every axes' data. 
-            Common variable provides an access to its values by an integer index or a vector of indices, 
-            but an axis should allow finding an index (or a vector of indices) by a coordinate value 
-            from that axis. This is a reversed index selection operation which enables retrieving a value 
-            from a variable by its coordinate values in a given coordinate system 
-            (see <see cref="M:Microsoft.Research.Science.Data.Variable`1.GetValue(System.Object[])"/>). 
-            The constraint in the one-dimensional case is just a claim for data to be strictly monotonic 
-            for numeric and date/time data types, or contain no duplicate values for others 
-            (for instance, strings).
-            </para>
-            </remarks>
-            <exception cref="T:Microsoft.Research.Science.Data.ConstraintsFailedException"/>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase">
-            <summary>Provides abstract base class for CoordinateSystem collections.</summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Item(System.Int32)">
-            <summary>
-            Gets the committed coordinate system with the given index.
-            </summary>
-            <param name="index">Zero-based index of the coordinate system to get.</param>
-            <returns>The coordinate system.</returns>
-            <exception cref="T:System.IndexOutOfRangeException">The exception is thrown if 
-            the index is out of range.</exception>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Item(System.String)">
-            <summary>
-            Gets the committed coordinate system with the given name.
-            </summary>
-            <param name="name">Name of the coordinate system to get.</param>
-            <returns>The coordinate system.</returns>
-            <exception cref="T:Microsoft.Research.Science.Data.ValueNotFoundException">The exception is thrown if 
-            the coordinate system is not found.</exception>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Item(System.String,Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>
-            Gets the coordinate system with the given name from the specified schema version.
-            </summary>
-            <param name="name">Name of the coordinate system to get.</param>
-            <param name="version">Version of the schema to look in.</param>
-            <returns>The coordinate system.</returns>
-            <exception cref="T:Microsoft.Research.Science.Data.ValueNotFoundException">The exception is thrown if 
-            the coordinate system is not found.</exception>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Count">
-            <summary>Gets count of coordinate systems in the collection.</summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Contains(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>Checks whether collection contains specified coordinate system</summary>
-            <param name="cs">Coordinate system to locate in collection</param>
-            <returns>True, if coordinate system is in the collection or false otherwise</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Contains(System.String)">
-            <summary>Checks whether collection contains coordinate system with specified name</summary>
-            <param name="name">Name of coordinate system to locate in collection</param>
-            <returns>True, if coordinate system is in the collection or false otherwise</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Contains(System.String,Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>Checks whether specified version of collection contains coordinate system with specified name</summary>
-            <param name="name">Name of coordinate system to locate in collection</param>
-            <param name="version">Version of collection to look in</param>
-            <returns>True, if coordinate system is in the collection or false otherwise</returns>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Collection">
-            <summary>
-            Provides an access to internal collection.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.IsReadOnly">
-            <summary>Gets a value indicating whether the this collection is read-only.</summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.ToString">
-            <summary>Returns string with brief information about all coordinate systems in collection</summary>
-            <returns>A String that represents the current collection.</returns>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.ReadOnlyCoordinateSystemCollection">
-            <summary>
-            Represents a read-only coordinate system collection with supporting routines.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.ReadOnlyCoordinateSystemCollection.Collection">
-            <summary>
-            Gets the access to the internal collection.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.ReadOnlyCoordinateSystemCollection.IsReadOnly">
-            <summary>Gets a value indicating whether the this collection is read-only.</summary>
-            <remarks>Always returns true</remarks>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.CoordinateSystemCollection">
-            <summary>
-            Represents a dynamic coordinate system collection with supporting routines.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.#ctor">
-            <summary>Initializes an instance of CoordinateSystemCollection with no elements</summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.#ctor(Microsoft.Research.Science.Data.CoordinateSystemCollectionBase)">
-            <summary>Initializes an instance of CoordinateSystemCollection with contents taken from 
-            specified collection</summary>
-            <param name="collection">Collection to copy items from</param>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.GetReadOnlyCollection">
-            <summary>
-            Wraps the collection into read-only collection and returns it.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.Add(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>
-            Adds the coordinate system to the collection.
-            </summary>
-            <param name="cs"></param>
-            <exception cref="T:System.Exception">If the collection already contains coordinate system with the same name.</exception>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.AddRange(Microsoft.Research.Science.Data.CoordinateSystemCollection)">
-            <summary>
-            Adds a range of coordinate systems to the collection.
-            </summary>
-            <param name="coordinateSystemCollection"></param>
-            <exception cref="T:System.Exception">If the collection already contains coordinate system with the same name.</exception>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollection.Collection">
-            <summary>
-            Provides direct access to the inner collection.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemCollection.IsReadOnly">
-            <summary>
-            Gets the value indicating whether the collection is read only.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.AsNameArray">
-            <summary>
-            Returns an array of strings with names of coordinate systems.
-            </summary>
-            <returns>Array of names of coordinate systems.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.AsArray">
-            <summary>
-            Represents the collection as an array.
-            </summary>
-            <returns>Array of coordinate systems.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemCollection.Clear">
-            <summary>
-            Removes all coordinate systems from the collection.
-            </summary>
-        </member>
         <member name="T:Microsoft.Research.Science.Data.DataAccessVariable`1">
             <summary>
             Base class for variables granting an access to various data storages.
@@ -1459,7 +1170,6 @@
             </remarks>
             <seealso cref="T:Microsoft.Research.Science.Data.Variable"/>
             <seealso cref="T:Microsoft.Research.Science.Data.ReadOnlyVariableCollection"/>
-            <seealso cref="P:Microsoft.Research.Science.Data.DataSet.CoordinateSystems"/>
             <seealso cref="M:Microsoft.Research.Science.Data.DataSet.Commit"/>		
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSet.GetNextVariableId">
@@ -1480,16 +1190,6 @@
             Removes all variables from the collection.
             Starts new change transaction.
             </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.ClearCSCollection">
-            <summary>
-            Removes all cs from the collection.
-            Starts new change transaction.
-            </summary>
-            <remarks>
-            For example, can be used by the provider on loading from file
-            to clear existing collection.
-            </remarks>
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSet.IsReference(Microsoft.Research.Science.Data.Variable,Microsoft.Research.Science.Data.Variable)">
             <summary>Checks whether one variable is reference to another</summary>
@@ -1570,33 +1270,6 @@
             <para>
             See also remarks for the method <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariable(System.Type,System.String,System.Array,System.String[])"/>.
             </para>
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariable``1(System.String,Microsoft.Research.Science.Data.CoordinateSystem,System.String[])">
-            <summary>
-            Creates new <see cref="T:Microsoft.Research.Science.Data.Variable"/> and adds it to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.
-            </summary>
-            <typeparam name="DataType">Type of data for the variable.</typeparam>
-            <param name="varName">Name of the variable.</param>
-            <param name="dims">List of names of the variable's dimensions. If null, names are inferred.</param>
-            <param name="cs">Default coordinate system for the variable being added.</param>
-            <returns>New variable.</returns>
-            <remarks>
-            See remarks for the method <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariable(System.Type,System.String,System.Array,System.String[])"/>.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariable``1(System.String,System.Array,Microsoft.Research.Science.Data.CoordinateSystem,System.String[])">
-            <summary>
-            Creates new <see cref="T:Microsoft.Research.Science.Data.Variable"/> and adds it to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.
-            </summary>
-            <typeparam name="DataType">Type of data for the variable.</typeparam>
-            <param name="varName">Name of the variable.</param>
-            <param name="array">Initial data for the variable.</param>
-            <param name="dims">List of names of the variable's dimensions.</param>
-            <param name="cs">Default coordinate system for the variable being added.</param>
-            <returns>New variable.</returns>
-            <remarks>
-            See also remarks for the method <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariable(System.Type,System.String,System.Array,System.String[])"/>.
             </remarks>
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariable(System.Type,System.String,System.Array,System.String[])">
@@ -1694,22 +1367,6 @@
              </para>		
              </remarks>
              <seealso cref="T:Microsoft.Research.Science.Data.Variable"/>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariable(System.Type,System.String,System.Array,Microsoft.Research.Science.Data.CoordinateSystem,System.String[])">
-            <summary>
-            Creates new <see cref="T:Microsoft.Research.Science.Data.Variable"/> and adds it to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.
-            </summary>
-            <param name="dataType">Type of data for the variable.</param>
-            <param name="varName">Name of the variable.</param>
-            <param name="array">Initial data for the variable.</param>
-            <param name="dims">List of names of the variable's dimensions.</param>
-            <param name="cs">Default coordinate system for the variable being added.</param>
-            <returns>New variable.</returns>		
-            <remarks>
-            The method is obsolete. See method
-            <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariable(System.Type,System.String,System.Array,System.String[])"/>
-            instead.
-            </remarks>
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByReference``1(Microsoft.Research.Science.Data.Variable{``0},System.String[])">
             <summary>
@@ -1855,12 +1512,6 @@
             </summary>
             <param name="incomingLink"></param>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.ReferencedVariableGotNewCoordinateSystem(System.Object,Microsoft.Research.Science.Data.CoordinateSystemAddedEventArgs)">
-            <summary>
-            This method handles cases when a cs has been added to the 
-            referenced variable, hence we have to add the same cs to our cs collection.
-            </summary>
-        </member>
         <member name="M:Microsoft.Research.Science.Data.DataSet.GetAutoDimensions(System.String[])">
             <summary>
             Fills the prepared string array <paramref name="dims"/> with names of dimensions
@@ -1873,267 +1524,6 @@
             These names can be found using <see cref="M:Microsoft.Research.Science.Data.DataSet.GetAutoDimensions(System.String[])"/> method.
             </para>
             </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable,System.Boolean,System.String,System.String[])">
-            <summary>
-            Sets up and adds a <see cref="T:Microsoft.Research.Science.Data.Variable"/> to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> by value, not as a reference.		
-            </summary>
-            <param name="var">A variable to add.</param>
-            <param name="varName">The name of the variable in the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.</param>
-            <param name="dims">List of names of the variable's dimensions in the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.</param>
-            <param name="includeCoordinateSystems"></param>
-            <returns>Just added variable.</returns>
-            <remarks>
-            All the data and metadata of the <paramref name="var"/> 
-            (and optionally of all related coordinate systems and their axes)
-            will be copied to the new just created variable using the data set's data access provider.
-            Real copy process is done during committing (at the precommit phase).
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable,System.Boolean)">
-            <summary>
-            Adds a variable to the data set by value.
-            It means that all its data (and optionally of all related coordinate systems and their axes)
-            will be copied using the data set's data access provider.
-            </summary>
-            <param name="var">A variable to add.</param>    
-            <param name="includeCoordinateSystems"></param>
-            <returns>Just added variable.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable)">
-            <summary>
-            Sets up and adds a <see cref="T:Microsoft.Research.Science.Data.Variable"/> to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> by value.		
-            </summary>
-            <param name="var">A variable to add.</param>
-            <returns>Created variable.</returns>
-            <remarks>
-            See remarks for <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0},System.String,System.String[])"/>.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable,System.String,System.String[])">
-            <summary>
-            Sets up and adds a <see cref="T:Microsoft.Research.Science.Data.Variable"/> to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> by value.
-            </summary>
-            <param name="var">A variable to add.</param>
-            <param name="name">The name of the created variable in the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.</param>
-            <param name="dims">The created variable's dimensions.</param>
-            <returns>Created variable.</returns>
-            <remarks>
-            See remarks for <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0},System.String,System.String[])"/>.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0})">
-            <summary>
-            Sets up and adds a <see cref="T:Microsoft.Research.Science.Data.Variable"/> to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> by value.
-            </summary>
-            <param name="var">A variable to add.</param>
-            <returns>Created variable.</returns>
-            <remarks>
-            See remarks for <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0},System.String,System.String[])"/>.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0},System.String,System.String[])">
-             <summary>
-             Sets up and adds a <see cref="T:Microsoft.Research.Science.Data.Variable"/> to the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> by value.	
-             </summary>
-             <typeparam name="DataType">Type of data.</typeparam>
-             <param name="var">A variable to add.</param>
-             <param name="name">The name of the created variable in the <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.</param>
-             <param name="dims">The created variable's dimensions.</param>
-             <returns>Created variable.</returns>
-             <remarks>
-             <para>
-             The method creates new <see cref="T:Microsoft.Research.Science.Data.Variable"/> in the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> with the same rank and data type as <paramref name="var"/> 
-             and copies all the data and metadata from the <paramref name="var"/> 
-             to the created <see cref="T:Microsoft.Research.Science.Data.Variable"/>.
-             </para>
-             <para>
-             Please note, if the <paramref name="var"/> has changes (see <see cref="P:Microsoft.Research.Science.Data.Variable.HasChanges"></see>),
-             proposed data also is copied into the target <see cref="T:Microsoft.Research.Science.Data.Variable"/>. But all modifications of the <paramref name="var"/>
-             done after the method is finished, do not affect the method's resulting <see cref="T:Microsoft.Research.Science.Data.Variable"/>.
-             </para>
-             </remarks>
-             <example>
-             <code>
-            	int[] a1 = new int[] { 1, 2, 3 };
-            	string[,] a2 = new string[,] { { "a", "b", "c" }, { "d", "e", "f" }, { "g", "h", "i" } };
-            
-            	using (DataSet src = DataSet.Open("msds:csv?file=test.csv&amp;openMode=create"))
-            	using (DataSet dst = DataSet.Open("msds:memory"))		
-             {
-            		src.IsAutocommitEnabled = false;
-            		dst.IsAutocommitEnabled = false;
-            		
-            		var var1 = src.AddVariable&lt;int&gt;("var1", "x");
-            		var var2 = src.AddVariable&lt;string&gt;("var2", "y", "z");
-            
-            		var1.PutData(a1);
-            		var2.PutData(a2);
-            		src.Commit();
-            
-            		var1.Append(new int[] { 4 }); // adding "4" to proposed schema of var1
-            		// dvar1 is a deep copy of var1, including proposed schema:
-            		var dvar1 = dst.AddVariableByValue&lt;int&gt;(var1); 
-            		var dvar2 = dst.AddVariableByValue&lt;string&gt;(var2);
-            
-            		// Adding "5" to proposed schema of dvar1.
-            		// It doesn't affect var1!
-            		dvar1.Append(new int[] { 5 });
-            
-            		// Committing both data sets 
-            		dst.Commit();
-            		src.Commit();
-            
-            		Assert.IsFalse(src.HasChanges);
-            		Assert.IsFalse(dst.HasChanges);
-             
-            		Assert.IsTrue(Compare(new int[] { 1, 2, 3, 4 }, var1.GetData()));
-            		Assert.IsTrue(Compare(a2, var2.GetData()));
-            		Assert.IsTrue(Compare(a2, dvar2.GetData()));
-            		Assert.IsTrue(Compare(new int[] { 1, 2, 3, 4, 5 }, dvar1.GetData()));
-            	}
-             </code>
-             </example>
-             <seealso cref="M:Microsoft.Research.Science.Data.DataSet.Clone(System.String)">Creates a deep copy of a DataSet.</seealso>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0},System.Boolean,System.String,System.String[])">
-            <summary>
-            Sets up and adds a variable to the data set by value, not as a reference.
-            It means that all its data (and optionally of all related coordinate systems and their axes)
-            will be copied using the data set's data access provider.
-            </summary>
-            <param name="var">A variable to add.</param>
-            <param name="varName">The name of the variable in the data set.</param>
-            <param name="dims">List of names of the variable's dimensions in the data set.</param>
-            <param name="includeCoordinateSystems"></param>
-            <returns>Just added variable.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue``1(Microsoft.Research.Science.Data.Variable{``0},System.Boolean)">
-            <summary>
-            Adds a variable to the data set by value, not as a reference.
-            It means that all its data (and optionally of all related coordinate systems and their axes)
-            will be copied using the data set's data access provider.
-            </summary>
-            <param name="var">A variable to add.</param>   
-            <param name="includeCoordinateSystems"></param>
-            <returns>Just added variable.</returns>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.DataSet.SupportsCoordinateSystems">
-            <summary>
-            Gets the value, indicating whether the data set supports for coordinate systems.
-            </summary> 
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.DataSet.CoordinateSystems">
-            <summary>
-            Gets the collection of coordinate systems attached to the DataSet.
-            </summary>
-            <remarks>
-            <para>Collection contains all coordinate system of the data set, including 
-            committed and proposed coordinate systems, but the simple by name indexer of the 
-            <see cref="T:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase"/> collection looks up among committed coordinate
-            systems only. To get a coordinate system from a particular schema version use special indexer 
-            <see cref="P:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase.Item(System.String,Microsoft.Research.Science.Data.SchemaVersion)"/> collection:
-            </para>
-            <example>
-            <code>
-            CoordinateSystem cs = dataSet.CoordinateSystems["cs", SchemaVersion.Recent];
-            </code>
-            </example>
-            <para>
-            There is a method <see cref="M:Microsoft.Research.Science.Data.DataSet.GetCoordinateSystems(Microsoft.Research.Science.Data.SchemaVersion)" />
-            that returns a collection of coordinate systems for a given schema version only.
-            </para>
-            <para>
-            The following example iterates through all coordinate systems of a data set 
-            being loaded from sample.csv file and prints information about the data set to the console:
-            </para>
-            <example>
-            <code>
-            DataSet sds = new CsvDataSet("sample.csv");
-            
-            Console.WriteLine ("ScientficDataSet " + sds.Name +
-            (HasChanges ? "*" : "") + " contents: ");
-            
-            Console.WriteLine (" Coordinate Systems:");
-            foreach (CoordinateSystem s in sds.CoordinateSystems)
-            {
-            	Console.WriteLine (s.ToString());
-            }
-            </code>
-            </example>
-            </remarks>
-            <seealso cref="T:Microsoft.Research.Science.Data.CoordinateSystem"/>
-            <seealso cref="T:Microsoft.Research.Science.Data.CoordinateSystemCollectionBase"/>
-            <seealso cref="M:Microsoft.Research.Science.Data.DataSet.GetCoordinateSystems(Microsoft.Research.Science.Data.SchemaVersion)"/>
-            <seealso cref="P:Microsoft.Research.Science.Data.DataSet.Variables"/>
-            <seealso cref="M:Microsoft.Research.Science.Data.DataSet.Commit"/>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.GetCoordinateSystems(Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>
-            Gets the specified version of read-only collection of coordinate systems.
-            </summary>
-            <param name="version">The version of schema to take CoordinateSystems from.</param>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddCoordinateSystemToCollection(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>
-            Adds the coordinate system to the internal collection of coordinate systems 
-            and fires appropriate events.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.AddCoordinateSystemToCollection(Microsoft.Research.Science.Data.CoordinateSystem,Microsoft.Research.Science.Data.DataSet.Changes)">
-            <summary>
-            Adds the coordinate system to the internal collection of coordinate systems 
-            and fires appropriate events.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.CreateCoordinateSystem(System.String,Microsoft.Research.Science.Data.Variable[])">
-            <summary>
-            Creates a coordinate system with specified name and attaches it to the data set.
-            </summary>
-            <param name="name">Name of the coordinate system.</param>
-            <param name="axes">Axes contained by the coordinate system.</param>
-            <returns>The <see cref="T:Microsoft.Research.Science.Data.CoordinateSystem"/> instance.</returns>
-            <remarks>
-            <para>
-            <see cref="T:Microsoft.Research.Science.Data.DataSet"/> prohibits different coordinate systems with the same name.
-            An attempt to add a coordinate system with existing name leads to an exception.
-            </para>
-            <para>
-            After a coordinate system is added, it should be filled with axes
-            using <see cref="M:Microsoft.Research.Science.Data.CoordinateSystem.AddAxis(Microsoft.Research.Science.Data.Variable)"/> methods. After a coordinate system
-            is committed, it cannot be modified.
-            </para>
-            <para>
-            A coordinate system can be added to a variable, it means that the variable
-            is defined in that coordinate system. And there are constraints on this type
-            of relations. See details in remarks for <see cref="M:Microsoft.Research.Science.Data.DataSet.Commit"/> method.
-            </para>
-            <example>
-            The following example creates a variable "time" to store time moments;
-            a coordinate system "Time" with one axis "time";
-            and a variable "airTemp" defined in that coordinate system.
-            Note that "time" and "airTemp" depend on the same dimension.
-            <code>
-            using (DataSet ds = CreateDataSet())
-            {
-            	ds1.IsAutocommitEnabled = false;
-            	
-            	Variable time = ds.AddVariable&lt;int&gt;("time", "t");
-            	CoordinateSystem cs = ds.CreateCoordinateSystem("Time", time);
-            	// cs has one axis "time"
-            	
-            	Variable var = ds.AddVariable&lt;int&gt;("airTemp", "time");
-            	var.AddCoordinateSystem(cs);
-            	ds.Commit();
-            }
-            </code>
-            </example>
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.CreateCoordinateSystem(System.String,Microsoft.Research.Science.Data.Variable[],Microsoft.Research.Science.Data.DataSet.Changes)">
-            <summary>
-            Creates a coordinate system with specified name and places it in the given changeset.
-            </summary>
         </member>
         <member name="P:Microsoft.Research.Science.Data.DataSet.Dimensions">
             <summary>
@@ -2708,8 +2098,6 @@
              </para>
              <para>
              The variable <paramref name="raw"/> must belong to the same DataSet.
-             Otherwise, consider first add a reference to the variable 
-             (see <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable,System.String,System.String[])"/>).
              </para>
              <para>Both source and targe variable share the metadata collection.
              See <see cref="M:Microsoft.Research.Science.Data.DataSet.TransformVariable``2(Microsoft.Research.Science.Data.Variable{``1},System.Func{``1,``0},System.Func{``0,``1},System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.String)"/>
@@ -2785,8 +2173,6 @@
              </para>
              <para>
              The variable <paramref name="raw"/> must belong to the same DataSet.
-             Otherwise, consider first add a reference to the variable 
-             (see <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable,System.String,System.String[])"/>).
              </para>
              <para>Both source and targe variable share the metadata collection.
              See <see cref="M:Microsoft.Research.Science.Data.DataSet.TransformVariable``2(Microsoft.Research.Science.Data.Variable{``1},System.Func{``1,``0},System.Func{``0,``1},System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.String},System.String)"/>
@@ -3053,7 +2439,7 @@
         <member name="F:Microsoft.Research.Science.Data.DataSet.Changes.varChanges">
             <summary>Maps variable ID to Variable.Changes.</summary>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSet.Changes.#ctor(Microsoft.Research.Science.Data.DataSet,System.Int32,Microsoft.Research.Science.Data.DataSetSchema,Microsoft.Research.Science.Data.VariableCollection,Microsoft.Research.Science.Data.CoordinateSystemCollection,Microsoft.Research.Science.Data.ChangesetSource)">
+        <member name="M:Microsoft.Research.Science.Data.DataSet.Changes.#ctor(Microsoft.Research.Science.Data.DataSet,System.Int32,Microsoft.Research.Science.Data.DataSetSchema,Microsoft.Research.Science.Data.VariableCollection,Microsoft.Research.Science.Data.ChangesetSource)">
             <summary>
             Initializes an instance of the class.
             </summary>
@@ -3061,8 +2447,8 @@
             <param name="version"></param>
             <param name="initialSchema"></param>
             <param name="variables"></param>
-            <param name="coordinateSystems"></param>
             <param name="source"></param>
+            
         </member>
         <member name="P:Microsoft.Research.Science.Data.DataSet.Changes.DataSetGuid">
             <summary>
@@ -3087,11 +2473,6 @@
         <member name="P:Microsoft.Research.Science.Data.DataSet.Changes.Variables">
             <summary>
             Gets the updated collection of variables including unmodified, updated and added variables.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.DataSet.Changes.CoordinateSystems">
-            <summary>
-            Gets the updated collection of coordinate systems including unmodified and updated coordinate systems.
             </summary>
         </member>
         <member name="P:Microsoft.Research.Science.Data.DataSet.Changes.ChangesetSource">
@@ -3204,8 +2585,7 @@
             <remarks>
             <para>
             Opens the <see cref="T:Microsoft.Research.Science.Data.DataSet"/> using given <paramref name="targetUri"/> and copies the current <see cref="T:Microsoft.Research.Science.Data.DataSet"/> content
-            into the output <see cref="T:Microsoft.Research.Science.Data.DataSet"/>, restoring the structure and adding variables by value (see
-            <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable)"/>) to the target <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.
+            into the output <see cref="T:Microsoft.Research.Science.Data.DataSet"/>, restoring the structure and adding variables by value to the target <see cref="T:Microsoft.Research.Science.Data.DataSet"/>.
             The resulting <see cref="T:Microsoft.Research.Science.Data.DataSet"/> is committed. Note: it is required to dispose the returned DataSet;
             if you don't need the instance, you should dispose it immediately:
             <code>ds.Clone("copy.csv").Dispose();</code>.
@@ -3579,11 +2959,6 @@
             </remarks>
             <seealso cref="P:Microsoft.Research.Science.Data.DataSetChangeset.AddedVariables"/>
             <seealso cref="P:Microsoft.Research.Science.Data.DataSetChangeset.UpdatedVariables"/>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.DataSetChangeset.AddedCoordinateSystems">
-            <summary>
-            Gets an array of new coordinate systems.
-            </summary>
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSetChangeset.ToString">
             <summary>
@@ -4642,7 +4017,7 @@
         </member>
         <member name="M:Microsoft.Research.Science.Data.Factory.DataSetFactory.Register(System.String,System.String)">
             <summary>
-            Registers the <paramref name="providerName"/> and associates it with the provider <paramref name="dataSet"/>.
+            Registers the <paramref name="providerName"/> and associates it with the provider a <see cref="T:Microsoft.Research.Science.Data.DataSet"/> implementation./>.
             </summary>
             <param name="providerName">Provider name.</param>
             <param name="providerTypeName">The provider type name to associate with the provider name. This type should be
@@ -4885,7 +4260,7 @@
             Formats exception message based on uri, traces it and returns the exception.
             </summary>
             <param name="uri"></param>
-            <param name="innerException"></param>
+            <param name="message"></param>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Factory.DataSetFactory.BuildDataSetCreateException(System.String,System.Exception)">
             <summary>
@@ -5312,32 +4687,6 @@
             and "http://microsoft.com" or "c:\Data\tests.csv" are not DataSet uri.
             </remarks>
             <returns>True, if the <paramref name="uri"/> is a DataSet uri.</returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.DataSetUri.CreateFromPath(System.String,System.String,System.String)">
-            <summary>
-            Transforms the given <paramref name="path"/> into a DataSet URI string.
-            </summary>
-            <param name="path">Path to a resource the DataSet should be created for.</param>
-            <param name="providerName">Name of the provider for the DataSetUri.</param>
-            <param name="resourceParamName">The parameter name that should be equal to <paramref name="path"/>
-            (usually, <c>"file"</c>).</param>
-            <returns>A DataSet URI string containing
-            a reference to the resource identified by <paramref name="path"/>.</returns>
-            <remarks>
-            <para>
-            The method has to convert a path with possible parameters appended through '?' into
-            a DataSet URI string.
-            For example, a path <c>c:\data\air0.csv</c> or even <c>c:\data\air0.csv?inferDims=true&amp;culture=ru-RU</c>
-            are to be converted into 
-            <c>msds:csv?file=c:\data\air0.csv</c> and <c>msds:csv?file=c:\data\air0.csv&amp;inferDims=true&amp;culture=ru-RU</c>,
-            if <paramref name="resourceParamName"/> is <c>"file"</c> (the usual name for the parameter
-            referring to a DataSet underlying resource file) and <paramref name="providerName"/>
-            is <c>"csv"</c>.
-            </para>
-            <para>All <paramref name="path"/>, <paramref name="providerName"/> and <paramref name="resourceParamName"/>
-            cannot be null or an empty string; otherwise an exception is thrown.</para>
-            </remarks>
-            <exception cref="T:System.ArgumentException">Null or empty string specified as any of the parameters</exception>
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSetUri.Create(System.String)">
             <summary>
@@ -6585,11 +5934,6 @@
             Gets the read onlt dimension lists the variable depends on.
             </summary>
         </member>
-        <member name="P:Microsoft.Research.Science.Data.VariableSchema.CoordinateSystems">
-            <summary>
-            Gets the coordinate systems the variable is defined in.
-            </summary>
-        </member>
         <member name="P:Microsoft.Research.Science.Data.VariableSchema.Metadata">
             <summary>
             Gets the metadata collection.
@@ -6603,30 +5947,6 @@
         <member name="M:Microsoft.Research.Science.Data.VariableSchema.ToString">
             <summary>
             Represents the schema as string in short.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.CoordinateSystemSchema">
-            <summary>Provides structure information for a coordinate system.</summary>
-            <remarks>This class is immutable.</remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemSchema.#ctor(System.String,System.Int32[])">
-            <summary>Creates an instance of the CoordinateSystemSchema</summary>
-            <param name="name">Name of the coordinate system.</param>
-            <param name="axes">IDs of variables those are axes for the coordinate system.</param>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemSchema.Name">
-            <summary>Gets the name of the coordinate system.</summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemSchema.AxesID">
-            <summary>Gets an array of the IDs of the variables those are axes for the coordinate system.</summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemSchema.AxesCount">
-            <summary>Gets the number of axes in the coordinate system.</summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemSchema.ToString">
-            <summary>
-            
             </summary>
             <returns></returns>
         </member>
@@ -6662,11 +5982,6 @@
         <member name="P:Microsoft.Research.Science.Data.DataSetSchema.Variables">
             <summary>
             Gets an array of the variables contained in the DataSet.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.DataSetSchema.CoordinateSystems">
-            <summary>
-            Gets an array of the coordinate systems contained in the DataSet.
             </summary>
         </member>
         <member name="M:Microsoft.Research.Science.Data.DataSetSchema.GetDimensions">
@@ -7178,37 +6493,10 @@
             </remarks>
             <seealso cref="M:Microsoft.Research.Science.Data.Utilities.DataSetCloning.Clone(Microsoft.Research.Science.Data.DataSet,Microsoft.Research.Science.Data.DataSetUri,Microsoft.Research.Science.Data.Utilities.DataSetCloning.ProgressUpdater)"/>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Utilities.ArrayHelper.IsOrdered(System.Array)">
+        <member name="T:Microsoft.Research.Science.Data.Utilities.MetadataExtensions">
             <summary>
-            Determines the order of the array.
+            Provides extension methods for a metadata dictionary.
             </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Utilities.ArrayHelper.IsOrdered``1(``0[])">
-            <summary>
-            Determines the order of the array.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Utilities.ArrayHelper.GetOrder(System.Array)">
-            <summary>
-            <para>Positive: ascend</para>
-            <para>Negative: descend</para>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Utilities.ArrayHelper.GetOrder``1(``0[])">
-            <summary>
-            <para>Positive: ascend</para>
-            <para>Negative: descend</para>
-            </summary>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.Utilities.PointSetEnumerator">
-            <summary>Enumerates table of three variables on one dimension. Converts
-            each three values to array of three doubles. Triples with missing values
-            or NaN are ignored</summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Utilities.IntBox.Subtract(Microsoft.Research.Science.Data.Utilities.IntBox)">
-            <summary>Subtracts argument from this box</summary>
-            <param name="second">Box to be subtracted</param>
-            <returns>Sequence of boxes resulting from subtraction</returns>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetMin``1(System.Collections.Generic.Dictionary{System.String,System.Object},``0)">
             <summary>
@@ -7235,9 +6523,7 @@
             Gets the value of the attribute with name "min" if it is presented;
             otherwise returns null.
             </summary>
-            <typeparam name="T"></typeparam>
             <param name="metadata"></param>
-            <param name="default"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetMax(System.Collections.Generic.Dictionary{System.String,System.Object})">
@@ -7245,9 +6531,7 @@
             Gets the value of the attribute with name "max" if it is presented;
             otherwise returns null.
             </summary>
-            <typeparam name="T"></typeparam>
             <param name="metadata"></param>
-            <param name="default"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetMin``1(Microsoft.Research.Science.Data.MetadataDictionary,``0)">
@@ -7275,9 +6559,7 @@
             Gets the value of the attribute with name "min" if it is presented;
             otherwise returns null.
             </summary>
-            <typeparam name="T"></typeparam>
             <param name="metadata"></param>
-            <param name="default"></param>
             <returns></returns>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetMax(Microsoft.Research.Science.Data.MetadataDictionary)">
@@ -7285,10 +6567,16 @@
             Gets the value of the attribute with name "max" if it is presented;
             otherwise returns null.
             </summary>
-            <typeparam name="T"></typeparam>
             <param name="metadata"></param>
-            <param name="default"></param>
             <returns></returns>
+        </member>
+        <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetMissingValue(Microsoft.Research.Science.Data.Variable)">
+            <summary>
+            A value to signify an empty slot in variable data.
+            </summary>
+            <param name="var">The variable.</param>
+            <returns><see cref="P:Microsoft.Research.Science.Data.Variable.MissingValue"/> or a value of "missing_value" attribute.</returns>
+            <exception cref="T:System.NullReferenceException"></exception>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetDisplayName(Microsoft.Research.Science.Data.MetadataDictionary)">
             <summary>
@@ -7299,6 +6587,14 @@
             <param name="metadata"></param>
             <returns></returns>
         </member>
+        <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetDisplayNameOnly(Microsoft.Research.Science.Data.MetadataDictionary)">
+            <summary>
+            Display name.
+            </summary>
+            <param name="metadata"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
         <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetUnits(Microsoft.Research.Science.Data.MetadataDictionary)">
             <summary>
             Gets the value of "units" attribute, if exists; otherwise, returns null.
@@ -7306,12 +6602,20 @@
             <param name="metadata"></param>
             <returns></returns>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.IsCoordinateAxis(Microsoft.Research.Science.Data.Variable)">
+        <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.GetDisplayNameAndUnits(Microsoft.Research.Science.Data.MetadataDictionary)">
             <summary>
-            Checks whether the variable is a coordinate axis or not.
+            Display name and units.
+            </summary>
+            <param name="metadata"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.Research.Science.Data.Utilities.MetadataExtensions.TotalLength(Microsoft.Research.Science.Data.Variable)">
+            <summary>
+            Total number of data elements in the variable.
             </summary>
             <param name="var"></param>
-            <returns></returns>
+            <returns>A product of all dimensions.</returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
         </member>
         <member name="T:Microsoft.Research.Science.Data.Variable">
              <summary>    
@@ -7380,9 +6684,6 @@
              just refer the <see cref="P:Microsoft.Research.Science.Data.Variable.Metadata"/> collection. 
              </para>
              <para>
-             List of coordinate systems, attached to a variable, is available through the <see cref="P:Microsoft.Research.Science.Data.Variable.CoordinateSystems"/> collection.
-             </para>
-             <para>
              How to . . .
              <list type="table">
              <listheader>
@@ -7399,8 +6700,7 @@
              For example, <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariable``1(System.String,System.String[])"/>.	
              </para>
              <para>
-             See also <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByReference(Microsoft.Research.Science.Data.Variable,System.String[])"/>,
-             <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByValue(Microsoft.Research.Science.Data.Variable,System.String,System.String[])"/>.
+             See also <see cref="M:Microsoft.Research.Science.Data.DataSet.AddVariableByReference(Microsoft.Research.Science.Data.Variable,System.String[])"/>.
              </para>
              </description>
              </item>
@@ -7520,82 +6820,6 @@
              <seealso cref="T:Microsoft.Research.Science.Data.Variable`1"/>
              <seealso cref="T:Microsoft.Research.Science.Data.DataSet"/>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.CheckReversibility(Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>
-            Checks whether the variable is reversible.
-            </summary>
-            <param name="version">Version of the variable to check.</param>
-            <returns>Returns true if the variable is reversible.</returns>
-            <remarks>
-            <para>
-            One of the ScientificDataSet consistency constraints is the constraint on axis data: 
-            each axis of numeric and DateTime values must be reversible and an axis of any other type must have 
-            no duplicate values. The constraint enables the reversing mechanism which makes it possible to get 
-            a value from a variable not only by its indices but also by its coordinate values 
-            (for details see remarks for <see cref="M:Microsoft.Research.Science.Data.DataSet.Commit"/>). 
-            The current release of the library provides a mechanism of the constraint check 
-            only for one-dimensional axis and only for numeric and DateTime values. 
-            This is the only implemented check for performance reasons.
-            </para>
-            <para>
-            The check is implemented at the level of the <see cref="T:Microsoft.Research.Science.Data.Variable`1"></see> class, 
-            the base class for all variables. Therefore each variable inherently enables the reversibility 
-            check by default. </para>
-            <para>
-            There are two methods declared as abstract in the <see cref="T:Microsoft.Research.Science.Data.Variable"/> class and 
-            implemented in the <see cref="T:Microsoft.Research.Science.Data.Variable`1"></see> class: 
-            public method <see cref="M:Microsoft.Research.Science.Data.Variable.CheckReversibility(Microsoft.Research.Science.Data.SchemaVersion)"/> and internal method <see cref="M:Microsoft.Research.Science.Data.Variable.IndicesOf(System.Object)"/>.</para>
-            <para>
-            The <see cref="M:Microsoft.Research.Science.Data.Variable.CheckReversibility(Microsoft.Research.Science.Data.SchemaVersion)"/> method makes a check for the given schema version of 
-            the variable and returns either true or false depending whether data is reversible or not. 
-            The check is actually performed only for one-dimensional variables having a numeric or 
-            DateTime data type. For any other case the method just returns true without a check. 
-            The method is called in the commit procedure (at the precommit stage; see remarks for 
-            <see cref="M:Microsoft.Research.Science.Data.DataSet.Commit"/>) 
-            as a part of the CheckConstaints logic of the CoordinateSystem class. 
-            This means that it is called at the committing for each variable of a data set being an axis. 
-            If the method returns false, the check failed.
-            </para>
-            <para>
-            The current data stored in the data set’s underlying storage is always considered as a consistent, 
-            hence when a variable is initialized as an axis on a data set loading, 
-            it is also considered as satisfying of all constraints including reversibility 
-            without actual check of its persistent data. If the committed variable 
-            (that is not an axis) is added as an axis to a coordinate system, 
-            then in the next constraint check (i.e. in the nearest commit procedure) 
-            all persistent data of the variable is loaded and checked on reversibility. 
-            The new data arrays those have been put to the variable are checked during the commit procedure. 
-            All these arrays must have the same order and they are also checked in the context of 
-            the already committed data (if needed, one value to the left and one to the right 
-            of the proposed data array are loaded from the persistent storage and they must 
-            be in accordance with the array order itself). The result of the check is cached, 
-            so in the next commit the only proposed data arrays are checked.
-            </para>
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.CheckReversibility(Microsoft.Research.Science.Data.Variable.Changes)">
-            <summary>
-            Checks whether the variable including the given changes is reversible .
-            </summary>
-            <param name="changes"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.IndicesOf(System.Object)">
-            <summary>
-            Returns indices of the variable's element corresponding to the given value.
-            </summary>
-            <param name="value">The value which index is to be returned.</param>
-            <returns>If the value is not found and it is less than one or more elements in array, 
-            a negative number which is the bitwise complement of the index of the first element 
-            that is larger than value. If value is not found and value is greater than 
-            any of the elements in array, a negative number which is the bitwise complement of 
-            (the index of the last element plus 1).</returns>
-            <remarks>
-            See remarks for <see cref="M:Microsoft.Research.Science.Data.Variable`1.IndicesOf(`0)"/>.
-            </remarks>
-            <seealso cref="T:Microsoft.Research.Science.Data.Variable"/>
-            <seealso cref="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])"/>
-        </member>
         <member name="F:Microsoft.Research.Science.Data.Variable.changeSetId">
             <summary>
             Current changeset of the variable (not data set!)
@@ -7606,7 +6830,7 @@
             Committed array of dimensions.
             </summary>
         </member>
-        <member name="F:Microsoft.Research.Science.Data.Variable.csystems">
+        <member name="F:Microsoft.Research.Science.Data.Variable.dataSet">
             <summary>Collection of coordinate systems of the variable.</summary>
         </member>
         <member name="F:Microsoft.Research.Science.Data.Variable.changes">
@@ -7673,17 +6897,6 @@
             Gets the metadata associated with the variable.
             </summary>
         </member>
-        <member name="P:Microsoft.Research.Science.Data.Variable.CoordinateSystems">
-            <summary>
-            Gets the read-only collection of coordinate systems attached to the variable.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.GetCoordinateSystems(Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>
-            Gets the specified version of read-only collection of coordinate systems attached to the variable.
-            </summary>
-            <param name="version">The version of schema to take CoordinateSystems from.</param>
-        </member>
         <member name="P:Microsoft.Research.Science.Data.Variable.ID">
             <summary>
             Gets the ID of the variable.
@@ -7710,11 +6923,6 @@
             </para>
             </remarks>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.IsAxis(Microsoft.Research.Science.Data.SchemaVersion)">
-            <summary>
-            Gets the value indicating whether this variable belongs to some coordinate system or not.
-            </summary>
-        </member>
         <member name="M:Microsoft.Research.Science.Data.Variable.#ctor(Microsoft.Research.Science.Data.DataSet,System.String[],System.Boolean)">
             <summary>
             Initializes an instance of the variable.
@@ -7732,17 +6940,6 @@
             <remarks>
             The method initializes the schema of the variable.
             </remarks>
-        </member>
-        <member name="E:Microsoft.Research.Science.Data.Variable.CoordinateSystemAdded">
-            <summary>
-            Occurs when a coordinate system has been added to the variable.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.FireEventCoordinateSystemAdded(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>
-            Fires the CoordinateSystemAdded event.
-            </summary>
-            <param name="cs"></param>
         </member>
         <member name="E:Microsoft.Research.Science.Data.Variable.RolledBack">
             <summary>
@@ -7810,53 +7007,6 @@
             The method is invoked before variable's metadata is changed.
             </summary>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.GetUntypedValue(System.Object[])">
-            <summary>Returns the value in specified point in the coordinate system.</summary>
-            <remarks>
-            Returns the value in specified point in the coordinate system.
-            First coordinate system is used as default. 
-            Index selection mode is Exact.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.GetUntypedValue(Microsoft.Research.Science.Data.ReverseIndexSelection,System.Object[])">
-            <summary>Returns the value in specified point in the coordinate system.</summary>
-            <param name="coords"></param>
-            <param name="mode"></param>
-            <returns></returns>
-            <remarks>
-            Returns the value in specified point in the coordinate system.
-            First coordinate system is used as default. 
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.GetUntypedValue(Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])">
-            <summary>
-            Returns the value in specified point in the coordinate system.
-            </summary>
-            <param name="cs"></param>
-            <param name="coords"></param>
-            <returns></returns>
-            <remarks>
-            Returns the value in specified point in the coordinate system.
-            Index selection mode is Exact.</remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.GetUntypedValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])">
-            <summary>
-            Returns the value for the specified point in the coordinate system.
-            </summary>
-            <param name="mode"></param>
-            <param name="cs"></param>
-            <param name="coords"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.InnerGetUntypedValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])">
-            <summary>
-            This method is a bridge to the typed implementation of the method in the <see cref="T:Microsoft.Research.Science.Data.Variable`1"/> class.
-            </summary>
-            <param name="mode"></param>
-            <param name="cs"></param>
-            <param name="coords"></param>
-            <returns></returns>
-        </member>
         <member name="M:Microsoft.Research.Science.Data.Variable.GetData(System.Int32[],System.Int32[])">
             <summary>
             Gets the data for the variable from specified rectangular region.
@@ -7914,7 +7064,7 @@
             except when the <paramref name="count"/> is null. In this case,
             the real shape of the stridden array is "as much as possible" depending on the shape of the 
             variable (<see cref="M:Microsoft.Research.Science.Data.Variable.GetShape"/>).
-            If <paramref name="start"/> is null, an integer array with all zeros is inferred.
+            If <paramref name="origin"/> is null, an integer array with all zeros is inferred.
             The <paramref name="stride"/> contains a step to stride values of the variable.
             For 1d variables, value of a stridden variable with the index <c>i</c> corresponds
             to the value with index <c>start[0] + i*stride[0]</c> of the variable.
@@ -8117,33 +7267,6 @@
             <summary>
             Sets the read only flag.
             </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.CheckOnAddCoordinateSystem(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>
-            This methods is called when the coordinate system is to be added to the variable.
-            </summary>
-            <remarks>
-            It is possible to override this method to filter out coordinate systems, and
-            it is enough to throw an exception to reject the coordinate system.
-            Default implementation prohibits add of non-native coordinate systems.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.AddCoordinateSystem(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>
-            Adds the coordinate system to the list of coordinate systems corresponded with the variable.		
-            </summary>
-            <param name="cs">A coordinate system of the same DataSet.</param>
-            <remarks>
-            <para>
-            Coordinate system must be attached to the same data set as the variable does.
-            </para>
-            <para>
-            Adding of a coordinate system to a variable
-            means that the variable is defined in that coordinate system. 
-            See also remarks for 
-            <see cref="M:Microsoft.Research.Science.Data.DataSet.CreateCoordinateSystem(System.String,Microsoft.Research.Science.Data.Variable[])"/>.
-            </para>
-            </remarks>
         </member>
         <member name="M:Microsoft.Research.Science.Data.Variable.ReadShape">
             <summary>
@@ -8394,11 +7517,6 @@
             Changed/added attributes.
             </summary>
         </member>
-        <member name="F:Microsoft.Research.Science.Data.Variable.Changes.coordinateSystems">
-            <summary>
-            Proposed coordinate systems list.
-            </summary>
-        </member>
         <member name="F:Microsoft.Research.Science.Data.Variable.Changes.shape">
             <summary>
             Proposed shape of the variable.
@@ -8414,16 +7532,16 @@
             Committed schema that is being changed.
             </summary>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.Changes.#ctor(System.Int32,Microsoft.Research.Science.Data.VariableSchema,Microsoft.Research.Science.Data.MetadataDictionary,Microsoft.Research.Science.Data.CoordinateSystemCollection,System.Int32[],Microsoft.Research.Science.Data.Rectangle)">
+        <member name="M:Microsoft.Research.Science.Data.Variable.Changes.#ctor(System.Int32,Microsoft.Research.Science.Data.VariableSchema,Microsoft.Research.Science.Data.MetadataDictionary,System.Int32[],Microsoft.Research.Science.Data.Rectangle)">
             <summary>
             
             </summary>
             <param name="version"></param>
             <param name="initialSchema"></param>
             <param name="metadataChanges"></param>
-            <param name="css"></param>
             <param name="shape"></param>
             <param name="affectedRect"></param>
+            
         </member>
         <member name="P:Microsoft.Research.Science.Data.Variable.Changes.ChangeSet">
             <summary>
@@ -8439,11 +7557,6 @@
             <summary>
             Gets added and updated metadata attributes.
             </summary>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.Variable.Changes.CoordinateSystems">
-            <summary>Gets collection of added coordinate systems.</summary>
-            <remarks>This collection may contain added coordinate systems only,
-            because a coordinate system is immutable after it is committed.</remarks>
         </member>
         <member name="P:Microsoft.Research.Science.Data.Variable.Changes.Shape">
             <summary>
@@ -8481,28 +7594,28 @@
             Represents changes both in schema and data for the variable.
             </summary>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.DataChanges.#ctor(System.Int32,Microsoft.Research.Science.Data.VariableSchema,Microsoft.Research.Science.Data.MetadataDictionary,Microsoft.Research.Science.Data.CoordinateSystemCollection,System.Int32[],Microsoft.Research.Science.Data.Rectangle)">
+        <member name="M:Microsoft.Research.Science.Data.Variable.DataChanges.#ctor(System.Int32,Microsoft.Research.Science.Data.VariableSchema,Microsoft.Research.Science.Data.MetadataDictionary,System.Int32[],Microsoft.Research.Science.Data.Rectangle)">
             <summary>
             
             </summary>
             <param name="version"></param>
             <param name="initialSchema"></param>
             <param name="metadataChanges"></param>
-            <param name="css"></param>
             <param name="shape"></param>
             <param name="affectedRect"></param>
+            
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable.DataChanges.#ctor(System.Int32,Microsoft.Research.Science.Data.VariableSchema,Microsoft.Research.Science.Data.MetadataDictionary,Microsoft.Research.Science.Data.CoordinateSystemCollection,System.Int32[],Microsoft.Research.Science.Data.Rectangle,System.Collections.Generic.List{Microsoft.Research.Science.Data.Variable.DataPiece})">
+        <member name="M:Microsoft.Research.Science.Data.Variable.DataChanges.#ctor(System.Int32,Microsoft.Research.Science.Data.VariableSchema,Microsoft.Research.Science.Data.MetadataDictionary,System.Int32[],Microsoft.Research.Science.Data.Rectangle,System.Collections.Generic.List{Microsoft.Research.Science.Data.Variable.DataPiece})">
             <summary>
             
             </summary>
             <param name="version"></param>
             <param name="initialSchema"></param>
             <param name="metadataChanges"></param>
-            <param name="css"></param>
             <param name="shape"></param>
             <param name="affectedRect"></param>
             <param name="data"></param>
+            
         </member>
         <member name="F:Microsoft.Research.Science.Data.Variable.DataChanges.dataPieces">
             <summary>Contains proposed data arrays put with PutData or AppendData methods.</summary>
@@ -8666,95 +7779,6 @@
             <seealso cref="T:Microsoft.Research.Science.Data.Variable"/>
             <see cref="T:Microsoft.Research.Science.Data.DataSet"/>
         </member>
-        <member name="F:Microsoft.Research.Science.Data.Variable`1.committedOrder">
-            <summary>
-            The current order of the data (this allows not to check all data from a storage each time and cache the result).
-            </summary>
-        </member>
-        <member name="F:Microsoft.Research.Science.Data.Variable`1.proposedOrder">
-            <summary>
-            The current order of the proposed data (this allows not to check all data from a storage each time and cache the result).
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.OnVariableChanged(System.Object,Microsoft.Research.Science.Data.VariableChangedEventArgs)">
-            <summary>
-            Resets proposedOrder on put data
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.IndicesOf(System.Object)">
-            <summary>
-            Returns indices of the variable's element corresponding to the given value.
-            </summary>
-            <param name="value">The value which index is to be returned.</param>
-            <returns>If the value is not found and it is less than one or more elements in array, 
-            a negative number which is the bitwise complement of the index of the first element 
-            that is larger than value. If value is not found and value is greater than 
-            any of the elements in array, a negative number which is the bitwise complement of 
-            (the index of the last element plus 1).</returns>
-            <remarks>
-            See remarks for <see cref="M:Microsoft.Research.Science.Data.Variable`1.IndicesOf(`0)"/>.
-            </remarks>
-            <seealso cref="T:Microsoft.Research.Science.Data.Variable"/>
-            <seealso cref="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])"/>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.IndicesOf(`0)">
-            <summary>
-            Returns indices of the variable's element corresponding to the given value.
-            </summary>
-            <param name="value">The value which index is to be returned.</param>
-            <returns>If the value is not found and it is less than one or more elements in array, 
-            a negative number which is the bitwise complement of the index of the first element 
-            that is larger than value. If value is not found and value is greater than 
-            any of the elements in array, a negative number which is the bitwise complement of 
-            (the index of the last element plus 1).</returns>
-            <remarks>
-            <para>
-            The method accepts a value and returns the corresponding indices vector of the element 
-            containing the given value. 
-            Please note that the method works with the committed data only. </para>
-            <para>
-            If the value is not found and it is less than one or more elements in array, 
-            a negative number which is the bitwise complement of the index of the first 
-            element that is larger than value. If value is not found and value is greater 
-            than any of the elements in array, a negative number which is the bitwise complement of 
-            (the index of the last element plus 1). </para>
-            <para>
-            The method is used in <see cref="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])"/>
-            methods of the <see cref="T:Microsoft.Research.Science.Data.Variable`1"/> retrieving a value by given coordinate values.  
-            The method is implemented for 1d-variables only and for any other rank it throws the 
-            <see cref="T:System.NotSupportedException"/>. The method uses the order of an array computed by the
-            <see cref="M:Microsoft.Research.Science.Data.Variable`1.CheckReversibility(Microsoft.Research.Science.Data.Variable.Changes)"/> method during the constraints check.</para>
-            <para>
-            Each index in the returned array corresponds to the dimension with the same index
-            from the collection <see cref="P:Microsoft.Research.Science.Data.Variable.Dimensions"/>.
-            </para>
-            </remarks>
-            <seealso cref="T:Microsoft.Research.Science.Data.Variable"/>
-            <seealso cref="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])"/>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.CheckReversibility(Microsoft.Research.Science.Data.Variable.Changes)">
-            <summary>
-            Checks whether the variable is reversible.
-            </summary>
-            <param name="changes">Changes to be applied to the variable.</param>
-            <returns>Returns true if the variable is reversible.</returns>
-            <remarks>
-            The method makes actual check for 1d variables only. 
-            For any other rank it just returns true without the check.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetOrder1d(Microsoft.Research.Science.Data.Variable.Changes)">
-            <summary>
-            <para>Gets the order of the variable (works for 1d variables only).</para>
-            <para>Affects committedOrder and proposedOrder fields.</para>
-            <para>Returns Ascendant, Descendant, Unknown or None.</para>
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.IndexOfDataPieceContaining(Microsoft.Research.Science.Data.Variable.DataChanges,System.Int32)">
-            <summary>
-            Gets the index of the data piece containg specified index or -1.
-            </summary>
-        </member>
         <member name="P:Microsoft.Research.Science.Data.Variable`1.TypeOfData">
             <summary>
             Gets the data type for the variable.
@@ -8779,96 +7803,12 @@
             Initializes an instance of the variable.
             </summary>
         </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.Initialize">
-            <summary>
-            Initializes the schema of the variable.
-            </summary>
-            <remarks>
-            This method shall be called by derived class AT THE END of their constructors.
-            It initializes the schema of the variable.
-            Start changes of the variable.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.InnerGetUntypedValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])">
-            <summary>
-            This method is a bridge to the typed implementation of the method in the Variable{DataType} class.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetValue(System.Object[])">
-            <summary>
-            Returns the typed value in specified point in the coordinate system.
-            </summary>
-            <remarks>
-            First coordinate system is used as default. 
-            Index selection mode is Exact.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.ReverseIndexSelection,System.Object[])">
-            <summary>
-            Returns the typed value in specified point in the coordinate system.
-            </summary>
-            <remarks>
-            First coordinate system is used as default. 
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])">
-            <summary>
-            Returns the typed value in specified point in the coordinate system.
-            </summary>
-            <remarks>
-            First coordinate system is used as default. 
-            Index selection mode is Exact.
-            </remarks>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetValue(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.CoordinateSystem,System.Object[])">
-            <summary>
-            Returns the typed value in specified point in the coordinate system.
-            </summary>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.Variable`1.GetValueIndex">
-            <summary>
-            Stores a pair of indices and interpolation coefficient.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetIndex1d(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.Variable,System.Object)">
-            <summary>
-            Returns index (or two nearest indices) in the given axis for specified coordinate value.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.Variable`1.GetValue1d(Microsoft.Research.Science.Data.ReverseIndexSelection,Microsoft.Research.Science.Data.Variable,System.Object)">
-            <summary>
-            Returns value in the given axis for specified coordinate value.
-            </summary>
-        </member>
         <member name="M:Microsoft.Research.Science.Data.Variable`1.Append(`0)">
             <summary>
             For one dimensional variables appends a single value.
             </summary>
             <param name="value">A value to append.</param>
             <seealso cref="M:Microsoft.Research.Science.Data.Variable.Append(System.Array)"/>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.CoordinateSystemAddedEventHandler">
-            <summary>
-            
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="T:Microsoft.Research.Science.Data.CoordinateSystemAddedEventArgs">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.CoordinateSystemAddedEventArgs.#ctor(Microsoft.Research.Science.Data.CoordinateSystem)">
-            <summary>
-            
-            </summary>
-            <param name="cs"></param>
-        </member>
-        <member name="P:Microsoft.Research.Science.Data.CoordinateSystemAddedEventArgs.CoordinateSystem">
-            <summary>
-            Gets the coordinate system that has been added.
-            </summary>
         </member>
         <member name="T:Microsoft.Research.Science.Data.VariableChangeAction">
             <summary>
@@ -11212,7 +10152,7 @@
             <remarks>
             <para>
             If the open mode is not specified in the <paramref name="uri"/>, the default value 
-            <paramref name="ResourceOpenMode.OpenOrCreate.OpenOrCreate"/> is used.
+            <see cref="F:Microsoft.Research.Science.Data.ResourceOpenMode.OpenOrCreate"/> is used.
             </para>
             </remarks>
         </member>
@@ -11329,6 +10269,11 @@
             </summary>
         </member>
         <member name="M:Microsoft.Research.Science.Data.CSV.CsvDataSet.SafeString(System.String)">
+            <summary>
+            Makes the string proper to write in a CSV file.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Research.Science.Data.CSV.CsvDataSet.SafeString(System.Object)">
             <summary>
             Makes the string proper to write in a CSV file.
             </summary>
@@ -11464,6 +10409,18 @@
             The exception that is thrown when <see cref="T:Microsoft.Research.Science.Data.CSV.CsvDataSet"/> cannot parse input file.
             </summary>
         </member>
+        <member name="M:Microsoft.Research.Science.Data.CSV.CsvParsingFailedException.#ctor">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Research.Science.Data.CSV.CsvParsingFailedException.#ctor(System.String)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Research.Science.Data.CSV.CsvParsingFailedException.#ctor(System.String,System.Exception)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Research.Science.Data.CSV.CsvParsingFailedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
         <member name="T:Microsoft.Research.Science.Data.CSV.CsvUri">
             <summary>
             Allows to customize a URI with parameters specific for the <see cref="T:Microsoft.Research.Science.Data.CSV.CsvDataSet"/> provider.
@@ -11523,7 +10480,7 @@
             </code>
             </example>
             </remarks>
-            <seealso cref="!:GetOpenModeOrDefault"/>
+            <seealso cref="M:Microsoft.Research.Science.Data.DataSetUri.GetOpenModeOrDefault(Microsoft.Research.Science.Data.ResourceOpenMode)"/>
         </member>
         <member name="P:Microsoft.Research.Science.Data.CSV.CsvUri.Encoding">
             <summary>
@@ -11613,6 +10570,16 @@
         <member name="P:Microsoft.Research.Science.Data.CSV.CsvUri.UTF8BomDefined">
             <summary>
             Gets the value indicating whether the uri contains utf8bom parameter or not.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Research.Science.Data.CSV.CsvUri.HasSeparator">
+            <summary>
+            Idetifies whether the URI defines separator value or not.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Research.Science.Data.CSV.CsvUri.Separator">
+            <summary>
+            A char that separates values in the file.
             </summary>
         </member>
         <member name="P:Microsoft.Research.Science.Data.CSV.CsvUri.FileName">
@@ -12012,7 +10979,7 @@
             <param name="uri">DataSet URI (see remarks for <see cref="T:Microsoft.Research.Science.Data.NetCDF4.NetCDFDataSet"/>).</param>
             <remarks>
             <para>
-            If the file specified by <paramref name="fileName"/> exists, the NetCDF will be 
+            If the file specified by <paramref name="uri"/> exists, the NetCDF will be 
             initialized with that file. Otherwise, the new file will be created and 
             the resulting NetCDFDataSet will be empty.
             </para>
@@ -12087,12 +11054,6 @@
             </summary>
             <param name="changes"></param>
             <returns></returns>
-        </member>
-        <member name="M:Microsoft.Research.Science.Data.NetCDF4.NetCDFDataSet.OnPrecommit(Microsoft.Research.Science.Data.DataSet.Changes)">
-            <summary>
-            
-            </summary>
-            <param name="changes"></param>
         </member>
         <member name="M:Microsoft.Research.Science.Data.NetCDF4.NetCDFDataSet.OnCommit">
             <summary>
@@ -12336,6 +11297,12 @@
             <returns>A pair of a buffer with zero-terminated UTF8-encoded strings and an array of offsets to the buffer.
             An offset of uint.MaxValue represents null in the data.
             </returns>
+        </member>
+        <member name="M:NetCDFInterop.NetCDF.nc_inq_libvers">
+            <summary>
+            Get netCDF library version.
+            </summary>
+            <returns>A version string, e.g. "4.9.2 of Mar 14 2023 15:42:34 $".</returns>
         </member>
         <member name="F:NetCDFInterop.ResultCode.NC_NOERR">
             <summary>No Error</summary>
