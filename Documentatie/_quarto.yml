@@ -57,6 +57,8 @@ website:
             text: Tabblad Simulaties
           - href: BAT_RUNR/inleiding.qmd
             text: Simuleren in batch
+          - href: GUI/grondwaterclassificatie.qmd
+            text: Grondwaterclassificatie
       - section: "Technische documentatie"
         contents:
           - href: technical_docs/gebiedsreductie.qmd

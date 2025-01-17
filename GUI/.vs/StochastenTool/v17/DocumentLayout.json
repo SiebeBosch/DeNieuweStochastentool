@@ -3,18 +3,18 @@
   "WorkspaceRootPath": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|c:\\github\\denieuwestochastentool\\gui\\frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|c:\\github\\denieuwestochastentool\\gui\\frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
       "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmstochastentool.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\dimr\\clsnetworkfile.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{B5C966AE-D169-4D25-A518-DB31A3B0379F}|..\\BAT_RUNR\\BAT_RUNR.vbproj|c:\\github\\denieuwestochastentool\\bat_runr\\bat_runr.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9DCE2960-835C-4462-849A-58FB0900920B}|..\\DLL\\STOCHLIB.vbproj|c:\\github\\denieuwestochastentool\\dll\\dimr\\clsdimr.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|c:\\github\\denieuwestochastentool\\gui\\frmimportoutputlocations.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{5D6900C4-D2F4-46DB-8A92-9FB83E4C8C47}|StochastenTool.vbproj|solutionrelative:frmimportoutputlocations.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{B5C966AE-D169-4D25-A518-DB31A3B0379F}|..\\BAT_RUNR\\BAT_RUNR.vbproj|c:\\github\\denieuwestochastentool\\bat_runr\\bat_runr.vbproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -24,7 +24,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -44,54 +44,53 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "frmImportOutputlocations.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmImportOutputlocations.vb",
-              "RelativeDocumentMoniker": "frmImportOutputlocations.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmImportOutputlocations.vb",
-              "RelativeToolTip": "frmImportOutputlocations.vb",
-              "ViewState": "AgIAAPAAAAAAAAAAAAAewP0AAAAMAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "frmStochastenTool.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
+              "RelativeDocumentMoniker": "frmStochastenTool.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
+              "RelativeToolTip": "frmStochastenTool.vb",
+              "ViewState": "AgIAAH0SAAAAAAAAAADwv3YSAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-01-17T13:37:11.341Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "clsDIMR.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\DIMR\\clsDIMR.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\DIMR\\clsDIMR.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\DIMR\\clsDIMR.vb",
-              "RelativeToolTip": "..\\DLL\\DIMR\\clsDIMR.vb",
-              "ViewState": "AgIAADMAAAAAAAAAAAAewEAAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-01-17T13:37:11.353Z",
+              "WhenOpened": "2025-01-17T19:03:45.063Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "clsNetworkFile.vb",
-              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\DIMR\\clsNetworkFile.vb",
-              "RelativeDocumentMoniker": "..\\DLL\\DIMR\\clsNetworkFile.vb",
-              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\DLL\\DIMR\\clsNetworkFile.vb",
-              "RelativeToolTip": "..\\DLL\\DIMR\\clsNetworkFile.vb",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAewEgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-01-17T13:37:11.377Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "frmStochastenTool.vb [Design]",
               "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb",
               "RelativeDocumentMoniker": "frmStochastenTool.vb",
               "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\GUI\\frmStochastenTool.vb [Design]",
               "RelativeToolTip": "frmStochastenTool.vb [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-01-17T13:29:15.227Z",
+              "WhenOpened": "2025-01-17T22:11:13.024Z",
               "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "BAT_RUNR",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\BAT_RUNR.vbproj",
+              "RelativeDocumentMoniker": "..\\BAT_RUNR\\BAT_RUNR.vbproj",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\BAT_RUNR.vbproj",
+              "RelativeToolTip": "..\\BAT_RUNR\\BAT_RUNR.vbproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003380|",
+              "WhenOpened": "2025-01-17T21:39:53.913Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BAT_RUNR.vb",
+              "DocumentMoniker": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\BAT_RUNR.vb",
+              "RelativeDocumentMoniker": "..\\BAT_RUNR\\BAT_RUNR.vb",
+              "ToolTip": "C:\\GITHUB\\DeNieuweStochastentool\\BAT_RUNR\\BAT_RUNR.vb",
+              "RelativeToolTip": "..\\BAT_RUNR\\BAT_RUNR.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAN4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-01-17T15:55:49.805Z",
+              "EditorCaption": ""
             }
           ]
         }

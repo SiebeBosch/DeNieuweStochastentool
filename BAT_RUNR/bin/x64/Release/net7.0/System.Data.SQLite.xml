@@ -5850,11 +5850,6 @@
             This event is raised whenever SQLite is rolling back a transaction.
             </summary>
         </member>
-        <member name="P:System.Data.SQLite.SQLiteConnection.DbProviderFactory">
-            <summary>
-            Returns the <see cref="T:System.Data.SQLite.SQLiteFactory" /> instance.
-            </summary>
-        </member>
         <member name="T:System.Data.SQLite.SynchronizationModes">
             <summary>
             The I/O file cache flushing behavior for the connection
@@ -9950,9 +9945,6 @@
             <summary>
             SQLite implementation of <see cref="T:System.Data.Common.DbProviderFactory" />.
             </summary>
-            <summary>
-            SQLite implementation of <see cref="T:System.IServiceProvider" />.
-            </summary>
         </member>
         <member name="M:System.Data.SQLite.SQLiteFactory.#ctor">
             <summary>
@@ -10017,25 +10009,6 @@
             Creates and returns a new <see cref="T:System.Data.SQLite.SQLiteParameter" /> object.
             </summary>
             <returns>The new object.</returns>
-        </member>
-        <member name="M:System.Data.SQLite.SQLiteFactory.PreInitialize">
-            <summary>
-            This method is called to perform preliminary static initialization
-            necessary for this class.
-            </summary>
-        </member>
-        <member name="M:System.Data.SQLite.SQLiteFactory.InitializeDbProviderServices">
-            <summary>
-            This method is called to perform some of the static initialization
-            necessary for this class.
-            </summary>
-        </member>
-        <member name="M:System.Data.SQLite.SQLiteFactory.System#IServiceProvider#GetService(System.Type)">
-            <summary>
-            Will provide a <see cref="T:System.IServiceProvider" /> object in .NET 3.5.
-            </summary>
-            <param name="serviceType">The class or interface type to query for.</param>
-            <returns></returns>
         </member>
         <member name="T:System.Data.SQLite.SQLiteFunctionFlags">
             <summary>

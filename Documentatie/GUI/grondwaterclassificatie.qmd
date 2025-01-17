@@ -1,0 +1,45 @@
+---
+title: "Classificeren van initiële grondwaterstanden"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+Een essentiële stochast is de initiële vullingsgraad van de bodem. Om deze stochast goed te kunnen classificeren hebben we een meerjarige simulatie met het neerslag-afvoermodel nodig. De Nieuwe Stochastentool is ontworpen om uit die tijdreeksen de begintoestand voor neerslaggebeurtenissen te halen.
+
+
+
+::: {.grid}
+::: {.g-col-6}
+De tool is te vinden onder het menu Tools - Grondwater classificeren. Momenteel is er keuze tussen SOBEK, D-Hydro en HBV. Er verschijnt dan een nieuw formulier.
+
+* Klik op de button '..' achter Project en blader naar de map met de modelschematisatie
+* Kies in de dropdown-list de naam van de case
+* Gebruik de +-button om klassen toe te voegen, geef ze een naam, en ondergrens-percentiel en een bovengrens-percentiel.
+* Kies de buiduur voor de onderhavige stochastenanalyse
+* Geef optioneel aan of er een bepaald aantal tijdstappen minimaal tussen twee events moet zitten
+* Kies de seizoenen waarnaar geclassificeerd moet worden
+* Druk op de button 'Classificeer' om het proces te starten
+* Blader naar de gewenste resultatenmap
+:::
+::: {.g-col-6}
+
+![Grondwater classificeren.](../img/frmGrondwaterClassificatie1.png)
+
+![De tool voor het classificeren van grondwater tot stochast.](../img/frmGrondwaterClassificatie2.png)
+
+:::
+:::
+
+
+
+::: {.callout-important}
+De percentielwaarden moeten van 0 en 1 liggen en de klassen moeten op elkaar aansluiten.
+:::
+
+
+
+
+
+
+
+

@@ -1124,17 +1124,21 @@ Public Class clsStochastenAnalyse
             myCase.RRResults.UPFLODT.OpenFile()
 
             'first read the groundwater levels
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading groundwater levels...", 0, 10, True)
             myPar = myCase.RRResults.UPFLODT.getParName("Groundw.Level")
             For ts = 0 To TimeSteps.Count - 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", ts, TimeSteps.Count)
                 myDate = Dates(TimeSteps(ts))
                 myGroundwaterLevel = myCase.RRResults.UPFLODT.ReadTimeStep(myDate, myPar)
                 myGroundwaterLevels.Add(myGroundwaterLevel)
             Next
 
             'now read the seepage values, if required
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Reading seepage...", 0, 10, True)
             If IncludeSeepage Then
                 myPar = myCase.RRResults.UPFLODT.getParName("Seepage")
                 For ts = 0 To TimeSteps.Count - 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", ts, TimeSteps.Count)
                     myDate = Dates(TimeSteps(ts))
                     mySeepageValue = myCase.RRResults.UPFLODT.ReadTimeStep(myDate, myPar)
                     mySeepageValues.Add(mySeepageValue)
@@ -1142,6 +1146,7 @@ Public Class clsStochastenAnalyse
             End If
 
             myCase.RRResults.UPFLODT.Close()
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Data successfully read.", 0, 10, True)
 
             'now walk through all rows of the classification datagridview to decide which percentile we'll use
             For Each myRow As DataGridViewRow In myDataGrid.Rows
@@ -1162,13 +1167,16 @@ Public Class clsStochastenAnalyse
                 'now that we have the starting time index numbers for the POT-events, we can get the groundwater levels from the starting times for each event
                 For Each upRecord In myCase.RRData.Unpaved3B.Records.Values
 
-                    Debug.Print("Processing unpaved record " & upRecord.ID)
+                    'Debug.Print("Processing unpaved record " & upRecord.ID)
 
                     sepRecord = New clsUnpavedSEPRecord(Me.Setup)
                     sepRecord.ID = upRecord.SP
                     sepRecord.nm = upRecord.SP
                     sepRecord.co = 1
                     sepRecord.ss = 0
+
+                    'make sure seepage record not already processed in another unpaved node
+                    If Not myCase.RRData.UnpavedSep.Records.ContainsKey(sepRecord.ID.Trim.ToUpper) Then Continue For
                     myCase.RRData.UnpavedSep.Records.Add(sepRecord.ID.Trim.ToUpper, sepRecord)
 
                     j += 1

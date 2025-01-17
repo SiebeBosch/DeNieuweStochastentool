@@ -80,6 +80,7 @@ Partial Class frmStochasten
         Me.BetafunctiesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LeesMATFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.TestGebiedsreductieToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.TestNetCDFFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tabStochastentool = New System.Windows.Forms.TabControl()
         Me.tabSettings = New System.Windows.Forms.TabPage()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
@@ -301,7 +302,8 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.TestNetCDFFileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.Label25 = New System.Windows.Forms.Label()
+        Me.txtMaxWaitTimeHours = New System.Windows.Forms.TextBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -453,20 +455,20 @@ Partial Class frmStochasten
         'ImporterenToolStripMenuItem1
         '
         Me.ImporterenToolStripMenuItem1.Name = "ImporterenToolStripMenuItem1"
-        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
+        Me.ImporterenToolStripMenuItem1.Size = New System.Drawing.Size(208, 26)
         Me.ImporterenToolStripMenuItem1.Text = "Importeren"
         '
         'AlleVerwijderenToolStripMenuItem
         '
         Me.AlleVerwijderenToolStripMenuItem.Name = "AlleVerwijderenToolStripMenuItem"
-        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.AlleVerwijderenToolStripMenuItem.Size = New System.Drawing.Size(208, 26)
         Me.AlleVerwijderenToolStripMenuItem.Text = "Verwijderen"
         '
         'VoorgedefinieerdToolStripMenuItem
         '
         Me.VoorgedefinieerdToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SumaquasHertogenboschToolStripMenuItem})
         Me.VoorgedefinieerdToolStripMenuItem.Name = "VoorgedefinieerdToolStripMenuItem"
-        Me.VoorgedefinieerdToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.VoorgedefinieerdToolStripMenuItem.Size = New System.Drawing.Size(208, 26)
         Me.VoorgedefinieerdToolStripMenuItem.Text = "Voorgedefinieerd"
         '
         'SumaquasHertogenboschToolStripMenuItem
@@ -732,6 +734,12 @@ Partial Class frmStochasten
         Me.TestGebiedsreductieToolStripMenuItem.Size = New System.Drawing.Size(229, 26)
         Me.TestGebiedsreductieToolStripMenuItem.Text = "Test gebiedsreductie"
         '
+        'TestNetCDFFileToolStripMenuItem
+        '
+        Me.TestNetCDFFileToolStripMenuItem.Name = "TestNetCDFFileToolStripMenuItem"
+        Me.TestNetCDFFileToolStripMenuItem.Size = New System.Drawing.Size(229, 26)
+        Me.TestNetCDFFileToolStripMenuItem.Text = "Test NetCDF file"
+        '
         'tabStochastentool
         '
         Me.tabStochastentool.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
@@ -778,11 +786,11 @@ Partial Class frmStochasten
         Me.GroupBox1.Controls.Add(Me.hlpOutput2)
         Me.GroupBox1.Controls.Add(Me.chk2D)
         Me.GroupBox1.Controls.Add(Me.chk1D)
-        Me.GroupBox1.Location = New System.Drawing.Point(701, 466)
+        Me.GroupBox1.Location = New System.Drawing.Point(701, 491)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.GroupBox1.Size = New System.Drawing.Size(328, 113)
+        Me.GroupBox1.Size = New System.Drawing.Size(328, 88)
         Me.GroupBox1.TabIndex = 41
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Output"
@@ -802,7 +810,7 @@ Partial Class frmStochasten
         'chk2D
         '
         Me.chk2D.AutoSize = True
-        Me.chk2D.Location = New System.Drawing.Point(20, 62)
+        Me.chk2D.Location = New System.Drawing.Point(15, 55)
         Me.chk2D.Margin = New System.Windows.Forms.Padding(4)
         Me.chk2D.Name = "chk2D"
         Me.chk2D.Size = New System.Drawing.Size(107, 20)
@@ -815,7 +823,7 @@ Partial Class frmStochasten
         Me.chk1D.AutoSize = True
         Me.chk1D.Checked = True
         Me.chk1D.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chk1D.Location = New System.Drawing.Point(20, 34)
+        Me.chk1D.Location = New System.Drawing.Point(15, 27)
         Me.chk1D.Margin = New System.Windows.Forms.Padding(4)
         Me.chk1D.Name = "chk1D"
         Me.chk1D.Size = New System.Drawing.Size(107, 20)
@@ -986,6 +994,8 @@ Partial Class frmStochasten
         Me.grBerekeningen.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.grBerekeningen.AutoSize = True
+        Me.grBerekeningen.Controls.Add(Me.txtMaxWaitTimeHours)
+        Me.grBerekeningen.Controls.Add(Me.Label25)
         Me.grBerekeningen.Controls.Add(Me.hlpBerekeningen2)
         Me.grBerekeningen.Controls.Add(Me.Label2)
         Me.grBerekeningen.Controls.Add(Me.txtUitloop)
@@ -997,7 +1007,7 @@ Partial Class frmStochasten
         Me.grBerekeningen.Margin = New System.Windows.Forms.Padding(4)
         Me.grBerekeningen.Name = "grBerekeningen"
         Me.grBerekeningen.Padding = New System.Windows.Forms.Padding(4)
-        Me.grBerekeningen.Size = New System.Drawing.Size(328, 148)
+        Me.grBerekeningen.Size = New System.Drawing.Size(328, 171)
         Me.grBerekeningen.TabIndex = 38
         Me.grBerekeningen.TabStop = False
         Me.grBerekeningen.Text = "Berekeningen"
@@ -1017,7 +1027,7 @@ Partial Class frmStochasten
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(12, 66)
+        Me.Label2.Location = New System.Drawing.Point(12, 64)
         Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(143, 16)
@@ -1027,7 +1037,7 @@ Partial Class frmStochasten
         'txtUitloop
         '
         Me.txtUitloop.Enabled = False
-        Me.txtUitloop.Location = New System.Drawing.Point(193, 63)
+        Me.txtUitloop.Location = New System.Drawing.Point(193, 62)
         Me.txtUitloop.Margin = New System.Windows.Forms.Padding(4)
         Me.txtUitloop.Name = "txtUitloop"
         Me.txtUitloop.Size = New System.Drawing.Size(73, 22)
@@ -1037,7 +1047,7 @@ Partial Class frmStochasten
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 33)
+        Me.Label1.Location = New System.Drawing.Point(15, 33)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(126, 16)
@@ -1047,7 +1057,7 @@ Partial Class frmStochasten
         'cmbDuration
         '
         Me.cmbDuration.FormattingEnabled = True
-        Me.cmbDuration.Location = New System.Drawing.Point(193, 33)
+        Me.cmbDuration.Location = New System.Drawing.Point(193, 29)
         Me.cmbDuration.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbDuration.Name = "cmbDuration"
         Me.cmbDuration.Size = New System.Drawing.Size(73, 24)
@@ -1056,7 +1066,7 @@ Partial Class frmStochasten
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 98)
+        Me.Label4.Location = New System.Drawing.Point(12, 95)
         Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(150, 16)
@@ -1065,7 +1075,7 @@ Partial Class frmStochasten
         '
         'txtMaxParallel
         '
-        Me.txtMaxParallel.Location = New System.Drawing.Point(193, 95)
+        Me.txtMaxParallel.Location = New System.Drawing.Point(193, 93)
         Me.txtMaxParallel.Margin = New System.Windows.Forms.Padding(4)
         Me.txtMaxParallel.Name = "txtMaxParallel"
         Me.txtMaxParallel.Size = New System.Drawing.Size(73, 22)
@@ -3176,11 +3186,24 @@ Partial Class frmStochasten
         Me.prProgress.Size = New System.Drawing.Size(1675, 28)
         Me.prProgress.TabIndex = 24
         '
-        'TestNetCDFFileToolStripMenuItem
+        'Label25
         '
-        Me.TestNetCDFFileToolStripMenuItem.Name = "TestNetCDFFileToolStripMenuItem"
-        Me.TestNetCDFFileToolStripMenuItem.Size = New System.Drawing.Size(229, 26)
-        Me.TestNetCDFFileToolStripMenuItem.Text = "Test NetCDF file"
+        Me.Label25.AutoSize = True
+        Me.Label25.Location = New System.Drawing.Point(12, 126)
+        Me.Label25.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label25.Name = "Label25"
+        Me.Label25.Size = New System.Drawing.Size(159, 16)
+        Me.Label25.TabIndex = 73
+        Me.Label25.Text = "Maximale wachttijd (uren):"
+        '
+        'txtMaxWaitTimeHours
+        '
+        Me.txtMaxWaitTimeHours.Location = New System.Drawing.Point(193, 124)
+        Me.txtMaxWaitTimeHours.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtMaxWaitTimeHours.Name = "txtMaxWaitTimeHours"
+        Me.txtMaxWaitTimeHours.Size = New System.Drawing.Size(73, 22)
+        Me.txtMaxWaitTimeHours.TabIndex = 74
+        Me.txtMaxWaitTimeHours.Text = "1"
         '
         'frmStochasten
         '
@@ -3569,4 +3592,6 @@ Partial Class frmStochasten
     Friend WithEvents NeerslagpatronenkansUitCSVToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TestGebiedsreductieToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TestNetCDFFileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents txtMaxWaitTimeHours As TextBox
+    Friend WithEvents Label25 As Label
 End Class

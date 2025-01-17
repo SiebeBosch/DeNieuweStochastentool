@@ -802,6 +802,8 @@ Public Class frmStochasten
                         Setup.GeneralFunctions.readXMLAttributeBOOL(n_node, "Flow2D", chk2D.Checked)
                     ElseIf n_node.Name.Trim.ToLower = "maxparallel" Then
                         txtMaxParallel.Text = n_node.InnerText
+                    ElseIf n_node.Name.Trim.ToLower = "maxwaittimehours" Then
+                        txtMaxWaitTimeHours.Text = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "klimaatscenario" Then
                         Klimaatscenario = n_node.InnerText
                     ElseIf n_node.Name.Trim.ToLower = "duur" Then
@@ -4724,6 +4726,7 @@ Public Class frmStochasten
                 Me.Setup.GeneralFunctions.writeXMLElementWithAttributes(xmlWriter, "resultatenmodules", 4, myList, myVals)
 
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxparallel", txtMaxParallel.Text, 4)
+                Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "maxwaittimehours", txtMaxWaitTimeHours.Text, 1)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "klimaatscenario", cmbClimate.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "duur", cmbDuration.Text, 4)
                 Me.Setup.GeneralFunctions.writeXMLElement(xmlWriter, "uitloop", txtUitloop.Text, 4)
@@ -5432,7 +5435,8 @@ Public Class frmStochasten
                 ' Assuming arg1 and arg2 are your internal variables
                 Dim arg1 As String = myModel.TempWorkDir & "\simulations.json"
                 Dim arg2 As Integer = Me.Setup.GeneralFunctions.ForceNumeric(txtMaxParallel.Text, "Maximum number of simultaneous computations", 4, enmMessageType.Message)
-                Dim arguments As String = arg1 & " " & arg2
+                Dim arg3 As Integer = Me.Setup.GeneralFunctions.ForceNumeric(txtMaxWaitTimeHours.Text, "maximum wait time per simulation (hours)", 1, enmMessageType.Message)
+                Dim arguments As String = arg1 & " " & arg2 & " " & arg3
                 Process.Start(batRunrPath, arguments)
             Next
         Catch ex As Exception

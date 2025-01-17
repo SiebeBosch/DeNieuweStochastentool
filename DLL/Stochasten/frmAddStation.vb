@@ -28,6 +28,7 @@ Public Class frmAddMeteoStation
     Private Sub btnOk_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnOk.Click
         naam = txtName.Text
         soort = cmbMeteoSoort.Text
+        gebiedsreductie = DirectCast([Enum].Parse(GetType(STOCHLIB.GeneralFunctions.enmGebiedsreductie), cmbGebiedsreductie.Text), STOCHLIB.GeneralFunctions.enmGebiedsreductie)
         ARF = txtARF.Text
         oppervlak = txtOppervlak.Text
     End Sub
