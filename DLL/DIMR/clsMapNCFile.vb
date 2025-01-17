@@ -57,7 +57,8 @@ Public Class clsMapNCFile
             'Dim StationID As Integer
             'Dim i As Integer
 
-            Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
+            'Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
+            Dim dataset = sds.DataSet.Open(Path)
             Dim myDataset As sds.DataSet() = dataset.GetLinkedDataSets
             Dim myDimensions As sds.ReadOnlyDimensionList = dataset.Dimensions
             Dim myVariables As sds.ReadOnlyVariableCollection = dataset.Variables

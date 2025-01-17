@@ -71,7 +71,8 @@ Public Class clsNetworkFile
                 Me.Setup.Log.AddMessage("FlowFM Network file found: " & Path)
             End If
 
-            DataSet = Microsoft.Research.Science.Data.DataSet.Open(Path & "?openMode=readOnly")
+            'DataSet = Microsoft.Research.Science.Data.DataSet.Open(Path & "?openMode=readOnly")
+            DataSet = Microsoft.Research.Science.Data.DataSet.Open(Path)
             Me.Setup.Log.AddMessage("FlowFM networkfile successfully opened: " & Path)
 
             myDatasets = DataSet.GetLinkedDataSets

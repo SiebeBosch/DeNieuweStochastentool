@@ -76,3 +76,6 @@ C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\Debug\DIMR_RUNR.vbproj.Up2Date
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\Debug\DIMR_RUNR.exe
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\Debug\DIMR_RUNR.xml
 C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\obj\Debug\DIMR_RUNR.pdb
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\Debug\MathNet.Numerics.dll
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\Debug\ScientificDataSet.pdb
+C:\GITHUB\DeNieuweStochastentool\DIMR_RUNR\bin\Debug\MathNet.Numerics.xml

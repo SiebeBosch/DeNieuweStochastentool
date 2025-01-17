@@ -361,8 +361,7 @@ ul.task-list li input[type="checkbox"] {
   <ul class="collapse">
   <li><a href="#kopiëren" id="toc-kopiëren" class="nav-link" data-scroll-target="#kopiëren">Kopiëren</a></li>
   </ul></li>
-  <li><a href="#uitlezen" id="toc-uitlezen" class="nav-link" data-scroll-target="#uitlezen">Uitlezen</a></li>
-  <li><a href="#nabewerken" id="toc-nabewerken" class="nav-link" data-scroll-target="#nabewerken">Nabewerken</a></li>
+  <li><a href="#uitlezen-en-nabewerken" id="toc-uitlezen-en-nabewerken" class="nav-link" data-scroll-target="#uitlezen-en-nabewerken">Uitlezen en nabewerken</a></li>
   </ul>
 </nav>
     </div>
@@ -389,7 +388,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="g-col-6">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../img/frmQuickstart15.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="De simulaties zijn gekopieerd."><img src="../img/frmQuickstart15.png" class="img-fluid figure-img" alt="De simulaties zijn gekopieerd."></a></p>
+<p><a href="../img/frmQuickstart15.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="De simulaties zijn gekopieerd."><img src="../img/frmQuickstart15.png" class="img-fluid figure-img" alt="De simulaties zijn gekopieerd."></a></p>
 <figcaption>De simulaties zijn gekopieerd.</figcaption>
 </figure>
 </div>
@@ -410,28 +409,15 @@ Belangrijk
 </div>
 </section>
 </section>
-<section id="uitlezen" class="level1">
-<h1>Uitlezen</h1>
-<p>De volgende stap is het uitlezen van de resultaatbestanden. In deze stap wordt per simulatie de maximale waterstand voor elk van de uitvoerlocaties weggeschreven naar de database. In geval van 2D worden de maximale waterdieptes weggeschreven naar een CSV-bestand.</p>
+<section id="uitlezen-en-nabewerken" class="level1">
+<h1>Uitlezen en nabewerken</h1>
+<p>De volgende stap is het uitlezen van de resultaatbestanden. In deze stap wordt per simulatie de maximale waterstand voor elk van de uitvoerlocaties weggeschreven naar de database (tabel RESULTATEN). In geval van 2D worden de maximale waterdieptes weggeschreven naar een CSV-bestand. Als de resultaten zijn uitgelezen kunnen ze verder worden nabewerkt tot overschrijdingstabellen. Ook deze resultaten worden (1D) weggeschreven naar de database (tabel HERHALINGSTIJDEN) en in het geval van 2D naar csv-bestanden.</p>
 <div class="grid">
 <div class="g-col-6">
 <ul>
 <li>Selecteer op het tabblad ‘simulaties’ de rijen van de simulaties waarvoor u de resultaten wilt uitlezen. Let op: het vinkje ‘DONE’ moet aangevinkt zijn. Dit betekent dat het resultaatbestand beschikbaar is.</li>
-<li>Klik ‘Uitlezen’</li>
-</ul>
-</div>
-<div class="g-col-6">
-
-</div>
-</div>
-</section>
-<section id="nabewerken" class="level1">
-<h1>Nabewerken</h1>
-<div class="grid">
-<div class="g-col-6">
-<p>De uitgelezen waterhoogtes moeten nu worden verwerkt tot overschrijdingstabellen.</p>
-<ul>
-<li>Klik ‘Nabewerken’</li>
+<li>Klik op de button ‘Uitlezen’</li>
+<li>Klik op de button ‘Nabewerken’</li>
 </ul>
 </div>
 <div class="g-col-6">
@@ -834,7 +820,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"fade","closeEffect":"fade","selector":".lightbox","loop":false,"descPosition":"right"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"fade","closeEffect":"fade","descPosition":"right","loop":false});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

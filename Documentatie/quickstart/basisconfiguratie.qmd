@@ -1,6 +1,6 @@
 # Basisconfiguratie
 
-Voor een snelle start kunt u onder [deze link](https://www.dropbox.com/scl/fi/kyljdnyel1ygbxevbaktl/QUICKSTART.ZIP?rlkey=1wf4efnj5l4la1g1l47fn3jr0&dl=0) een basisconfiguratie van De Nieuwe Stochastentool vinden.
+Voor een snelle start kunt u onder [deze link](https://www.dropbox.com/scl/fi/kyljdnyel1ygbxevbaktl/QUICKSTART.ZIP?rlkey=1wf4efnj5l4la1g1l47fn3jr0&dl=0) een basisconfiguratie voor De Nieuwe Stochastentool vinden.
 
 
 ## Configuratie inladen

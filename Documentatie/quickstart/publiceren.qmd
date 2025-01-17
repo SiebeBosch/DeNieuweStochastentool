@@ -10,17 +10,34 @@ Het resultaat van een stochastenanalyse kan op twee manieren worden gepubliceerd
 
 ::: {.grid}
 ::: {.g-col-6}
+* Klik op de button 'Publiceren'
+* Er verschijnt een nieuw scherm. Kies hierin de optie 'In een nieuwe webviewer' en geef de configuratie een naam.
+* Selecteer de parameter die in de webviewer getoond gaat worden: Water level
+* Klik op 'Publiceren' om de export te starten
+* Blader naar de map waar de viewer moet worden weggeschreven
+* De webviewer wordt automatisch geopend in de browser
+* Klik op de resultaatlocaties in de webviewer om overschrijdingsgrafiek te bekijken.
 :::
 ::: {.g-col-6}
+
+![Publiceren van de resultaten naar de webviewer.](../img/frmQuickstart17.png)
+
 :::
 :::
 
-## Optie 2: publiceren in Excel en CSV
+![In de browser wordt automatisch de viewer getoond.](../img/frmQuickstart18.png)
+
+
+## Optie 2: publiceren in Excel
 
 ::: {.grid}
 ::: {.g-col-6}
+* Klik op de button 'Exporteren'
+* Het Excel-document wordt automatisch weggeschreven naar de resultatenmap zoals gespecificeerd op het tabblad 'Algemeen'
+* De logfile wordt getoond en het Excel-bestand wordt automatisch geopend
 :::
 ::: {.g-col-6}
+![Excel-document met daarin de overschrijdingstabellen.](../img/frmQuickstart19.png)
 
 :::
 :::

@@ -123,7 +123,7 @@
     "href": "quickstart/basisconfiguratie.html",
     "title": "Basisconfiguratie",
     "section": "",
-    "text": "Voor een snelle start kunt u onder deze link een basisconfiguratie van De Nieuwe Stochastentool vinden.\n\n\n\n\nDe configuratie bestaat uit een XML-file en een SQLite-database (.db). Laad deze als volgt in:\n\nPak de zipfile met de XML-file en de database uit en zet beide bestanden naast elkaar in de gewenste map.\nNa de installatie van het programma vindt u De Nieuwe Stochastentool in het startmenu van Windows.\nOpen de configuratie via het menu ‘Bestand’ - ‘XML openen’\n\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\n\n\n\n\n\n\n\n\n\nEr moet minstens één neerslagstation worden aangemaakt.\n\nKlik in de sectie ‘Meteo’ op het plusje.\nGeef in het scherm wat verschijnt de naam op van het nieuwe station\nselecteer type ‘neerslag’\nSelecteer Methode gebiedsreductie ‘constante’ met een waarde van 1.\nHet gebiedsoppervlak doet in deze setting niet ter zake\n\n\n\n\n\n\nAanmaken van een neerslagstation.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nNeerslagstations moeten een naam krijgen die identiek is aan de stations die de modelschematisatie verwacht.\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\nAanmaken van een neerslagstation.",
+    "text": "Voor een snelle start kunt u onder deze link een basisconfiguratie voor De Nieuwe Stochastentool vinden.\n\n\n\n\nDe configuratie bestaat uit een XML-file en een SQLite-database (.db). Laad deze als volgt in:\n\nPak de zipfile met de XML-file en de database uit en zet beide bestanden naast elkaar in de gewenste map.\nNa de installatie van het programma vindt u De Nieuwe Stochastentool in het startmenu van Windows.\nOpen de configuratie via het menu ‘Bestand’ - ‘XML openen’\n\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\n\n\n\n\n\n\n\n\n\nEr moet minstens één neerslagstation worden aangemaakt.\n\nKlik in de sectie ‘Meteo’ op het plusje.\nGeef in het scherm wat verschijnt de naam op van het nieuwe station\nselecteer type ‘neerslag’\nSelecteer Methode gebiedsreductie ‘constante’ met een waarde van 1.\nHet gebiedsoppervlak doet in deze setting niet ter zake\n\n\n\n\n\n\nAanmaken van een neerslagstation.\n\n\n\n\n\n\n\n\n\n\nBelangrijk\n\n\n\nNeerslagstations moeten een naam krijgen die identiek is aan de stations die de modelschematisatie verwacht.\n\n\n\n\n\nHet opstartscherm van De Nieuwe Stochastentool na het inladen van de basisconfiguratie (klik voor groot).\nAanmaken van een neerslagstation.",
     "crumbs": [
       "Tutorial",
       "Snelstart",
@@ -775,7 +775,7 @@
     "href": "quickstart/inleiding.html",
     "title": "Snelstart",
     "section": "",
-    "text": "Snelstart\nDit hoofdstuk is bedoeld om u zo snel mogelijk op weg te helpen met De Nieuwe Stochastentool.\nDe stappen zijn:\n\nBegin met de basisconfiguratie (xml) en database (.db)\nVoeg een modelschematisatie toe en specificeer de benodigde resultaatbestanden\nMaak een neerslagstation aan\nKies de stochast ‘seizoen’\nKies de stochast ‘neerslagvolume’\nKies de stochast ‘neerslagpatroon’",
+    "text": "Snelstart\nDit hoofdstuk is bedoeld om u zo snel mogelijk op weg te helpen met De Nieuwe Stochastentool.\nDe stappen zijn:\n\nBegin met de basisconfiguratie (xml) en database (.db) en voeg een neerslagstation toe.\nVoeg een modelschematisatie toe en specificeer de benodigde resultaatbestanden\nConfigureer de stochast seizoen\nConfigureer de stochast neerslagvolume\nConfigureer de stochast neerslagpatroon\nBereid de simulaties voor\nVoer de simulaties uit\nBewerk de resultaten na\nPubliceer de uitkomsten",
     "crumbs": [
       "Tutorial",
       "Snelstart",
@@ -811,7 +811,31 @@
     "href": "quickstart/publiceren.html",
     "title": "Publiceren",
     "section": "",
-    "text": "Het resultaat van een stochastenanalyse kan op twee manieren worden gepubliceerd:\n\nIn de interactieve webviewer\nIn Excel en csv-bestanden",
+    "text": "Het resultaat van een stochastenanalyse kan op twee manieren worden gepubliceerd:\n\nIn de interactieve webviewer\nIn Excel en csv-bestanden\n\n\n\n\n\n\nKlik op de button ‘Publiceren’\nEr verschijnt een nieuw scherm. Kies hierin de optie ‘In een nieuwe webviewer’ en geef de configuratie een naam.\nSelecteer de parameter die in de webviewer getoond gaat worden: Water level\nKlik op ‘Publiceren’ om de export te starten\nBlader naar de map waar de viewer moet worden weggeschreven\nDe webviewer wordt automatisch geopend in de browser\nKlik op de resultaatlocaties in de webviewer om overschrijdingsgrafiek te bekijken.\n\n\n\n\n\n\nPubliceren van de resultaten naar de webviewer.\n\n\n\n\n\n\n\nIn de browser wordt automatisch de viewer getoond.\n\n\n\n\n\n\n\n\nKlik op de button ‘Exporteren’\nHet Excel-document wordt automatisch weggeschreven naar de resultatenmap zoals gespecificeerd op het tabblad ‘Algemeen’\nDe logfile wordt getoond en het Excel-bestand wordt automatisch geopend\n\n\n\n\n\n\nExcel-document met daarin de overschrijdingstabellen.\n\n\n\n\n\n\n\nPubliceren van de resultaten naar de webviewer.\nIn de browser wordt automatisch de viewer getoond.\nExcel-document met daarin de overschrijdingstabellen.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Resultaat publiceren"
+    ]
+  },
+  {
+    "objectID": "quickstart/publiceren.html#optie-1-publiceren-in-de-webviewer",
+    "href": "quickstart/publiceren.html#optie-1-publiceren-in-de-webviewer",
+    "title": "Publiceren",
+    "section": "",
+    "text": "Klik op de button ‘Publiceren’\nEr verschijnt een nieuw scherm. Kies hierin de optie ‘In een nieuwe webviewer’ en geef de configuratie een naam.\nSelecteer de parameter die in de webviewer getoond gaat worden: Water level\nKlik op ‘Publiceren’ om de export te starten\nBlader naar de map waar de viewer moet worden weggeschreven\nDe webviewer wordt automatisch geopend in de browser\nKlik op de resultaatlocaties in de webviewer om overschrijdingsgrafiek te bekijken.\n\n\n\n\n\n\nPubliceren van de resultaten naar de webviewer.\n\n\n\n\n\n\n\nIn de browser wordt automatisch de viewer getoond.",
+    "crumbs": [
+      "Tutorial",
+      "Snelstart",
+      "Resultaat publiceren"
+    ]
+  },
+  {
+    "objectID": "quickstart/publiceren.html#optie-2-publiceren-in-excel",
+    "href": "quickstart/publiceren.html#optie-2-publiceren-in-excel",
+    "title": "Publiceren",
+    "section": "",
+    "text": "Klik op de button ‘Exporteren’\nHet Excel-document wordt automatisch weggeschreven naar de resultatenmap zoals gespecificeerd op het tabblad ‘Algemeen’\nDe logfile wordt getoond en het Excel-bestand wordt automatisch geopend\n\n\n\n\n\n\nExcel-document met daarin de overschrijdingstabellen.\n\n\n\n\n\n\n\nPubliceren van de resultaten naar de webviewer.\nIn de browser wordt automatisch de viewer getoond.\nExcel-document met daarin de overschrijdingstabellen.",
     "crumbs": [
       "Tutorial",
       "Snelstart",

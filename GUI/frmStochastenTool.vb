@@ -5334,7 +5334,8 @@ Public Class frmStochasten
             res = dlgOpenFile.ShowDialog()
             If res = DialogResult.OK Then
                 Dim myDataset As Microsoft.Research.Science.Data.DataSet
-                myDataset = Microsoft.Research.Science.Data.DataSet.Open(dlgOpenFile.FileName & "?openMode=readOnly")
+                myDataset = Microsoft.Research.Science.Data.DataSet.Open(dlgOpenFile.FileName)
+                'myDataset = Microsoft.Research.Science.Data.DataSet.Open(dlgOpenFile.FileName & "?openMode=readOnly")
             End If
             MsgBox("FlowFM networkfile successfully opened: " & dlgOpenFile.FileName)
         Catch ex As Exception

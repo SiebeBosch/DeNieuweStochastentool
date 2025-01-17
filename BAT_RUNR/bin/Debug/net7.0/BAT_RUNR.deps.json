@@ -1,0 +1,143 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "BAT_RUNR/1.0.0": {
+        "dependencies": {
+          "STOCHLIB": "1.0.0"
+        },
+        "runtime": {
+          "BAT_RUNR.dll": {}
+        }
+      },
+      "STOCHLIB/1.0.0": {
+        "runtime": {
+          "STOCHLIB.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "2.4.0.0"
+          }
+        }
+      },
+      "ScientificDataSet/0.0.0.0": {
+        "runtime": {
+          "ScientificDataSet.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "System.Data.SQLite/1.0.117.0": {
+        "runtime": {
+          "System.Data.SQLite.dll": {
+            "assemblyVersion": "1.0.117.0",
+            "fileVersion": "1.0.117.0"
+          }
+        }
+      },
+      "GemBox.Spreadsheet/37.3.30.1069": {
+        "runtime": {
+          "GemBox.Spreadsheet.dll": {
+            "assemblyVersion": "37.3.30.1069",
+            "fileVersion": "37.3.30.1069"
+          }
+        }
+      },
+      "alglibnet2/0.0.0.0": {
+        "runtime": {
+          "alglibnet2.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "HtmlAgilityPack/1.11.43.0": {
+        "runtime": {
+          "HtmlAgilityPack.dll": {
+            "assemblyVersion": "1.11.43.0",
+            "fileVersion": "1.11.43.0"
+          }
+        }
+      },
+      "MathNet.Numerics/5.0.0.0": {
+        "runtime": {
+          "MathNet.Numerics.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "MatFileHandler/1.0.0.0": {
+        "runtime": {
+          "MatFileHandler.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.0.0": {
+        "runtime": {
+          "Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.1.25517"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BAT_RUNR/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "STOCHLIB/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ScientificDataSet/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "System.Data.SQLite/1.0.117.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GemBox.Spreadsheet/37.3.30.1069": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "alglibnet2/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HtmlAgilityPack/1.11.43.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MathNet.Numerics/5.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MatFileHandler/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json/13.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

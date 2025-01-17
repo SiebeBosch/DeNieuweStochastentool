@@ -39,6 +39,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -357,7 +360,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#publiceren" id="toc-publiceren" class="nav-link active" data-scroll-target="#publiceren">Publiceren</a>
   <ul class="collapse">
   <li><a href="#optie-1-publiceren-in-de-webviewer" id="toc-optie-1-publiceren-in-de-webviewer" class="nav-link" data-scroll-target="#optie-1-publiceren-in-de-webviewer">Optie 1: publiceren in de webviewer</a></li>
-  <li><a href="#optie-2-publiceren-in-excel-en-csv" id="toc-optie-2-publiceren-in-excel-en-csv" class="nav-link" data-scroll-target="#optie-2-publiceren-in-excel-en-csv">Optie 2: publiceren in Excel en CSV</a></li>
+  <li><a href="#optie-2-publiceren-in-excel" id="toc-optie-2-publiceren-in-excel" class="nav-link" data-scroll-target="#optie-2-publiceren-in-excel">Optie 2: publiceren in Excel</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -379,25 +382,58 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="optie-1-publiceren-in-de-webviewer">Optie 1: publiceren in de webviewer</h2>
 <div class="grid">
 <div class="g-col-6">
-
+<ul>
+<li>Klik op de button ‘Publiceren’</li>
+<li>Er verschijnt een nieuw scherm. Kies hierin de optie ‘In een nieuwe webviewer’ en geef de configuratie een naam.</li>
+<li>Selecteer de parameter die in de webviewer getoond gaat worden: Water level</li>
+<li>Klik op ‘Publiceren’ om de export te starten</li>
+<li>Blader naar de map waar de viewer moet worden weggeschreven</li>
+<li>De webviewer wordt automatisch geopend in de browser</li>
+<li>Klik op de resultaatlocaties in de webviewer om overschrijdingsgrafiek te bekijken.</li>
+</ul>
 </div>
 <div class="g-col-6">
-
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../img/frmQuickstart17.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Publiceren van de resultaten naar de webviewer."><img src="../img/frmQuickstart17.png" class="img-fluid figure-img" alt="Publiceren van de resultaten naar de webviewer."></a></p>
+<figcaption>Publiceren van de resultaten naar de webviewer.</figcaption>
+</figure>
 </div>
+</div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../img/frmQuickstart18.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="In de browser wordt automatisch de viewer getoond."><img src="../img/frmQuickstart18.png" class="img-fluid figure-img" alt="In de browser wordt automatisch de viewer getoond."></a></p>
+<figcaption>In de browser wordt automatisch de viewer getoond.</figcaption>
+</figure>
 </div>
 </section>
-<section id="optie-2-publiceren-in-excel-en-csv" class="level2">
-<h2 class="anchored" data-anchor-id="optie-2-publiceren-in-excel-en-csv">Optie 2: publiceren in Excel en CSV</h2>
+<section id="optie-2-publiceren-in-excel" class="level2">
+<h2 class="anchored" data-anchor-id="optie-2-publiceren-in-excel">Optie 2: publiceren in Excel</h2>
 <div class="grid">
 <div class="g-col-6">
-
+<ul>
+<li>Klik op de button ‘Exporteren’</li>
+<li>Het Excel-document wordt automatisch weggeschreven naar de resultatenmap zoals gespecificeerd op het tabblad ‘Algemeen’</li>
+<li>De logfile wordt getoond en het Excel-bestand wordt automatisch geopend</li>
+</ul>
 </div>
 <div class="g-col-6">
-
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../img/frmQuickstart19.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3" title="Excel-document met daarin de overschrijdingstabellen."><img src="../img/frmQuickstart19.png" class="img-fluid figure-img" alt="Excel-document met daarin de overschrijdingstabellen."></a></p>
+<figcaption>Excel-document met daarin de overschrijdingstabellen.</figcaption>
+</figure>
 </div>
 </div>
+</div>
 
 
+<div class="hidden" aria-hidden="true">
+<span class="glightbox-desc lightbox-desc-1">Publiceren van de resultaten naar de webviewer.</span>
+<span class="glightbox-desc lightbox-desc-2">In de browser wordt automatisch de viewer getoond.</span>
+<span class="glightbox-desc lightbox-desc-3">Excel-document met daarin de overschrijdingstabellen.</span>
+</div>
 </section>
 </section>
 
@@ -790,6 +826,31 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"descPosition":"right","selector":".lightbox","loop":false,"closeEffect":"fade","openEffect":"fade"});
+window.onload = () => {
+  lightboxQuarto.on('slide_before_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    const href = trigger.getAttribute('href');
+    if (href !== null) {
+      const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+      if (imgEl !== null) {
+        const srcAttr = imgEl.getAttribute("src");
+        if (srcAttr && srcAttr.startsWith("data:")) {
+          slideConfig.href = srcAttr;
+        }
+      }
+    } 
+  });
+
+  lightboxQuarto.on('slide_after_load', (data) => {
+    const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+    if (window.Quarto?.typesetMath) {
+      window.Quarto.typesetMath(slideNode);
+    }
+  });
+
+};
+          </script>
 
 
 

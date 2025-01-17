@@ -90,7 +90,8 @@ Public Class clsFouNCFile
             ' to do: implement a functionality to read this file and select the correct variable from our Fou.nc file.
 
 
-            Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
+            Dim dataset = sds.DataSet.Open(Path)
+            'Dim dataset = sds.DataSet.Open(Path & "?openMode=readOnly")
             Dim myDataset As sds.DataSet() = dataset.GetLinkedDataSets
             Dim myDimensions As sds.ReadOnlyDimensionList = dataset.Dimensions
             Variables = dataset.Variables

@@ -84,7 +84,8 @@ Public Class clsClassMapFile
             Dim TimeStampsIdx As Integer
 
             'reads a _clm.nc file
-            DataSet = sds.DataSet.Open(Path & "?openMode=readOnly")
+            'DataSet = sds.DataSet.Open(Path & "?openMode=readOnly")
+            DataSet = sds.DataSet.Open(Path)
             DataSets = DataSet.GetLinkedDataSets
 
             Variables = DataSet.Variables
@@ -128,7 +129,8 @@ Public Class clsClassMapFile
             End If
 
             'reads a _clm.nc file
-            DataSet = sds.DataSet.Open(Path & "?openMode=readOnly")
+            DataSet = sds.DataSet.Open(Path)
+            'DataSet = sds.DataSet.Open(Path & "?openMode=readOnly")
             DataSets = DataSet.GetLinkedDataSets
 
             Variables = DataSet.Variables

@@ -23,30 +23,18 @@ Na het simuleren moeten de resultaatbestanden vanuit de tijdelijke werkmap worde
 Voordat we de resultaten statistisch kunnen verwerken tot overschrijdingsgrafieken, moeten de resultaten voor álle simulaties beschikbaar zijn. Maw: DONE moet overal zijn aangevinkt.
 :::
 
-# Uitlezen
+# Uitlezen en nabewerken
 
-De volgende stap is het uitlezen van de resultaatbestanden. In deze stap wordt per simulatie de maximale waterstand voor elk van de uitvoerlocaties weggeschreven naar de database. In geval van 2D worden de maximale waterdieptes weggeschreven naar een CSV-bestand.
-
+De volgende stap is het uitlezen van de resultaatbestanden. In deze stap wordt per simulatie de maximale waterstand voor elk van de uitvoerlocaties weggeschreven naar de database (tabel RESULTATEN). In geval van 2D worden de maximale waterdieptes weggeschreven naar een CSV-bestand. Als de resultaten zijn uitgelezen kunnen ze verder worden nabewerkt tot overschrijdingstabellen. Ook deze resultaten worden (1D) weggeschreven naar de database (tabel HERHALINGSTIJDEN) en in het geval van 2D naar csv-bestanden.
 
 ::: {.grid}
 ::: {.g-col-6}
 * Selecteer op het tabblad 'simulaties' de rijen van de simulaties waarvoor u de resultaten wilt uitlezen. Let op: het vinkje 'DONE' moet aangevinkt zijn. Dit betekent dat het resultaatbestand beschikbaar is.
-* Klik 'Uitlezen'
+* Klik op de button 'Uitlezen'
+* Klik op de button 'Nabewerken'
 :::
 ::: {.g-col-6}
 
 :::
 :::
 
-# Nabewerken
-
-::: {.grid}
-::: {.g-col-6}
-De uitgelezen waterhoogtes moeten nu worden verwerkt tot overschrijdingstabellen.
-
-* Klik 'Nabewerken'
-:::
-::: {.g-col-6}
-
-:::
-:::
