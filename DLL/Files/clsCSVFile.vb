@@ -100,7 +100,7 @@ Public Class clsCSVFile
             Next
             queryStart &= RequiredFields.Keys(RequiredFields.Keys.Count - 1) & ") VALUES ("
 
-            'bulk insert our excedance table
+            'bulk insert our exceedance table
             If Not con.State = ConnectionState.Open Then con.Open()
             Dim myCmd As New SQLite.SQLiteCommand
             myCmd.Connection = con

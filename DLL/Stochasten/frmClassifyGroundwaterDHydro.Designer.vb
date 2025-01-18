@@ -238,7 +238,7 @@ Partial Class frmClassifyGroundwaterDHydro
         '
         'btnGroeiseizoenHelp
         '
-        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Yellow
+        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Gold
         Me.btnGroeiseizoenHelp.Location = New System.Drawing.Point(463, 101)
         Me.btnGroeiseizoenHelp.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.btnGroeiseizoenHelp.Name = "btnGroeiseizoenHelp"
@@ -319,7 +319,7 @@ Partial Class frmClassifyGroundwaterDHydro
         '
         'btnClassify
         '
-        Me.btnClassify.BackColor = System.Drawing.Color.Yellow
+        Me.btnClassify.BackColor = System.Drawing.Color.Gold
         Me.btnClassify.Location = New System.Drawing.Point(980, 392)
         Me.btnClassify.Margin = New System.Windows.Forms.Padding(4)
         Me.btnClassify.Name = "btnClassify"

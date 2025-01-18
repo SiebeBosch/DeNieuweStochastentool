@@ -1,0 +1,26 @@
+---
+title: "Bommelerwaard"
+bibliography: literatuur.bib
+reference-section-title: "Literatuur"
+---
+
+## Inleiding
+Hier beschrijven we een casus met het D-Hydro 1D/2D-model van de Bommelerwaard. Met dit model is door Waterschap Rivierenland zelf, ondersteund door Hydroconsult een hoogwatertoetsing uitgevoerd.
+
+![De modelschematisatie van de Delflandse boezem](img/delfland_model.png "Delfland")
+
+## Kentallen
+
+Gebied
+:   Bommelerwaard, beheergebied Waterschap Rivierenland
+
+Model
+:   D-Hydro met RR, 1D Flow en 2D Flow
+
+
+
+
+
+
+
+

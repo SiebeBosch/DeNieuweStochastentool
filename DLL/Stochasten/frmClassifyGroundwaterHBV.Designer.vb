@@ -49,6 +49,7 @@ Partial Class frmClassifyGroundwaterHBV
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.btnClassify = New System.Windows.Forms.Button()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.btnPercentilesHelp = New System.Windows.Forms.Button()
         Me.grGrondwaterKlassen = New System.Windows.Forms.DataGridView()
         Me.colNaam = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.colPercentiel = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -57,7 +58,6 @@ Partial Class frmClassifyGroundwaterHBV
         Me.btnDeleteGroundwaterClass = New System.Windows.Forms.Button()
         Me.dlgOpenFile = New System.Windows.Forms.OpenFileDialog()
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
-        Me.btnPercentilesHelp = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -340,6 +340,16 @@ Partial Class frmClassifyGroundwaterHBV
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Klassen"
         '
+        'btnPercentilesHelp
+        '
+        Me.btnPercentilesHelp.BackColor = System.Drawing.Color.Gold
+        Me.btnPercentilesHelp.Location = New System.Drawing.Point(497, 104)
+        Me.btnPercentilesHelp.Name = "btnPercentilesHelp"
+        Me.btnPercentilesHelp.Size = New System.Drawing.Size(33, 31)
+        Me.btnPercentilesHelp.TabIndex = 34
+        Me.btnPercentilesHelp.Text = "?"
+        Me.btnPercentilesHelp.UseVisualStyleBackColor = False
+        '
         'grGrondwaterKlassen
         '
         Me.grGrondwaterKlassen.AllowUserToAddRows = False
@@ -398,16 +408,6 @@ Partial Class frmClassifyGroundwaterHBV
         'dlgOpenFile
         '
         Me.dlgOpenFile.FileName = "OpenFileDialog1"
-        '
-        'btnPercentilesHelp
-        '
-        Me.btnPercentilesHelp.BackColor = System.Drawing.Color.Gold
-        Me.btnPercentilesHelp.Location = New System.Drawing.Point(497, 104)
-        Me.btnPercentilesHelp.Name = "btnPercentilesHelp"
-        Me.btnPercentilesHelp.Size = New System.Drawing.Size(33, 31)
-        Me.btnPercentilesHelp.TabIndex = 34
-        Me.btnPercentilesHelp.Text = "?"
-        Me.btnPercentilesHelp.UseVisualStyleBackColor = False
         '
         'frmClassifyGroundwaterHBV
         '

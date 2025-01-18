@@ -321,7 +321,7 @@ Public Class clsStochastenAnalyse
                 For i = 0 To locdt.Rows.Count - 1
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
 
-                    'add the exceedance data to the excedancedata.js file
+                    'add the exceedance data to the exceedancedata.js file
                     exceedanceWriter.WriteLine("            " & Chr(34) & "ID" & Chr(34) & ": " & Chr(34) & locdt.Rows(i)("LOCATIENAAM") & Chr(34) & ",")
                     exceedanceWriter.WriteLine("            " & Chr(34) & "data" & Chr(34) & ": [")
 
@@ -571,7 +571,7 @@ Public Class clsStochastenAnalyse
                         Continue For
                     End If
 
-                    'add the exceedance data to the excedancedata.js file
+                    'add the exceedance data to the exceedancedata.js file
                     exceedanceWriter.WriteLine("            ""idx"": """ & locdt.Rows(i)("FEATUREIDX") & """,")
 
                     Dim herhStr As String = "            ""T"": ["
@@ -625,11 +625,22 @@ Public Class clsStochastenAnalyse
             Me.Setup.Log.AddError("Error in function WriteExceedanceDataJSON of frmStochasten: " & ex.Message)
         End Try
     End Function
+
     Public Function WriteExceedanceLevels2DFromCSVToJSON(exceedancedatapath As String, configurationName As String) As Boolean
         Try
+            'update the progress bar
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Writing Exceedance Levels 2D to JSON...", 0, 10, True)
+
             'Get the paths for the CSV files
             Dim ExceedanceData2DPath As String = getExceedanceTable2DPath(ResultsDir, GeneralFunctions.enm2DParameter.waterlevel)
             Dim StochastsPath As String = getSimulationsPath(ResultsDir)
+
+            'Count total lines for progress calculation (skip header)
+            Me.Setup.Log.AddMessage("Counting total lines for progress tracking...")
+            Dim totalLines As Long = System.IO.File.ReadLines(ExceedanceData2DPath).Count() - 1
+            Dim processedLines As Long = 0
+            'Dim lastProgressReport As Double = 0
+            'Dim progressThreshold As Double = 0.05 ' Report every 5% progress
 
             'Use HashSet for efficient distinct FEATUREIDX tracking
             Dim distinctFeatureIdxSet As New HashSet(Of String)()
@@ -638,6 +649,7 @@ Public Class clsStochastenAnalyse
             Dim runIdToIdxMap As New Dictionary(Of String, String)()
 
             'Read stochasts data for RUNID to RUNIDX mapping
+            Me.Setup.Log.AddMessage("Reading stochasts data...")
             Using reader As New TextFieldParser(StochastsPath)
                 reader.SetDelimiters(";")
                 reader.HasFieldsEnclosedInQuotes = True
@@ -658,6 +670,7 @@ Public Class clsStochastenAnalyse
             End Using
 
             'Write the dataset to JSON
+            Me.Setup.Log.AddMessage("Starting to write JSON data...")
             If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
             Using exceedanceWriter As New StreamWriter(exceedancedatapath)
                 exceedanceWriter.WriteLine("let exceedancedata2D = {")
@@ -690,6 +703,16 @@ Public Class clsStochastenAnalyse
                             Dim fields = reader.ReadFields()
                             If fields IsNot Nothing Then
                                 chunk.Add(fields)
+                                processedLines += 1
+
+                                Me.Setup.GeneralFunctions.UpdateProgressBar("", processedLines, totalLines, False)
+
+                                ' Calculate and report progress
+                                'Dim progress As Double = processedLines / totalLines
+                                'If progress - lastProgressReport >= progressThreshold Then
+                                '    Me.Setup.Log.AddMessage($"Processing exceedance data: {Math.Round(progress * 100)}% complete ({processedLines:N0} of {totalLines:N0} lines)")
+                                '    lastProgressReport = progress
+                                'End If
                             End If
                         End While
 
@@ -744,12 +767,145 @@ Public Class clsStochastenAnalyse
                 exceedanceWriter.WriteLine("}")
             End Using
 
+            'update progress bar
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Exceedance Levels 2D written.", 0, 10, True)
+
+            ' Report completion
+            'Me.Setup.Log.AddMessage($"Processing exceedance data: 100% complete (processed {totalLines:N0} lines)")
             Return True
+
         Catch ex As Exception
             Me.Setup.Log.AddError("Error in function WriteExceedanceLevels2DFromCSVToJSON: " & ex.Message)
             Return False
         End Try
     End Function
+
+
+    'Public Function WriteExceedanceLevels2DFromCSVToJSON(exceedancedatapath As String, configurationName As String) As Boolean
+    '    Try
+    '        'Get the paths for the CSV files
+    '        Dim ExceedanceData2DPath As String = getExceedanceTable2DPath(ResultsDir, GeneralFunctions.enm2DParameter.waterlevel)
+    '        Dim StochastsPath As String = getSimulationsPath(ResultsDir)
+
+    '        'Use HashSet for efficient distinct FEATUREIDX tracking
+    '        Dim distinctFeatureIdxSet As New HashSet(Of String)()
+
+    '        'Use Dictionary for efficient RUNID to RUNIDX mapping
+    '        Dim runIdToIdxMap As New Dictionary(Of String, String)()
+
+    '        'Read stochasts data for RUNID to RUNIDX mapping
+    '        Using reader As New TextFieldParser(StochastsPath)
+    '            reader.SetDelimiters(";")
+    '            reader.HasFieldsEnclosedInQuotes = True
+    '            Dim headers = reader.ReadFields() ' Read header once
+    '            Dim runIdIndex = System.Array.IndexOf(headers, "RUNID")
+    '            Dim runIdxIndex = System.Array.IndexOf(headers, "RUNIDX")
+
+    '            If runIdIndex = -1 Or runIdxIndex = -1 Then
+    '                Throw New Exception("Required columns 'RUNID' or 'RUNIDX' not found in the stochasts file.")
+    '            End If
+
+    '            While Not reader.EndOfData
+    '                Dim fields = reader.ReadFields()
+    '                If fields IsNot Nothing AndAlso fields.Length > Math.Max(runIdIndex, runIdxIndex) Then
+    '                    runIdToIdxMap(fields(runIdIndex)) = fields(runIdxIndex)
+    '                End If
+    '            End While
+    '        End Using
+
+    '        'Write the dataset to JSON
+    '        If System.IO.File.Exists(exceedancedatapath) Then System.IO.File.Delete(exceedancedatapath)
+    '        Using exceedanceWriter As New StreamWriter(exceedancedatapath)
+    '            exceedanceWriter.WriteLine("let exceedancedata2D = {")
+    '            exceedanceWriter.WriteLine("  ""scenarios"": [")
+    '            exceedanceWriter.WriteLine("    {")
+    '            exceedanceWriter.WriteLine($"      ""ID"":""{configurationName}"",")
+    '            exceedanceWriter.WriteLine("      ""locations"": [")
+
+    '            'Process exceedance data in chunks
+    '            Const ChunkSize As Integer = 10000
+    '            Dim isFirstLocation As Boolean = True
+
+    '            Using reader As New TextFieldParser(ExceedanceData2DPath)
+    '                reader.SetDelimiters(";")
+    '                reader.HasFieldsEnclosedInQuotes = True
+    '                Dim headers = reader.ReadFields()
+    '                Dim featureIdxIndex = System.Array.IndexOf(headers, "FEATUREIDX")
+    '                Dim herhalingstijdIndex = System.Array.IndexOf(headers, "HERHALINGSTIJD")
+    '                Dim waardeIndex = System.Array.IndexOf(headers, "WAARDE")
+    '                Dim runIdIndex = System.Array.IndexOf(headers, "RUNID")
+
+    '                If featureIdxIndex = -1 Or herhalingstijdIndex = -1 Or waardeIndex = -1 Or runIdIndex = -1 Then
+    '                    Throw New Exception("Required columns not found in the exceedance data file.")
+    '                End If
+
+    '                Dim chunk As New List(Of String())(ChunkSize)
+    '                While Not reader.EndOfData
+    '                    chunk.Clear()
+    '                    While chunk.Count < ChunkSize AndAlso Not reader.EndOfData
+    '                        Dim fields = reader.ReadFields()
+    '                        If fields IsNot Nothing Then
+    '                            chunk.Add(fields)
+    '                        End If
+    '                    End While
+
+    '                    'Process chunk
+    '                    Dim groupedData = chunk.GroupBy(Function(fields) fields(featureIdxIndex))
+    '                    For Each group In groupedData
+    '                        Dim featureIdx = group.Key
+
+    '                        If distinctFeatureIdxSet.Add(featureIdx) Then
+    '                            Dim sortedGroup = group.OrderBy(Function(fields) Double.Parse(fields(herhalingstijdIndex))).ToList()
+
+    '                            'Only write those locations where the water level is increasing
+    '                            If Double.Parse(sortedGroup.Last()(waardeIndex)) > Double.Parse(sortedGroup.First()(waardeIndex)) Then
+    '                                If Not isFirstLocation Then exceedanceWriter.WriteLine("        },")
+    '                                isFirstLocation = False
+
+    '                                exceedanceWriter.WriteLine("        {")
+    '                                exceedanceWriter.WriteLine($"            ""idx"": ""{featureIdx}"",")
+
+    '                                Dim herhValues = New List(Of String)()
+    '                                Dim levelValues = New List(Of String)()
+    '                                Dim runIdxValues = New List(Of String)()
+
+    '                                For Each fields In sortedGroup
+    '                                    Dim herhalingstijd As Double
+    '                                    Dim waarde As Double
+    '                                    If Double.TryParse(fields(herhalingstijdIndex), herhalingstijd) AndAlso Double.TryParse(fields(waardeIndex), waarde) Then
+    '                                        herhValues.Add(Math.Round(herhalingstijd, 2).ToString())
+    '                                        levelValues.Add(Math.Round(waarde, 3).ToString("F3"))
+    '                                        Dim runIdxValue As String = ""
+    '                                        If runIdToIdxMap.TryGetValue(fields(runIdIndex), runIdxValue) Then
+    '                                            runIdxValues.Add(runIdxValue)
+    '                                        Else
+    '                                            runIdxValues.Add("")
+    '                                        End If
+    '                                    End If
+    '                                Next
+
+    '                                exceedanceWriter.WriteLine($"            ""T"": [{String.Join(",", herhValues)}],")
+    '                                exceedanceWriter.WriteLine($"            ""h"": [{String.Join(",", levelValues)}],")
+    '                                exceedanceWriter.WriteLine($"            ""runidx"": [{String.Join(",", runIdxValues)}]")
+    '                            End If
+    '                        End If
+    '                    Next
+    '                End While
+    '            End Using
+
+    '            exceedanceWriter.WriteLine("        }")
+    '            exceedanceWriter.WriteLine("      ]")
+    '            exceedanceWriter.WriteLine("    }")
+    '            exceedanceWriter.WriteLine("  ]")
+    '            exceedanceWriter.WriteLine("}")
+    '        End Using
+
+    '        Return True
+    '    Catch ex As Exception
+    '        Me.Setup.Log.AddError("Error in function WriteExceedanceLevels2DFromCSVToJSON: " & ex.Message)
+    '        Return False
+    '    End Try
+    'End Function
 
     'Public Function WriteExceedanceLevels2DFromCSVToJSON(exceedancedatapath As String, configurationName As String) As Boolean
     '    Try
@@ -1830,7 +1986,8 @@ Public Class clsStochastenAnalyse
 
             ' Determine the values field based on the filter
             Select Case Filter.Trim.ToUpper
-                Case "MAX", "MAXVAL"
+                Case "MAX", "MAXVAL", ""
+                    '2025-01-18 : added empty string as default filter
                     ValuesField = "MAXVAL"
                 Case "MIN", "MINVAL"
                     ValuesField = "MINVAL"
@@ -2415,7 +2572,7 @@ Public Class clsStochastenAnalyse
                 'retrieve all data for the current duration and climat scenario
                 If Me.Setup.StochastenAnalyse.CalcExceedanceTable(locdt.Rows(locIdx)("LOCATIENAAM"), locdt.Rows(locIdx)("RESULTSTYPE"), dtResults, dtHerh) Then
 
-                    'bulk insert our excedance table
+                    'bulk insert our exceedance table
                     Dim myCmd As New SQLite.SQLiteCommand
                     myCmd.Connection = Me.Setup.SqliteCon
                     Using transaction = Me.Setup.SqliteCon.BeginTransaction
@@ -3406,13 +3563,17 @@ Public Class clsStochastenAnalyse
             writer.WriteLine("P;" & String.Join(";", probabilities))
 
             ' Write data
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Writing transposed CSV file " & fileName & "...", 0, 10, True)
+            Dim n As Integer = results.Count
             For i As Integer = 0 To results.Count - 1
+                Me.Setup.GeneralFunctions.UpdateProgressBar("", i, n)
                 Dim rowBuilder As New StringBuilder(i.ToString())
                 For Each value In results(i)
-                    rowBuilder.Append(";").Append(String.Format("{0:N4}", value))
+                    rowBuilder.Append(";").Append(String.Format("{0: n4}", value))
                 Next
                 writer.WriteLine(rowBuilder.ToString())
             Next
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Transposed CSV file successfully written.", 0, 10, True)
         End Using
     End Sub
 

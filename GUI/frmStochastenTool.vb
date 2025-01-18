@@ -3736,7 +3736,7 @@ Public Class frmStochasten
         Me.Cursor = Cursors.WaitCursor
 
         Me.Setup.ExcelFile = New clsExcelBook(Me.Setup)
-        Me.Setup.ExcelFile.Initialize(Me.Setup.StochastenAnalyse.ResultsDir & $"\{Me.Setup.StochastenAnalyse.KlimaatScenario.ToString}_{Me.Setup.StochastenAnalyse.Duration}_excedancetables_standardized.xlsx")
+        Me.Setup.ExcelFile.Initialize(Me.Setup.StochastenAnalyse.ResultsDir & $"\{Me.Setup.StochastenAnalyse.KlimaatScenario.ToString}_{Me.Setup.StochastenAnalyse.Duration}_exceedancetables_standardized.xlsx")
 
         If chk1D.Checked Then
             Call Setup.StochastenAnalyse.ExportResults1D()

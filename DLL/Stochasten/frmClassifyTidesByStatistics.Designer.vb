@@ -107,7 +107,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label1.Location = New System.Drawing.Point(8, 32)
         Me.Label1.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(91, 17)
+        Me.Label1.Size = New System.Drawing.Size(87, 16)
         Me.Label1.TabIndex = 2
         Me.Label1.Text = "CSV-bestand"
         '
@@ -158,7 +158,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label2.Location = New System.Drawing.Point(12, 179)
         Me.Label2.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(68, 17)
+        Me.Label2.Size = New System.Drawing.Size(63, 16)
         Me.Label2.TabIndex = 39
         Me.Label2.Text = "Multiplier:"
         '
@@ -214,7 +214,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label11.Location = New System.Drawing.Point(9, 115)
         Me.Label11.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label11.Name = "Label11"
-        Me.Label11.Size = New System.Drawing.Size(61, 17)
+        Me.Label11.Size = New System.Drawing.Size(59, 16)
         Me.Label11.TabIndex = 33
         Me.Label11.Text = "Tijdveld:"
         '
@@ -232,7 +232,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label10.Location = New System.Drawing.Point(9, 145)
         Me.Label10.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(103, 17)
+        Me.Label10.Size = New System.Drawing.Size(99, 16)
         Me.Label10.TabIndex = 31
         Me.Label10.Text = "Gegevensveld:"
         '
@@ -250,7 +250,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label9.Location = New System.Drawing.Point(9, 85)
         Me.Label9.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(79, 17)
+        Me.Label9.Size = New System.Drawing.Size(75, 16)
         Me.Label9.TabIndex = 29
         Me.Label9.Text = "Datumveld:"
         '
@@ -260,7 +260,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label8.Location = New System.Drawing.Point(12, 58)
         Me.Label8.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(87, 17)
+        Me.Label8.Size = New System.Drawing.Size(84, 16)
         Me.Label8.TabIndex = 28
         Me.Label8.Text = "Reeksnaam:"
         '
@@ -298,7 +298,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label5.Location = New System.Drawing.Point(16, 95)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(194, 17)
+        Me.Label5.Size = New System.Drawing.Size(179, 16)
         Me.Label5.TabIndex = 31
         Me.Label5.Text = "Verhogingen in het laatste %:"
         '
@@ -316,7 +316,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label4.Location = New System.Drawing.Point(16, 63)
         Me.Label4.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(201, 17)
+        Me.Label4.Size = New System.Drawing.Size(186, 16)
         Me.Label4.TabIndex = 30
         Me.Label4.Text = "Uitloop gebeurtenissen (uren):"
         '
@@ -347,7 +347,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label3.Location = New System.Drawing.Point(16, 31)
         Me.Label3.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(188, 17)
+        Me.Label3.Size = New System.Drawing.Size(171, 16)
         Me.Label3.TabIndex = 5
         Me.Label3.Text = "Duur gebeurtenissen (uren):"
         '
@@ -377,7 +377,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.lblProgress.Location = New System.Drawing.Point(16, 572)
         Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(78, 17)
+        Me.lblProgress.Size = New System.Drawing.Size(73, 16)
         Me.lblProgress.TabIndex = 11
         Me.lblProgress.Text = "Voortgang:"
         '
@@ -437,23 +437,29 @@ Partial Class frmClassifyTidesByStatistics
         Me.grPercentileClasses.Location = New System.Drawing.Point(8, 31)
         Me.grPercentileClasses.Margin = New System.Windows.Forms.Padding(4)
         Me.grPercentileClasses.Name = "grPercentileClasses"
+        Me.grPercentileClasses.RowHeadersWidth = 51
         Me.grPercentileClasses.Size = New System.Drawing.Size(460, 277)
         Me.grPercentileClasses.TabIndex = 36
         '
         'colNaam
         '
         Me.colNaam.HeaderText = "klassenaam"
+        Me.colNaam.MinimumWidth = 6
         Me.colNaam.Name = "colNaam"
+        Me.colNaam.Width = 125
         '
         'collBound
         '
         Me.collBound.HeaderText = "van percentiel"
+        Me.collBound.MinimumWidth = 6
         Me.collBound.Name = "collBound"
+        Me.collBound.Width = 125
         '
         'coluBound
         '
         Me.coluBound.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.coluBound.HeaderText = "tot percentiel"
+        Me.coluBound.MinimumWidth = 6
         Me.coluBound.Name = "coluBound"
         '
         'cmbTidalComponent
@@ -471,7 +477,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.Label6.Location = New System.Drawing.Point(18, 129)
         Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(74, 17)
+        Me.Label6.Size = New System.Drawing.Size(69, 16)
         Me.Label6.TabIndex = 45
         Me.Label6.Text = "Verhogen:"
         '
@@ -515,7 +521,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.radEenvoudig.Location = New System.Drawing.Point(21, 176)
         Me.radEenvoudig.Margin = New System.Windows.Forms.Padding(4)
         Me.radEenvoudig.Name = "radEenvoudig"
-        Me.radEenvoudig.Size = New System.Drawing.Size(96, 21)
+        Me.radEenvoudig.Size = New System.Drawing.Size(93, 20)
         Me.radEenvoudig.TabIndex = 48
         Me.radEenvoudig.TabStop = True
         Me.radEenvoudig.Text = "Eenvoudig"
@@ -527,7 +533,7 @@ Partial Class frmClassifyTidesByStatistics
         Me.radUitgebreid.Location = New System.Drawing.Point(147, 176)
         Me.radUitgebreid.Margin = New System.Windows.Forms.Padding(4)
         Me.radUitgebreid.Name = "radUitgebreid"
-        Me.radUitgebreid.Size = New System.Drawing.Size(94, 21)
+        Me.radUitgebreid.Size = New System.Drawing.Size(91, 20)
         Me.radUitgebreid.TabIndex = 47
         Me.radUitgebreid.Text = "Uitgebreid"
         Me.radUitgebreid.UseVisualStyleBackColor = True
@@ -540,23 +546,29 @@ Partial Class frmClassifyTidesByStatistics
         Me.grAmplitudeKlassen.Location = New System.Drawing.Point(8, 31)
         Me.grAmplitudeKlassen.Margin = New System.Windows.Forms.Padding(4)
         Me.grAmplitudeKlassen.Name = "grAmplitudeKlassen"
+        Me.grAmplitudeKlassen.RowHeadersWidth = 51
         Me.grAmplitudeKlassen.Size = New System.Drawing.Size(465, 277)
         Me.grAmplitudeKlassen.TabIndex = 45
         '
         'colClassName
         '
         Me.colClassName.HeaderText = "klassenaam"
+        Me.colClassName.MinimumWidth = 6
         Me.colClassName.Name = "colClassName"
+        Me.colClassName.Width = 125
         '
         'colVanPerc
         '
         Me.colVanPerc.HeaderText = "van percentiel"
+        Me.colVanPerc.MinimumWidth = 6
         Me.colVanPerc.Name = "colVanPerc"
+        Me.colVanPerc.Width = 125
         '
         'colTotPerc
         '
         Me.colTotPerc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
         Me.colTotPerc.HeaderText = "tot percentiel"
+        Me.colTotPerc.MinimumWidth = 6
         Me.colTotPerc.Name = "colTotPerc"
         '
         'GroupBox3

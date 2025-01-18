@@ -29,6 +29,9 @@ Partial Class frmClassifyGroundWater
         Me.cmbSobekCases = New System.Windows.Forms.ComboBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.grGrondwaterKlassen = New System.Windows.Forms.DataGridView()
+        Me.colNaam = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colPercentiel = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.colTotPerc = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnDeleteGroundwaterClass = New System.Windows.Forms.Button()
         Me.btnAddGroundwaterClass = New System.Windows.Forms.Button()
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
@@ -51,9 +54,6 @@ Partial Class frmClassifyGroundWater
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkSeepage = New System.Windows.Forms.CheckBox()
-        Me.colNaam = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colPercentiel = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.colTotPerc = New System.Windows.Forms.DataGridViewTextBoxColumn()
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
@@ -125,6 +125,27 @@ Partial Class frmClassifyGroundWater
         Me.grGrondwaterKlassen.Size = New System.Drawing.Size(465, 162)
         Me.grGrondwaterKlassen.TabIndex = 5
         '
+        'colNaam
+        '
+        Me.colNaam.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colNaam.HeaderText = "klassenaam"
+        Me.colNaam.MinimumWidth = 6
+        Me.colNaam.Name = "colNaam"
+        '
+        'colPercentiel
+        '
+        Me.colPercentiel.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colPercentiel.HeaderText = "van percentiel"
+        Me.colPercentiel.MinimumWidth = 6
+        Me.colPercentiel.Name = "colPercentiel"
+        '
+        'colTotPerc
+        '
+        Me.colTotPerc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
+        Me.colTotPerc.HeaderText = "tot percentiel"
+        Me.colTotPerc.MinimumWidth = 6
+        Me.colTotPerc.Name = "colTotPerc"
+        '
         'btnDeleteGroundwaterClass
         '
         Me.btnDeleteGroundwaterClass.BackColor = System.Drawing.Color.IndianRed
@@ -149,7 +170,7 @@ Partial Class frmClassifyGroundWater
         '
         'btnClassify
         '
-        Me.btnClassify.BackColor = System.Drawing.Color.Yellow
+        Me.btnClassify.BackColor = System.Drawing.Color.Gold
         Me.btnClassify.Location = New System.Drawing.Point(980, 399)
         Me.btnClassify.Margin = New System.Windows.Forms.Padding(4)
         Me.btnClassify.Name = "btnClassify"
@@ -199,7 +220,7 @@ Partial Class frmClassifyGroundWater
         '
         'btnGroeiseizoenHelp
         '
-        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Yellow
+        Me.btnGroeiseizoenHelp.BackColor = System.Drawing.Color.Gold
         Me.btnGroeiseizoenHelp.Location = New System.Drawing.Point(464, 104)
         Me.btnGroeiseizoenHelp.Name = "btnGroeiseizoenHelp"
         Me.btnGroeiseizoenHelp.Size = New System.Drawing.Size(23, 23)
@@ -214,7 +235,7 @@ Partial Class frmClassifyGroundWater
         Me.radGroeiseizoen.Location = New System.Drawing.Point(28, 107)
         Me.radGroeiseizoen.Margin = New System.Windows.Forms.Padding(4)
         Me.radGroeiseizoen.Name = "radGroeiseizoen"
-        Me.radGroeiseizoen.Size = New System.Drawing.Size(358, 20)
+        Me.radGroeiseizoen.Size = New System.Drawing.Size(361, 20)
         Me.radGroeiseizoen.TabIndex = 25
         Me.radGroeiseizoen.TabStop = True
         Me.radGroeiseizoen.Text = "Groeiseizoen (maart t/m oktober) en buiten groeiseizoen"
@@ -244,7 +265,7 @@ Partial Class frmClassifyGroundWater
         Me.radAprilAugust.Location = New System.Drawing.Point(28, 161)
         Me.radAprilAugust.Margin = New System.Windows.Forms.Padding(4)
         Me.radAprilAugust.Name = "radAprilAugust"
-        Me.radAprilAugust.Size = New System.Drawing.Size(204, 20)
+        Me.radAprilAugust.Size = New System.Drawing.Size(207, 20)
         Me.radAprilAugust.TabIndex = 22
         Me.radAprilAugust.Text = "April t/m aug en sept t/m maart"
         Me.radAprilAugust.UseVisualStyleBackColor = True
@@ -255,7 +276,7 @@ Partial Class frmClassifyGroundWater
         Me.radZomWin.Location = New System.Drawing.Point(28, 134)
         Me.radZomWin.Margin = New System.Windows.Forms.Padding(4)
         Me.radZomWin.Name = "radZomWin"
-        Me.radZomWin.Size = New System.Drawing.Size(167, 20)
+        Me.radZomWin.Size = New System.Drawing.Size(170, 20)
         Me.radZomWin.TabIndex = 21
         Me.radZomWin.Text = "Zomer- en winterhalfjaar"
         Me.radZomWin.UseVisualStyleBackColor = True
@@ -266,7 +287,7 @@ Partial Class frmClassifyGroundWater
         Me.radJaarRond.Location = New System.Drawing.Point(28, 188)
         Me.radJaarRond.Margin = New System.Windows.Forms.Padding(4)
         Me.radJaarRond.Name = "radJaarRond"
-        Me.radJaarRond.Size = New System.Drawing.Size(79, 20)
+        Me.radJaarRond.Size = New System.Drawing.Size(82, 20)
         Me.radJaarRond.TabIndex = 20
         Me.radJaarRond.Text = "Jaarrond"
         Me.radJaarRond.UseVisualStyleBackColor = True
@@ -288,7 +309,7 @@ Partial Class frmClassifyGroundWater
         '
         'btnHelpSobekPercentiles
         '
-        Me.btnHelpSobekPercentiles.BackColor = System.Drawing.Color.Yellow
+        Me.btnHelpSobekPercentiles.BackColor = System.Drawing.Color.Gold
         Me.btnHelpSobekPercentiles.Location = New System.Drawing.Point(497, 102)
         Me.btnHelpSobekPercentiles.Name = "btnHelpSobekPercentiles"
         Me.btnHelpSobekPercentiles.Size = New System.Drawing.Size(33, 31)
@@ -345,31 +366,10 @@ Partial Class frmClassifyGroundWater
         Me.chkSeepage.AutoSize = True
         Me.chkSeepage.Location = New System.Drawing.Point(28, 31)
         Me.chkSeepage.Name = "chkSeepage"
-        Me.chkSeepage.Size = New System.Drawing.Size(189, 20)
+        Me.chkSeepage.Size = New System.Drawing.Size(192, 20)
         Me.chkSeepage.TabIndex = 0
         Me.chkSeepage.Text = "Classificeer kwel eveneens"
         Me.chkSeepage.UseVisualStyleBackColor = True
-        '
-        'colNaam
-        '
-        Me.colNaam.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colNaam.HeaderText = "klassenaam"
-        Me.colNaam.MinimumWidth = 6
-        Me.colNaam.Name = "colNaam"
-        '
-        'colPercentiel
-        '
-        Me.colPercentiel.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colPercentiel.HeaderText = "van percentiel"
-        Me.colPercentiel.MinimumWidth = 6
-        Me.colPercentiel.Name = "colPercentiel"
-        '
-        'colTotPerc
-        '
-        Me.colTotPerc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill
-        Me.colTotPerc.HeaderText = "tot percentiel"
-        Me.colTotPerc.MinimumWidth = 6
-        Me.colTotPerc.Name = "colTotPerc"
         '
         'frmClassifyGroundWater
         '

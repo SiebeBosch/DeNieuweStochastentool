@@ -67,6 +67,7 @@ website:
         contents:
           - cases/denbosch.qmd
           - cases/delfland.qmd
+          - cases/bommelerwaard.qmd
           
 format:
   html:
