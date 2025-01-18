@@ -75,8 +75,9 @@ Public Class frmPublish
 
                 If export2D Then
                     'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
-                    If Not Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", Climate, Duration) Then Throw New Exception("Error writing exceedance meash.")
-                    If Not WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+                    If Not Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", Climate, Duration) Then Throw New Exception("Error writing exceedance mesh.")
+                    If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+                    'If Not WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
                 End If
 
                 If export1D Then
@@ -231,6 +232,35 @@ Public Class frmPublish
 
     End Function
 
+
+    Public Function WriteExceedanceData2DJSONDummy(path As String, configurationName As String) As Boolean
+        Try
+            'Write the dataset to JSON
+            Me.Setup.Log.AddMessage("Starting to write JSON data...")
+            If System.IO.File.Exists(path) Then System.IO.File.Delete(path)
+            Using exceedanceWriter As New StreamWriter(path)
+                exceedanceWriter.WriteLine("let exceedancedata2D = {")
+                exceedanceWriter.WriteLine("  ""scenarios"": [")
+                exceedanceWriter.WriteLine("    {")
+                exceedanceWriter.WriteLine($"      ""ID"":""{configurationName}"",")
+                exceedanceWriter.WriteLine("      ""locations"": [")
+                exceedanceWriter.WriteLine("        {")
+                exceedanceWriter.WriteLine("            ""idx"": ""0"",")
+                exceedanceWriter.WriteLine("            ""T"": [0.03,0.03,0.03,0.03,0.03,0.03,3.82,22.5,123.95,641.95,3138.94,17592186044416],")
+                exceedanceWriter.WriteLine("            ""h"": [0.82,0.82,0.82,0.82,0.82,0.82,0.82,0.82,0.82,0.82,0.82,0.83],")
+                exceedanceWriter.WriteLine("            ""runidx"": [0,1,2,3,4,5,6,7,8,9,10,11]")
+                exceedanceWriter.WriteLine("        }")
+                exceedanceWriter.WriteLine("      ]")
+                exceedanceWriter.WriteLine("    }")
+                exceedanceWriter.WriteLine("  ]")
+                exceedanceWriter.WriteLine("};")
+            End Using
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteExceedanceData2DJSONDummy: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     Public Function WriteExceedanceData2DJSON(path As String, configurationName As String) As Boolean
         Try

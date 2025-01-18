@@ -2307,6 +2307,10 @@ Public Class clsStochastenAnalyse
             Dim returnDictionary As New Dictionary(Of Integer, List(Of Double))()
 
             Using reader As New StreamReader(ExceedanceTable2Dpath)
+
+                Dim fileSize As Long = reader.BaseStream.Length
+                Me.Setup.GeneralFunctions.UpdateProgressBar("Reading exceedance values 2D from CSV...", 0, 10, True)
+
                 ' Read and process the header
                 Dim headers = reader.ReadLine().Split(";"c)
                 Dim featureIdxIndex = System.Array.IndexOf(headers, "FEATUREIDX")
@@ -2318,10 +2322,14 @@ Public Class clsStochastenAnalyse
 
                 ' Read and process the data
                 While Not reader.EndOfStream
+
                     Dim fields = reader.ReadLine().Split(";"c)
                     Dim featureIdx = Integer.Parse(fields(featureIdxIndex))
                     Dim herhalingstijd = Double.Parse(fields(herhalingstijdIndex))
                     Dim waarde = Double.Parse(fields(waardeIndex))
+
+                    Dim currentPosition As Long = reader.BaseStream.Position
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", currentPosition, fileSize, False)
 
                     If Not featureData.ContainsKey(featureIdx) Then
                         featureData(featureIdx) = New List(Of KeyValuePair(Of Double, Double))()
@@ -2351,6 +2359,8 @@ Public Class clsStochastenAnalyse
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", processedCount, featureData.Count)
                 Next
             End Using
+
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Exceedance values 2D successfully read.", 0, 10, True)
 
             Return returnDictionary
         Catch ex As Exception
