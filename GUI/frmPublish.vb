@@ -67,6 +67,10 @@ Public Class frmPublish
                 Dim Zip As New ZipFile(ZipPath)
                 Zip.ExtractAll(ExtractDir, ExtractExistingFileAction.OverwriteSilently)
 
+                'write the settings.js file
+                Call WriteSettingsJSON(ViewerDir & "\js\settings.js")
+
+
                 'write the locations and all results to the JSON files
                 Call WriteStochastsJSON(ViewerDir & "\js\stochasts.js")
                 Call WriteSubcatchmentsJSON(ViewerDir & "\js\subcatchments.js")
@@ -127,6 +131,26 @@ Public Class frmPublish
 
     End Sub
 
+    Public Function writeSettingsJSON(path As String) As Boolean
+        Try
+            Using settingsWriter As New StreamWriter(path)
+                settingsWriter.WriteLine("let settings = {")
+                settingsWriter.WriteLine("	""exceedancetables2dapi"":{")
+                settingsWriter.WriteLine($"		""use"": {radAPI.Checked},")
+                settingsWriter.WriteLine($"		""ip"": ""localhost"",")
+                settingsWriter.WriteLine($"		""port"": 8000")
+                settingsWriter.WriteLine("	},")
+                settingsWriter.WriteLine("	""x-axis"": {")
+                settingsWriter.WriteLine("		""min"":1,")
+                settingsWriter.WriteLine("		""max"":100")
+                settingsWriter.WriteLine("	}")
+                settingsWriter.WriteLine("}")
+            End Using
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
 
     Public Function WriteStochastsJSON(path As String) As Boolean
         Try
