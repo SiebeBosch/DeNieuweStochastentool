@@ -780,6 +780,182 @@ Public Class clsStochastenAnalyse
         End Try
     End Function
 
+    Public Function WriteExceedanceLevels2DFromCSVToSQLite(exceedancedatapath As String, configurationName As String) As Boolean
+        Try
+            'update the progress bar
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Writing Exceedance Levels 2D to SQLite...", 0, 10, True)
+
+            'make sure the directory exists
+            If Not Directory.Exists(Path.GetDirectoryName(exceedancedatapath)) Then
+                Directory.CreateDirectory(Path.GetDirectoryName(exceedancedatapath))
+            End If
+
+            'create a new database and create the connection
+            Me.Setup.GeneralFunctions.SQLiteCreateDatabase(exceedancedatapath, True)
+
+            'Configure connection string with optimizations
+            Dim connectionString As String = $"Data Source={exceedancedatapath};Version=3;" &
+                                       "Journal Mode=OFF;" & _  'Disable journaling for bulk insert
+                                       "Synchronous=OFF;" & _   'Disable synchronous writing
+                                       "Cache Size=10000;" & _  'Increase cache size
+                                       "Page Size=4096"         'Optimize page size
+
+            Using sqlitecon As New SQLiteConnection(connectionString)
+                'open the connection
+                sqlitecon.Open()
+
+                'Optimize SQLite settings for bulk insert
+                Using cmdPragma As SQLiteCommand = sqlitecon.CreateCommand()
+                    cmdPragma.CommandText = "PRAGMA temp_store = MEMORY; " &
+                                      "PRAGMA mmap_size = 30000000000;"  'Use memory-mapped I/O
+                    cmdPragma.ExecuteNonQuery()
+                End Using
+
+                'create the table for our 2D exceedance levels
+                Using cmd As SQLiteCommand = sqlitecon.CreateCommand()
+                    cmd.CommandText = "CREATE TABLE EXCEEDANCELEVELS2D (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FEATUREIDX INTEGER, 
+    HERHALINGSTIJD REAL, 
+    WAARDE REAL, 
+    RUNIDX INTEGER
+);"
+                    cmd.ExecuteNonQuery()
+                End Using
+
+                'Get the paths for the CSV files
+                Dim ExceedanceData2DPath As String = getExceedanceTable2DPath(ResultsDir, GeneralFunctions.enm2DParameter.waterlevel)
+                Dim StochastsPath As String = getSimulationsPath(ResultsDir)
+
+                'Count total lines for progress calculation (skip header)
+                Me.Setup.Log.AddMessage("Counting total lines for progress tracking...")
+                Dim totalLines As Long = System.IO.File.ReadLines(ExceedanceData2DPath).Count() - 1
+                Dim processedLines As Long = 0
+
+                'Use Dictionary for efficient RUNID to RUNIDX mapping
+                Dim runIdToIdxMap As New Dictionary(Of String, String)(500000) ' Pre-allocate capacity
+
+                'Read stochasts data for RUNID to RUNIDX mapping
+                Me.Setup.Log.AddMessage("Reading stochasts data...")
+                Using reader As New TextFieldParser(StochastsPath)
+                    reader.SetDelimiters(";")
+                    reader.HasFieldsEnclosedInQuotes = True
+                    Dim headers = reader.ReadFields()
+                    Dim runIdIndex = System.Array.IndexOf(headers, "RUNID")
+                    Dim runIdxIndex = System.Array.IndexOf(headers, "RUNIDX")
+
+                    If runIdIndex = -1 Or runIdxIndex = -1 Then
+                        Throw New Exception("Required columns 'RUNID' or 'RUNIDX' not found in the stochasts file.")
+                    End If
+
+                    While Not reader.EndOfData
+                        Dim fields = reader.ReadFields()
+                        If fields IsNot Nothing AndAlso fields.Length > Math.Max(runIdIndex, runIdxIndex) Then
+                            runIdToIdxMap(fields(runIdIndex)) = fields(runIdxIndex)
+                        End If
+                    End While
+                End Using
+
+                'Begin transaction for better performance
+                Using transaction As SQLiteTransaction = sqlitecon.BeginTransaction()
+                    'Create a StringBuilder for building batch INSERT statements
+                    Dim batchSize As Integer = 100000
+                    Dim sqlBuilder As New StringBuilder(batchSize * 100) ' Pre-allocate capacity
+                    Dim currentBatchCount As Integer = 0
+
+                    'Process exceedance data
+                    Using reader As New TextFieldParser(ExceedanceData2DPath)
+                        reader.SetDelimiters(";")
+                        reader.HasFieldsEnclosedInQuotes = True
+                        Dim headers = reader.ReadFields()
+                        Dim featureIdxIndex = System.Array.IndexOf(headers, "FEATUREIDX")
+                        Dim herhalingstijdIndex = System.Array.IndexOf(headers, "HERHALINGSTIJD")
+                        Dim waardeIndex = System.Array.IndexOf(headers, "WAARDE")
+                        Dim runIdIndex = System.Array.IndexOf(headers, "RUNID")
+
+                        If featureIdxIndex = -1 Or herhalingstijdIndex = -1 Or waardeIndex = -1 Or runIdIndex = -1 Then
+                            Throw New Exception("Required columns not found in the exceedance data file.")
+                        End If
+
+                        'Initialize batch insert command
+                        sqlBuilder.AppendLine("INSERT INTO EXCEEDANCELEVELS2D (FEATUREIDX, HERHALINGSTIJD, WAARDE, RUNIDX) VALUES")
+
+                        'Process each row
+                        Using cmd As SQLiteCommand = sqlitecon.CreateCommand()
+                            While Not reader.EndOfData
+                                Dim fields = reader.ReadFields()
+                                If fields IsNot Nothing Then
+                                    Dim featureIdx As Integer
+                                    Dim herhalingstijd As Double
+                                    Dim waarde As Double
+                                    Dim runIdx As Integer
+
+                                    If Integer.TryParse(fields(featureIdxIndex), featureIdx) AndAlso
+                                   Double.TryParse(fields(herhalingstijdIndex), herhalingstijd) AndAlso
+                                   Double.TryParse(fields(waardeIndex), waarde) AndAlso
+                                   runIdToIdxMap.ContainsKey(fields(runIdIndex)) AndAlso
+                                   Integer.TryParse(runIdToIdxMap(fields(runIdIndex)), runIdx) Then
+
+                                        'Add values to batch
+                                        If currentBatchCount > 0 Then
+                                            sqlBuilder.Append(",")
+                                        End If
+                                        sqlBuilder.AppendLine($"({featureIdx},{herhalingstijd},{waarde},{runIdx})")
+                                        currentBatchCount += 1
+
+                                        'Execute batch if we've reached batch size
+                                        If currentBatchCount >= batchSize Then
+                                            cmd.CommandText = sqlBuilder.ToString()
+                                            cmd.ExecuteNonQuery()
+
+                                            'Reset for next batch
+                                            sqlBuilder.Clear()
+                                            sqlBuilder.AppendLine("INSERT INTO EXCEEDANCELEVELS2D (FEATUREIDX, HERHALINGSTIJD, WAARDE, RUNIDX) VALUES")
+                                            currentBatchCount = 0
+                                        End If
+                                    End If
+
+                                    processedLines += 1
+                                    If processedLines Mod 100000 = 0 Then
+                                        Me.Setup.GeneralFunctions.UpdateProgressBar("", processedLines, totalLines, False)
+                                    End If
+                                End If
+                            End While
+
+                            'Insert final batch if any remains
+                            If currentBatchCount > 0 Then
+                                cmd.CommandText = sqlBuilder.ToString()
+                                cmd.ExecuteNonQuery()
+                            End If
+                        End Using
+                    End Using
+
+                    'Create indices for better query performance
+                    Using cmd As SQLiteCommand = sqlitecon.CreateCommand()
+                        cmd.CommandText = "CREATE INDEX idx_feature_herh ON EXCEEDANCELEVELS2D (FEATUREIDX, HERHALINGSTIJD);"
+                        cmd.ExecuteNonQuery()
+                    End Using
+
+                    'Commit the transaction
+                    transaction.Commit()
+                End Using
+
+                'Optimize the database after bulk insert
+                Using cmd As SQLiteCommand = sqlitecon.CreateCommand()
+                    cmd.CommandText = "VACUUM;"
+                    cmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            'update progress bar
+            Me.Setup.GeneralFunctions.UpdateProgressBar("Exceedance Levels 2D written to SQLite.", 0, 10, True)
+            Return True
+
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteExceedanceLevels2DFromCSVToSQLite: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     'Public Function WriteExceedanceLevels2DFromCSVToJSON(exceedancedatapath As String, configurationName As String) As Boolean
     '    Try
@@ -3579,7 +3755,7 @@ Public Class clsStochastenAnalyse
                 Me.Setup.GeneralFunctions.UpdateProgressBar("", i, n)
                 Dim rowBuilder As New StringBuilder(i.ToString())
                 For Each value In results(i)
-                    rowBuilder.Append(";").Append(String.Format("{0: n4}", value))
+                    rowBuilder.Append(";").Append(String.Format("{0:n4}", value))
                 Next
                 writer.WriteLine(rowBuilder.ToString())
             Next

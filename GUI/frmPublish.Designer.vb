@@ -34,8 +34,12 @@ Partial Class frmPublish
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkParameters1D = New System.Windows.Forms.CheckedListBox()
+        Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.radGeoJSON = New System.Windows.Forms.RadioButton()
+        Me.radAPI = New System.Windows.Forms.RadioButton()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
+        Me.GroupBox3.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -123,7 +127,7 @@ Partial Class frmPublish
         Me.GroupBox2.Size = New System.Drawing.Size(310, 219)
         Me.GroupBox2.TabIndex = 5
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Parameters 1D"
+        Me.GroupBox2.Text = "Opties 1D"
         '
         'chkParameters1D
         '
@@ -133,11 +137,44 @@ Partial Class frmPublish
         Me.chkParameters1D.Size = New System.Drawing.Size(271, 157)
         Me.chkParameters1D.TabIndex = 6
         '
+        'GroupBox3
+        '
+        Me.GroupBox3.Controls.Add(Me.radAPI)
+        Me.GroupBox3.Controls.Add(Me.radGeoJSON)
+        Me.GroupBox3.Location = New System.Drawing.Point(323, 155)
+        Me.GroupBox3.Name = "GroupBox3"
+        Me.GroupBox3.Size = New System.Drawing.Size(465, 219)
+        Me.GroupBox3.TabIndex = 6
+        Me.GroupBox3.TabStop = False
+        Me.GroupBox3.Text = "Opties 2D"
+        '
+        'radGeoJSON
+        '
+        Me.radGeoJSON.AutoSize = True
+        Me.radGeoJSON.Checked = True
+        Me.radGeoJSON.Location = New System.Drawing.Point(25, 38)
+        Me.radGeoJSON.Name = "radGeoJSON"
+        Me.radGeoJSON.Size = New System.Drawing.Size(224, 20)
+        Me.radGeoJSON.TabIndex = 4
+        Me.radGeoJSON.Text = "Overschrijdingsdata in geoJSON"
+        Me.radGeoJSON.UseVisualStyleBackColor = True
+        '
+        'radAPI
+        '
+        Me.radAPI.AutoSize = True
+        Me.radAPI.Location = New System.Drawing.Point(25, 64)
+        Me.radAPI.Name = "radAPI"
+        Me.radAPI.Size = New System.Drawing.Size(231, 20)
+        Me.radAPI.TabIndex = 5
+        Me.radAPI.Text = "Overschrijdingsdata via API (bèta)"
+        Me.radAPI.UseVisualStyleBackColor = True
+        '
         'frmPublish
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
@@ -149,6 +186,8 @@ Partial Class frmPublish
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
+        Me.GroupBox3.ResumeLayout(False)
+        Me.GroupBox3.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -165,4 +204,7 @@ Partial Class frmPublish
     Friend WithEvents lblProgress As Label
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents chkParameters1D As CheckedListBox
+    Friend WithEvents GroupBox3 As GroupBox
+    Friend WithEvents radAPI As RadioButton
+    Friend WithEvents radGeoJSON As RadioButton
 End Class

@@ -76,8 +76,15 @@ Public Class frmPublish
                 If export2D Then
                     'write the 2D mesh to a Mesh.js file and the 2D mesh results to a Meshresults.js
                     If Not Setup.StochastenAnalyse.CalculateExceedanceMesh(ViewerDir & "\js\exceedancemesh.js", Climate, Duration) Then Throw New Exception("Error writing exceedance mesh.")
-                    If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
-                    'If Not WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+
+                    If radGeoJSON.Checked Then
+                        If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+                        'If Not WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+                    ElseIf radAPI.Checked Then
+                        If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+                        If Not WriteExceedanceData2DSQLite(ViewerDir & "\Python\exceedancedata2D.db", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to SQLite.")
+                    End If
+
                 End If
 
                 If export1D Then
@@ -267,11 +274,19 @@ Public Class frmPublish
             Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DFromCSVToJSON(path, configurationName)
             'Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DFromDBToJSON(path, Climate, Duration, configurationName)
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function WriteFouExceedanceJSON: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function WriteExceedanceData2DJSON: " & ex.Message)
             Return False
         End Try
     End Function
-
+    Public Function WriteExceedanceData2DSQLite(path As String, configurationName As String) As Boolean
+        Try
+            Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DFromCSVToSQLite(path, configurationName)
+            'Return Me.Setup.StochastenAnalyse.WriteExceedanceLevels2DFromDBToJSON(path, Climate, Duration, configurationName)
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function WriteExceedanceData2DSQLite: " & ex.Message)
+            Return False
+        End Try
+    End Function
 
     Public Function WriteLocationsJSON(locationsdatapath As String, Parameters As CheckedListBox) As Boolean
         Try

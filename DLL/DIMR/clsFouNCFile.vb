@@ -19,8 +19,10 @@ Public Class clsFouNCFile
     Dim Variables As sds.ReadOnlyVariableCollection
 
     Dim Mesh2d_fourier001_maxID As Integer = -1
+    Dim Mesh2d_fourier001_longName As String = ""
     Dim Mesh1d_fourier001_maxID As Integer = -1
     Dim Mesh2d_fourier002_maxID As Integer = -1
+    Dim Mesh2d_fourier002_longName As String = ""
     Dim Mesh2d_fourier001_maxdepthID As Integer = -1
     Dim Mesh2d_fourier002_maxdepthID As Integer = -1
     Dim Mesh1d_fourier002_maxID As Integer = -1
@@ -68,14 +70,21 @@ Public Class clsFouNCFile
 
         Select Case Parameter
             Case GeneralFunctions.enm2DParameter.depth
-                If Mesh2d_fourier002_max_depth IsNot Nothing Then
-                    Return Mesh2d_fourier002_max_depth
-                ElseIf Mesh2d_fourier001_max_depth IsNot Nothing Then
+                If Mesh2d_fourier001_max_depth IsNot Nothing Then
                     Return Mesh2d_fourier001_max_depth
+                ElseIf Mesh2d_fourier002_max_depth IsNot Nothing Then
+                    Return Mesh2d_fourier002_max_depth
                 End If
             Case GeneralFunctions.enm2DParameter.waterlevel
-                Return Mesh2d_fourier002_max
+                'check if the maximum waterlevel is present in Mesh2d_fourier001_max
+                If Mesh2d_fourier001_max IsNot Nothing AndAlso Mesh2d_fourier001_longName.Trim.ToLower.Contains("level") Then
+                    'our maximum water levels are in Mesh2d_fourier001_max
+                    Return Mesh2d_fourier001_max
+                ElseIf Mesh2d_fourier002_max IsNot Nothing AndAlso Mesh2d_fourier002_longName.Trim.ToLower.Contains("level") Then
+                    Return Mesh2d_fourier002_max
+                End If
         End Select
+        Return Nothing
     End Function
 
     Public Function Read() As Boolean
@@ -105,11 +114,17 @@ Public Class clsFouNCFile
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_id" Then Mesh1d_node_idID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_node_long_name" Then Mesh1d_node_long_nameID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier001_max" Then Mesh1d_fourier001_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then
+                    Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
+                    Mesh2d_fourier001_longName = dataset.Variables.Item(i).Metadata.Item("long_name")
+                End If
+                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max" Then
+                    Mesh2d_fourier002_maxID = dataset.Variables.Item(i).ID
+                    Mesh2d_fourier002_longName = dataset.Variables.Item(i).Metadata.Item("long_name")
+                End If
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max_depth" Then Mesh2d_fourier001_maxdepthID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier002_max_depth" Then Mesh2d_fourier002_maxdepthID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh1d_fourier002_max" Then Mesh1d_fourier002_maxID = dataset.Variables.Item(i).ID
-                If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_fourier001_max" Then Mesh2d_fourier001_maxID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_x" Then Mesh2d_face_xID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_y" Then Mesh2d_face_yID = dataset.Variables.Item(i).ID
                 If dataset.Variables.Item(i).Name.Trim.ToLower = "mesh2d_face_nodes" Then Mesh2d_face_nodesID = dataset.Variables.Item(i).ID
@@ -409,144 +424,6 @@ Public Class clsFouNCFile
         End Try
 
     End Function
-
-
-    'Public Function FloodStatisticsToGeoJSON(ResultsPath As String, MaxDepth As Boolean, MaxVelocity As Boolean, TInund As Boolean, TMax As Boolean, T20cm As Boolean, T50cm As Boolean) As Boolean
-
-    '    Try
-    '        Dim Name As String = "DHydro"
-
-    '        'now we write the results to a plain JSON file
-    '        Dim jsonstr As String
-    '        Dim idx As Integer = -1
-
-    '        Using meshWriter As New StreamWriter(ResultsPath)
-    '            meshWriter.WriteLine("{")
-    '            meshWriter.WriteLine("""type"": ""FeatureCollection"",")
-    '            meshWriter.WriteLine("""name"": """ & Name & """,")
-    '            meshWriter.WriteLine("""crs"": { ""type"": ""name"", ""properties"": { ""name"": ""urn:ogc:def:crs:EPSG::" & "28992" & """} },")
-    '            meshWriter.WriteLine("""features"": [")
-
-    '            'walk through all cells and write them as a feature
-    '            Dim nFaceNodes As Integer = UBound(FaceNodes, 1) + 1
-    '            For i = 0 To nFaceNodes - 1
-
-    '                'only if this cell contains depths>0 it will be written
-    '                Dim maxDepthClass As Integer = 1 'first increment class will be skipped since it represents dry cells
-    '                Me.Setup.GeneralFunctions.UpdateProgressBar("", i, nFaceNodes)
-
-    '                'check if we have an elevated waterdepth in this cell
-    '                For k = 0 To TimeStamps.Count - 1
-    '                    If waterDepths(k, i) > 1 Then
-    '                        maxDepthClass = waterDepths(k, i)
-    '                        Exit For
-    '                    End If
-    '                Next
-
-    '                'again: skip the lowest class since it represents totally dry cells
-    '                If maxDepthClass > 1 Then
-
-    '                    'only if this cell contains depths>0 it will be written
-    '                    Dim maxClass As Integer = 1 'first increment class will be skipped since it represents dry cells
-    '                    For k = 0 To TimeStamps.Count - 1
-    '                        If waterDepths(k, i) > 1 Then
-    '                            maxClass = waterDepths(k, i)
-    '                            Exit For
-    '                        End If
-    '                    Next
-
-    '                    'again: skip the lowest class since it represents dry cells
-    '                    If maxClass > 1 Then
-
-    '                        idx += 1
-
-    '                        If idx > 0 Then
-    '                            'this is not the first line, so close the previous record with a comma and a CRLF
-    '                            jsonstr = "," & vbCrLf
-    '                        Else
-    '                            jsonstr = ""
-    '                        End If
-
-    '                        'we have found a cell that contains water depths > 0. Write it to our JSON!
-    '                        jsonstr &= "{ ""type"": ""Feature"", ""geometry"": { ""type"": ""MultiPolygon"", ""coordinates"": [[["
-
-    '                        'write our face's geometry. Start with the first coordinate
-    '                        'Me.Setup.GeneralFunctions.RD2WGS84(FaceNodesX(FaceNodes(i, 0) - 1), FaceNodesY(FaceNodes(i, 0) - 1), lat, lon)
-    '                        jsonstr &= "[" & FaceNodesX(FaceNodes(i, 0) - 1) & "," & FaceNodesY(FaceNodes(i, 0) - 1) & "]"
-
-    '                        'now write the remaining coordinates, if in use
-    '                        For j = 1 To UBound(FaceNodes, 2)
-    '                            'unused facenodes are indicted by -999 (e.g. triangular faces where ubound(facenodes,2) = 3)
-    '                            'NOTE: the index numbers inside FaceNodes are 1-based!
-    '                            If FaceNodes(i, j) > -999 Then
-    '                                'Me.Setup.GeneralFunctions.RD2WGS84(FaceNodesX(FaceNodes(i, j) - 1), FaceNodesY(FaceNodes(i, j) - 1), lat, lon)
-    '                                jsonstr &= ", [" & FaceNodesX(FaceNodes(i, j) - 1) & "," & FaceNodesY(FaceNodes(i, j) - 1) & "]"
-    '                            End If
-    '                        Next
-    '                        jsonstr &= ", [" & FaceNodesX(FaceNodes(i, 0) - 1) & "," & FaceNodesY(FaceNodes(i, 0) - 1) & "]"
-    '                        jsonstr &= "]]]}, ""properties"": { ""i"": " & idx
-
-    '                        'for analysis in GIS we cannot write the results in arrays inside the geoJSON
-    '                        Dim TsInundH As Integer = -1
-    '                        Dim TsInundM As Integer = -1
-    '                        Dim Ts20cm As Integer = -1
-    '                        Dim Ts50cm As Integer = -1
-    '                        Dim TsMax As Integer = -1
-    '                        Dim MaxDepthVal As Double = 0
-    '                        Dim MaxVelVal As Double = 0
-
-    '                        For j = 1 To TimeStamps.Count - 1
-
-    '                            If DepthClassValues(waterDepths(j, i) - 1) > MaxDepthVal Then
-    '                                MaxDepthVal = DepthClassValues(waterDepths(j, i) - 1)
-    '                                TsMax = j
-    '                            End If
-    '                            If VelocityClassValues(velocities(j, i) - 1) > MaxVelVal Then
-    '                                MaxVelVal = VelocityClassValues(velocities(j, i) - 1)
-    '                            End If
-
-    '                            'as soon as our depth thresholds are exceeded, write the timestep
-    '                            If DepthClassValues(waterDepths(j, i) - 1) > 0 AndAlso TsInundH = -1 Then
-    '                                TsInundH = getHoursFromTimestepIdx(j)
-    '                                TsInundM = getMinutesFromTimestepIdx(j)
-    '                            End If
-    '                            If DepthClassValues(waterDepths(j, i) - 1) >= 0.2 AndAlso Ts20cm = -1 Then
-    '                                Ts20cm = getHoursFromTimestepIdx(j)
-    '                            End If
-    '                            If DepthClassValues(waterDepths(j, i) - 1) >= 0.5 AndAlso Ts50cm = -1 Then
-    '                                Ts50cm = getHoursFromTimestepIdx(j)
-    '                            End If
-    '                        Next
-
-    '                        jsonstr &= ", """ & GeneralFunctions.enmFloodFieldName.T_FLOOD_H.ToString & """: " & TsInundH & ", """ & GeneralFunctions.enmFloodFieldName.T_FLOOD_M.ToString & """: " & TsInundM & ", """ & GeneralFunctions.enmFloodFieldName.T_20CM_H.ToString & """: " & Ts20cm & ", """ & GeneralFunctions.enmFloodFieldName.T_50CM_H.ToString & """: " & Ts50cm & ", """ & GeneralFunctions.enmFloodFieldName.MAXD_CM.ToString & """: " & Convert.ToInt32(MaxDepthVal * 100) & ", """ & GeneralFunctions.enmFloodFieldName.MAXD_M.ToString & """: " & TsMax & ", """ & GeneralFunctions.enmFloodFieldName.MAXV_CMPS.ToString & """:" & Convert.ToInt16(MaxVelVal * 100) & "}}"
-
-    '                        meshWriter.Write(jsonstr)
-
-    '                    End If
-
-    '                End If
-
-
-
-
-    '            Next
-
-    '            'write the last line ending
-    '            meshWriter.Write(vbCrLf)
-
-    '            Me.Setup.GeneralFunctions.UpdateProgressBar("Export to JSON complete.", 0, 10, True)
-
-    '            meshWriter.WriteLine("]")
-    '            meshWriter.WriteLine("}")
-    '        End Using
-
-    '        Return True
-    '    Catch ex As Exception
-    '        Me.Setup.Log.AddError("Error in function StatisticsToGeoJSON of class clsClassMapFile: " & ex.Message)
-    '        Return False
-    '    End Try
-
-    'End Function
 
 
 End Class
