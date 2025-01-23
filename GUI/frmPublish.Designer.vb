@@ -35,8 +35,12 @@ Partial Class frmPublish
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkParameters1D = New System.Windows.Forms.CheckedListBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.radGeoJSON = New System.Windows.Forms.RadioButton()
         Me.radAPI = New System.Windows.Forms.RadioButton()
+        Me.radGeoJSON = New System.Windows.Forms.RadioButton()
+        Me.txtPort = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtIP = New System.Windows.Forms.TextBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -139,6 +143,10 @@ Partial Class frmPublish
         '
         'GroupBox3
         '
+        Me.GroupBox3.Controls.Add(Me.Label3)
+        Me.GroupBox3.Controls.Add(Me.txtIP)
+        Me.GroupBox3.Controls.Add(Me.Label2)
+        Me.GroupBox3.Controls.Add(Me.txtPort)
         Me.GroupBox3.Controls.Add(Me.radAPI)
         Me.GroupBox3.Controls.Add(Me.radGeoJSON)
         Me.GroupBox3.Location = New System.Drawing.Point(323, 155)
@@ -147,17 +155,6 @@ Partial Class frmPublish
         Me.GroupBox3.TabIndex = 6
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Opties 2D"
-        '
-        'radGeoJSON
-        '
-        Me.radGeoJSON.AutoSize = True
-        Me.radGeoJSON.Checked = True
-        Me.radGeoJSON.Location = New System.Drawing.Point(25, 38)
-        Me.radGeoJSON.Name = "radGeoJSON"
-        Me.radGeoJSON.Size = New System.Drawing.Size(224, 20)
-        Me.radGeoJSON.TabIndex = 4
-        Me.radGeoJSON.Text = "Overschrijdingsdata in geoJSON"
-        Me.radGeoJSON.UseVisualStyleBackColor = True
         '
         'radAPI
         '
@@ -168,6 +165,52 @@ Partial Class frmPublish
         Me.radAPI.TabIndex = 5
         Me.radAPI.Text = "Overschrijdingsdata via API (bèta)"
         Me.radAPI.UseVisualStyleBackColor = True
+        '
+        'radGeoJSON
+        '
+        Me.radGeoJSON.AutoSize = True
+        Me.radGeoJSON.Checked = True
+        Me.radGeoJSON.Location = New System.Drawing.Point(25, 38)
+        Me.radGeoJSON.Name = "radGeoJSON"
+        Me.radGeoJSON.Size = New System.Drawing.Size(224, 20)
+        Me.radGeoJSON.TabIndex = 4
+        Me.radGeoJSON.TabStop = True
+        Me.radGeoJSON.Text = "Overschrijdingsdata in geoJSON"
+        Me.radGeoJSON.UseVisualStyleBackColor = True
+        '
+        'txtPort
+        '
+        Me.txtPort.Location = New System.Drawing.Point(145, 117)
+        Me.txtPort.Name = "txtPort"
+        Me.txtPort.Size = New System.Drawing.Size(104, 22)
+        Me.txtPort.TabIndex = 4
+        Me.txtPort.Text = "8000"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(49, 120)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(90, 16)
+        Me.Label2.TabIndex = 4
+        Me.Label2.Text = "Poortnummer:"
+        '
+        'txtIP
+        '
+        Me.txtIP.Location = New System.Drawing.Point(145, 90)
+        Me.txtIP.Name = "txtIP"
+        Me.txtIP.Size = New System.Drawing.Size(104, 22)
+        Me.txtIP.TabIndex = 6
+        Me.txtIP.Text = "localhost"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(49, 93)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(61, 16)
+        Me.Label3.TabIndex = 7
+        Me.Label3.Text = "IP-adres:"
         '
         'frmPublish
         '
@@ -207,4 +250,8 @@ Partial Class frmPublish
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents radAPI As RadioButton
     Friend WithEvents radGeoJSON As RadioButton
+    Friend WithEvents Label2 As Label
+    Friend WithEvents txtPort As TextBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents txtIP As TextBox
 End Class

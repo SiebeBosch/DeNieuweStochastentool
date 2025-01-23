@@ -5,6 +5,8 @@ Imports STOCHLIB.General
 Imports STOCHLIB.GeneralFunctions
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
+Imports System.Threading.Tasks
+Imports System.Net.Sockets
 
 Public Class frmPublish
 
@@ -31,9 +33,11 @@ Public Class frmPublish
         Me.Setup.GeneralFunctions.PopulateCheckedListBoxFromDatabaseQuery(Me.Setup.SqliteCon, "SELECT DISTINCT MODELPAR FROM OUTPUTLOCATIONS;", chkParameters1D)
     End Sub
 
-    Private Sub btnPubliceren_Click(sender As Object, e As EventArgs) Handles btnPubliceren.Click
+    Private Async Sub btnPubliceren_Click(sender As Object, e As EventArgs) Handles btnPubliceren.Click
 
         Try
+            'first make sure the new scenario name is a Windows Safe name that can also be used in files
+            Dim ScenarioName As String = Me.Setup.GeneralFunctions.WindowsSafeFilename(txtConfigurationName.Text)
 
             If radNewWebviewer.Checked Then
 
@@ -68,8 +72,7 @@ Public Class frmPublish
                 Zip.ExtractAll(ExtractDir, ExtractExistingFileAction.OverwriteSilently)
 
                 'write the settings.js file
-                Call WriteSettingsJSON(ViewerDir & "\js\settings.js")
-
+                Call writeSettings(ViewerDir & "\js\settings.js", ScenarioName)
 
                 'write the locations and all results to the JSON files
                 Call WriteStochastsJSON(ViewerDir & "\js\stochasts.js")
@@ -85,8 +88,10 @@ Public Class frmPublish
                         If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
                         'If Not WriteExceedanceData2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
                     ElseIf radAPI.Checked Then
+                        'we will write the database to SQLite. The name of the database will be the same as the configuration name
+                        'to the .js file we will simply write dummy data since it won't be used
                         If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
-                        If Not WriteExceedanceData2DSQLite(ViewerDir & "\Python\exceedancedata2D.db", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to SQLite.")
+                        If Not WriteExceedanceData2DSQLite(ViewerDir & "\" & ScenarioName & ".db", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to SQLite.")
                     End If
 
                 End If
@@ -112,13 +117,33 @@ Public Class frmPublish
                     'make sure our directory contains a subir called js
                     If Not Directory.Exists(ViewerDir & "\js") Then Throw New Exception("Error: could not find subdirectory js in selected directory " & ViewerDir)
 
+                    'add the scenario name to the settings.js file
+                    Call addScenarioToSettings(ViewerDir & "\js\settings.js", ScenarioName)
+
                     'we'll append the run data to the runs.js file
                     Setup.StochastenAnalyse.AddStochasticRunsJSON(ViewerDir & "\js\runs.js", txtConfigurationName.Text)
                     Setup.StochastenAnalyse.AddExceedanceData1DJSON(ViewerDir & "\js\exceedancedata.js", txtConfigurationName.Text)
-                    Setup.StochastenAnalyse.AddExceedanceLevels2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text)
 
-                    'execute the html file in the default browser
-                    Process.Start(ViewerDir & "\index.html")
+                    If export2D Then
+
+                        If radGeoJSON.Checked Then
+                            Setup.StochastenAnalyse.AddExceedanceLevels2DJSON(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text)
+                        ElseIf radAPI.Checked Then
+                            'we will write the database to SQLite. The name of the database will be the same as the configuration name
+                            'to the .js file we will simply write dummy data since it won't be used
+                            If Not WriteExceedanceData2DJSONDummy(ViewerDir & "\js\exceedancedata2D.js", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to JSON.")
+                            If Not WriteExceedanceData2DSQLite(ViewerDir & "\" & ScenarioName & ".db", txtConfigurationName.Text) Then Throw New Exception("Error writing exceedance data for 2D to SQLite.")
+                        End If
+                    End If
+
+                    'if using the API functionality, start the API before launching the webviewer
+                    If radAPI.Checked Then
+                        ' Launch API and viewer asynchronously
+                        Await LaunchAPIAndViewer(ViewerDir)
+                    Else
+                        ' If not using API, just launch the viewer directly
+                        Process.Start(ViewerDir & "\index.html")
+                    End If
 
                 End If
             End If
@@ -131,26 +156,178 @@ Public Class frmPublish
 
     End Sub
 
-    Public Function writeSettingsJSON(path As String) As Boolean
+    Private Async Function LaunchAPIAndViewer(viewerDir As String) As Task
         Try
-            Using settingsWriter As New StreamWriter(path)
-                settingsWriter.WriteLine("let settings = {")
-                settingsWriter.WriteLine("	""exceedancetables2dapi"":{")
-                settingsWriter.WriteLine($"		""use"": {radAPI.Checked},")
-                settingsWriter.WriteLine($"		""ip"": ""localhost"",")
-                settingsWriter.WriteLine($"		""port"": 8000")
-                settingsWriter.WriteLine("	},")
-                settingsWriter.WriteLine("	""x-axis"": {")
-                settingsWriter.WriteLine("		""min"":1,")
-                settingsWriter.WriteLine("		""max"":100")
-                settingsWriter.WriteLine("	}")
-                settingsWriter.WriteLine("}")
+            'read the settings and scenarios from settings.js
+            Dim Settings As JObject = readSettings(viewerDir & "\js\settings.js")
+            Dim Scenarios As List(Of String) = getScenarios(viewerDir & "\js\settings.js")
+
+            'write the run_api.bat file
+            Using apiWriter As New StreamWriter(viewerDir & "\run_api.bat")
+                Dim myStr As String = viewerDir & "\exceedance_api.exe --port " & Settings("port").ToString
+                For Each Scenario In Scenarios
+                    myStr &= " --scenario " & Scenario & " --db " & viewerDir & "\" & Scenario & ".db"
+                Next
+                apiWriter.WriteLine("python api.py")
+            End Using
+
+            ' Start the API process
+            Dim apiProcess As New Process()
+            With apiProcess.StartInfo
+                .FileName = viewerDir & "\run_api.bat"
+                .UseShellExecute = False
+                .RedirectStandardOutput = True
+                .CreateNoWindow = True
+            End With
+            apiProcess.Start()
+
+            ' Wait for API to be ready by checking if port is listening
+            Dim maxAttempts As Integer = 30  ' Maximum number of attempts (30 * 500ms = 15 seconds max)
+            Dim attempts As Integer = 0
+            Dim port As Integer = Integer.Parse(ReadPortFromSettings(viewerDir & "\js\settings.js"))
+
+            While attempts < maxAttempts
+                If Await IsPortListening("localhost", port) Then
+                    ' API is ready, launch the viewer
+                    Process.Start(viewerDir & "\index.html")
+                    Exit Function
+                End If
+                attempts += 1
+                Await Task.Delay(500) ' Wait 500ms between attempts
+            End While
+
+            Throw New Exception("API failed to start within the timeout period")
+
+        Catch ex As Exception
+            Throw New Exception("Error launching API and viewer: " & ex.Message)
+        End Try
+    End Function
+
+
+    Private Async Function IsPortListening(host As String, port As Integer) As Task(Of Boolean)
+        Try
+            Using client As New TcpClient()
+                ' Try to connect to the port
+                Await client.ConnectAsync(host, port)
+                Return True
+            End Using
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Private Function ReadPortFromSettings(settingsPath As String) As String
+        ' Read the port from settings.js file
+        Dim settings As JObject = readSettings(settingsPath)
+        Return settings("port").ToString()
+    End Function
+
+    Public Function writeSettings(path As String, ScenarioName As String) As Boolean
+        Try
+            'let's first create a new JSON object
+            Dim settings As New JObject
+            settings("exceedancetables2dapi") = New JObject()  ' Initialize nested object first
+            settings("exceedancetables2dapi")("use") = radAPI.Checked
+            settings("exceedancetables2dapi")("ip") = txtIP.Text
+            settings("exceedancetables2dapi")("port") = txtPort.Text
+
+            'Create a JArray and add the scenario name
+            Dim scenariosArray As New JArray
+            scenariosArray.Add(ScenarioName)
+            settings("scenarios") = scenariosArray
+
+            settings("x-axis") = New JObject()  ' Initialize nested object first
+            settings("x-axis")("min") = 1
+            settings("x-axis")("max") = 100
+
+            'now we'll write the JSON object to a file with the prefix
+            Using file As New StreamWriter(path)
+                file.Write("let settings = ")  ' Write the prefix first
+                Using writer As JsonTextWriter = New JsonTextWriter(file)
+                    writer.Formatting = Formatting.Indented  ' Enable pretty printing
+                    settings.WriteTo(writer)    ' Write the JSON object
+                End Using
             End Using
             Return True
         Catch ex As Exception
             Return False
         End Try
     End Function
+
+    Public Function readSettings(path As String) As JObject
+        Try
+            ' Read the entire file
+            Dim fileContent As String = File.ReadAllText(path)
+
+            ' Remove the "let settings = " prefix to get pure JSON
+            Dim jsonContent As String = fileContent.Replace("let settings = ", "").Trim()
+
+            ' Parse the JSON content
+            Dim settings As JObject = JObject.Parse(jsonContent)
+
+            Return settings
+
+        Catch ex As Exception
+            ' Return Nothing (null) if there's any error
+            Return Nothing
+        End Try
+    End Function
+
+    ' Example of how to use specific values from the settings:
+    Public Function getScenarios(path As String) As List(Of String)
+        Try
+            Dim settings As JObject = readSettings(path)
+            If settings IsNot Nothing Then
+                ' Convert the JArray of scenarios to a List of strings
+                Dim scenarios As List(Of String) = settings("scenarios").
+                Select(Function(s) s.ToString()).
+                ToList()
+                Return scenarios
+            End If
+            Return New List(Of String)
+
+        Catch ex As Exception
+            Return New List(Of String)
+        End Try
+    End Function
+
+    Public Function addScenarioToSettings(path As String, ScenarioName As String) As Boolean
+        Try
+            ' Read the entire file
+            Dim fileContent As String = File.ReadAllText(path)
+
+            ' Remove the "let settings = " prefix to get pure JSON
+            Dim jsonContent As String = fileContent.Replace("let settings = ", "")
+
+            ' Parse the JSON content
+            Dim settings As JObject = JObject.Parse(jsonContent)
+
+            ' Get the scenarios array
+            Dim scenarios As JArray = DirectCast(settings("scenarios"), JArray)
+
+            ' Check if scenario already exists to avoid duplicates
+            If Not scenarios.Any(Function(s) s.ToString() = txtConfigurationName.Text) Then
+                ' Add the new scenario
+                scenarios.Add(ScenarioName)
+
+                ' Write back to file with the prefix
+                Using file As New StreamWriter(path)
+                    file.Write("let settings = ")  ' Write the prefix first
+                    Using writer As JsonTextWriter = New JsonTextWriter(file)
+                        writer.Formatting = Formatting.Indented  ' Enable pretty printing
+                        settings.WriteTo(writer)    ' Write the JSON object
+                    End Using
+                End Using
+            End If
+
+            Return True
+
+        Catch ex As Exception
+            ' You might want to log the exception here
+            Return False
+        End Try
+    End Function
+
 
     Public Function WriteStochastsJSON(path As String) As Boolean
         Try
