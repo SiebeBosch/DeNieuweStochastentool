@@ -263,6 +263,7 @@ Public Class clsBuiFile
                     'bui, bereken gebiedsreductie op basis van het oppervlak
                     'echter alleen voor het kritische gedeelte van de bui!
                     Dim res As (Boolean, List(Of Double)) = setup.Gebiedsreductie.CalculateByAreaAdvanced(Season, Pattern, Vol * Volume_Multiplier, Fractie, Fractie.Count * 60, ms.oppervlak)
+
                     If res.Item1 Then
                         For i = 0 To Fractie.Count - 1
                             Values(i, ms.Idx) = res.Item2(i)

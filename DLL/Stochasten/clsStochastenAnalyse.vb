@@ -1508,8 +1508,11 @@ Public Class clsStochastenAnalyse
                     sepRecord.ss = 0
 
                     'make sure seepage record not already processed in another unpaved node
-                    If Not myCase.RRData.UnpavedSep.Records.ContainsKey(sepRecord.ID.Trim.ToUpper) Then Continue For
-                    myCase.RRData.UnpavedSep.Records.Add(sepRecord.ID.Trim.ToUpper, sepRecord)
+                    Dim sepAlreadyProcessed As Boolean = True
+                    If Not myCase.RRData.UnpavedSep.Records.ContainsKey(sepRecord.ID.Trim.ToUpper) Then
+                        myCase.RRData.UnpavedSep.Records.Add(sepRecord.ID.Trim.ToUpper, sepRecord)
+                        sepAlreadyProcessed = False
+                    End If
 
                     j += 1
                     k = -1
@@ -1534,18 +1537,20 @@ Public Class clsStochastenAnalyse
 
                     'get the seepage values for this record from the lists
                     Dim Seepage(0 To TimeSteps.Count - 1) As Double
-                    If IncludeSeepage Then
-                        k = -1
-                        For Each myResult In mySeepageValues
-                            For Each Result As STOCHLIB.HisDataRow In myResult
-                                If Result.LocationName = upRecord.ID Then
-                                    k += 1
-                                    'we must still convert our seepage values from m3/s to mm/d
-                                    Seepage(k) = Result.Value / upRecord.ga * 1000 * 3600 * 24   'store the results in a temporary array to allow percentile computation later
-                                    'Seepage(k) = Result.Value 'store the results in a temporary array to allow percentile computation later
-                                End If
+                    If Not sepAlreadyProcessed Then
+                        If IncludeSeepage Then
+                            k = -1
+                            For Each myResult In mySeepageValues
+                                For Each Result As STOCHLIB.HisDataRow In myResult
+                                    If Result.LocationName = upRecord.ID Then
+                                        k += 1
+                                        'we must still convert our seepage values from m3/s to mm/d
+                                        Seepage(k) = Result.Value / upRecord.ga * 1000 * 3600 * 24   'store the results in a temporary array to allow percentile computation later
+                                        'Seepage(k) = Result.Value 'store the results in a temporary array to allow percentile computation later
+                                    End If
+                                Next
                             Next
-                        Next
+                        End If
                     End If
 
                     'update the unpaved.3b record
@@ -1554,7 +1559,7 @@ Public Class clsStochastenAnalyse
                     upRecord.igconst = Math.Round(upRecord.lv - repGW, 2)
 
                     'update the unpaved.sep record
-                    If IncludeSeepage Then
+                    If IncludeSeepage AndAlso Not sepAlreadyProcessed Then
 
                         'the representative seepage value is linked to the groundwater levels inside this class
                         'this means that we must derive the median of the seapage values that are linked to the groundwater levels from thi sclass

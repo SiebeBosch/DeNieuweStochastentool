@@ -305,6 +305,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Simuleren in batch</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../GUI/grondwaterclassificatie.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Grondwaterclassificatie</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -343,6 +349,12 @@ ul.task-list li input[type="checkbox"] {
   <div class="sidebar-item-container"> 
   <a href="../cases/delfland.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Delfland</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cases/bommelerwaard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bommelerwaard</span></a>
   </div>
 </li>
       </ul>
@@ -410,7 +422,7 @@ ul.task-list li input[type="checkbox"] {
 <p>Ter illustratie: de neerslagvolumes en hun kansen bevinden zich in de tabel “VOLUMES”. Voor iedere combinatie van klimaatscenario, duur en volumeklasse ligt vast met welke frequentie (uitgedrukt in aantal gebeurtenissen per jaar) gebeurtenissen uit die klasse voorkomen.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="img/db_volumes.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Detail uit de tabel met neerslagvolumes"><img src="img/db_volumes.png" title="Neerslagvolumes" class="img-fluid figure-img" alt="Detail uit de tabel met neerslagvolumes"></a></p>
+<p><a href="img/db_volumes.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Detail uit de tabel met neerslagvolumes"><img src="img/db_volumes.png" title="Neerslagvolumes" class="img-fluid figure-img" alt="Detail uit de tabel met neerslagvolumes"></a></p>
 <figcaption>Detail uit de tabel met neerslagvolumes</figcaption>
 </figure>
 </div>
@@ -821,7 +833,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"fade","selector":".lightbox","closeEffect":"fade","loop":false,"descPosition":"right"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"fade","descPosition":"right","openEffect":"fade","loop":false});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

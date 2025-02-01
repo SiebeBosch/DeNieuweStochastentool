@@ -228,6 +228,11 @@ Public Class clsGebiedsreductie
             'now that we found our critical duration and the startIdx we can calculate the reduction factor and apply it
             Dim ARF As Double = ComputeARF(areaKm2, maxDur, MaxT)
 
+            If ARF > 1 Then
+                Stop
+                Me.Setup.Log.AddWarning($"CalculateByAreaAdvanced computed an Areal Reduction Factor > 1 for area {areaKm2}, duration {maxDur} and return period {MaxT}.")
+            End If
+
             'finally implement the reduction factor in the section of our fractie array
             For i = 0 To fractie.Count - 1
                 If i < maxDurStartIdx Then

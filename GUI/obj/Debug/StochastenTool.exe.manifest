@@ -301,19 +301,19 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>6c3HEJgojJuwQrRtDY6KTec2/EzjbXLRcSHR+Ld32qc=</dsig:DigestValue>
+        <dsig:DigestValue>3Lqw1UiA5ziv1sl1amDkwy+bRWFLYGiNgCljsWOuJWQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3799552">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="STOCHLIB.dll" size="3800064">
       <assemblyIdentity name="STOCHLIB" version="2.4.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>HSHcC9Re57EhiJ+OJYuwnxt1SkajXKfvfjF/9RR9epc=</dsig:DigestValue>
+        <dsig:DigestValue>Al8NfL3UW36/a8HAw9f4Iyp3pjx5LX1Oy4kk97mF9As=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

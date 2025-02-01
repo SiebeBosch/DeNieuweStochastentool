@@ -4,9 +4,25 @@ bibliography: literatuur.bib
 reference-section-title: "Literatuur"
 ---
 
-Een essentiële stochast is de initiële vullingsgraad van de bodem. Om deze stochast goed te kunnen classificeren hebben we een meerjarige simulatie met het neerslag-afvoermodel nodig. De Nieuwe Stochastentool is ontworpen om uit die tijdreeksen de begintoestand voor neerslaggebeurtenissen te halen.
+## Inleiding
+De initiële vullingsgraad van de bodem is een belangrijke stochast. Immers: een bui op een droge ondergrond kan heel andere gevolgen hebben dan diezelfde bui op een natte ondergrond. Om deze stochast goed te kunnen classificeren hebben we een meerjarige simulatie met het neerslag-afvoermodel nodig. De Nieuwe Stochastentool is ontworpen om uit langjarige reeksen met gesimuleerde grondwaterstanden uitsluitend de *begin*toestand bij elke neerslaggebeurtenis te halen en die te classificeren.
+
+::: {.grid}
+::: {.g-col-6}
+![Grondwater classificeren.](../img/grondwaterclassificatie.png)
 
 
+:::
+::: {.g-col-6}
+
+:::
+:::
+
+::: {.callout-important}
+Belangrijk bij het classificeren van de begintoestand van het grondwater is dat we niet ten onrechte grondwaterstanden meenemen die nu juist het gevólg zijn van een extreme neerslaggebeurtenis. Dit zou leiden tot een overschatting. De Nieuwe Stochastentool voorkomt dit en classificeert uitsluitend grondwaterstanden die aan het begin staan van neerslaggebeurtenissen.
+:::
+
+## Stappen
 
 ::: {.grid}
 ::: {.g-col-6}
@@ -30,12 +46,23 @@ De tool is te vinden onder het menu Tools - Grondwater classificeren. Momenteel 
 :::
 :::
 
-
-
 ::: {.callout-important}
 De percentielwaarden moeten van 0 en 1 liggen en de klassen moeten op elkaar aansluiten.
 :::
 
+Wanneer de classificatie gereed is wordt automatisch een Excel-overzicht getoond met de geïdentificeerde neerslaggebeurtenissen en alle bijbehorende initiële grondwaterstanden.
+Daarnaast worden in de uitvoermap de modelbestanden geschreven. In het geval van SOBEK zal dit bijvoorbeeld unpaved.3b zijn.
+
+::: {.grid}
+::: {.g-col-6}
+![Grondwater is geclassificeerd.](../img/excelRainfallPOTGrondwaterClassificatie.png)
+
+:::
+::: {.g-col-6}
+Merk op dat iedere geïdentificeerde grondwaterstand een datum heeft. Dit is de start van de bijbehorende neerslaggebeurtenis. Voor elke van deze datums werden de bijbehorende grondwaterstanden uitgelezen ten behoeve van de classificatie.
+
+:::
+:::
 
 
 

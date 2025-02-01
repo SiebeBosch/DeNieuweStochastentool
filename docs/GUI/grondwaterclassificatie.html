@@ -351,6 +351,12 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Delfland</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cases/bommelerwaard.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bommelerwaard</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -359,7 +365,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Op deze pagina</h2>
+   
+  <ul>
+  <li><a href="#inleiding" id="toc-inleiding" class="nav-link active" data-scroll-target="#inleiding">Inleiding</a></li>
+  <li><a href="#stappen" id="toc-stappen" class="nav-link" data-scroll-target="#stappen">Stappen</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -383,7 +396,38 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Een essentiële stochast is de initiële vullingsgraad van de bodem. Om deze stochast goed te kunnen classificeren hebben we een meerjarige simulatie met het neerslag-afvoermodel nodig. De Nieuwe Stochastentool is ontworpen om uit die tijdreeksen de begintoestand voor neerslaggebeurtenissen te halen.</p>
+<section id="inleiding" class="level2">
+<h2 class="anchored" data-anchor-id="inleiding">Inleiding</h2>
+<p>De initiële vullingsgraad van de bodem is een belangrijke stochast. Immers: een bui op een droge ondergrond kan heel andere gevolgen hebben dan diezelfde bui op een natte ondergrond. Om deze stochast goed te kunnen classificeren hebben we een meerjarige simulatie met het neerslag-afvoermodel nodig. De Nieuwe Stochastentool is ontworpen om uit langjarige reeksen met gesimuleerde grondwaterstanden uitsluitend de <em>begin</em>toestand bij elke neerslaggebeurtenis te halen en die te classificeren.</p>
+<div class="grid">
+<div class="g-col-6">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../img/grondwaterclassificatie.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Grondwater classificeren."><img src="../img/grondwaterclassificatie.png" class="img-fluid figure-img" alt="Grondwater classificeren."></a></p>
+<figcaption>Grondwater classificeren.</figcaption>
+</figure>
+</div>
+</div>
+<div class="g-col-6">
+
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Belangrijk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Belangrijk bij het classificeren van de begintoestand van het grondwater is dat we niet ten onrechte grondwaterstanden meenemen die nu juist het gevólg zijn van een extreme neerslaggebeurtenis. Dit zou leiden tot een overschatting. De Nieuwe Stochastentool voorkomt dit en classificeert uitsluitend grondwaterstanden die aan het begin staan van neerslaggebeurtenissen.</p>
+</div>
+</div>
+</section>
+<section id="stappen" class="level2">
+<h2 class="anchored" data-anchor-id="stappen">Stappen</h2>
 <div class="grid">
 <div class="g-col-6">
 <p>De tool is te vinden onder het menu Tools - Grondwater classificeren. Momenteel is er keuze tussen SOBEK, D-Hydro en HBV. Er verschijnt dan een nieuw formulier.</p>
@@ -401,13 +445,13 @@ ul.task-list li input[type="checkbox"] {
 <div class="g-col-6">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../img/frmGrondwaterClassificatie1.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Grondwater classificeren."><img src="../img/frmGrondwaterClassificatie1.png" class="img-fluid figure-img" alt="Grondwater classificeren."></a></p>
+<p><a href="../img/frmGrondwaterClassificatie1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="Grondwater classificeren."><img src="../img/frmGrondwaterClassificatie1.png" class="img-fluid figure-img" alt="Grondwater classificeren."></a></p>
 <figcaption>Grondwater classificeren.</figcaption>
 </figure>
 </div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="../img/frmGrondwaterClassificatie2.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="De tool voor het classificeren van grondwater tot stochast."><img src="../img/frmGrondwaterClassificatie2.png" class="img-fluid figure-img" alt="De tool voor het classificeren van grondwater tot stochast."></a></p>
+<p><a href="../img/frmGrondwaterClassificatie2.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3" title="De tool voor het classificeren van grondwater tot stochast."><img src="../img/frmGrondwaterClassificatie2.png" class="img-fluid figure-img" alt="De tool voor het classificeren van grondwater tot stochast."></a></p>
 <figcaption>De tool voor het classificeren van grondwater tot stochast.</figcaption>
 </figure>
 </div>
@@ -426,12 +470,29 @@ Belangrijk
 <p>De percentielwaarden moeten van 0 en 1 liggen en de klassen moeten op elkaar aansluiten.</p>
 </div>
 </div>
+<p>Wanneer de classificatie gereed is wordt automatisch een Excel-overzicht getoond met de geïdentificeerde neerslaggebeurtenissen en alle bijbehorende initiële grondwaterstanden. Daarnaast worden in de uitvoermap de modelbestanden geschreven. In het geval van SOBEK zal dit bijvoorbeeld unpaved.3b zijn.</p>
+<div class="grid">
+<div class="g-col-6">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="../img/excelRainfallPOTGrondwaterClassificatie.png" class="lightbox" data-glightbox="description: .lightbox-desc-4" data-gallery="quarto-lightbox-gallery-4" title="Grondwater is geclassificeerd."><img src="../img/excelRainfallPOTGrondwaterClassificatie.png" class="img-fluid figure-img" alt="Grondwater is geclassificeerd."></a></p>
+<figcaption>Grondwater is geclassificeerd.</figcaption>
+</figure>
+</div>
+</div>
+<div class="g-col-6">
+<p>Merk op dat iedere geïdentificeerde grondwaterstand een datum heeft. Dit is de start van de bijbehorende neerslaggebeurtenis. Voor elke van deze datums werden de bijbehorende grondwaterstanden uitgelezen ten behoeve van de classificatie.</p>
+</div>
+</div>
 
 
 <div class="hidden" aria-hidden="true">
 <span class="glightbox-desc lightbox-desc-1">Grondwater classificeren.</span>
-<span class="glightbox-desc lightbox-desc-2">De tool voor het classificeren van grondwater tot stochast.</span>
+<span class="glightbox-desc lightbox-desc-2">Grondwater classificeren.</span>
+<span class="glightbox-desc lightbox-desc-3">De tool voor het classificeren van grondwater tot stochast.</span>
+<span class="glightbox-desc lightbox-desc-4">Grondwater is geclassificeerd.</span>
 </div>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -822,7 +883,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"fade","closeEffect":"fade","selector":".lightbox","loop":false,"descPosition":"right"});
+<script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","openEffect":"fade","descPosition":"right","closeEffect":"fade"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
