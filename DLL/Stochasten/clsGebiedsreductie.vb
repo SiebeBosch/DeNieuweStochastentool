@@ -226,10 +226,10 @@ Public Class clsGebiedsreductie
             Next
 
             'now that we found our critical duration and the startIdx we can calculate the reduction factor and apply it
-            Dim ARF As Double = ComputeARF(areaKm2, maxDur, MaxT)
+            '2025-02-1: added a check for MaxT < 0.5 because the ARF is not defined for return periods < 0.5
+            Dim ARF As Double = If(MaxT < 0.5, 1, ComputeARF(areaKm2, maxDur, MaxT))
 
             If ARF > 1 Then
-                Stop
                 Me.Setup.Log.AddWarning($"CalculateByAreaAdvanced computed an Areal Reduction Factor > 1 for area {areaKm2}, duration {maxDur} and return period {MaxT}.")
             End If
 

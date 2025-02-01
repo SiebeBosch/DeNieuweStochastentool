@@ -54,11 +54,14 @@ Partial Class frmClassifyGroundWater
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkSeepage = New System.Windows.Forms.CheckBox()
+        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         CType(Me.grGrondwaterKlassen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Instellingen.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
         Me.groupSbk.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
+        Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtSobekProject
@@ -171,7 +174,7 @@ Partial Class frmClassifyGroundWater
         'btnClassify
         '
         Me.btnClassify.BackColor = System.Drawing.Color.Gold
-        Me.btnClassify.Location = New System.Drawing.Point(980, 399)
+        Me.btnClassify.Location = New System.Drawing.Point(973, 430)
         Me.btnClassify.Margin = New System.Windows.Forms.Padding(4)
         Me.btnClassify.Name = "btnClassify"
         Me.btnClassify.Size = New System.Drawing.Size(113, 48)
@@ -209,7 +212,7 @@ Partial Class frmClassifyGroundWater
         Me.Instellingen.Controls.Add(Me.radJaarRond)
         Me.Instellingen.Controls.Add(Me.cmbDuration)
         Me.Instellingen.Controls.Add(Me.Label4)
-        Me.Instellingen.Location = New System.Drawing.Point(583, 145)
+        Me.Instellingen.Location = New System.Drawing.Point(576, 176)
         Me.Instellingen.Margin = New System.Windows.Forms.Padding(4)
         Me.Instellingen.Name = "Instellingen"
         Me.Instellingen.Padding = New System.Windows.Forms.Padding(4)
@@ -298,7 +301,7 @@ Partial Class frmClassifyGroundWater
         Me.GroupBox1.Controls.Add(Me.grGrondwaterKlassen)
         Me.GroupBox1.Controls.Add(Me.btnAddGroundwaterClass)
         Me.GroupBox1.Controls.Add(Me.btnDeleteGroundwaterClass)
-        Me.GroupBox1.Location = New System.Drawing.Point(24, 145)
+        Me.GroupBox1.Location = New System.Drawing.Point(17, 176)
         Me.GroupBox1.Margin = New System.Windows.Forms.Padding(4)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Padding = New System.Windows.Forms.Padding(4)
@@ -324,7 +327,7 @@ Partial Class frmClassifyGroundWater
         Me.groupSbk.Controls.Add(Me.btnSbkProject)
         Me.groupSbk.Controls.Add(Me.cmbSobekCases)
         Me.groupSbk.Controls.Add(Me.Label2)
-        Me.groupSbk.Location = New System.Drawing.Point(20, 15)
+        Me.groupSbk.Location = New System.Drawing.Point(13, 46)
         Me.groupSbk.Margin = New System.Windows.Forms.Padding(4)
         Me.groupSbk.Name = "groupSbk"
         Me.groupSbk.Padding = New System.Windows.Forms.Padding(4)
@@ -335,7 +338,7 @@ Partial Class frmClassifyGroundWater
         '
         'prProgress
         '
-        Me.prProgress.Location = New System.Drawing.Point(24, 417)
+        Me.prProgress.Location = New System.Drawing.Point(17, 448)
         Me.prProgress.Margin = New System.Windows.Forms.Padding(4)
         Me.prProgress.Name = "prProgress"
         Me.prProgress.Size = New System.Drawing.Size(948, 28)
@@ -344,7 +347,7 @@ Partial Class frmClassifyGroundWater
         'lblProgress
         '
         Me.lblProgress.AutoSize = True
-        Me.lblProgress.Location = New System.Drawing.Point(20, 398)
+        Me.lblProgress.Location = New System.Drawing.Point(13, 429)
         Me.lblProgress.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblProgress.Name = "lblProgress"
         Me.lblProgress.Size = New System.Drawing.Size(70, 16)
@@ -354,7 +357,7 @@ Partial Class frmClassifyGroundWater
         'GroupBox2
         '
         Me.GroupBox2.Controls.Add(Me.chkSeepage)
-        Me.GroupBox2.Location = New System.Drawing.Point(583, 15)
+        Me.GroupBox2.Location = New System.Drawing.Point(576, 46)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(510, 123)
         Me.GroupBox2.TabIndex = 25
@@ -371,11 +374,27 @@ Partial Class frmClassifyGroundWater
         Me.chkSeepage.Text = "Classificeer kwel eveneens"
         Me.chkSeepage.UseVisualStyleBackColor = True
         '
+        'MenuStrip1
+        '
+        Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.HelpToolStripMenuItem})
+        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.MenuStrip1.Name = "MenuStrip1"
+        Me.MenuStrip1.Size = New System.Drawing.Size(1106, 28)
+        Me.MenuStrip1.TabIndex = 26
+        Me.MenuStrip1.Text = "MenuStrip1"
+        '
+        'HelpToolStripMenuItem
+        '
+        Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 24)
+        Me.HelpToolStripMenuItem.Text = "Help"
+        '
         'frmClassifyGroundWater
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1106, 460)
+        Me.ClientSize = New System.Drawing.Size(1106, 490)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.lblProgress)
         Me.Controls.Add(Me.prProgress)
@@ -383,7 +402,9 @@ Partial Class frmClassifyGroundWater
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.Instellingen)
         Me.Controls.Add(Me.btnClassify)
+        Me.Controls.Add(Me.MenuStrip1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MainMenuStrip = Me.MenuStrip1
         Me.Margin = New System.Windows.Forms.Padding(4)
         Me.Name = "frmClassifyGroundWater"
         Me.Text = "Initiële grondwaterstanden uit D-Hydro classificeren"
@@ -395,6 +416,8 @@ Partial Class frmClassifyGroundWater
         Me.groupSbk.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
+        Me.MenuStrip1.ResumeLayout(False)
+        Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -430,4 +453,6 @@ Partial Class frmClassifyGroundWater
     Friend WithEvents colNaam As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents colPercentiel As Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents colTotPerc As Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents MenuStrip1 As Windows.Forms.MenuStrip
+    Friend WithEvents HelpToolStripMenuItem As Windows.Forms.ToolStripMenuItem
 End Class

@@ -200,4 +200,8 @@ Public Class frmClassifyGroundWater
     Private Sub btnGroeiseizoenHelp_Click(sender As Object, e As EventArgs) Handles btnGroeiseizoenHelp.Click
         MsgBox("Deze periode sluit aan bij de seizoenen zoals gepubliceerd in de neerslagstatistieken 2004 door STOWA en zoals ook in De Nieuwe Stochastentool geïmplementerd.")
     End Sub
+
+    Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
+        Me.Setup.GeneralFunctions.OpenURL("https://siebebosch.github.io/DeNieuweStochastentool/GUI/grondwaterclassificatie.html")
+    End Sub
 End Class

@@ -15587,5 +15587,9 @@ Public Class GeneralFunctions
         End If
     End Sub
 
+    Public Sub OpenURL(url As String)
+        Process.Start(New ProcessStartInfo(url) With {.UseShellExecute = True})
+    End Sub
+
 End Class
 
