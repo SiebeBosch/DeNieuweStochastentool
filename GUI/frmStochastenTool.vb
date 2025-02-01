@@ -3439,63 +3439,84 @@ Public Class frmStochasten
         If Not Me.Setup.GeneralFunctions.SQLiteColumnExists(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE") Then Setup.GeneralFunctions.SQLiteCreateColumn(Me.Setup.SqliteCon, "NEERSLAGVERLOOP", "FRACTIE", enmSQLiteDataType.SQLITEREAL)
     End Sub
     Public Sub UpdateClimateScenariosTable(progress As Integer)
-        '------------------------------------------------------------------------------------
-        '               UPDATE TABEL KLIMAATSCENARIOS
-        '------------------------------------------------------------------------------------
         Setup.GeneralFunctions.UpdateProgressBar("Updating table KLIMAATSCENARIOS", progress, 100, True)
 
         ' Create table if it doesn't exist
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "KLIMAATSCENARIOS") Then
-            Dim createTableSQL As String = "CREATE TABLE KLIMAATSCENARIOS (CLIMIDX INTEGER PRIMARY KEY AUTOINCREMENT, NAAM TEXT UNIQUE)"
+            Dim createTableSQL As String = "CREATE TABLE KLIMAATSCENARIOS (NAAM TEXT)"
             Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createTableSQL)
         End If
 
-        ' Check for index existence and create if missing
-        Dim checkIndexSQL As String = "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_klimaatscenarios_naam'"
-        If Setup.GeneralFunctions.SQLiteGetFirstInt(Me.Setup.SqliteCon, checkIndexSQL) = 0 Then
-            Dim createIndexSQL As String = "CREATE UNIQUE INDEX idx_klimaatscenarios_naam ON KLIMAATSCENARIOS(NAAM)"
-            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createIndexSQL)
-        End If
+        ' Remove duplicates using a different approach
+        Dim dedupeSQL As String = "
+        DELETE FROM KLIMAATSCENARIOS 
+        WHERE rowid NOT IN (
+            SELECT MIN(rowid) 
+            FROM KLIMAATSCENARIOS 
+            GROUP BY NAAM
+        )"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, dedupeSQL)
 
-        ' Insert all climate scenarios in a single transaction
-        Dim sql As String = "INSERT OR IGNORE INTO KLIMAATSCENARIOS (NAAM) VALUES " &
-                       "('STOWA2024_HUIDIG'), " &
-                       "('STOWA2024_2033L'), " &
-                       "('STOWA2024_2050L'), " &
-                       "('STOWA2024_2050M'), " &
-                       "('STOWA2024_2050H'), " &
-                       "('STOWA2024_2100L'), " &
-                       "('STOWA2024_2100M'), " &
-                       "('STOWA2024_2100H'), " &
-                       "('STOWA2024_2150L'), " &
-                       "('STOWA2024_2150M'), " &
-                       "('STOWA2024_2150H')"
+        Try
+            Dim checkIndexSQL As String = "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_klimaatscenarios_naam'"
+            If Setup.GeneralFunctions.SQLiteGetFirstInt(Me.Setup.SqliteCon, checkIndexSQL) = 0 Then
+                Dim createIndexSQL As String = "CREATE UNIQUE INDEX idx_klimaatscenarios_naam ON KLIMAATSCENARIOS(NAAM)"
+                Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createIndexSQL)
+            End If
+        Catch ex As Exception
+            Debug.WriteLine("Error creating index: " & ex.Message)
+        End Try
+
+        Dim sql As String = "INSERT OR REPLACE INTO KLIMAATSCENARIOS (NAAM) VALUES " &
+                   "('STOWA2024_HUIDIG'), " &
+                   "('STOWA2024_2033L'), " &
+                   "('STOWA2024_2050L'), " &
+                   "('STOWA2024_2050M'), " &
+                   "('STOWA2024_2050H'), " &
+                   "('STOWA2024_2100L'), " &
+                   "('STOWA2024_2100M'), " &
+                   "('STOWA2024_2100H'), " &
+                   "('STOWA2024_2150L'), " &
+                   "('STOWA2024_2150M'), " &
+                   "('STOWA2024_2150H')"
         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
     End Sub
 
     Public Sub UpdateDurationsTable(progress As Integer)
-        '------------------------------------------------------------------------------------
-        '               UPDATE TABEL DUREN
-        '------------------------------------------------------------------------------------
         Setup.GeneralFunctions.UpdateProgressBar("Updating table DUREN", progress, 100, True)
 
         ' Create table if it doesn't exist
         If Not Setup.GeneralFunctions.SQLiteTableExists(Me.Setup.SqliteCon, "DUREN") Then
-            Dim createTableSQL As String = "CREATE TABLE DUREN (DURIDX INTEGER PRIMARY KEY AUTOINCREMENT, DUUR INTEGER UNIQUE)"
+            Dim createTableSQL As String = "CREATE TABLE DUREN (DUUR INTEGER)"
             Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createTableSQL)
         End If
 
-        ' Check for index existence and create if missing
-        Dim checkIndexSQL As String = "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_duren_duur'"
-        If Setup.GeneralFunctions.SQLiteGetFirstInt(Me.Setup.SqliteCon, checkIndexSQL) = 0 Then
-            Dim createIndexSQL As String = "CREATE UNIQUE INDEX idx_duren_duur ON DUREN(DUUR)"
-            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createIndexSQL)
-        End If
+        ' Remove duplicates using rowid
+        Dim dedupeSQL As String = "
+        DELETE FROM DUREN 
+        WHERE rowid NOT IN (
+            SELECT MIN(rowid) 
+            FROM DUREN 
+            GROUP BY DUUR
+        )"
+        Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, dedupeSQL)
 
-        ' Insert values
-        Dim sql As String = "INSERT OR IGNORE INTO DUREN (DUUR) VALUES (24), (48), (96), (192), (216)"
+        Try
+            Dim checkIndexSQL As String = "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_duren_duur'"
+            If Setup.GeneralFunctions.SQLiteGetFirstInt(Me.Setup.SqliteCon, checkIndexSQL) = 0 Then
+                Dim createIndexSQL As String = "CREATE UNIQUE INDEX idx_duren_duur ON DUREN(DUUR)"
+                Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, createIndexSQL)
+            End If
+        Catch ex As Exception
+            Debug.WriteLine("Error creating index: " & ex.Message)
+        End Try
+
+        Dim sql As String = "INSERT OR REPLACE INTO DUREN (DUUR) VALUES (24), (48), (96), (192), (216)"
         Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, sql)
     End Sub
+
+
+
 
     Public Sub UpdateSeasonsTable(progress As Integer)
         '------------------------------------------------------------------------------------

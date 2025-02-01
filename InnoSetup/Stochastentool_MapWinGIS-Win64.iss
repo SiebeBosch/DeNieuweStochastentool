@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Stochastentool"
-#define MyAppVersion "3.1.0.1"
+#define MyAppVersion "3.1.0.2"
 #define MyAppPublisher "Hydroconsult"
 #define MyAppURL "http://www.sobek.tools"
 #define SetupLocation "c:\GITHUB\DeNieuweStochastentool\InnoSetup"

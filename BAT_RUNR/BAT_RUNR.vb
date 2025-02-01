@@ -5,6 +5,7 @@ Imports System.Threading
 Module BAT_RUNR
     Dim semaphore As Semaphore
     Dim simulationsFile As String
+    Dim removeDirAfterSimulation As String
     Dim maxConcurrentSimulations As Integer
     Dim maxWaitTimeHours As Integer
     Dim completedSimulations As Integer = 0
@@ -14,7 +15,7 @@ Module BAT_RUNR
 
     Sub Main(args As String())
 
-        Console.WriteLine("BAT_RUNR version 2.1.0.")
+        Console.WriteLine("BAT_RUNR version 2.1.1.")
         Console.WriteLine("This application runs simulations in parallel from a JSON file.")
         Console.WriteLine("Args: [simulations.json] [max_concurrent]")
         If args.Length < 3 Then
@@ -28,6 +29,9 @@ Module BAT_RUNR
             While Not Integer.TryParse(Console.ReadLine(), maxWaitTimeHours)
                 Console.WriteLine("Invalid input. Please enter a numeric value:")
             End While
+            Console.WriteLine("Optional: a subdirectory relative to the working dir to be deleted after each simulation?")
+            Console.WriteLine("Leave blank if none, use '.' for the entire working directory itself.")
+            removeDirAfterSimulation = Console.ReadLine()
         Else
             simulationsFile = args(0)
             Console.WriteLine($"Path to the simulations file set: {args(0)}")
@@ -35,6 +39,9 @@ Module BAT_RUNR
             Console.WriteLine($"Maximum number of concurrent simulations: {args(1)}")
             maxWaitTimeHours = Integer.Parse(args(2))
             Console.WriteLine($"Maximum wait time per simulation (hours): {args(2)}")
+            If args.Count > 3 Then
+                removeDirAfterSimulation = args(3)
+            End If
         End If
 
         If Not File.Exists(simulationsFile) Then
@@ -79,7 +86,7 @@ Module BAT_RUNR
             Dim thread As New Thread(Sub()
                                          Try
                                              Console.WriteLine("Thread created for simulation: " & sim.Executable)
-                                             RunSimulation(sim.WorkDir, sim.Executable, sim.Arguments, simulationLogFile, errorLogFile)
+                                             RunSimulation(sim.WorkDir, sim.Executable, sim.Arguments, simulationLogFile, errorLogFile, removeDirAfterSimulation)
                                              UpdateProgress()
                                          Catch ex As Exception
                                              Console.WriteLine("Error in thread: " & ex.Message)
@@ -109,7 +116,7 @@ Module BAT_RUNR
         Public Property WorkDir As String
     End Class
 
-    Sub RunSimulation(workDir As String, filePath As String, arguments As String, simulationLogFile As String, errorLogFile As String)
+    Sub RunSimulation(workDir As String, filePath As String, arguments As String, simulationLogFile As String, errorLogFile As String, Optional ByVal removeDirAfterSimulation As String = "")
         ' First acquire the semaphore before doing anything
         semaphore.WaitOne()
 
@@ -194,6 +201,17 @@ Module BAT_RUNR
                     End SyncLock
                     Console.WriteLine(errorMsg)
                 Else
+                    If removeDirAfterSimulation <> "" Then
+                        Dim fullPathToDelete As String = Path.Combine(process.StartInfo.WorkingDirectory, removeDirAfterSimulation)
+                        Console.WriteLine($"Removing dir: {fullPathToDelete}")
+
+                        ' Make sure process is fully disposed before attempting deletion
+                        process.Close()
+
+                        If Directory.Exists(fullPathToDelete) Then
+                            Directory.Delete(fullPathToDelete, recursive:=True) 'include the dir including all its subdirs
+                        End If
+                    End If
                     Console.WriteLine($"Simulation completed successfully: {filePath}")
                 End If
             End Using
