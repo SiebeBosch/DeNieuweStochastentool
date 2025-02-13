@@ -664,6 +664,7 @@ Public Class frmPublish
         End Try
     End Function
 
-
-
+    Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
+        Me.Setup.GeneralFunctions.OpenURL("")
+    End Sub
 End Class

@@ -64,6 +64,7 @@ Public Class clsDIMR
             If Not FlowFM.ReadMDU() Then Throw New Exception("Error reading FlowFM MDU-file.")       'read the MDU file. This contains references to e.g. our _net.nc file we must read
             If Not FlowFM.ReadNetwork() Then Throw New Exception("Error reading FlowFM Network")
             If Not FlowFM.ReadObservationpoints1D() Then Throw New Exception("Error reading FlowFM Observation points")
+            If Not FlowFM.ReadStructures1D() Then Throw New Exception("Error reading FlowFM Structures")
             Return True
         Catch ex As Exception
             Return False
@@ -134,7 +135,8 @@ Public Class clsDIMR
         'and the timestep where the maximum occurred is recieved
         'IMPORTANT: the function returns TMax as the number of seconds w.r.t. the RefDate as set in the .MDU file!!!
         Try
-            Dim Results As Double() = Nothing
+            Dim Waterlevels As Double() = Nothing
+            Dim Discharges As Double() = Nothing
             Dim Times As Double() = Nothing             'expressed in seconds w.r.t. reference date as set in .MDU
             Dim TsMaxIdx As Integer = -1
             Dim SnapBranch As cls1DBranch = Nothing
@@ -146,7 +148,7 @@ Public Class clsDIMR
             'start searching for a snap location, walk upstream and search for the nearest observation point
             If Not FlowFM.Network.Find1DSnapLocationVia1D2DLinks(X, Y, MaxSnappingDistance, SnapBranch, SnapChainage, SnapDistance) Then Throw New Exception("Kan snapping point op 1D netwerk niet vinden vanuit de breslocatie " & X & ", " & Y)
             If Not FlowFM.GetFirstUpstreamObservationpoint(SnapBranch.ID, SnapChainage, ObservationPoint) Then Throw New Exception("Kan bovenstrooms observationpoint niet vinden.")
-            FlowFM.GetWaterlevelsForObservationpoint1D(ObservationPoint.ID, Results, Times)
+            FlowFM.GetResultsForObservationpoint1D(ObservationPoint.ID, Waterlevels, Discharges, Times)
 
             'get the start- and endtime of our simulation
             Dim ReferenceDate As DateTime
@@ -154,7 +156,7 @@ Public Class clsDIMR
             Dim EndDate As DateTime
             FlowFM.GetSimulationPeriod(ReferenceDate, StartDate, EndDate)
 
-            TsMaxIdx = Setup.GeneralFunctions.MaxIdxFromArrayOfDouble(Results)                      'de tijdstapindex voor de hoogste waterstand bij het doorbraakpunt!
+            TsMaxIdx = Setup.GeneralFunctions.MaxIdxFromArrayOfDouble(Waterlevels)                      'de tijdstapindex voor de hoogste waterstand bij het doorbraakpunt!
             TimeMaxSecondsToReference = Math.Max(0, Times(TsMaxIdx) + AddShiftSeconds)              'tijdsmoment hoogste waterstand, uitgedrukt in seconden t.o.v. reference date
             DateTimeMax = ReferenceDate.AddSeconds(TimeMaxSecondsToReference)
 

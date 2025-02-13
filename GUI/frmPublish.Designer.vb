@@ -35,15 +35,18 @@ Partial Class frmPublish
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkParameters1D = New System.Windows.Forms.CheckedListBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.txtIP = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtPort = New System.Windows.Forms.TextBox()
         Me.radAPI = New System.Windows.Forms.RadioButton()
         Me.radGeoJSON = New System.Windows.Forms.RadioButton()
-        Me.txtPort = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtIP = New System.Windows.Forms.TextBox()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
+        Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -52,7 +55,7 @@ Partial Class frmPublish
         Me.GroupBox1.Controls.Add(Me.txtConfigurationName)
         Me.GroupBox1.Controls.Add(Me.radExistingWebviewer)
         Me.GroupBox1.Controls.Add(Me.radNewWebviewer)
-        Me.GroupBox1.Location = New System.Drawing.Point(12, 12)
+        Me.GroupBox1.Location = New System.Drawing.Point(15, 50)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(776, 137)
         Me.GroupBox1.TabIndex = 0
@@ -126,9 +129,9 @@ Partial Class frmPublish
         'GroupBox2
         '
         Me.GroupBox2.Controls.Add(Me.chkParameters1D)
-        Me.GroupBox2.Location = New System.Drawing.Point(7, 155)
+        Me.GroupBox2.Location = New System.Drawing.Point(7, 193)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(310, 219)
+        Me.GroupBox2.Size = New System.Drawing.Size(310, 181)
         Me.GroupBox2.TabIndex = 5
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Opties 1D"
@@ -138,7 +141,7 @@ Partial Class frmPublish
         Me.chkParameters1D.FormattingEnabled = True
         Me.chkParameters1D.Location = New System.Drawing.Point(20, 38)
         Me.chkParameters1D.Name = "chkParameters1D"
-        Me.chkParameters1D.Size = New System.Drawing.Size(271, 157)
+        Me.chkParameters1D.Size = New System.Drawing.Size(271, 123)
         Me.chkParameters1D.TabIndex = 6
         '
         'GroupBox3
@@ -149,12 +152,46 @@ Partial Class frmPublish
         Me.GroupBox3.Controls.Add(Me.txtPort)
         Me.GroupBox3.Controls.Add(Me.radAPI)
         Me.GroupBox3.Controls.Add(Me.radGeoJSON)
-        Me.GroupBox3.Location = New System.Drawing.Point(323, 155)
+        Me.GroupBox3.Location = New System.Drawing.Point(323, 193)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(465, 219)
+        Me.GroupBox3.Size = New System.Drawing.Size(465, 181)
         Me.GroupBox3.TabIndex = 6
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Opties 2D"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(49, 93)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(61, 16)
+        Me.Label3.TabIndex = 7
+        Me.Label3.Text = "IP-adres:"
+        '
+        'txtIP
+        '
+        Me.txtIP.Location = New System.Drawing.Point(145, 90)
+        Me.txtIP.Name = "txtIP"
+        Me.txtIP.Size = New System.Drawing.Size(104, 22)
+        Me.txtIP.TabIndex = 6
+        Me.txtIP.Text = "localhost"
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(49, 120)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(90, 16)
+        Me.Label2.TabIndex = 4
+        Me.Label2.Text = "Poortnummer:"
+        '
+        'txtPort
+        '
+        Me.txtPort.Location = New System.Drawing.Point(145, 117)
+        Me.txtPort.Name = "txtPort"
+        Me.txtPort.Size = New System.Drawing.Size(104, 22)
+        Me.txtPort.TabIndex = 4
+        Me.txtPort.Text = "8000"
         '
         'radAPI
         '
@@ -178,39 +215,21 @@ Partial Class frmPublish
         Me.radGeoJSON.Text = "Overschrijdingsdata in geoJSON"
         Me.radGeoJSON.UseVisualStyleBackColor = True
         '
-        'txtPort
+        'MenuStrip1
         '
-        Me.txtPort.Location = New System.Drawing.Point(145, 117)
-        Me.txtPort.Name = "txtPort"
-        Me.txtPort.Size = New System.Drawing.Size(104, 22)
-        Me.txtPort.TabIndex = 4
-        Me.txtPort.Text = "8000"
+        Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(20, 20)
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.HelpToolStripMenuItem})
+        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.MenuStrip1.Name = "MenuStrip1"
+        Me.MenuStrip1.Size = New System.Drawing.Size(800, 28)
+        Me.MenuStrip1.TabIndex = 7
+        Me.MenuStrip1.Text = "MenuStrip1"
         '
-        'Label2
+        'HelpToolStripMenuItem
         '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(49, 120)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(90, 16)
-        Me.Label2.TabIndex = 4
-        Me.Label2.Text = "Poortnummer:"
-        '
-        'txtIP
-        '
-        Me.txtIP.Location = New System.Drawing.Point(145, 90)
-        Me.txtIP.Name = "txtIP"
-        Me.txtIP.Size = New System.Drawing.Size(104, 22)
-        Me.txtIP.TabIndex = 6
-        Me.txtIP.Text = "localhost"
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(49, 93)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(61, 16)
-        Me.Label3.TabIndex = 7
-        Me.Label3.Text = "IP-adres:"
+        Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 24)
+        Me.HelpToolStripMenuItem.Text = "Help"
         '
         'frmPublish
         '
@@ -223,7 +242,9 @@ Partial Class frmPublish
         Me.Controls.Add(Me.prProgress)
         Me.Controls.Add(Me.btnPubliceren)
         Me.Controls.Add(Me.GroupBox1)
+        Me.Controls.Add(Me.MenuStrip1)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "frmPublish"
         Me.Text = "Uitkomsten publiceren"
         Me.GroupBox1.ResumeLayout(False)
@@ -231,6 +252,8 @@ Partial Class frmPublish
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
+        Me.MenuStrip1.ResumeLayout(False)
+        Me.MenuStrip1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -254,4 +277,6 @@ Partial Class frmPublish
     Friend WithEvents txtPort As TextBox
     Friend WithEvents Label3 As Label
     Friend WithEvents txtIP As TextBox
+    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
 End Class

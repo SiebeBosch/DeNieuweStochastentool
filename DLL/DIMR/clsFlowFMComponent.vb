@@ -9,6 +9,7 @@ Public Class clsFlowFMComponent
     Public FouConfig As clsFouConfigFile
 
     Public Observationpoints1D As New Dictionary(Of String, cls1DBranchObject)
+    Public Structures1D As New Dictionary(Of String, cls1DBranchObject)
     Public CellCenterpoints2D As New List(Of clsXY)  'key = cell index number
 
     Dim HisNCFile As clsHisNCFile
@@ -103,7 +104,46 @@ Public Class clsFlowFMComponent
             Next
             Return True
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function ReadNetwork of class clsFlowFMComponent: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function ReadObservationpoints1D of class clsFlowFMComponent: " & ex.Message)
+            Return False
+        End Try
+
+    End Function
+
+
+    Public Function ReadStructures1D() As Boolean
+        Try
+            'the path to the network file must be stored in the MDU file so read it
+            If MDUFile Is Nothing Then Throw New Exception("Could not read network since the MDU File has not yet been read.")
+            Dim filenames As New List(Of String)
+            filenames = MDUFile.getAttributeValues("[Geometry]", "structureFile")
+
+            For Each FileName As String In filenames
+                Dim path As String = getDirectory() & "\" & FileName
+                If Strings.Right(FileName.Trim.ToLower, 3) = "ini" Then
+                    'we are dealing with 1D structures
+                    Dim iniFile As New clsIniFile(Me.Setup)
+                    iniFile.Read(path)
+                    For Each myChapter As clsIniFileChapter In iniFile.Chapters.Values
+                        If myChapter.Name.Trim.ToLower = "[structure]" Then
+                            Dim myStruc As New cls1DBranchObject(Me.Setup, Me.Network)
+                            For Each Attribute As clsIniFileAttribute In myChapter.Attributes.Values
+                                If Attribute.Name.Trim.ToUpper = "ID" Then
+                                    myStruc.ID = Attribute.GetValue
+                                ElseIf Attribute.Name.Trim.ToUpper = "BRANCHID" Then
+                                    myStruc.SetBranchByID(Attribute.GetValue)
+                                ElseIf Attribute.Name.Trim.ToUpper = "CHAINAGE" Then
+                                    myStruc.SetChainage(Attribute.GetValueAsDouble)
+                                End If
+                            Next
+                            Structures1D.Add(myStruc.ID.Trim.ToUpper, myStruc)
+                        End If
+                    Next
+                End If
+            Next
+            Return True
+        Catch ex As Exception
+            Me.Setup.Log.AddError("Error in function ReadStructures1D of class clsFlowFMComponent: " & ex.Message)
             Return False
         End Try
 
@@ -246,11 +286,13 @@ Public Class clsFlowFMComponent
 
     End Function
 
-    Public Function GetWaterlevelsForObservationpoint1D(NodeID As String, ByRef Results As Double(), ByRef Times As Double()) As Boolean
+    Public Function GetResultsForObservationpoint1D(NodeID As String, ByRef Waterlevels As Double(), ByRef Discharges As Double(), ByRef Times As Double()) As Boolean
         Try
             Dim IDList As String() = Nothing
-            Dim Waterlevels As Double(,) = Nothing
-            Results = Nothing
+            Dim myWaterlevels As Double(,) = Nothing
+            Dim myDischarges As Double(,) = Nothing
+            Waterlevels = Nothing
+            Discharges = Nothing
             Dim idx As Integer
             Dim ts As Integer
 
@@ -260,28 +302,31 @@ Public Class clsFlowFMComponent
                 Dim path As String = GetHisResultsFileName()
                 path = getOutputFullDir() & "\" & path
                 HisNCFile = New clsHisNCFile(path, Setup)
-                HisNCFile.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList)
+                HisNCFile.ReadResultsAtObservationPoints(myWaterlevels, myDischarges, Times, IDList)
             Else
                 'this file has already been read so just read it
-                HisNCFile.ReadWaterLevelsAtObservationPoints(Waterlevels, Times, IDList)
+                HisNCFile.ReadResultsAtObservationPoints(myWaterlevels, myDischarges, Times, IDList)
             End If
 
             'find the timeseries for our requested ID and return it
             For idx = 0 To IDList.Count - 1
                 If IDList(idx).Trim.ToUpper = NodeID.Trim.ToUpper Then
-                    ReDim Results(0 To UBound(Waterlevels, 1))
-                    For ts = 0 To UBound(Waterlevels, 1)
-                        Results(ts) = Waterlevels(ts, idx)
+                    ReDim Waterlevels(0 To UBound(myWaterlevels, 1))
+                    For ts = 0 To UBound(myWaterlevels, 1)
+                        Waterlevels(ts) = myWaterlevels(ts, idx)
+                    Next
+                    ReDim Discharges(0 To UBound(myDischarges, 1))
+                    For ts = 0 To UBound(myDischarges, 1)
+                        Discharges(ts) = myDischarges(ts, idx)
                     Next
                     Return True
                 End If
             Next
 
-
             Throw New Exception("Results for observation point " & NodeID & " not found in _his.nc file.")
 
         Catch ex As Exception
-            Me.Setup.Log.AddError("Error in function GetWaterlevelsForObservationpoint1D of class clsFlowFMComponent: " & ex.Message)
+            Me.Setup.Log.AddError("Error in function GetResultsForObservationpoint1D of class clsFlowFMComponent: " & ex.Message)
             Return False
         End Try
     End Function

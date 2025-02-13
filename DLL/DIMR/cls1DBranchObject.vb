@@ -21,6 +21,10 @@ Public Class cls1DBranchObject
         Chainage = myChainage
     End Sub
 
+    Public Function getBranch() As cls1DBranch
+        Return Branch
+    End Function
+
     Public Function CalcCoordinates() As Boolean
         Try
             Dim myChainage As Double = 0

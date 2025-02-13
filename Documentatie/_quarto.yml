@@ -59,6 +59,8 @@ website:
             text: Simuleren in batch
           - href: GUI/grondwaterclassificatie.qmd
             text: Grondwaterclassificatie
+          - href: GUI/publiceren.qmd
+            text: Resultaten publiceren
       - section: "Technische documentatie"
         contents:
           - href: technical_docs/gebiedsreductie.qmd

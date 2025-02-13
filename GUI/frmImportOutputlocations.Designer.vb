@@ -38,6 +38,7 @@ Partial Class frmImportOutputlocations
         Me.chkObservationPoints1D = New System.Windows.Forms.CheckBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.chkOutput0D = New System.Windows.Forms.CheckBox()
+        Me.chkStructures1D = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
@@ -125,11 +126,11 @@ Partial Class frmImportOutputlocations
         Me.chkCalculationPoints1D.AutoSize = True
         Me.chkCalculationPoints1D.Checked = True
         Me.chkCalculationPoints1D.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkCalculationPoints1D.Location = New System.Drawing.Point(11, 60)
+        Me.chkCalculationPoints1D.Location = New System.Drawing.Point(11, 59)
         Me.chkCalculationPoints1D.Name = "chkCalculationPoints1D"
-        Me.chkCalculationPoints1D.Size = New System.Drawing.Size(126, 20)
+        Me.chkCalculationPoints1D.Size = New System.Drawing.Size(225, 20)
         Me.chkCalculationPoints1D.TabIndex = 1
-        Me.chkCalculationPoints1D.Text = "Rekenpunten 1D"
+        Me.chkCalculationPoints1D.Text = "Rekenpunten 1D (alleen SOBEK)"
         Me.chkCalculationPoints1D.UseVisualStyleBackColor = True
         '
         'btnImport
@@ -165,9 +166,9 @@ Partial Class frmImportOutputlocations
         Me.chkObservationPoints1D.AutoSize = True
         Me.chkObservationPoints1D.Checked = True
         Me.chkObservationPoints1D.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkObservationPoints1D.Location = New System.Drawing.Point(11, 86)
+        Me.chkObservationPoints1D.Location = New System.Drawing.Point(11, 109)
         Me.chkObservationPoints1D.Name = "chkObservationPoints1D"
-        Me.chkObservationPoints1D.Size = New System.Drawing.Size(260, 20)
+        Me.chkObservationPoints1D.Size = New System.Drawing.Size(263, 20)
         Me.chkObservationPoints1D.TabIndex = 8
         Me.chkObservationPoints1D.Text = "Observation points 1D (alleen D-Hydro)"
         Me.chkObservationPoints1D.UseVisualStyleBackColor = True
@@ -177,6 +178,7 @@ Partial Class frmImportOutputlocations
         Me.GroupBox2.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox2.Controls.Add(Me.chkStructures1D)
         Me.GroupBox2.Controls.Add(Me.chkOutput0D)
         Me.GroupBox2.Controls.Add(Me.chkObservationPoints1D)
         Me.GroupBox2.Controls.Add(Me.chkCalculationPoints1D)
@@ -194,10 +196,21 @@ Partial Class frmImportOutputlocations
         Me.chkOutput0D.CheckState = System.Windows.Forms.CheckState.Checked
         Me.chkOutput0D.Location = New System.Drawing.Point(11, 34)
         Me.chkOutput0D.Name = "chkOutput0D"
-        Me.chkOutput0D.Size = New System.Drawing.Size(274, 20)
+        Me.chkOutput0D.Size = New System.Drawing.Size(277, 20)
         Me.chkOutput0D.TabIndex = 11
         Me.chkOutput0D.Text = "Uitvoer 0D (RR en conceptuele modellen)"
         Me.chkOutput0D.UseVisualStyleBackColor = True
+        '
+        'chkStructures1D
+        '
+        Me.chkStructures1D.AutoSize = True
+        Me.chkStructures1D.Enabled = False
+        Me.chkStructures1D.Location = New System.Drawing.Point(11, 84)
+        Me.chkStructures1D.Name = "chkStructures1D"
+        Me.chkStructures1D.Size = New System.Drawing.Size(226, 20)
+        Me.chkStructures1D.TabIndex = 12
+        Me.chkStructures1D.Text = "Kunstwerken 1D (alleen D-Hydro)"
+        Me.chkStructures1D.UseVisualStyleBackColor = True
         '
         'frmImportOutputlocations
         '
@@ -236,4 +249,5 @@ Partial Class frmImportOutputlocations
     Friend WithEvents chkObservationPoints1D As CheckBox
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents chkOutput0D As CheckBox
+    Friend WithEvents chkStructures1D As CheckBox
 End Class

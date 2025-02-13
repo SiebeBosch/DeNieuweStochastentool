@@ -31,8 +31,6 @@ Partial Class frmStochasten
         Me.OpenXMLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveXMLToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
         Me.SaveXMLToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ModelsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ModelToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToevoegenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -41,6 +39,8 @@ Partial Class frmStochasten
         Me.AlleVerwijderenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.VoorgedefinieerdToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SumaquasHertogenboschToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EditToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PasteToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GrondwatersClassificerenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.SOBEKToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -101,6 +101,8 @@ Partial Class frmStochasten
         Me.cmbClimate = New System.Windows.Forms.ComboBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.grBerekeningen = New System.Windows.Forms.GroupBox()
+        Me.txtMaxWaitTimeHours = New System.Windows.Forms.TextBox()
+        Me.Label25 = New System.Windows.Forms.Label()
         Me.hlpBerekeningen2 = New System.Windows.Forms.Button()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtUitloop = New System.Windows.Forms.TextBox()
@@ -302,8 +304,6 @@ Partial Class frmStochasten
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.lblProgress = New System.Windows.Forms.Label()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
-        Me.Label25 = New System.Windows.Forms.Label()
-        Me.txtMaxWaitTimeHours = New System.Windows.Forms.TextBox()
         Me.mnuMenu.SuspendLayout()
         Me.tabStochastentool.SuspendLayout()
         Me.tabSettings.SuspendLayout()
@@ -378,7 +378,7 @@ Partial Class frmStochasten
         'mnuMenu
         '
         Me.mnuMenu.ImageScalingSize = New System.Drawing.Size(20, 20)
-        Me.mnuMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.EditToolStripMenuItem, Me.ModelsToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.MappenBeherenToolStripMenuItem, Me.KaartToolStripMenuItem, Me.GrafiekenToolStripMenuItem, Me.DatabaseToolStripMenuItem1, Me.AboutToolStripMenuItem, Me.BetafunctiesToolStripMenuItem})
+        Me.mnuMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.ModelsToolStripMenuItem, Me.EditToolStripMenuItem, Me.ToolsToolStripMenuItem, Me.MappenBeherenToolStripMenuItem, Me.KaartToolStripMenuItem, Me.GrafiekenToolStripMenuItem, Me.DatabaseToolStripMenuItem1, Me.AboutToolStripMenuItem, Me.BetafunctiesToolStripMenuItem})
         Me.mnuMenu.Location = New System.Drawing.Point(0, 0)
         Me.mnuMenu.Name = "mnuMenu"
         Me.mnuMenu.Padding = New System.Windows.Forms.Padding(5, 2, 0, 2)
@@ -396,34 +396,20 @@ Partial Class frmStochasten
         'OpenXMLToolStripMenuItem
         '
         Me.OpenXMLToolStripMenuItem.Name = "OpenXMLToolStripMenuItem"
-        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
+        Me.OpenXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.OpenXMLToolStripMenuItem.Text = "XML openen"
         '
         'SaveXMLToolStripMenuItem1
         '
         Me.SaveXMLToolStripMenuItem1.Name = "SaveXMLToolStripMenuItem1"
-        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(177, 26)
+        Me.SaveXMLToolStripMenuItem1.Size = New System.Drawing.Size(224, 26)
         Me.SaveXMLToolStripMenuItem1.Text = "XML opslaan"
         '
         'SaveXMLToolStripMenuItem
         '
         Me.SaveXMLToolStripMenuItem.Name = "SaveXMLToolStripMenuItem"
-        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(177, 26)
+        Me.SaveXMLToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
         Me.SaveXMLToolStripMenuItem.Text = "Afsluiten"
-        '
-        'EditToolStripMenuItem
-        '
-        Me.EditToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasteToolStripMenuItem})
-        Me.EditToolStripMenuItem.Name = "EditToolStripMenuItem"
-        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 24)
-        Me.EditToolStripMenuItem.Text = "Bewerken"
-        '
-        'PasteToolStripMenuItem
-        '
-        Me.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
-        Me.PasteToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.V), System.Windows.Forms.Keys)
-        Me.PasteToolStripMenuItem.Size = New System.Drawing.Size(193, 26)
-        Me.PasteToolStripMenuItem.Text = "Plakken"
         '
         'ModelsToolStripMenuItem
         '
@@ -476,6 +462,20 @@ Partial Class frmStochasten
         Me.SumaquasHertogenboschToolStripMenuItem.Name = "SumaquasHertogenboschToolStripMenuItem"
         Me.SumaquasHertogenboschToolStripMenuItem.Size = New System.Drawing.Size(275, 26)
         Me.SumaquasHertogenboschToolStripMenuItem.Text = "Sumaqua 's-Hertogenbosch"
+        '
+        'EditToolStripMenuItem
+        '
+        Me.EditToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.PasteToolStripMenuItem})
+        Me.EditToolStripMenuItem.Name = "EditToolStripMenuItem"
+        Me.EditToolStripMenuItem.Size = New System.Drawing.Size(87, 24)
+        Me.EditToolStripMenuItem.Text = "Bewerken"
+        '
+        'PasteToolStripMenuItem
+        '
+        Me.PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
+        Me.PasteToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Control Or System.Windows.Forms.Keys.V), System.Windows.Forms.Keys)
+        Me.PasteToolStripMenuItem.Size = New System.Drawing.Size(193, 26)
+        Me.PasteToolStripMenuItem.Text = "Plakken"
         '
         'ToolsToolStripMenuItem
         '
@@ -1011,6 +1011,25 @@ Partial Class frmStochasten
         Me.grBerekeningen.TabIndex = 38
         Me.grBerekeningen.TabStop = False
         Me.grBerekeningen.Text = "Berekeningen"
+        '
+        'txtMaxWaitTimeHours
+        '
+        Me.txtMaxWaitTimeHours.Location = New System.Drawing.Point(193, 124)
+        Me.txtMaxWaitTimeHours.Margin = New System.Windows.Forms.Padding(4)
+        Me.txtMaxWaitTimeHours.Name = "txtMaxWaitTimeHours"
+        Me.txtMaxWaitTimeHours.Size = New System.Drawing.Size(73, 22)
+        Me.txtMaxWaitTimeHours.TabIndex = 74
+        Me.txtMaxWaitTimeHours.Text = "1"
+        '
+        'Label25
+        '
+        Me.Label25.AutoSize = True
+        Me.Label25.Location = New System.Drawing.Point(12, 126)
+        Me.Label25.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label25.Name = "Label25"
+        Me.Label25.Size = New System.Drawing.Size(159, 16)
+        Me.Label25.TabIndex = 73
+        Me.Label25.Text = "Maximale wachttijd (uren):"
         '
         'hlpBerekeningen2
         '
@@ -3185,25 +3204,6 @@ Partial Class frmStochasten
         Me.prProgress.Name = "prProgress"
         Me.prProgress.Size = New System.Drawing.Size(1675, 28)
         Me.prProgress.TabIndex = 24
-        '
-        'Label25
-        '
-        Me.Label25.AutoSize = True
-        Me.Label25.Location = New System.Drawing.Point(12, 126)
-        Me.Label25.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label25.Name = "Label25"
-        Me.Label25.Size = New System.Drawing.Size(159, 16)
-        Me.Label25.TabIndex = 73
-        Me.Label25.Text = "Maximale wachttijd (uren):"
-        '
-        'txtMaxWaitTimeHours
-        '
-        Me.txtMaxWaitTimeHours.Location = New System.Drawing.Point(193, 124)
-        Me.txtMaxWaitTimeHours.Margin = New System.Windows.Forms.Padding(4)
-        Me.txtMaxWaitTimeHours.Name = "txtMaxWaitTimeHours"
-        Me.txtMaxWaitTimeHours.Size = New System.Drawing.Size(73, 22)
-        Me.txtMaxWaitTimeHours.TabIndex = 74
-        Me.txtMaxWaitTimeHours.Text = "1"
         '
         'frmStochasten
         '

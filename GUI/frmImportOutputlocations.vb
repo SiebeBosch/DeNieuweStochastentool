@@ -253,6 +253,48 @@ Public Class frmImportOutputlocations
             Me.Setup.Log.AddMessage("Reading DIMRData")
             If Not Setup.DIMRData.ReadAll() Then Throw New Exception("DIMR Project could not be read: " & ModelDir)
 
+            If chkStructures1D.Checked Then
+                Me.Setup.Log.AddMessage("Reading structures.")
+
+                j = 0
+                n = Setup.DIMRData.FlowFM.structures1D.Count
+                For Each Structure1D As STOCHLIB.cls1DBranchObject In Setup.DIMRData.FlowFM.Structures1D.Values
+
+                    If Structure1D.getBranch Is Nothing Then
+                        Me.Setup.Log.AddWarning("Branch not found for structure " & Structure1D.ID & ". Object was skipped.")
+                        Continue For
+                    End If
+
+                    Structure1D.CalcCoordinates()
+
+                    j += 1
+                    Me.Setup.GeneralFunctions.UpdateProgressBar("", j, n)
+
+                    'apply the selection by ID
+                    If txtIDFilter.Text = "" OrElse Me.Setup.GeneralFunctions.TextMatchUsingWildcards(IDPAtterns, Structure1D.ID, True) Then
+                        'compute the map coordinates of our point
+                        Setup.GeneralFunctions.RD2WGS84(Structure1D.X, Structure1D.Y, Lat, Lon)
+
+                        Dim ShapeIdx As Integer = -1
+                        If SubcatchmentsSF IsNot Nothing Then ShapeIdx = SubcatchmentsSF.sf.PointInShapefile(Structure1D.X, Structure1D.Y)
+                        If ShapeIdx > 0 Then
+                            'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
+                            WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
+                            ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & Structure1D.ID & "','" & Structure1D.ID & "','" & ModelID & "','FLOW1D'," & "'discharge'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & Structure1D.X & "," & Structure1D.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                        Else
+                            'could not find target levels. Only write the location and parameters
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & Structure1D.ID & "','" & Structure1D.ID & "','" & ModelID & "','FLOW1D'," & "'discharge'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & Structure1D.X & "," & Structure1D.Y & "," & Lat & "," & Lon & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                            Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & Structure1D.ID)
+                        End If
+                    End If
+                Next
+
+            End If
+
+
             If chkObservationPoints1D.Checked Then
                 Me.Setup.Log.AddMessage("Reading observation points.")
 
@@ -276,11 +318,15 @@ Public Class frmImportOutputlocations
                             'retrieve the target levels and insert our location and its parameter in the OUTPUTLOCATIONS table
                             WP = SubcatchmentsSF.sf.CellValue(WPFieldIdx, ShapeIdx)
                             ZP = SubcatchmentsSF.sf.CellValue(ZPFieldIdx, ShapeIdx)
-                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'waterlevel'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON, ZP, WP) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'discharge'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & "," & Math.Round(ZP, 2) & "," & Math.Round(WP, 2) & ");"
                             Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                         Else
                             'could not find target levels. Only write the location and parameters
-                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'water level'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'waterlevel'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
+                            Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
+                            query = "INSERT INTO OUTPUTLOCATIONS (LOCATIEID, LOCATIENAAM, MODELID, MODULE, MODELPAR, RESULTSFILE, RESULTSTYPE, X, Y, LAT, LON) VALUES ('" & ObsPoint.ID & "','" & ObsPoint.ID & "','" & ModelID & "','FLOW1D'," & "'discharge'" & ",'" & Me.Setup.DIMRData.FlowFM.GetHisResultsFileName() & "','" & cmbResultsFilter.Text & "'," & ObsPoint.X & "," & ObsPoint.Y & "," & Lat & "," & Lon & ");"
                             Setup.GeneralFunctions.SQLiteNoQuery(Me.Setup.SqliteCon, query, False)
                             Me.Setup.Log.AddError("Could not retrieve underlying shape for waterlevel location " & ObsPoint.ID)
                         End If

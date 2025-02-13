@@ -331,6 +331,12 @@ div.csl-indent {
  <span class="menu-text">Grondwaterclassificatie</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../GUI/publiceren.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Resultaten publiceren</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -435,7 +441,7 @@ div.csl-indent {
 </div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="img/meteobase_oppervlaktereductie.png" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Gebiedsreductiefactor in Meteobase"><img src="img/meteobase_oppervlaktereductie.png" title="Gebiedsreductiefactor in Meteobase" class="img-fluid figure-img" alt="Gebiedsreductiefactor in Meteobase"></a></p>
+<p><a href="img/meteobase_oppervlaktereductie.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Gebiedsreductiefactor in Meteobase"><img src="img/meteobase_oppervlaktereductie.png" title="Gebiedsreductiefactor in Meteobase" class="img-fluid figure-img" alt="Gebiedsreductiefactor in Meteobase"></a></p>
 <figcaption>Gebiedsreductiefactor in Meteobase</figcaption>
 </figure>
 </div>
@@ -451,7 +457,7 @@ div.csl-indent {
 <div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="img/gebiedsreductie.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="Gebiedsreductiefactor in De Nieuwe Stochastentool"><img src="img/gebiedsreductie.png" title="Gebiedsreductie in De Nieuwe Stochastentool" class="img-fluid figure-img" alt="Gebiedsreductiefactor in De Nieuwe Stochastentool"></a></p>
+<p><a href="img/gebiedsreductie.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2" title="Gebiedsreductiefactor in De Nieuwe Stochastentool"><img src="img/gebiedsreductie.png" title="Gebiedsreductie in De Nieuwe Stochastentool" class="img-fluid figure-img" alt="Gebiedsreductiefactor in De Nieuwe Stochastentool"></a></p>
 <figcaption>Gebiedsreductiefactor in De Nieuwe Stochastentool</figcaption>
 </figure>
 </div>
@@ -895,7 +901,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"fade","loop":false,"closeEffect":"fade","descPosition":"right","selector":".lightbox"});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"fade","loop":false,"descPosition":"right","closeEffect":"fade"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
