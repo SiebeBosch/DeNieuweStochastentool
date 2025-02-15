@@ -665,6 +665,6 @@ Public Class frmPublish
     End Function
 
     Private Sub HelpToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HelpToolStripMenuItem.Click
-        Me.Setup.GeneralFunctions.OpenURL("")
+        Me.Setup.GeneralFunctions.OpenURL("https://siebebosch.github.io/DeNieuweStochastentool/GUI/publiceren.html")
     End Sub
 End Class

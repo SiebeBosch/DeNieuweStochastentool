@@ -32,8 +32,6 @@ Partial Class frmPublish
         Me.dlgFolder = New System.Windows.Forms.FolderBrowserDialog()
         Me.prProgress = New System.Windows.Forms.ProgressBar()
         Me.lblProgress = New System.Windows.Forms.Label()
-        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.chkParameters1D = New System.Windows.Forms.CheckedListBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtIP = New System.Windows.Forms.TextBox()
@@ -43,10 +41,12 @@ Partial Class frmPublish
         Me.radGeoJSON = New System.Windows.Forms.RadioButton()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.HelpToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GroupBox2 = New System.Windows.Forms.GroupBox()
+        Me.chkParameters1D = New System.Windows.Forms.CheckedListBox()
         Me.GroupBox1.SuspendLayout()
-        Me.GroupBox2.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
+        Me.GroupBox2.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -84,7 +84,7 @@ Partial Class frmPublish
         Me.radExistingWebviewer.AutoSize = True
         Me.radExistingWebviewer.Location = New System.Drawing.Point(19, 59)
         Me.radExistingWebviewer.Name = "radExistingWebviewer"
-        Me.radExistingWebviewer.Size = New System.Drawing.Size(286, 20)
+        Me.radExistingWebviewer.Size = New System.Drawing.Size(283, 20)
         Me.radExistingWebviewer.TabIndex = 1
         Me.radExistingWebviewer.Text = "Toevoegen aan een bestaande webviewer"
         Me.radExistingWebviewer.UseVisualStyleBackColor = True
@@ -95,7 +95,7 @@ Partial Class frmPublish
         Me.radNewWebviewer.Checked = True
         Me.radNewWebviewer.Location = New System.Drawing.Point(19, 33)
         Me.radNewWebviewer.Name = "radNewWebviewer"
-        Me.radNewWebviewer.Size = New System.Drawing.Size(176, 20)
+        Me.radNewWebviewer.Size = New System.Drawing.Size(173, 20)
         Me.radNewWebviewer.TabIndex = 0
         Me.radNewWebviewer.TabStop = True
         Me.radNewWebviewer.Text = "In een nieuwe webviewer"
@@ -125,24 +125,6 @@ Partial Class frmPublish
         Me.lblProgress.Size = New System.Drawing.Size(70, 16)
         Me.lblProgress.TabIndex = 4
         Me.lblProgress.Text = "Voorgang:"
-        '
-        'GroupBox2
-        '
-        Me.GroupBox2.Controls.Add(Me.chkParameters1D)
-        Me.GroupBox2.Location = New System.Drawing.Point(7, 193)
-        Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(310, 181)
-        Me.GroupBox2.TabIndex = 5
-        Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Opties 1D"
-        '
-        'chkParameters1D
-        '
-        Me.chkParameters1D.FormattingEnabled = True
-        Me.chkParameters1D.Location = New System.Drawing.Point(20, 38)
-        Me.chkParameters1D.Name = "chkParameters1D"
-        Me.chkParameters1D.Size = New System.Drawing.Size(271, 123)
-        Me.chkParameters1D.TabIndex = 6
         '
         'GroupBox3
         '
@@ -198,9 +180,9 @@ Partial Class frmPublish
         Me.radAPI.AutoSize = True
         Me.radAPI.Location = New System.Drawing.Point(25, 64)
         Me.radAPI.Name = "radAPI"
-        Me.radAPI.Size = New System.Drawing.Size(231, 20)
+        Me.radAPI.Size = New System.Drawing.Size(221, 20)
         Me.radAPI.TabIndex = 5
-        Me.radAPI.Text = "Overschrijdingsdata via API (bèta)"
+        Me.radAPI.Text = "Via API (voor grote 2D-modellen)"
         Me.radAPI.UseVisualStyleBackColor = True
         '
         'radGeoJSON
@@ -209,10 +191,10 @@ Partial Class frmPublish
         Me.radGeoJSON.Checked = True
         Me.radGeoJSON.Location = New System.Drawing.Point(25, 38)
         Me.radGeoJSON.Name = "radGeoJSON"
-        Me.radGeoJSON.Size = New System.Drawing.Size(224, 20)
+        Me.radGeoJSON.Size = New System.Drawing.Size(170, 20)
         Me.radGeoJSON.TabIndex = 4
         Me.radGeoJSON.TabStop = True
-        Me.radGeoJSON.Text = "Overschrijdingsdata in geoJSON"
+        Me.radGeoJSON.Text = "In memory (aanbevolen)"
         Me.radGeoJSON.UseVisualStyleBackColor = True
         '
         'MenuStrip1
@@ -221,15 +203,33 @@ Partial Class frmPublish
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.HelpToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(800, 28)
+        Me.MenuStrip1.Size = New System.Drawing.Size(800, 24)
         Me.MenuStrip1.TabIndex = 7
         Me.MenuStrip1.Text = "MenuStrip1"
         '
         'HelpToolStripMenuItem
         '
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
-        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 24)
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(44, 20)
         Me.HelpToolStripMenuItem.Text = "Help"
+        '
+        'GroupBox2
+        '
+        Me.GroupBox2.Controls.Add(Me.chkParameters1D)
+        Me.GroupBox2.Location = New System.Drawing.Point(7, 193)
+        Me.GroupBox2.Name = "GroupBox2"
+        Me.GroupBox2.Size = New System.Drawing.Size(310, 181)
+        Me.GroupBox2.TabIndex = 5
+        Me.GroupBox2.TabStop = False
+        Me.GroupBox2.Text = "Opties 1D"
+        '
+        'chkParameters1D
+        '
+        Me.chkParameters1D.FormattingEnabled = True
+        Me.chkParameters1D.Location = New System.Drawing.Point(20, 38)
+        Me.chkParameters1D.Name = "chkParameters1D"
+        Me.chkParameters1D.Size = New System.Drawing.Size(271, 123)
+        Me.chkParameters1D.TabIndex = 6
         '
         'frmPublish
         '
@@ -249,11 +249,11 @@ Partial Class frmPublish
         Me.Text = "Uitkomsten publiceren"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
-        Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
+        Me.GroupBox2.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -268,8 +268,6 @@ Partial Class frmPublish
     Friend WithEvents dlgFolder As FolderBrowserDialog
     Friend WithEvents prProgress As ProgressBar
     Friend WithEvents lblProgress As Label
-    Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents chkParameters1D As CheckedListBox
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents radAPI As RadioButton
     Friend WithEvents radGeoJSON As RadioButton
@@ -279,4 +277,6 @@ Partial Class frmPublish
     Friend WithEvents txtIP As TextBox
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents GroupBox2 As GroupBox
+    Friend WithEvents chkParameters1D As CheckedListBox
 End Class

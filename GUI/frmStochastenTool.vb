@@ -1055,13 +1055,13 @@ Public Class frmStochasten
         Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, mt)
         Return mt
     End Function
-
     Public Sub UpdateVolumes(ByRef grVolumes As DataGridView, ByVal Season As String, ByRef lblChecksum As Windows.Forms.Label)
-
-        'this routine updates the database from the datagridview me.Setup.containoing the summer volumes
+        'this routine updates the database from the datagridview containing the summer volumes
         Dim query As String, Checksum As Double
         Dim i As Long, myRow As DataGridViewRow, prevRow As DataGridViewRow, nextRow As DataGridViewRow
         Dim Done As Boolean, radius As Integer
+        Dim firstActiveFound As Boolean = False
+        Dim firstActiveIndex As Integer = -1
 
         Dim Duur As Integer = Val(cmbDuration.Text)
 
@@ -1070,12 +1070,27 @@ Public Class frmStochasten
             myRow.Cells("KANSCORR").Value = myRow.Cells("KANS").Value
         Next
 
-        'recalculate the frequencies for the active rows
+        'find the first active volume class
+        For i = 0 To grVolumes.Rows.Count - 1
+            If grVolumes.Rows(i).Cells("USE").Value = 1 Then
+                firstActiveIndex = i
+                Exit For
+            End If
+        Next
+
+        'recalculate the frequencies for the inactive rows
         For i = 0 To grVolumes.Rows.Count - 1
             myRow = grVolumes.Rows(i)
             If myRow.Cells("USE").Value = 0 Then
                 Done = False
                 radius = 0
+
+                'if this volume is lower than the first active volume, skip redistribution
+                If firstActiveIndex <> -1 AndAlso i < firstActiveIndex Then
+                    myRow.Cells("KANSCORR").Value = 0
+                    Continue For
+                End If
+
                 While Not Done
                     radius += 1
 
@@ -1093,7 +1108,7 @@ Public Class frmStochasten
                         nextRow = Nothing
                     End If
 
-                    If Not prevRow Is Nothing AndAlso Not nextRow Is Nothing Then
+                    If prevRow IsNot Nothing AndAlso nextRow IsNot Nothing Then
                         If prevRow.Cells("USE").Value = 1 AndAlso nextRow.Cells("USE").Value = 1 Then
                             'divide the frequency over the surrounding two
                             prevRow.Cells("KANSCORR").Value += myRow.Cells("KANS").Value / 2
@@ -1111,13 +1126,13 @@ Public Class frmStochasten
                             myRow.Cells("KANSCORR").Value = 0
                             Done = True
                         End If
-                    ElseIf Not prevRow Is Nothing Then
+                    ElseIf prevRow IsNot Nothing Then
                         If prevRow.Cells("USE").Value = 1 Then
                             prevRow.Cells("KANSCORR").Value += myRow.Cells("KANS").Value
                             myRow.Cells("KANSCORR").Value = 0
                             Done = True
                         End If
-                    ElseIf Not nextRow Is Nothing Then
+                    ElseIf nextRow IsNot Nothing Then
                         If nextRow.Cells("USE").Value = 1 Then
                             nextRow.Cells("KANSCORR").Value += myRow.Cells("KANS").Value
                             myRow.Cells("KANSCORR").Value = 0
@@ -1125,20 +1140,18 @@ Public Class frmStochasten
                         End If
                     End If
 
-                    'veiligheidsklep voor het geval geen enkel volume is aangevinkt
+                    'safety valve in case no volumes are checked
                     If radius > grVolumes.Rows.Count Then
                         Done = True
                     End If
-
                 End While
             End If
         Next
 
         If cmbDuration.Text <> "" AndAlso cmbClimate.Text <> "" AndAlso Not Me.Setup.SqliteCon Is Nothing Then
-
             If Not Me.Setup.SqliteCon.State = ConnectionState.Open Then Me.Setup.SqliteCon.Open()
 
-            'first update the checkboxes
+            'update the checkboxes and calculate checksum
             Checksum = 0
             For Each myRow In grVolumes.Rows
                 Checksum += myRow.Cells("KANS").Value
@@ -1150,6 +1163,7 @@ Public Class frmStochasten
             Me.Setup.SqliteCon.Close()
         End If
     End Sub
+
 
     '========================================================================================================================
     '   STOCHAST PATROON
@@ -3968,12 +3982,14 @@ Public Class frmStochasten
             lblCheckSumRuns.Text = "Checksum=" & CheckSum
             lblnRuns.Text = "Aantal runs=" & Setup.StochastenAnalyse.Runs.Runs.Count
 
-            If CheckSum = 1 Then
-                btnUitlezen.Enabled = True
-            Else
-                MsgBox("Waarschuwing: de som van alle kansen is ongelijk aan 1! De knop 'Uitlezen' is daarom gedeactiveerd.")
-                btnUitlezen.Enabled = False
-            End If
+            btnUitlezen.Enabled = True
+            '2025-02-14: removed this old option of making sure checksum is 1
+            'If CheckSum = 1 Then
+            '    btnUitlezen.Enabled = True
+            'Else
+            '    MsgBox("Waarschuwing: de som van alle kansen is ongelijk aan 1! De knop 'Uitlezen' is daarom gedeactiveerd.")
+            '    btnUitlezen.Enabled = False
+            'End If
 
             'refresh the grid me.Setup.containing the runs (reads which runs have already been run)
             Setup.GeneralFunctions.UpdateProgressBar("Rebuilding the runs grid...", 6, 10, True)

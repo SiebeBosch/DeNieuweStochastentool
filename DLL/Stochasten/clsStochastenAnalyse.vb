@@ -286,12 +286,19 @@ Public Class clsStochastenAnalyse
 
     Public Function WriteExceedanceData1DJSON(exceedancedatapath As String, configurationName As String) As Boolean
         Try
+            Dim i As Integer, j As Integer, p As Integer
             Dim locdt As New DataTable
             Dim query As String = "SELECT DISTINCT LOCATIENAAM FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
-
             If locdt.Rows.Count = 0 Then
-                Throw New Exception("No return periods for this climate scenario and duration found in the database. Please consider postprocessing (nabewerken) your results first.")
+                Throw New Exception("No locations found in the table HERHALINGSTIJDEN of the database. Please consider postprocessing (nabewerken) your results first.")
+            End If
+
+            Dim pardt As New DataTable
+            query = "SELECT DISTINCT PARAMETER FROM HERHALINGSTIJDEN WHERE KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & ";"
+            Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, pardt, False)
+            If pardt.Rows.Count = 0 Then
+                Throw New Exception("No parameters found in the table HERHALINGSTIJDEN of the database. Please consider postprocessing (nabewerken) your results first.")
             End If
 
             'Read the runs from our database and turn them into a dictionary for faster lookups
@@ -324,42 +331,54 @@ Public Class clsStochastenAnalyse
                     Me.Setup.GeneralFunctions.UpdateProgressBar("", i + 1, locdt.Rows.Count)
 
                     'add the exceedance data to the exceedancedata.js file
-                    exceedanceWriter.WriteLine("            " & Chr(34) & "ID" & Chr(34) & ": " & Chr(34) & locdt.Rows(i)("LOCATIENAAM") & Chr(34) & ",")
-                    exceedanceWriter.WriteLine("            " & Chr(34) & "data" & Chr(34) & ": [")
+                    exceedanceWriter.WriteLine("            ""ID"":  """ & locdt.Rows(i)("LOCATIENAAM") & """,")
 
-                    'for this location we will retrieve the exceedance table
-                    Dim dtHerh As New DataTable
-                    query = "SELECT HERHALINGSTIJD, WAARDE, RUNID FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & " ORDER BY HERHALINGSTIJD;"
-                    Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+                    'for each parameter we will retrieve the exceedance table and write it to the exceedancedata.js file
+                    For p = 0 To pardt.Rows.Count - 1
 
-                    ' Add RUNIDX column if it doesn't exist
-                    If Not dtHerh.Columns.Contains("RUNIDX") Then
-                        dtHerh.Columns.Add("RUNIDX", GetType(Integer))
-                    End If
+                        Dim parameter As String = pardt.Rows(p)(0).ToString
+                        exceedanceWriter.WriteLine("            """ & parameter & """: [")
 
-                    ' Look up the runidx for each runid and add it to our dtHerh table
-                    For Each row As DataRow In dtHerh.Rows
-                        Dim runId As String = row("RUNID").ToString()
-                        If runIdDict.ContainsKey(runId) Then
-                            row("RUNIDX") = runIdDict(runId)
+                        'for this location we will retrieve the exceedance table
+                        Dim dtHerh As New DataTable
+                        query = "SELECT HERHALINGSTIJD, WAARDE, RUNID FROM HERHALINGSTIJDEN WHERE LOCATIENAAM='" & locdt.Rows(i)(0) & "' AND KLIMAATSCENARIO='" & KlimaatScenario.ToString & "' AND DUUR=" & Duration & " AND PARAMETER='" & parameter & "' ORDER BY HERHALINGSTIJD;"
+                        Me.Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, dtHerh, False)
+
+                        ' Add RUNIDX column if it doesn't exist
+                        If Not dtHerh.Columns.Contains("RUNIDX") Then
+                            dtHerh.Columns.Add("RUNIDX", GetType(Integer))
+                        End If
+
+                        ' Look up the runidx for each runid and add it to our dtHerh table
+                        For Each row As DataRow In dtHerh.Rows
+                            Dim runId As String = row("RUNID").ToString()
+                            If runIdDict.ContainsKey(runId) Then
+                                row("RUNIDX") = runIdDict(runId)
+                            Else
+                                row("RUNIDX") = -999
+                            End If
+                        Next
+
+                        'now that we have our exceedance table, we can start writing it to the exceedancedata.js file
+                        Dim exceedanceStr As String = ""
+                        For j = 0 To dtHerh.Rows.Count - 1
+                            exceedanceStr = "                { ""x"": " & Math.Round(dtHerh.Rows(j)(0), 2) & ", ""y"": " & Math.Round(dtHerh.Rows(j)(1), 3) & ", ""runidx"": " & dtHerh.Rows(j)("RUNIDX") & "}"
+                            If j < dtHerh.Rows.Count - 1 Then exceedanceStr &= ","
+                            exceedanceWriter.WriteLine(exceedanceStr)
+                        Next
+
+                        If p < pardt.Rows.Count - 1 Then
+                            exceedanceWriter.WriteLine("            ],")
                         Else
-                            row("RUNIDX") = -999
+                            exceedanceWriter.WriteLine("            ]")
                         End If
                     Next
 
-                    'now that we have our exceedance table, we can start writing it to the exceedancedata.js file
-                    Dim exceedanceStr As String = ""
-                    For j = 0 To dtHerh.Rows.Count - 1
-                        exceedanceStr = "                { %x%: " & Math.Round(dtHerh.Rows(j)(0), 2) & ", %y%: " & Math.Round(dtHerh.Rows(j)(1), 3) & ", %runidx%: " & dtHerh.Rows(j)("RUNIDX") & "}" ' & ", %stochasts%:{%SEIZOEN%:%" & dtHerh.Rows(j)("SEIZOEN") & "%, %VOLUME%: " & dtHerh.Rows(j)("VOLUME") & ", %PATROON%: %" & dtHerh.Rows(j)("PATROON") & "%, %GW%: %" & dtHerh.Rows(j)("GW") & "%, %BOUNDARY%:%" & dtHerh.Rows(j)("BOUNDARY") & "%, %WIND%" & ":%" & dtHerh.Rows(j)("WIND") & "%,%EXTRA1%:%" & dtHerh.Rows(j)("EXTRA1") & "%,%EXTRA2%:%" & dtHerh.Rows(j)("EXTRA2") & "%,%EXTRA3%:%" & dtHerh.Rows(j)("EXTRA3") & "%,%EXTRA4%:%" & dtHerh.Rows(j)("EXTRA4") & "%}}"
-                        If j < dtHerh.Rows.Count - 1 Then exceedanceStr &= ","
-                        exceedanceStr = exceedanceStr.Replace("%", Chr(34))
-                        exceedanceWriter.WriteLine(exceedanceStr)
-                    Next
-                    exceedanceWriter.WriteLine("            ]")
                     If i < locdt.Rows.Count - 1 Then
                         'write the closing string for the previous result before proceeding to the next
                         exceedanceWriter.WriteLine("        }, {") 'prepare for the next location to be written
                     End If
+
                 Next
 
                 exceedanceWriter.WriteLine("        }") 'closing statement for the last location
@@ -2185,7 +2204,8 @@ Public Class clsStochastenAnalyse
             dtHerh.Columns.Add("RUNID", GetType(String))
 
             ' Build the SQL query using parameterized queries
-            myQuery = "SELECT RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM = @LocationName AND PARAMETER = @Parameter AND KLIMAATSCENARIO = @KlimaatScenario AND DUUR = @Duration ORDER BY " & ValuesField & " ASC;"
+            ' 2025-02-15 : sort the values in descending order so computing the exceedance values is easier
+            myQuery = "SELECT RUNID, " & ValuesField & ", P FROM RESULTATEN WHERE LOCATIENAAM = @LocationName AND PARAMETER = @Parameter AND KLIMAATSCENARIO = @KlimaatScenario AND DUUR = @Duration ORDER BY " & ValuesField & " DESC;"
             Using cmd As New SQLiteCommand(myQuery, Me.Setup.SqliteCon)
                 cmd.Parameters.AddWithValue("@LocationName", LocationName)
                 cmd.Parameters.AddWithValue("@Parameter", Parameter)
@@ -2197,17 +2217,20 @@ Public Class clsStochastenAnalyse
                         Dim value As Double = reader.GetDouble(reader.GetOrdinal(ValuesField))
                         Dim runId As String = reader.GetString(reader.GetOrdinal("RUNID"))
                         Dim herhTijd As Double
-                        If Setup.StochastenAnalyse.VolumesAsFrequencies Then
-                            Dim maxFreq As Double = 365.25 * 24 / Setup.StochastenAnalyse.Duration
-                            If pCum < maxFreq Then
-                                herhTijd = 1 / (maxFreq - pCum)
-                            Else
-                                ' Use a simple approximation for the highest value, which is not computable due to division by zero
-                                herhTijd = dtHerh.Rows(i - 1)(0) + 1
-                            End If
-                        Else
-                            herhTijd = 1 / -Math.Log(pCum)
-                        End If
+                        herhTijd = 1 / pCum
+
+                        '2025-02-15: disabled the method of working from probabilities. From now on we sort our values in descending order
+                        'If Setup.StochastenAnalyse.VolumesAsFrequencies Then
+                        '    Dim maxFreq As Double = 365.25 * 24 / Setup.StochastenAnalyse.Duration
+                        '    If pCum < maxFreq Then
+                        '        herhTijd = 1 / pCum
+                        '    Else
+                        '        ' Use a simple approximation for the highest value, which is not computable due to division by zero
+                        '        herhTijd = dtHerh.Rows(i - 1)(0) + 1
+                        '    End If
+                        'Else
+                        '    herhTijd = 1 / -Math.Log(pCum)
+                        'End If
                         dtHerh.Rows.Add(herhTijd, value, runId)
                         i += 1
                     End While
@@ -2835,7 +2858,7 @@ Public Class clsStochastenAnalyse
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, locdt, False)
 
             'also read the parameters
-            query = "SELECT DISTINCT PARAMETER FROM OUTPUTLOCATIONS;"
+            query = "SELECT DISTINCT MODELPAR FROM OUTPUTLOCATIONS;"
             Setup.GeneralFunctions.SQLiteQuery(Me.Setup.SqliteCon, query, pardt, False)
 
             'clear existing exceedance tables for this location and climate
@@ -2848,7 +2871,7 @@ Public Class clsStochastenAnalyse
                 Me.Setup.GeneralFunctions.UpdateProgressBar("", locIdx + 1, nLocs)
 
                 For parIdx = 0 To pardt.Rows.Count - 1
-                    Dim parameter As String = pardt.Rows(parIdx)("PARAMETER")
+                    Dim parameter As String = pardt.Rows(parIdx)("MODELPAR")
 
                     Dim dtRuns As New DataTable
                     Dim dtResults As New DataTable
